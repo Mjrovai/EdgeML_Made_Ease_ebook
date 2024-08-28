@@ -1,2 +1,2 @@
-# Edge_ML_Made_Ease_ebook
+# EdgeML Made Ease ebook
  Hands-On with the Raspberry Pi
