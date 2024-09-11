@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>EdgeML Made Easy - Counting objects with YOLO</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/llm/llm.html" rel="next">
+<link href="../../raspi/object_detection/object_detection.html" rel="prev">
+<link href="../../images/cover.jpg" rel="icon" type="image/jpeg">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">EdgeML Made Easy</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://github.com/Mjrovai/TinyML_Made_Easy_XIAO_ESP32S3_eBook" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="../../EdgeML-Made-Easy.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="../../EdgeML-Made-Easy.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html">Counting objects with YOLO</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#installing-and-using-ultralytics-yolov8" id="toc-installing-and-using-ultralytics-yolov8" class="nav-link" data-scroll-target="#installing-and-using-ultralytics-yolov8">Installing and using Ultralytics YOLOv8</a>
+  <ul class="collapse">
+  <li><a href="#testing-the-yolo" id="toc-testing-the-yolo" class="nav-link" data-scroll-target="#testing-the-yolo">Testing the YOLO</a></li>
+  <li><a href="#export-model-to-ncnn-format" id="toc-export-model-to-ncnn-format" class="nav-link" data-scroll-target="#export-model-to-ncnn-format">Export Model to NCNN format</a></li>
+  <li><a href="#exploring-yolo-with-python" id="toc-exploring-yolo-with-python" class="nav-link" data-scroll-target="#exploring-yolo-with-python">Exploring YOLO with Python</a></li>
+  </ul></li>
+  <li><a href="#estimating-the-number-of-bees" id="toc-estimating-the-number-of-bees" class="nav-link" data-scroll-target="#estimating-the-number-of-bees">Estimating the number of Bees</a>
+  <ul class="collapse">
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">Dataset</a></li>
+  <li><a href="#pre-processing" id="toc-pre-processing" class="nav-link" data-scroll-target="#pre-processing">Pre-Processing</a></li>
+  <li><a href="#training-yolov8-on-a-customized-dataset" id="toc-training-yolov8-on-a-customized-dataset" class="nav-link" data-scroll-target="#training-yolov8-on-a-customized-dataset">Training YOLOv8 on a Customized Dataset</a></li>
+  </ul></li>
+  <li><a href="#inference-with-the-trained-model-using-the-rasp-zero" id="toc-inference-with-the-trained-model-using-the-rasp-zero" class="nav-link" data-scroll-target="#inference-with-the-trained-model-using-the-rasp-zero">Inference with the trained model, using the Rasp-Zero</a></li>
+  <li><a href="#considerations-about-the-post-processing" id="toc-considerations-about-the-post-processing" class="nav-link" data-scroll-target="#considerations-about-the-post-processing">Considerations about the Post-Processing</a>
+  <ul class="collapse">
+  <li><a href="#script-for-reading-the-sqlite-database" id="toc-script-for-reading-the-sqlite-database" class="nav-link" data-scroll-target="#script-for-reading-the-sqlite-database">Script For Reading the SQLite Database</a></li>
+  <li><a href="#adding-environment-data" id="toc-adding-environment-data" class="nav-link" data-scroll-target="#adding-environment-data">Adding Environment data</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/TinyML_Made_Easy_XIAO_ESP32S3_eBook/edit/main/raspi/counting_objects_yolo/counting_objects_yolo.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/TinyML_Made_Easy_XIAO_ESP32S3_eBook/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/TinyML_Made_Easy_XIAO_ESP32S3_eBook/blob/main/raspi/counting_objects_yolo/counting_objects_yolo.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Counting objects with YOLO</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><strong>Deploying YOLOv8 on Raspberry Pi Zero 2W for Real-Time Bee Counting at the Hive Entrance.”</strong></p>
+<p><img src="images/portada.jpeg" class="img-fluid"></p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>At the <a href="https://unifei.edu.br/">Federal University of Itajuba in Brazil</a>, with the master’s student José Anderson Reis and Professor José Alberto Ferreira Filho, we are exploring a project that delves into the intersection of technology and nature. This tutorial will review our first steps and share our observations on deploying YOLOv8, a cutting-edge machine learning model, on the compact and efficient Raspberry Pi Zero 2W (<em>Raspi-Zero</em>). We aim to estimate the number of bees entering and exiting their hive—a task crucial for beekeeping and ecological studies.</p>
+<p>Why is this important? Bee populations are vital indicators of environmental health, and their monitoring can provide essential data for ecological research and conservation efforts. However, manual counting is labor-intensive and prone to errors. By leveraging the power of embedded machine learning, or tinyML, we automate this process, enhancing accuracy and efficiency.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/counting_bees.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">img</figcaption>
+</figure>
+</div>
+<p>This tutorial will cover setting up the Raspberry Pi, integrating a camera module, optimizing and deploying YOLOv8 for real-time image processing, and analyzing the data gathered.</p>
+</section>
+<section id="installing-and-using-ultralytics-yolov8" class="level2">
+<h2 class="anchored" data-anchor-id="installing-and-using-ultralytics-yolov8">Installing and using Ultralytics YOLOv8</h2>
+<p><a href="https://ultralytics.com/">Ultralytics</a> <a href="https://github.com/ultralytics/ultralytics">YOLOv8</a>, is a version of the acclaimed real-time object detection and image segmentation model, YOLO. YOLOv8 is built on cutting-edge advancements in deep learning and computer vision, offering unparalleled performance in terms of speed and accuracy. Its streamlined design makes it suitable for various applications and easily adaptable to different hardware platforms, from edge devices to cloud APIs.</p>
+<p>Let’s start installing the Ultarlytics packages for local inference on the Rasp-Zero:</p>
+<ol type="1">
+<li>Update the packages list, install pip, and upgrade to the latest:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install python3-pip <span class="at">-y</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> pip</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="2" type="1">
+<li>Install the <code>ultralytics</code> pip package with optional dependencies:</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ultralytics<span class="pp">[</span><span class="ss">export</span><span class="pp">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="3" type="1">
+<li>Reboot the device:</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="testing-the-yolo" class="level3">
+<h3 class="anchored" data-anchor-id="testing-the-yolo">Testing the YOLO</h3>
+<p>After the Rasp-Zero booting, let’s create a directory for working with YOLO and change the current location to it::</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Documents/YOLO</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents/YOLO</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s run inference on an image that will be downloaded from the Ultralytics website, using the YOLOV8n model (the smallest in the family) at the Terminal (CLI):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict model=<span class="st">'yolov8n'</span> source=<span class="st">'https://ultralytics.com/images/bus.jpg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The inference result will appear in the terminal. In the image (bus.jpg), 4 <code>persons</code>, 1 <code>bus,</code> and 1 <code>stop signal</code> were detected:</p>
+<p><img src="images/inferfence.png" class="img-fluid"></p>
+<p>Also, we got a message that <code>Results saved to runs/detect/predict4</code>. Inspecting that directory, we can see a new image saved (bus.jpg). Let’s download it from the Rasp-Zero to our desktop for inspection:</p>
+<p><img src="images/bus.png" class="img-fluid"></p>
+<p>So, the Ultrayitics YOLO is correctly installed on our Rasp-Zero.</p>
+</section>
+<section id="export-model-to-ncnn-format" class="level3">
+<h3 class="anchored" data-anchor-id="export-model-to-ncnn-format">Export Model to NCNN format</h3>
+<p>So, let’s convert our model and rerun the inference:</p>
+<ol type="1">
+<li>Export a YOLOv8n PyTorch model to NCNN format, creating: ‘/yolov8n_ncnn_model’</li>
+</ol>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=yolov8n.pt format=ncnn </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="2" type="1">
+<li>Run inference with the exported model (now the source could be the bus.jpg image that was downloaded from the website to the current directory on the last inference):</li>
+</ol>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict model=<span class="st">'./yolov8n_ncnn_model'</span> source=<span class="st">'bus.jpg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, we can see that the latency was reduced by half.</p>
+<p><img src="images/ncnn.png" class="img-fluid"></p>
+</section>
+<section id="exploring-yolo-with-python" class="level3">
+<h3 class="anchored" data-anchor-id="exploring-yolo-with-python">Exploring YOLO with Python</h3>
+<p>To start, let’s call the Python Interpreter so we can explore how the YOLO model works, line by line:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/py-inter-1.png" class="img-fluid"></p>
+<p>Now, we should call the YOLO library from Ultralitics and load the model:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'yolov8n_ncnn_model'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Next, run inference over an image (let’s use again <code>bus.jpg</code>):</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'bus.jpg'</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/py-inf2.png" class="img-fluid"></p>
+<p>We can verify that the result is the same as the one we get running the inference at the terminal level (CLI).</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>image <span class="dv">1</span><span class="op">/</span><span class="dv">1</span> <span class="op">/</span>home<span class="op">/</span>mjrovai<span class="op">/</span>Documents<span class="op">/</span>YOLO<span class="op">/</span>bus.jpg: <span class="dv">640</span><span class="er">x640</span> <span class="dv">3</span> persons, <span class="dv">1</span> bus, <span class="fl">4048.5</span><span class="er">ms</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>Speed: <span class="fl">635.7</span><span class="er">ms</span> preprocess, <span class="fl">4048.5</span><span class="er">ms</span> inference, <span class="fl">33897.6</span><span class="er">ms</span> postprocess per image at shape (<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">640</span>, <span class="dv">640</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>Results saved to runs<span class="op">/</span>detect<span class="op">/</span>predict7 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>But, we are interested in analyzing the “result” content.</p>
+<p>For example, we can see <code>result[0].boxes.data</code>, showing us the main inference result, which is a tensor shape (4, 6). Each line is one of the objects detected, being the 4 first columns, the bounding boxes coordinates, the 5th, the confidence, and the 6th, the class (in this case, <code>0: person</code> and <code>5: bus</code>):</p>
+<p><img src="images/py-inter-3.png" class="img-fluid"></p>
+<p>We can access several inference results separately, as the inference time, and have it printed in a better format:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> <span class="bu">int</span>(result[<span class="dv">0</span>].speed[<span class="st">'inference'</span>])</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inference Time: </span><span class="sc">{</span>inference_time<span class="sc">}</span><span class="ss"> ms"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Or we can have the total number of objects detected:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Number of objects: </span><span class="sc">{</span><span class="bu">len</span> (result[<span class="dv">0</span>].boxes.cls)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/py-inter-4.png" class="img-fluid"></p>
+<p>With Python, we can create a detailed output that meets our needs. In our final project, we will run a Python script at once rather than manually entering it line by line in the interpreter.</p>
+<p>For that, let’s use <code>nano</code> as our text editor. First, we should create an empty Python script named, for example, <code>yolov8_tests.py</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>nano yolov8_tests.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Enter with the code lines:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the YOLOv8 model</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'yolov8n_ncnn_model'</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Run inference</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'bus.jpg'</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">False</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># print the results</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> <span class="bu">int</span>(result[<span class="dv">0</span>].speed[<span class="st">'inference'</span>])</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inference Time: </span><span class="sc">{</span>inference_time<span class="sc">}</span><span class="ss"> ms"</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Number of objects: </span><span class="sc">{</span><span class="bu">len</span> (result[<span class="dv">0</span>].boxes.cls)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/python_test.png" class="img-fluid"></p>
+<p>And enter with the commands: <code>[CTRL+O]</code> + <code>[ENTER]</code> +<code>[CTRL+X]</code> to save the Python script.</p>
+<p>Run the script:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> yolov8_tests.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/py-inf1.png" class="img-fluid"></p>
+<p>We can verify again that the result is precisely the same as when we run the inference at the terminal level (CLI) and with the built-in Python interpreter.</p>
+<section id="note-about-the-latency" class="level4">
+<h4 class="anchored" data-anchor-id="note-about-the-latency">Note about the Latency:</h4>
+<p>The process of calling the YOLO library and loading the model for inference for the first time takes a long time, but the inferences after that will be much faster. For example, the first single inference took 3 to 4 seconds, but after that, the inference time is reduced to less than 1 second.</p>
+<p><img src="images/latency_test.png" class="img-fluid"></p>
+</section>
+</section>
+</section>
+<section id="estimating-the-number-of-bees" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-the-number-of-bees">Estimating the number of Bees</h2>
+<p>For our project at the university, we are preparing to collect a dataset of bees at the entrance of a beehive using the same camera connected to the Rasp-Zero. The images should be collected every 10 seconds. With the Arducam OV5647, the horizontal Field of View (FoV) is 53.5<sup>o</sup>, which means that a camera positioned at the top of a standard Hive (46 cm) will capture all of its entrance (about 47 cm).</p>
+<p><img src="images/camera_pos.png" class="img-fluid"></p>
+<section id="dataset" class="level3">
+<h3 class="anchored" data-anchor-id="dataset">Dataset</h3>
+<p>The dataset collection is the most critical phase of the project and should take several weeks or months. For this tutorial, we will use a public dataset: “Sledevic, Tomyslav (2023), “[Labeled dataset for bee detection and direction estimation on beehive landing boards,” Mendeley Data, V5, doi: 10.17632/8gb9r2yhfc.5”</p>
+<p>The original dataset has 6,762 images (1920 x 1080), and around 8% of them (518) have no bees (only background). This is very important with Object Detection, where we should keep around 10% of the dataset with only background (without any objects to be detected).</p>
+<p>The images contain from zero to up to 61 bees:</p>
+<p><img src="images/bee_distr.jpeg" class="img-fluid"></p>
+<p>We downloaded the dataset (images and annotations) and uploaded it to <a href="https://roboflow.com/">Roboflow</a>. There, you should create a free account and start a new project, for example, (“Bees_on_Hive_landing_boards”):</p>
+<p><img src="images/roboflow_proj.jpeg" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>We will not enter details about the Roboflow process once many tutorials are available.</p>
+</blockquote>
+<p>Once the project is created and the dataset is uploaded, you should review the annotations using the “Auto-Label” Tool. Note that all images with only a background should be saved w/o any annotations. At this step, you can also add additional images.</p>
+<p><img src="images/annotate.jpeg" class="img-fluid"></p>
+<p>Once all images are annotated, you should split them into training, validation, and testing.</p>
+<p><img src="images/split_data.jpeg" class="img-fluid"></p>
+</section>
+<section id="pre-processing" class="level3">
+<h3 class="anchored" data-anchor-id="pre-processing">Pre-Processing</h3>
+<p>The last step with the dataset is preprocessing to generate a final version for training. The Yolov8 model can be trained with 640 x 640 pixels (RGB) images. Let’s resize all images and generate augmented versions of each image (augmentation) to create new training examples from which our model can learn.</p>
+<p>For augmentation, we will rotate the images (+/-15<sup>o</sup>) and vary the brightness and exposure.</p>
+<p><img src="images/preprocess.jpeg" class="img-fluid"></p>
+<p>This will create a final dataset of 16,228 images.</p>
+<p><img src="images/final-dataset.jpeg" class="img-fluid"></p>
+<p>Now, you should export the annotateddataset in a YOLOv8 format. You can download a zipped version of the dataset to your desktop or get a downloaded code to be used with a Jupyter Notebook:</p>
+<p><img src="images/download_code.jpeg" class="img-fluid"></p>
+<p>And that is it! We are prepared to start our training using Google Colab.</p>
+<blockquote class="blockquote">
+<p>The pre-processed dataset can be found at the <a href="https://universe.roboflow.com/marcelo-rovai-riila/bees_on_hive_landing_boards">Roboflow site</a>.</p>
+</blockquote>
+</section>
+<section id="training-yolov8-on-a-customized-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="training-yolov8-on-a-customized-dataset">Training YOLOv8 on a Customized Dataset</h3>
+<p>For training, let’s adapt one of the public examples available from Ultralitytics and run it on Google Colab:</p>
+<ul>
+<li>yolov8_bees_on_hive_landing_board.ipynb <a href="https://colab.research.google.com/github/Mjrovai/Bee-Counting/blob/main/yolov8_bees_on_hive_landing_board.ipynb">[Open In Colab]</a></li>
+</ul>
+<section id="critical-points-on-the-notebook" class="level4">
+<h4 class="anchored" data-anchor-id="critical-points-on-the-notebook">Critical points on the Notebook:</h4>
+<ol type="1">
+<li><p>Run it with GPU (the NVidia T4 is free)</p></li>
+<li><p>Install Ultralytics using PIP.</p>
+<p><img src="images/inst_Ultralytics.jpeg" class="img-fluid"></p></li>
+<li><p>Now, you can import the YOLO and upload your dataset to the CoLab, pasting the Download code that you get from Roboflow. Note that your dataset will be mounted under <code>/content/datasets/</code>:</p></li>
+</ol>
+<p><img src="images/dataset_colab.jpeg" class="img-fluid"></p>
+<ol start="4" type="1">
+<li>It is important to verify and change, if needed, the file <code>data.yaml</code> with the correct path for the images:</li>
+</ol>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">names:</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> bee</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="ex">nc:</span> 1</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="ex">roboflow:</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">license:</span> CC BY 4.0</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">project:</span> bees_on_hive_landing_boards</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">url:</span> https://universe.roboflow.com/marcelo-rovai-riila/bees_on_hive_landing_boards/dataset/1</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">version:</span> 1</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">workspace:</span> marcelo-rovai-riila</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="ex">test:</span> /content/datasets/Bees_on_Hive_landing_boards-1test/images</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="ex">train:</span> /content/datasets/Bees_on_Hive_landing_boards-1/train/images</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="ex">val:</span> /content/datasets/Bees_on_Hive_landing_boards-1/valid/images</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="5" type="1">
+<li><p>Define the main hyperparameters that you want to change from default, for example:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">MODEL</span> = <span class="st">'yolov8n.pt'</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">IMG_SIZE</span> = 640</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">EPOCHS</span> = 25 <span class="co"># For a final project, you should consider at least 100 epochs </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Run the training (using CLI):</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=train model={MODEL} data={dataset.location}/data.yaml epochs={EPOCHS} imgsz={IMG_SIZE} plots=True </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/train_result.jpeg" class="img-fluid"></p></li>
+</ol>
+<p>​ The model took 2.7 hours to train and has an excellent result (mAP50 of 0.984). At the end of the training, all results are saved in the folder listed, for example: <code>/runs/detect/train3/</code>. There, you can find, for example, the confusion matrix and the metrics curves per epoch.</p>
+<p><img src="images/train_perf.jpeg" class="img-fluid"></p>
+<ol start="7" type="1">
+<li>Note that the trained model (<code>best.pt</code>) is saved in the folder <code>/runs/detect/train3/weights/</code>. Now, you should validade the trained model with the <code>valid/images</code>.</li>
+</ol>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=val model={HOME}/runs/detect/train3/weights/best.pt data={dataset.location}/data.yaml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>​ The results were similar to training.</p>
+<ol start="8" type="1">
+<li>Now, we should perform inference on the images left aside for testing</li>
+</ol>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=predict model={HOME}/runs/detect/train3/weights/best.pt conf=0.25 source={dataset.location}/test/images save=True</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The inference results are saved in the folder <code>runs/detect/predict</code>. Let’s see some of them:</p>
+<p><img src="images/inf_colab.jpeg" class="img-fluid"></p>
+<p>We can also perform inference with a completely new and complex image from another beehive with a different background (the beehive of Professor Maurilio of our University). The results were great (but not perfect and with a lower confidence score). The model found 41 bees.</p>
+<p><img src="images/maurilio_bees_tEXbFzkpEf.jpg" class="img-fluid"></p>
+<ol start="9" type="1">
+<li><p>The last thing to do is export the train, validation, and test results for your Drive at Google. To do so, you should mount your drive.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">'/content/gdrive'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and copy the content of <code>/runs</code> folder to a folder that you should create in your Drive, for example:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!scp</span> <span class="at">-r</span> /content/runs <span class="st">'/content/gdrive/MyDrive/10_UNIFEI/Bee_Project/YOLO/bees_on_hive_landing'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+</section>
+</section>
+</section>
+<section id="inference-with-the-trained-model-using-the-rasp-zero" class="level2">
+<h2 class="anchored" data-anchor-id="inference-with-the-trained-model-using-the-rasp-zero">Inference with the trained model, using the Rasp-Zero</h2>
+<p>Using the FileZilla FTP, let’s transfer the <code>best.pt</code> to our Rasp-Zero (before the transfer, you may change the model name, for example, <code>bee_landing_640_best.pt</code>).</p>
+<p>The first thing to do is convert the model to an NCNN format:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=bee_landing_640_best.pt format=ncnn </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As a result, a new converted model, <code>bee_landing_640_best_ncnn_model</code> is created in the same directory.</p>
+<p>Let’s create a folder to receive some test images (under <code>Documents/YOLO/</code>:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> test_images</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Using the FileZilla FTP, let’s transfer a few images from the test dataset to our Rasp-Zero:</p>
+<p><img src="images/image_test_.png" class="img-fluid"></p>
+<p>Let’s use the Python Interpreter:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As before, we will import the YOLO library and define our converted model to detect bees:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'bee_landing_640_best_ncnn_model'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, let’s define an image and call the inference (we will save the image result this time to external verification):</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'test_images/15_bees.jpg'</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.2</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The inference result is saved on the variable <code>result,</code> and the processed image on <code>runs/detect/predict9</code></p>
+<p><img src="images/inf_bees_15.png" class="img-fluid"></p>
+<p>Using FileZilla FTP, we can send the inference result to our Desktop for verification:</p>
+<p><img src="images/inf_img_15_bees.png" class="img-fluid"></p>
+<p>let’s go over the other images, analyzing the number of objects (bees) found:</p>
+<p><img src="images/multiple_infer.png" class="img-fluid"></p>
+<p>Depending on the confidence, we can have some false positives or negatives. But in general, with a model trained based on the smaller base model of the YOLOv8 family (YOLOv8n) and also converted to NCNN, the result is pretty good, running on an Edge device such as the Rasp-Zero. Also, note that the inference latency is around 730ms.</p>
+<p>For example, by running the inference on <code>Maurilio-bee.jpeg</code>, we can find <code>40 bees</code>. During the test phase on Colab, 41 bees were found (we only missed one here.)</p>
+<p><img src="images/maurilio-bee-rasp.png" class="img-fluid"></p>
+</section>
+<section id="considerations-about-the-post-processing" class="level2">
+<h2 class="anchored" data-anchor-id="considerations-about-the-post-processing">Considerations about the Post-Processing</h2>
+<p>Our final project should be very simple in terms of code. We will use the camera to capture an image every 10 seconds. As we did in the previous section, the captured image should be the input for the trained and converted model. We should get the number of bees for each image and save it in a database (for example, timestamp: number of bees).</p>
+<p>We can do it with a single Python script or use a Linux system timer, like <code>cron</code>, to periodically capture images every 10 seconds and have a separate Python script to process these images as they are saved. This method can be particularly efficient in managing system resources and can be more robust against potential delays in image processing.</p>
+<section id="setting-up-the-image-capture-with-cron" class="level4">
+<h4 class="anchored" data-anchor-id="setting-up-the-image-capture-with-cron">Setting Up the Image Capture with <code>cron</code></h4>
+<p>First, we should set up a <code>cron</code> job to use the <code>rpicam-jpeg</code> command to capture an image every 10 seconds.</p>
+<ol type="1">
+<li><p><strong>Edit the <code>crontab</code></strong>:</p>
+<ul>
+<li>Open the terminal and type <code>crontab -e</code> to edit the cron jobs.</li>
+<li><code>cron</code> normally doesn’t support sub-minute intervals directly, so we should use a workaround like a loop or watch for file changes.</li>
+</ul></li>
+<li><p><strong>Create a Bash Script (<code>capture.sh</code>)</strong>:</p>
+<ul>
+<li><strong>Image Capture</strong>: This bash script captures images every 10 seconds using <code>rpicam-jpeg</code>, a command that is part of the <code>raspijpeg</code> tool. This command lets us control the camera and capture JPEG images directly from the command line. This is especially useful because we are looking for a lightweight and straightforward method to capture images without the need for additional libraries like <code>Picamera</code> or external software. The script also saves the captured image with a timestamp.</li>
+</ul>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Script to capture an image every 10 seconds</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> true</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>do</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  DATE<span class="op">=</span>$(date <span class="op">+</span><span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st">_%H%M%S"</span>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  rpicam<span class="op">-</span>jpeg <span class="op">--</span>output test_images<span class="op">/</span>$DATE.jpg <span class="op">--</span>width <span class="dv">640</span> <span class="op">--</span>height <span class="dv">640</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  sleep <span class="dv">10</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>done</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>We should make the script executable with <code>chmod +x capture.sh</code>.</li>
+<li>The script must start at boot or use a <code>@reboot</code> entry in <code>cron</code> to start it automatically.</li>
+</ul></li>
+</ol>
+</section>
+<section id="setting-up-the-python-script-for-inference" class="level4">
+<h4 class="anchored" data-anchor-id="setting-up-the-python-script-for-inference">Setting Up the Python Script for Inference</h4>
+<p><strong>Image Processing</strong>: The Python script continuously monitors the designated directory for new images, processes each new image using the YOLOv8 model, updates the database with the count of detected bees, and optionally deletes the image to conserve disk space.</p>
+<p><strong>Database Updates</strong>: The results, along with the timestamps, are saved in an SQLite database. For that, a simple option is to use <a href="https://docs.python.org/3/library/sqlite3.html">sqlite3</a>.</p>
+<p>In short, we need to write a script that continuously monitors the directory for new images, processes them using a YOLO model, and then saves the results to a SQLite database. Here’s how we can create and make the script executable:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Constants and paths</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>IMAGES_DIR <span class="op">=</span> <span class="st">'test_images/'</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>MODEL_PATH <span class="op">=</span> <span class="st">'bee_landing_640_best_ncnn_model'</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>DB_PATH <span class="op">=</span> <span class="st">'bee_count.db'</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> setup_database():</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Establishes a database connection and creates the table if it doesn't exist. """</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(DB_PATH)</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> conn.cursor()</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    cursor.execute(<span class="st">'''</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="st">        CREATE TABLE IF NOT EXISTS bee_counts</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a><span class="st">        (timestamp TEXT, count INTEGER)</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a><span class="st">    '''</span>)</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    conn.commit()</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> conn</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_image(image_path, model, conn):</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Processes an image to detect objects and logs the count to the database. """</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> model.predict(image_path, save<span class="op">=</span><span class="va">False</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.2</span>, iou<span class="op">=</span><span class="fl">0.3</span>, verbose<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>    num_bees <span class="op">=</span> <span class="bu">len</span>(result[<span class="dv">0</span>].boxes.cls) </span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>    timestamp <span class="op">=</span> datetime.now().strftime(<span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st"> %H:%M:%S'</span>)</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> conn.cursor()</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>    cursor.execute(<span class="st">"INSERT INTO bee_counts (timestamp, count) VALUES (?, ?)"</span>, (timestamp, num_bees))</span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>    conn.commit()</span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Processed </span><span class="sc">{</span>image_path<span class="sc">}</span><span class="ss">: Number of bees detected = </span><span class="sc">{</span>num_bees<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> monitor_directory(model, conn):</span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" Monitors the directory for new images and processes them as they appear. """</span></span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>    processed_files <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>            files <span class="op">=</span> <span class="bu">set</span>(os.listdir(IMAGES_DIR))</span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>            new_files <span class="op">=</span> files <span class="op">-</span> processed_files</span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> new_files:</span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="bu">file</span>.endswith(<span class="st">'.jpg'</span>):</span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>                    full_path <span class="op">=</span> os.path.join(IMAGES_DIR, <span class="bu">file</span>)</span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a>                    process_image(full_path, model, conn)</span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a>                    processed_files.add(<span class="bu">file</span>)</span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="dv">1</span>)  <span class="co"># Check every second</span></span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Stopping..."</span>)</span>
+<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a>    conn <span class="op">=</span> setup_database()</span>
+<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> YOLO(MODEL_PATH)</span>
+<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a>    monitor_directory(model, conn)</span>
+<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a>    conn.close()</span>
+<span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb30-58"><a href="#cb30-58" aria-hidden="true" tabindex="-1"></a>    main()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The python script must be executable, for that:</p>
+<ol type="1">
+<li><p><strong>Save the script</strong>: For example, as <code>process_images.py</code>.</p></li>
+<li><p><strong>Change file permissions</strong> to make it executable:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x process_images.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Run the script</strong> directly from the command line:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./process_images.py</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<p>We should consider keeping the script running even after closing the terminal; for that, we can use <code>nohup</code> or <code>screen</code>:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nohup</span> ./process_images.py <span class="kw">&amp;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">screen</span> <span class="at">-S</span> bee_monitor</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./process_images.py</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that we are capturing images with their own timestamp and then log a separate timestamp for when the inference results are saved to the database. This approach can be beneficial for the following reasons:</p>
+<ol type="1">
+<li><strong>Accuracy in Data Logging</strong>:
+<ul>
+<li><strong>Capture Timestamp</strong>: The timestamp associated with each image capture represents the exact moment the image was taken. This is crucial for applications where precise timing of events (like bee activity) is important for analysis.</li>
+<li><strong>Inference Timestamp</strong>: This timestamp indicates when the image was processed and the results were recorded in the database. This can differ from the capture time due to processing delays or if the image processing is batched or queued.</li>
+</ul></li>
+<li><strong>Performance Monitoring</strong>:
+<ul>
+<li>Having separate timestamps allows us to monitor the performance and efficiency of your image processing pipeline. We can measure the delay between image capture and result logging, which helps optimize the system for real-time processing needs.</li>
+</ul></li>
+<li><strong>Troubleshooting and Audit</strong>:
+<ul>
+<li>Separate timestamps provide a better audit trail and troubleshooting data. If there are issues with the image processing or data recording, having distinct timestamps can help isolate whether delays or problems occurred during capture, processing, or logging.</li>
+</ul></li>
+</ol>
+</section>
+<section id="script-for-reading-the-sqlite-database" class="level3">
+<h3 class="anchored" data-anchor-id="script-for-reading-the-sqlite-database">Script For Reading the SQLite Database</h3>
+<p>Here is an example of a code to retrieve the data from the database:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    db_path <span class="op">=</span> <span class="st">'bee_count.db'</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(db_path)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> conn.cursor()</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    query <span class="op">=</span> <span class="st">"SELECT * FROM bee_counts"</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    cursor.execute(query)</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> cursor.fetchall()</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> data:</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Timestamp: </span><span class="sc">{</span>row[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">, Number of bees: </span><span class="sc">{</span>row[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    conn.close()</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>    main()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="adding-environment-data" class="level3">
+<h3 class="anchored" data-anchor-id="adding-environment-data">Adding Environment data</h3>
+<p>Besides bee counting, environmental data, such as temperature and humidity, are essential for monitoring the bee-have health. Using a Rasp-Zero, it is straightforward to add a digital sensor such as the DHT-22 to get this data.</p>
+<p><img src="images/dat_env.jpg" class="img-fluid"></p>
+<p>Environmental data will be part of our final project. If you want to know more about connecting sensors to a Raspberry Pi and, even more, how to save the data to a local database and send it to the web, follow this tutorial: <a href="https://www.hackster.io/mjrobot/from-data-to-graph-a-web-journey-with-flask-and-sqlite-4dba35">From Data to Graph: A Web Journey With Flask and SQLite</a>.</p>
+<p><img src="images/tutorial_flask.jpg" class="img-fluid"></p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>In this tutorial, we have thoroughly explored integrating the YOLOv8 model with a Raspberry Pi Zero 2W to address the practical and pressing task of counting (or better, “estimating”) bees at a beehive entrance. Our project underscores the robust capability of embedding advanced machine learning technologies within compact edge computing devices, highlighting their potential impact on environmental monitoring and ecological studies.</p>
+<p>This tutorial provides a step-by-step guide to the practical deployment of the YOLOv8 model. We demonstrate a tangible example of a real-world application by optimizing it for edge computing in terms of efficiency and processing speed (using NCNN format). This not only serves as a functional solution but also as an instructional tool for similar projects.</p>
+<p>The technical insights and methodologies shared in this tutorial are the basis for the complete work to be developed at our university in the future. We envision further development, such as integrating additional environmental sensing capabilities and refining the model’s accuracy and processing efficiency. Implementing alternative energy solutions like the proposed solar power setup will expand the project’s sustainability and applicability in remote or underserved locations.</p>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<blockquote class="blockquote">
+<p>The Dataset paper, Notebooks, and PDF version are in the <a href="https://github.com/Mjrovai/Bee-Counting">Project repository</a>.</p>
+</blockquote>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/object_detection/object_detection.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Object Detection</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/llm/llm.html" class="pagination-link">
+        <span class="nav-page-text">Small Language Models (SLM)</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>

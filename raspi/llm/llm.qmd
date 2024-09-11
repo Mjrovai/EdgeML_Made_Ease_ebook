@@ -1,6 +1,0 @@
-# Small Language Models (SLM) {.unnumbered}
-
-
-
-## *Coming soon.*
-
