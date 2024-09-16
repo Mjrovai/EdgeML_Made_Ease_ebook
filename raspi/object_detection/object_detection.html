@@ -265,12 +265,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
   <ul class="collapse">
-  <li><a href="#object-detection-fundamentals" id="toc-object-detection-fundamentals" class="nav-link" data-scroll-target="#object-detection-fundamentals">Object detection Fundamentals</a></li>
+  <li><a href="#object-detection-fundamentals" id="toc-object-detection-fundamentals" class="nav-link" data-scroll-target="#object-detection-fundamentals">Object Detection Fundamentals</a></li>
   </ul></li>
   <li><a href="#pre-trained-object-detection-models-overview" id="toc-pre-trained-object-detection-models-overview" class="nav-link" data-scroll-target="#pre-trained-object-detection-models-overview">Pre-Trained Object Detection Models Overview</a>
   <ul class="collapse">
   <li><a href="#setting-up-the-tflite-environment" id="toc-setting-up-the-tflite-environment" class="nav-link" data-scroll-target="#setting-up-the-tflite-environment">Setting Up the TFLite Environment</a></li>
-  <li><a href="#creating-a-working-directory" id="toc-creating-a-working-directory" class="nav-link" data-scroll-target="#creating-a-working-directory">Creating a working directory:</a></li>
+  <li><a href="#creating-a-working-directory" id="toc-creating-a-working-directory" class="nav-link" data-scroll-target="#creating-a-working-directory">Creating a Working Directory:</a></li>
   <li><a href="#inference-and-post-processing" id="toc-inference-and-post-processing" class="nav-link" data-scroll-target="#inference-and-post-processing">Inference and Post-Processing</a></li>
   <li><a href="#efficientdet" id="toc-efficientdet" class="nav-link" data-scroll-target="#efficientdet">EfficientDet</a></li>
   </ul></li>
@@ -278,7 +278,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#the-goal" id="toc-the-goal" class="nav-link" data-scroll-target="#the-goal">The Goal</a></li>
   <li><a href="#raw-data-collection" id="toc-raw-data-collection" class="nav-link" data-scroll-target="#raw-data-collection">Raw Data Collection</a></li>
-  <li><a href="#labeling-data" id="toc-labeling-data" class="nav-link" data-scroll-target="#labeling-data">Labeling data</a></li>
+  <li><a href="#labeling-data" id="toc-labeling-data" class="nav-link" data-scroll-target="#labeling-data">Labeling Data</a></li>
   </ul></li>
   <li><a href="#training-an-ssd-mobilenet-model-on-edge-impulse-studio" id="toc-training-an-ssd-mobilenet-model-on-edge-impulse-studio" class="nav-link" data-scroll-target="#training-an-ssd-mobilenet-model-on-edge-impulse-studio">Training an SSD MobileNet Model on Edge Impulse Studio</a>
   <ul class="collapse">
@@ -357,23 +357,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>FOMO (Faster Objects, More Objects), and</li>
 <li>YOLO (You Only Look Once).</li>
 </ul>
-<p>We will explore those object detection models, using</p>
+<blockquote class="blockquote">
+<p>To learn more about object detection models, follow the tutorial <a href="https://machinelearningmastery.com/object-recognition-with-deep-learning/">A Gentle Introduction to Object Recognition With Deep Learning</a>.</p>
+</blockquote>
+<p>We will explore those object detection models using</p>
 <ul>
-<li>TensorFlow Lite Runtime,</li>
-<li>Edge Impulse Linux Python SDK, and</li>
+<li>TensorFlow Lite Runtime (now changed to <a href="https://ai.google.dev/edge/litert">LiteRT</a>),</li>
+<li>Edge Impulse Linux Python SDK and</li>
 <li>Ultralitics</li>
 </ul>
 <p><img src="images/png/block.png" class="img-fluid"></p>
-<p>In general, throughout this lab, we’ll cover the fundamentals of object detection and how it differs from image classification and learn how to train, fine-tune, test, optimize, and deploy those popular object detection architectures using a dataset created from scratch.</p>
+<p>Throughout this lab, we’ll cover the fundamentals of object detection and how it differs from image classification. We’ll also learn how to train, fine-tune, test, optimize, and deploy popular object detection architectures using a dataset created from scratch.</p>
 <section id="object-detection-fundamentals" class="level3">
-<h3 class="anchored" data-anchor-id="object-detection-fundamentals">Object detection Fundamentals</h3>
+<h3 class="anchored" data-anchor-id="object-detection-fundamentals">Object Detection Fundamentals</h3>
 <p>Object detection builds upon the foundations of image classification but extends its capabilities significantly. To understand object detection, it’s crucial first to recognize its key differences from image classification:</p>
 <section id="image-classification-vs.-object-detection" class="level4">
 <h4 class="anchored" data-anchor-id="image-classification-vs.-object-detection">Image Classification vs.&nbsp;Object Detection</h4>
 <p><strong>Image Classification:</strong></p>
 <ul>
 <li>Assigns a single label to an entire image</li>
-<li>Answers the question: “What is the primary object or scene in this image?”</li>
+<li>Answers the question: “What is this image’s primary object or scene?”</li>
 <li>Outputs a single class prediction for the whole image</li>
 </ul>
 <p><strong>Object Detection:</strong></p>
@@ -409,16 +412,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>There are two main approaches to object detection:</p>
 <ol type="1">
 <li><p>Two-stage detectors: These first propose regions of interest and then classify each region. Examples include R-CNN and its variants (Fast R-CNN, Faster R-CNN).</p></li>
-<li><p>Single-stage detectors: These predict bounding boxes and class probabilities in one forward pass of the network. Examples include YOLO (You Only Look Once), EfficientDet, SSD (Single Shot Detector), and FOMO (Faster Objects, More Objects). These are often faster and more suitable for edge devices like Raspberry Pi.</p></li>
+<li><p>Single-stage detectors: These predict bounding boxes (or centroids) and class probabilities in one forward pass of the network. Examples include YOLO (You Only Look Once), EfficientDet, SSD (Single Shot Detector), and FOMO (Faster Objects, More Objects). These are often faster and more suitable for edge devices like Raspberry Pi.</p></li>
 </ol>
 </section>
 <section id="evaluation-metrics" class="level4">
 <h4 class="anchored" data-anchor-id="evaluation-metrics">Evaluation Metrics</h4>
 <p>Object detection uses different metrics compared to image classification:</p>
 <ul>
-<li>Intersection over Union (IoU): Measures the overlap between predicted and ground truth bounding boxes.</li>
-<li>Mean Average Precision (mAP): Combines precision and recall across all classes and IoU thresholds.</li>
-<li>Frames Per Second (FPS): Measures detection speed, crucial for real-time applications on edge devices.</li>
+<li><strong>Intersection over Union (IoU)</strong>: Measures the overlap between predicted and ground truth bounding boxes.</li>
+<li><strong>Mean Average Precision (mAP)</strong>: Combines precision and recall across all classes and IoU thresholds.</li>
+<li><strong>Frames Per Second (FPS)</strong>: Measures detection speed, crucial for real-time applications on edge devices.</li>
 </ul>
 </section>
 </section>
@@ -429,13 +432,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>You can test some common models online by visiting <a href="https://mediapipe-studio.webapps.google.com/studio/demo/object_detector">Object Detection - MediaPipe Studio</a></p>
 </blockquote>
-<p>On <a href="https://www.kaggle.com/models?id=298,130,299">Kaggle</a> we can find the most common pre-trained tflite models to use with the Raspi, <a href="https://www.kaggle.com/models/tensorflow/ssd-mobilenet-v1/tfLite">ssd_mobilenet_v1,</a> and <a href="https://www.kaggle.com/models/tensorflow/efficientdet/tfLite">efficiendet</a>. Those models were trained on the COCO (Common Objects in Context) dataset, with over 200,000 labeled images in 91 categories. Go, download the models, and upload them to the <code>./models</code> folder in the Raspi.</p>
+<p>On <a href="https://www.kaggle.com/models?id=298,130,299">Kaggle</a>, we can find the most common pre-trained tflite models to use with the Raspi, <a href="https://www.kaggle.com/models/tensorflow/ssd-mobilenet-v1/tfLite">ssd_mobilenet_v1,</a> and <a href="https://www.kaggle.com/models/tensorflow/efficientdet/tfLite">efficiendet</a>. Those models were trained on the COCO (Common Objects in Context) dataset, with over 200,000 labeled images in 91 categories. Go, download the models, and upload them to the <code>./models</code> folder in the Raspi.</p>
 <blockquote class="blockquote">
-<p>Alternatively, on <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">GitHub</a>, you can find the models and the COCO labels.</p>
+<p>Alternatively<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">,</a> you can find the models and the COCO labels on <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">GitHub</a>.</p>
 </blockquote>
-<p>For the first part of this lab, we will focus on a pre-trained 300x300 SSD-Mobilenet V1 model, comparing it with the 320x320 EfficientDet-lite0, also trained using the COCO 2017 dataset. Both models were converted to a TensorFlow Lite format (4.2MB for the SSD Mobilenet and 4.6MB for the EfficienDet).</p>
+<p>For the first part of this lab, we will focus on a pre-trained 300x300 SSD-Mobilenet V1 model and compare it with the 320x320 EfficientDet-lite0, also trained using the COCO 2017 dataset. Both models were converted to a TensorFlow Lite format (4.2MB for the SSD Mobilenet and 4.6MB for the EfficienDet).</p>
 <blockquote class="blockquote">
-<p>For transfer learning projects, is recomanded to use SSD-Mobilenet V2 or V3, but once the V1 TFLite model is publicly available, we will use it for this analysis.</p>
+<p>SSD-Mobilenet V2 or V3 is recommended for transfer learning projects, but once the V1 TFLite model is publicly available, we will use it for this overview.</p>
 </blockquote>
 <p><img src="images/png/model-deploy.png" class="img-fluid"></p>
 <section id="setting-up-the-tflite-environment" class="level3">
@@ -453,7 +456,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 <section id="creating-a-working-directory" class="level3">
-<h3 class="anchored" data-anchor-id="creating-a-working-directory">Creating a working directory:</h3>
+<h3 class="anchored" data-anchor-id="creating-a-working-directory">Creating a Working Directory:</h3>
 <p>Considering that we have created the <code>Documents/TFLITE</code> folder in the last Lab, let’s now create the specific folders for this object detection lab:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents/TFLITE/</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> OBJ_DETECT</span>
@@ -481,8 +484,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Input details</strong> will inform us how the model should be fed with an image. The shape of <code>(1, 300, 300, 3)</code> with a dtype of <code>uint8</code> tells us that a non-normalized (pixel value range from 0 to 255) image with dimensions (300x300x3) should be input one by one (Batch Dimension: 1).</p>
 <p>The <strong>output details</strong> include not only the labels (“classes”) and probabilities (“scores”) but also the relative window position of the bounding boxes (“boxes”) about where the object is located on the image and the number of detected objects (“num_detections”). The output details also tell us that the model can detect a <strong>maximum of 10 objects</strong> in the image.</p>
 <p><img src="images/png/inference result.png" class="img-fluid"></p>
-<p>So, for the above example, using the same cat image used with the <em>Image Classification Lab</em>, looking for the output, we have a <strong>76% probability</strong> of having found an object with a <strong>class ID of 16</strong> on an area delimited by a <strong>bounding box of [0.028011084, 0.020121813, 0.9886069, 0.802299]</strong>. Those four numbers are related to <code>ymin</code>, <code>xmin</code>, <code>ymax</code> and <code>xmax</code>, the box coordinates.</p>
-<p>Taking into consideration that <strong>y</strong> goes from the top <code>(ymin</code>) to the bottom (<code>ymax</code>) and <strong>x</strong> goes from left (<code>xmin</code>) to the right (<code>xmax</code>), we have, in fact, the coordinates of the top/left corner and the bottom/right one. With both edges and knowing the shape of the picture, it is possible to draw a rectangle around the object as shown in the figure below:</p>
+<p>So, for the above example, using the same cat image used with the <em>Image Classification Lab</em> looking for the output, we have a <strong>76% probability</strong> of having found an object with a <strong>class ID of 16</strong> on an area delimited by a <strong>bounding box of [0.028011084, 0.020121813, 0.9886069, 0.802299]</strong>. Those four numbers are related to <code>ymin</code>, <code>xmin</code>, <code>ymax</code> and <code>xmax</code>, the box coordinates.</p>
+<p>Taking into consideration that <strong>y</strong> goes from the top <code>(ymin</code>) to the bottom (<code>ymax</code>) and <strong>x</strong> goes from left (<code>xmin</code>) to the right (<code>xmax</code>), we have, in fact, the coordinates of the top/left corner and the bottom/right one. With both edges and knowing the shape of the picture, it is possible to draw a rectangle around the object, as shown in the figure below:</p>
 <p><img src="images/png/boulding-boxes.png" class="img-fluid"></p>
 <p>Next, we should find what class ID equal to 16 means. Opening the file <code>coco_labels.txt</code>, as a list, each element has an associated index, and inspecting index 16, we get, as expected, <code>cat</code>. The probability is the value returning from the score.</p>
 <p>Let’s now upload some images with multiple objects on it for testing.</p>
@@ -554,7 +557,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Similarities to SSD:
 <ul>
 <li>Both are single-stage detectors, meaning they perform object localization and classification in a single forward pass.</li>
-<li>Both use multi-scale feature maps for detecting objects at different scales.</li>
+<li>Both use multi-scale feature maps to detect objects at different scales.</li>
 </ul></li>
 <li>Key differences:
 <ul>
@@ -569,7 +572,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 </ol>
 <p>While EfficientDet is not an SSD model, it can be seen as an evolution of single-stage detection architectures, incorporating more advanced techniques to improve efficiency and accuracy. When using EfficientDet, we can expect similar output structures to SSD (e.g., bounding boxes and class scores).</p>
+<blockquote class="blockquote">
 <p>On GitHub, you can find another <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/SSD_EfficientDet.ipynb">notebook</a> exploring the EfficientDet model that we did with SSD MobileNet.</p>
+</blockquote>
 </section>
 </section>
 <section id="object-detection-project" class="level2">
@@ -612,9 +617,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </blockquote>
 </section>
 <section id="labeling-data" class="level3">
-<h3 class="anchored" data-anchor-id="labeling-data">Labeling data</h3>
-<p>The next step in an Object Detect project is to create a labeled dataset. We should label the raw dataset images, creating bounding boxes around the objects (box and wheel) in each picture. We can use labeling tools like <a href="https://pypi.org/project/labelImg/">LabelImg</a>, <a href="https://www.cvat.ai/">CVAT</a>, <a href="https://roboflow.com/annotate">Roboflow</a>, or even the <a href="https://edgeimpulse.com/">Edge Impulse Studio</a>. Let’s use Roboflow.</p>
-<p>We should upload the raw dataset to <a href="https://roboflow.com/">Roboflow</a>. There, we should create a free account and start a new project, for example, (“box-versus-wheel”).</p>
+<h3 class="anchored" data-anchor-id="labeling-data">Labeling Data</h3>
+<p>The next step in an Object Detect project is to create a labeled dataset. We should label the raw dataset images, creating bounding boxes around each picture’s objects (box and wheel). We can use labeling tools like <a href="https://pypi.org/project/labelImg/">LabelImg,</a> <a href="https://www.cvat.ai/">CVAT,</a> <a href="https://roboflow.com/annotate">Roboflow,</a> or even the <a href="https://edgeimpulse.com/">Edge Impulse Studio.</a> Once we have explored the Edge Impulse tool in other labs, let’s use Roboflow here.</p>
+<blockquote class="blockquote">
+<p>We are using Roboflow (free version) here for two main reasons. 1) We can have auto-labeler, and 2) The annotated dataset is available in several formats and can be used both on Edge Impulse Studio (we will use it for MobileNet V2 and FOMO train) and on CoLab (YOLOv8 train), for example. Having the annotated dataset on Edge Impulse (Free account), it is not possible to use it for training on other platforms.</p>
+</blockquote>
+<p>We should upload the raw dataset to <a href="https://roboflow.com/">Roboflow.</a> Create a free account there and start a new project, for example, (“box-versus-wheel”).</p>
 <p><img src="images/png/create-project-rf.png" class="img-fluid"></p>
 <blockquote class="blockquote">
 <p>We will not enter in deep details about the Roboflow process once many tutorials are available.</p>
@@ -635,7 +643,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="images/png/final-dataset.png" class="img-fluid"></p>
 <p>Now, you should export the annotated dataset in a format that Edge Impulse, Ultralitics, and other frameworks/tools understand, for example, <code>YOLOv8</code>. Let’s download a zipped version of the dataset to our desktop.</p>
 <p><img src="images/png/download-dataset.png" class="img-fluid"></p>
-<p>Here is possible to review how the dataset was structured</p>
+<p>Here, it is possible to review how the dataset was structured</p>
 <p><img src="images/png/dataset-struct.png" class="img-fluid"></p>
 <p>There are 3 separate folders, one for each split (<code>train</code>/<code>test</code>/<code>valid</code>). For each of them, there are 2 subfolders, <code>images</code>, and <code>labels</code>. The pictures are stored as <strong>image_id.jpg</strong> and <strong>images_id.txt</strong>, where “image_id” is unique for every picture.</p>
 <p>The labels file format will be <code>class_id</code> <code>bounding box coordinates</code>, where in our case, class_id will be <code>0</code> for <code>box</code> and <code>1</code> for <code>wheel</code>. The numerical id (o, 1, 2…) will follow the alphabetical order of the class name.</p>
@@ -667,7 +675,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="the-impulse-design" class="level3">
 <h3 class="anchored" data-anchor-id="the-impulse-design">The Impulse Design</h3>
-<p>The first thing to define when we enter the <code>Create impulse</code> step is to describe the target device for deployment. A pop-up window will appear. We will select Raspberry 4, an intermediary device between the Rasp-Zero and the Rasp-5.</p>
+<p>The first thing to define when we enter the <code>Create impulse</code> step is to describe the target device for deployment. A pop-up window will appear. We will select Raspberry 4, an intermediary device between the Raspi-Zero and the Raspi-5.</p>
 <blockquote class="blockquote">
 <p>This choice will not interfere with the training; it will only give us an idea about the latency of the model on that specific target.</p>
 </blockquote>
@@ -915,11 +923,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="training-a-fomo-model-at-edge-impulse-studio" class="level2">
 <h2 class="anchored" data-anchor-id="training-a-fomo-model-at-edge-impulse-studio">Training a FOMO Model at Edge Impulse Studio</h2>
-<p>The inference with the SSD MobileNet model worked well, but the latency was significantly high. On a Rasp-Zero, the inference varied from 0.5 to 1.3 seconds, which means around or less than 1 FPS (1 frame per second). One alternative to speed up the process is to use FOMO (Faster Objects, More Objects).</p>
+<p>The inference with the SSD MobileNet model worked well, but the latency was significantly high. The inference varied from 0.5 to 1.3 seconds on a Raspi-Zero, which means around or less than 1 FPS (1 frame per second). One alternative to speed up the process is to use FOMO (Faster Objects, More Objects).</p>
 <p>This novel machine learning algorithm lets us count multiple objects and find their location in an image in real-time using up to 30x less processing power and memory than MobileNet SSD or YOLO. The main reason this is possible is that while other models calculate the object’s size by drawing a square around it (bounding box), FOMO ignores the size of the image, providing only the information about where the object is located in the image through its centroid coordinates.</p>
 <section id="how-fomo-works" class="level3">
 <h3 class="anchored" data-anchor-id="how-fomo-works">How FOMO works?</h3>
-<p>In a typical object detection pipeline, the first stage is to extract features from the input image. <strong>FOMO leverages MobileNetV2 to perform this task</strong>. MobileNetV2 processes the input image to produce a feature map that captures essential characteristics, such as textures, shapes, and object edges, in a computationally efficient way.</p>
+<p>In a typical object detection pipeline, the first stage is extracting features from the input image. <strong>FOMO leverages MobileNetV2 to perform this task</strong>. MobileNetV2 processes the input image to produce a feature map that captures essential characteristics, such as textures, shapes, and object edges, in a computationally efficient way.</p>
 <p><img src="images/png/fomo-1.png" class="img-fluid"></p>
 <p>Once these features are extracted, FOMO’s simpler architecture, focused on center-point detection, interprets the feature map to determine where objects are located in the image. The output is a grid of cells, where each cell represents whether or not an object center is detected. The model outputs one or more confidence scores for each cell, indicating the likelihood of an object being present.</p>
 <p>Let’s see how it works on an image.</p>
@@ -927,16 +935,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="images/png/fomo-works.png" class="img-fluid"></p>
 <p><strong>Trade-off Between Speed and Precision</strong>:</p>
 <ul>
-<li><strong>Grid Resolution</strong>: FOMO uses a grid of fixed resolution, meaning each cell of the grid can detect if an object is present in that part of the image. While it doesn’t provide high localization accuracy, it makes a trade-off by being fast and computationally light, which is crucial for edge devices.</li>
+<li><strong>Grid Resolution</strong>: FOMO uses a grid of fixed resolution, meaning each cell can detect if an object is present in that part of the image. While it doesn’t provide high localization accuracy, it makes a trade-off by being fast and computationally light, which is crucial for edge devices.</li>
 <li><strong>Multi-Object Detection</strong>: Since each cell is independent, FOMO can detect multiple objects simultaneously in an image by identifying multiple centers.</li>
 </ul>
 </section>
 <section id="impulse-design-new-training-and-testing" class="level3">
 <h3 class="anchored" data-anchor-id="impulse-design-new-training-and-testing">Impulse Design, new Training and Testing</h3>
-<p>Return to Edge Impulse Studio, and in the <code>Experiments</code> tab, create another impulse, where now the input images should be 160x160 (this is the expected input size for MobilenetV2).</p>
+<p>Return to Edge Impulse Studio, and in the <code>Experiments</code> tab, create another impulse. Now, the input images should be 160x160 (this is the expected input size for MobilenetV2).</p>
 <p><img src="images/png/impulse-2.png" class="img-fluid"></p>
-<p>On the <code>Image</code> tab generate the features and go to <code>Object detection</code> tab.</p>
-<p>For training, we should select a pre-trained model. Let’s use the <strong>FOMO (Faster Objects, More Objects) MobileNetV2 0.35.</strong></p>
+<p>On the <code>Image</code> tab, generate the features and go to the <code>Object detection</code> tab.</p>
+<p>We should select a pre-trained model for training. Let’s use the <strong>FOMO (Faster Objects, More Objects) MobileNetV2 0.35.</strong></p>
 <p><img src="images/png/model-choice.png" class="img-fluid"></p>
 <p>Regarding the training hyper-parameters, the model will be trained with:</p>
 <ul>
@@ -944,13 +952,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Batch size: 32</li>
 <li>Learning Rate: 0.001.</li>
 </ul>
-<p>For validation during training, 20% of the dataset (<em>validation_dataset</em>) will be spared. For the remaining 80% (<em>train_dataset</em>), we will not apply Data Augmentation because our dataset was already augmented during the labeling phase at Roboflow.</p>
+<p>For validation during training, 20% of the dataset (<em>validation_dataset</em>) will be spared. We will not apply Data Augmentation for the remaining 80% (<em>train_dataset</em>) because our dataset was already augmented during the labeling phase at Roboflow.</p>
 <p>As a result, the model ends with an overall F1 score of 93.3% with an impressive latency of 8ms (Raspi-4), around 60X less than we got with the SSD MovileNetV2.</p>
 <p><img src="images/png/fomo-train-result.png" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p>Note that FOMO automatically added a 3rd label background to the two previously defined, <em>box</em> (0) and <em>wheel</em> (1).</p>
+<p>Note that FOMO automatically added a third label background to the two previously defined <em>boxes</em> (0) and <em>wheels</em> (1).</p>
 </blockquote>
-<p>On the <code>Model testing</code> tab, we can see that the accuracy was 94%. Here one of the test sample result:</p>
+<p>On the <code>Model testing</code> tab, we can see that the accuracy was 94%. Here is one of the test sample results:</p>
 <p><img src="images/png/fomo-test.png" class="img-fluid"></p>
 <blockquote class="blockquote">
 <p>In object detection tasks, accuracy is generally not the primary <a href="https://learnopencv.com/mean-average-precision-map-object-detection-model-evaluation-metric/">evaluation metric.</a> Object detection involves classifying objects and providing bounding boxes around them, making it a more complex problem than simple classification. The issue is that we do not have the bounding box, only the centroids. In short, using accuracy as a metric could be misleading and may not provide a complete understanding of how well the model is performing.</p>
@@ -996,9 +1004,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install jupyter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Run a notebook locally (on the Raspi-4 or 5 with desktop)</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>or on browser in your computer:</p>
+<p>or on the browser on your computer:</p>
 <div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--ip</span><span class="op">=</span>192.168.4.210 <span class="at">--no-browser</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Let’s start a new <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/EI-Linux-FOMO.ipynb">notebook</a> to follow all the steps to detect cubes and wheels on an image using the FOMO model and the Edge Impulse Linux Python SDK.</p>
+<p>Let’s start a new <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/EI-Linux-FOMO.ipynb">notebook</a> by following all the steps to detect cubes and wheels on an image using the FOMO model and the Edge Impulse Linux Python SDK.</p>
 <p>Import the needed libraries:</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys, time</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -1020,7 +1028,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize model</span></span>
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>model_info <span class="op">=</span> runner.init()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The <code>model_info</code> will contain the critical information of our model. Still, different from what we did with the TFLite interpreter, now the EI Linux Python SDK library will be responsible for preparing the model for inference.</p>
+<p>The <code>model_info</code> will contain critical information about our model. However, unlike the TFLite interpreter, the EI Linux Python SDK library will now prepare the model for inference.</p>
 <p>So, let’s open the image and show it (Now, for compatibility, we will use OpenCV, the CV Library used internally by EI. OpenCV reads the image as BGR, so we will need to convert it to RGB :</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the image</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">"./images/1_box_1_wheel.jpg"</span></span>
@@ -1047,7 +1055,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Found 2 bounding boxes (29 ms.)
     1 (0.91): x=112 y=40 w=16 h=16
     0 (0.75): x=48 y=56 w=8 h=8</code></pre>
-<p>From the results, we can see that 2 objects were detected: one with class ID 0 (<code>box</code>) and one with class ID 1 (<code>wheel</code>), which is correct!</p>
+<p>The results show that two objects were detected: one with class ID 0 (<code>box</code>) and one with class ID 1 (<code>wheel</code>), which is correct!</p>
 <p>Let’s visualize the result (The <code>threshold</code> is 0.5, the default value set during the model testing on the Edge Impulse Studio).</p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\t</span><span class="st">Found </span><span class="sc">%d</span><span class="st"> bounding boxes (latency: </span><span class="sc">%d</span><span class="st"> ms)'</span> <span class="op">%</span> (</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">len</span>(res[<span class="st">"result"</span>][<span class="st">"bounding_boxes"</span>]), </span>
@@ -1079,7 +1087,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="exploring-a-yolo-model-using-ultralitics" class="level2">
 <h2 class="anchored" data-anchor-id="exploring-a-yolo-model-using-ultralitics">Exploring a YOLO Model using Ultralitics</h2>
-<p>For this lab, we will explore the YOLOv8. <a href="https://ultralytics.com/">Ultralytics</a> <a href="https://github.com/ultralytics/ultralytics">YOLOv8</a> is a version of the acclaimed real-time object detection and image segmentation model, YOLO. YOLOv8 is built on cutting-edge advancements in deep learning and computer vision, offering unparalleled performance in terms of speed and accuracy. Its streamlined design makes it suitable for various applications and easily adaptable to different hardware platforms, from edge devices to cloud APIs.</p>
+<p>For this lab, we will explore YOLOv8. <a href="https://ultralytics.com/">Ultralytics</a> <a href="https://github.com/ultralytics/ultralytics">YOLOv8</a> is a version of the acclaimed real-time object detection and image segmentation model, YOLO. YOLOv8 is built on cutting-edge advancements in deep learning and computer vision, offering unparalleled performance in terms of speed and accuracy. Its streamlined design makes it suitable for various applications and easily adaptable to different hardware platforms, from edge devices to cloud APIs.</p>
 <section id="talking-about-the-yolo-model" class="level3">
 <h3 class="anchored" data-anchor-id="talking-about-the-yolo-model">Talking about the YOLO Model</h3>
 <p>The YOLO (You Only Look Once) model is a highly efficient and widely used object detection algorithm known for its real-time processing capabilities. Unlike traditional object detection systems that repurpose classifiers or localizers to perform detection, YOLO frames the detection problem as a single regression task. This innovative approach enables YOLO to simultaneously predict multiple bounding boxes and their class probabilities from full images in one evaluation, significantly boosting its speed.</p>
@@ -1148,8 +1156,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="testing-the-yolo" class="level3">
 <h3 class="anchored" data-anchor-id="testing-the-yolo">Testing the YOLO</h3>
-<p>After the Raspi-Zero booting, let’s go to the working directory and run inference on an image that will be downloaded from the Ultralytics website, using the YOLOV8n model (the smallest in the family) at the Terminal (CLI):</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict model=<span class="st">'yolov8n'</span> source=<span class="st">'https://ultralytics.com/images/bus.jpg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After the Raspi-Zero booting, let’s activate the <code>yolo</code> env, go to the working directory,</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/yolo/bin/activate</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Documents/YOLO</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and run inference on an image that will be downloaded from the Ultralytics website, using the YOLOV8n model (the smallest in the family) at the Terminal (CLI):</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict model=<span class="st">'yolov8n'</span> source=<span class="st">'https://ultralytics.com/images/bus.jpg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
 <p>The YOLO model family is pre-trained with the COCO dataset.</p>
 </blockquote>
@@ -1161,60 +1172,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="export-model-to-ncnn-format" class="level3">
 <h3 class="anchored" data-anchor-id="export-model-to-ncnn-format">Export Model to NCNN format</h3>
-<p>The latency issue is a reality of deploying computer vision models on edge devices with limited computational power, such as the Rasp-Zero. One alternative is to use a format optimized for optimal performance. This ensures that even devices with limited processing power can handle advanced computer vision tasks well.</p>
+<p>Deploying computer vision models on edge devices with limited computational power, such as the Raspi-Zero, can cause latency issues. One alternative is to use a format optimized for optimal performance. This ensures that even devices with limited processing power can handle advanced computer vision tasks well.</p>
 <p>Of all the model export formats supported by Ultralytics, the <a href="https://docs.ultralytics.com/integrations/ncnn">NCNN</a> is a high-performance neural network inference computing framework optimized for mobile platforms. From the beginning of the design, NCNN was deeply considerate about deployment and use on mobile phones and did not have third-party dependencies. It is cross-platform and runs faster than all known open-source frameworks (such as TFLite).</p>
 <p>NCNN delivers the best inference performance when working with Raspberry Pi devices. NCNN is highly optimized for mobile embedded platforms (such as ARM architecture).</p>
 <p>So, let’s convert our model and rerun the inference:</p>
 <ol type="1">
 <li>Export a YOLOv8n PyTorch model to NCNN format, creating: ‘/yolov8n_ncnn_model’</li>
 </ol>
-<div class="sourceCode" id="cb52"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=yolov8n.pt format=ncnn </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=yolov8n.pt format=ncnn </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="2" type="1">
 <li>Run inference with the exported model (now the source could be the bus.jpg image that was downloaded from the website to the current directory on the last inference):</li>
 </ol>
-<div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict model=<span class="st">'./yolov8n_ncnn_model'</span> source=<span class="st">'bus.jpg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict model=<span class="st">'./yolov8n_ncnn_model'</span> source=<span class="st">'bus.jpg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>The first inference, when the model is loaded, usually has a high latency (around 17s), but from the 2nd, it is possible to note that the inference goes down to around 2s.</p>
+</blockquote>
 </section>
 <section id="exploring-yolo-with-python" class="level3">
 <h3 class="anchored" data-anchor-id="exploring-yolo-with-python">Exploring YOLO with Python</h3>
 <p>To start, let’s call the Python Interpreter so we can explore how the YOLO model works, line by line:</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Now, we should call the YOLO library from Ultralitics and load the model:</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'yolov8n_ncnn_model'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'yolov8n_ncnn_model'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Next, run inference over an image (let’s use again <code>bus.jpg</code>):</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'bus.jpg'</span></span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'bus.jpg'</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/python-infer-bus.png" class="img-fluid"></p>
-<p>We can verify that the result is almost the same as the one we get running the inference at the terminal level (CLI), except that the bus-stop was not detected with the reduced model. Note that the latency was reduced.</p>
+<p>We can verify that the result is almost identical to the one we get running the inference at the terminal level (CLI), except that the bus stop was not detected with the reduced NCNN model. Note that the latency was reduced.</p>
 <p>Let’s analyze the “result” content.</p>
 <p>For example, we can see <code>result[0].boxes.data</code>, showing us the main inference result, which is a tensor shape (4, 6). Each line is one of the objects detected, being the 4 first columns, the bounding boxes coordinates, the 5th, the confidence, and the 6th, the class (in this case, <code>0: person</code> and <code>5: bus</code>):</p>
 <p><img src="images/png/result-bus.png" class="img-fluid"></p>
 <p>We can access several inference results separately, as the inference time, and have it printed in a better format:</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> <span class="bu">int</span>(result[<span class="dv">0</span>].speed[<span class="st">'inference'</span>])</span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inference Time: </span><span class="sc">{</span>inference_time<span class="sc">}</span><span class="ss"> ms"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> <span class="bu">int</span>(result[<span class="dv">0</span>].speed[<span class="st">'inference'</span>])</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inference Time: </span><span class="sc">{</span>inference_time<span class="sc">}</span><span class="ss"> ms"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Or we can have the total number of objects detected:</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Number of objects: </span><span class="sc">{</span><span class="bu">len</span> (result[<span class="dv">0</span>].boxes.cls)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Number of objects: </span><span class="sc">{</span><span class="bu">len</span> (result[<span class="dv">0</span>].boxes.cls)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/data-bus.png" class="img-fluid"></p>
 <p>With Python, we can create a detailed output that meets our needs (See <a href="https://docs.ultralytics.com/modes/predict/">Model Prediction with Ultralytics YOLO</a> for more details). Let’s run a Python script instead of manually entering it line by line in the interpreter, as shown below. Let’s use <code>nano</code> as our text editor. First, we should create an empty Python script named, for example, <code>yolov8_tests.py</code>:</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>nano yolov8_tests.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>nano yolov8_tests.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Enter with the code lines:</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the YOLOv8 model</span></span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'yolov8n_ncnn_model'</span>)</span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Run inference</span></span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'bus.jpg'</span></span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">False</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span>
-<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a><span class="co"># print the results</span></span>
-<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> <span class="bu">int</span>(result[<span class="dv">0</span>].speed[<span class="st">'inference'</span>])</span>
-<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inference Time: </span><span class="sc">{</span>inference_time<span class="sc">}</span><span class="ss"> ms"</span>)</span>
-<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Number of objects: </span><span class="sc">{</span><span class="bu">len</span> (result[<span class="dv">0</span>].boxes.cls)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the YOLOv8 model</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'yolov8n_ncnn_model'</span>)</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Run inference</span></span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'bus.jpg'</span></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">False</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a><span class="co"># print the results</span></span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> <span class="bu">int</span>(result[<span class="dv">0</span>].speed[<span class="st">'inference'</span>])</span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inference Time: </span><span class="sc">{</span>inference_time<span class="sc">}</span><span class="ss"> ms"</span>)</span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Number of objects: </span><span class="sc">{</span><span class="bu">len</span> (result[<span class="dv">0</span>].boxes.cls)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/yolo-py-script.png" class="img-fluid"></p>
 <p>And enter with the commands: <code>[CTRL+O]</code> + <code>[ENTER]</code> +<code>[CTRL+X]</code> to save the Python script.</p>
 <p>Run the script:</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> yolov8_tests.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> yolov8_tests.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The result is the same as running the inference at the terminal level (CLI) and with the built-in Python interpreter.</p>
 <blockquote class="blockquote">
 <p>Calling the YOLO library and loading the model for inference for the first time takes a long time, but the inferences after that will be much faster. For example, the first single inference can take several seconds, but after that, the inference time should be reduced to less than 1 second.</p>
@@ -1224,7 +1238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="training-yolov8-on-a-customized-dataset">Training YOLOv8 on a Customized Dataset</h3>
 <p>Return to our “Boxe versus Wheel” dataset, labeled on <a href="https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset">Roboflow</a>. On the <code>Download Dataset</code>, instead of <code>Download a zip to computer</code> option done for training on Edge Impulse Studio, we will opt for <code>Show download code</code>. This option will open a pop-up window with a code snippet that should be pasted into our training notebook.</p>
 <p><img src="images/png/dataset_code.png" class="img-fluid"></p>
-<p>For training, let’s adapt one of the public examples available from Ultralitytics and run it on Google Colab. Bellow, you can find mine to be adapted in your project:</p>
+<p>For training, let’s adapt one of the public examples available from Ultralitytics and run it on Google Colab. Below, you can find mine to be adapted in your project:</p>
 <ul>
 <li>YOLOv8 Box versus Wheel Dataset Training <a href="https://colab.research.google.com/github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/yolov8_box_vs_wheel.ipynb">[Open In Colab]</a></li>
 </ul>
@@ -1240,26 +1254,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol start="4" type="1">
 <li>It is essential to verify and change the file <code>data.yaml</code> with the correct path for the images (copy the path on each <code>images</code> folder).</li>
 </ol>
-<div class="sourceCode" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="ex">names:</span></span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> box</span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> wheel</span>
-<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="ex">nc:</span> 2</span>
-<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="ex">roboflow:</span></span>
-<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">license:</span> CC BY 4.0</span>
-<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">project:</span> box-versus-wheel-auto-dataset</span>
-<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">url:</span> https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset/dataset/5</span>
-<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">version:</span> 5</span>
-<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">workspace:</span> marcelo-rovai-riila</span>
-<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a><span class="ex">test:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/test/images</span>
-<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a><span class="ex">train:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/train/images</span>
-<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a><span class="ex">val:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/valid/images</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="ex">names:</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> box</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> wheel</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a><span class="ex">nc:</span> 2</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="ex">roboflow:</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">license:</span> CC BY 4.0</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">project:</span> box-versus-wheel-auto-dataset</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">url:</span> https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset/dataset/5</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">version:</span> 5</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">workspace:</span> marcelo-rovai-riila</span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a><span class="ex">test:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/test/images</span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a><span class="ex">train:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/train/images</span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a><span class="ex">val:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/valid/images</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="5" type="1">
 <li><p>Define the main hyperparameters that you want to change from default, for example:</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="ex">MODEL</span> = <span class="st">'yolov8n.pt'</span></span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="ex">IMG_SIZE</span> = 640</span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="ex">EPOCHS</span> = 25 <span class="co"># For a final project, you should consider at least 100 epochs </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="ex">MODEL</span> = <span class="st">'yolov8n.pt'</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="ex">IMG_SIZE</span> = 640</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="ex">EPOCHS</span> = 25 <span class="co"># For a final project, you should consider at least 100 epochs </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Run the training (using CLI):</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=train model={MODEL} data={dataset.location}/data.yaml epochs={EPOCHS} imgsz={IMG_SIZE} plots=True </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=train model={MODEL} data={dataset.location}/data.yaml epochs={EPOCHS} imgsz={IMG_SIZE} plots=True </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <img src="images/png/train-result.png" class="img-fluid" alt="image-20240910111319804"></li>
 </ol>
 <p>​ The model took a few minutes to be trained and has an excellent result (mAP50 of 0.995). At the end of the training, all results are saved in the folder listed, for example: <code>/runs/detect/train/</code>. There, you can find, for example, the confusion matrix.</p>
@@ -1267,20 +1281,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol start="7" type="1">
 <li>Note that the trained model (<code>best.pt</code>) is saved in the folder <code>/runs/detect/train/weights/</code>. Now, you should validate the trained model with the <code>valid/images</code>.</li>
 </ol>
-<div class="sourceCode" id="cb65"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=val model={HOME}/runs/detect/train/weights/best.pt data={dataset.location}/data.yaml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=val model={HOME}/runs/detect/train/weights/best.pt data={dataset.location}/data.yaml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>​ The results were similar to training.</p>
 <ol start="8" type="1">
 <li>Now, we should perform inference on the images left aside for testing</li>
 </ol>
-<div class="sourceCode" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=predict model={HOME}/runs/detect/train/weights/best.pt conf=0.25 source={dataset.location}/test/images save=True</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=predict model={HOME}/runs/detect/train/weights/best.pt conf=0.25 source={dataset.location}/test/images save=True</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The inference results are saved in the folder <code>runs/detect/predict</code>. Let’s see some of them:</p>
 <p><img src="images/png/test-infer-yolo.png" class="img-fluid"></p>
 <ol start="9" type="1">
 <li><p>It is advised to export the train, validation, and test results for a Drive at Google. To do so, we should mount the drive.</p>
-<div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">'/content/gdrive'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">'/content/gdrive'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>and copy the content of <code>/runs</code> folder to a folder that you should create in your Drive, for example:</p>
-<div class="sourceCode" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!scp</span> <span class="at">-r</span> /content/runs <span class="st">'/content/gdrive/MyDrive/10_UNIFEI/Box_vs_Wheel_Project'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb69"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!scp</span> <span class="at">-r</span> /content/runs <span class="st">'/content/gdrive/MyDrive/10_UNIFEI/Box_vs_Wheel_Project'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ol>
 </section>
 </section>
@@ -1289,14 +1303,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Download the trained model <code>/runs/detect/train/weights/best.pt</code> to your computer. Using the FileZilla FTP, let’s transfer the <code>best.pt</code> to the Raspi models folder (before the transfer, you may change the model name, for example, <code>box_wheel_320_yolo.pt</code>).</p>
 <p>Using the FileZilla FTP, let’s transfer a few images from the test dataset to <code>.\YOLO\images</code>:</p>
 <p>Let’s return to the YOLO folder and use the Python Interpreter:</p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..</span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>As before, we will import the YOLO library and define our converted model to detect bees:</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'./models/box_wheel_320_yolo.pt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'./models/box_wheel_320_yolo.pt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Now, let’s define an image and call the inference (we will save the image result this time to external verification):</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'./images/1_box_1_wheel.jpg'</span></span>
-<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">320</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'./images/1_box_1_wheel.jpg'</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">320</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Let’s repeat for several images. The inference result is saved on the variable <code>result,</code> and the processed image on <code>runs/detect/predict8</code></p>
 <p><img src="images/png/infer-yolo.png" class="img-fluid"></p>
 <p>Using FileZilla FTP, we can send the inference result to our Desktop for verification:</p>
@@ -1306,13 +1320,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="object-detection-on-a-live-stream" class="level2">
 <h2 class="anchored" data-anchor-id="object-detection-on-a-live-stream">Object Detection on a live stream</h2>
-<p>All the models explored in this lab can be used to detect objects in real time using a camera, where the captured image should be the input for the trained and converted model. For the Raspi-4 or 5 with a desktop, OpenCV can be used to capture the frames and display the inference result.</p>
-<p>But it is also possible to create a live stream with a webcam to detect objects in real time. For example, let’s start with the script developed for the Image Classification app and adapt it for a <em>Real-Time Object Detection Web Application Using TensorFlow Lite and Flask</em>.</p>
-<p>This app version will work for all TFLite models. Verify if the model is in its correct folder:, for example:</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/ssd-mobilenet-v1-tflite-default-v1.tflite"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>All the models explored in this lab can detect objects in real-time using a camera. The captured image should be the input for the trained and converted model. For the Raspi-4 or 5 with a desktop, OpenCV can capture the frames and display the inference result.</p>
+<p>However, creating a live stream with a webcam to detect objects in real-time is also possible. For example, let’s start with the script developed for the Image Classification app and adapt it for a <em>Real-Time Object Detection Web Application Using TensorFlow Lite and Flask</em>.</p>
+<p>This app version will work for all TFLite models. Verify if the model is in its correct folder, for example:</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/ssd-mobilenet-v1-tflite-default-v1.tflite"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Download the Python script <code>object_detection_app.py</code> from <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/python_scripts/object_detection_app.py">GitHub</a>.</p>
 <p>And on the terminal, run:</p>
-<div class="sourceCode" id="cb73"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> object_detection_app.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> object_detection_app.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And access the web interface:</p>
 <ul>
 <li>On the Raspberry Pi itself (if you have a GUI): Open a web browser and go to <code>http://localhost:5000</code></li>
@@ -1343,20 +1357,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>PIL (Python Imaging Library):</strong>
 <ul>
 <li>Purpose: Image processing and manipulation.</li>
-<li>Why: PIL provides a wide range of image processing capabilities. It’s used here for resizing images, drawing bounding boxes, and converting between image formats.</li>
+<li>Why: PIL provides a wide range of image processing capabilities. It’s used here to resize images, draw bounding boxes, and convert between image formats.</li>
 <li>Key classes: <code>Image</code> for loading and manipulating images, <code>ImageDraw</code> for drawing shapes and text on images.</li>
 </ul></li>
 <li><strong>NumPy:</strong>
 <ul>
 <li>Purpose: Efficient array operations and numerical computing.</li>
-<li>Why: NumPy’s array operations are much faster than pure Python lists, which is crucial for processing image data and model inputs/outputs efficiently.</li>
+<li>Why: NumPy’s array operations are much faster than pure Python lists, which is crucial for efficiently processing image data and model inputs/outputs.</li>
 <li>Key functions: <code>array()</code> for creating arrays, <code>expand_dims()</code> for adding dimensions to arrays.</li>
 </ul></li>
 <li><strong>Threading:</strong>
 <ul>
 <li>Purpose: Concurrent execution of tasks.</li>
-<li>Why: Threading allows simultaneous frame capture, object detection, and web server operation, which is crucial for maintaining real-time performance.</li>
-<li>Key components: <code>Thread</code> class for creating separate execution threads, <code>Lock</code> for thread synchronization.</li>
+<li>Why: Threading allows simultaneous frame capture, object detection, and web server operation, crucial for maintaining real-time performance.</li>
+<li>Key components: <code>Thread</code> class creates separate execution threads, and Lock is used for thread synchronization.</li>
 </ul></li>
 <li><strong>io.BytesIO:</strong>
 <ul>
@@ -1380,7 +1394,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Main Thread</strong>: Runs the Flask server, handling HTTP requests and serving the web interface.</li>
 <li><strong>Camera Thread</strong>: Continuously captures frames from the camera.</li>
 <li><strong>Detection Thread</strong>: Processes frames through the TFLite model for object detection.</li>
-<li><strong>Frame Buffer</strong>: Shared memory space (protected by locks) where the latest frame and detection results are stored.</li>
+<li><strong>Frame Buffer</strong>: Shared memory space (protected by locks) storing the latest frame and detection results.</li>
 </ol>
 <p>And the app data flow, we can describe in short:</p>
 <ol type="1">
@@ -1389,9 +1403,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Flask routes access Frame Buffer to serve the latest frame and detection results</li>
 <li>Web client receives updates via AJAX and updates UI</li>
 </ol>
-<p>This architecture allows for efficient, real-time object detection while maintaining a responsive web interface, all running on a resource-constrained edge device like a Raspberry Pi. The use of threading and efficient libraries like TFLite and PIL enables the system to process video frames in real-time, while Flask and jQuery provide a user-friendly way to interact with the system.</p>
+<p>This architecture allows for efficient, real-time object detection while maintaining a responsive web interface running on a resource-constrained edge device like a Raspberry Pi. Threading and efficient libraries like TFLite and PIL enable the system to process video frames in real-time, while Flask and jQuery provide a user-friendly way to interact with them.</p>
 <p>You can test the app with another pre-processed model, such as the EfficientDet, changing the app line:</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/lite-model_efficientdet_lite0_detection_metadata_1.tflite"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/lite-model_efficientdet_lite0_detection_metadata_1.tflite"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
 <p>If we want to use the app for the SSD-MobileNetV2 model, trained on Edge Impulse Studio with the “Box versus Wheel” dataset, the code should also be adapted depending on the input details, as we have explored on its <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/EI-SSD-MobileNetV2.ipynb">notebook</a>.</p>
 </blockquote>
@@ -1402,7 +1416,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li><p><strong>Model Comparison</strong>: We examined different object detection models, including SSD-MobileNet, EfficientDet, FOMO, and YOLO, comparing their performance and trade-offs on edge devices.</p></li>
 <li><p><strong>Training and Deployment</strong>: Using a custom dataset of boxes and wheels (labeled on Roboflow), we walked through the process of training models using Edge Impulse Studio and Ultralytics and deploying them on Raspberry Pi.</p></li>
-<li><p><strong>Optimization Techniques</strong>: We explored various optimization methods, such as model quantization (TFLite int8) and format conversion (e.g., to NCNN), to improve inference speed on edge devices.</p></li>
+<li><p><strong>Optimization Techniques</strong>: To improve inference speed on edge devices, we explored various optimization methods, such as model quantization (TFLite int8) and format conversion (e.g., to NCNN).</p></li>
 <li><p><strong>Real-time Applications</strong>: The lab exemplified a real-time object detection web application, demonstrating how these models can be integrated into practical, interactive systems.</p></li>
 <li><p><strong>Performance Considerations</strong>: Throughout the lab, we discussed the balance between model accuracy and inference speed, a critical consideration for edge AI applications.</p></li>
 </ol>

@@ -296,8 +296,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#updating-and-installing-software" id="toc-updating-and-installing-software" class="nav-link" data-scroll-target="#updating-and-installing-software">Updating and Installing Software</a></li>
   <li><a href="#model-specific-considerations" id="toc-model-specific-considerations" class="nav-link" data-scroll-target="#model-specific-considerations">Model-Specific Considerations</a>
   <ul class="collapse">
-  <li><a href="#raspberry-pi-zero" id="toc-raspberry-pi-zero" class="nav-link" data-scroll-target="#raspberry-pi-zero">Raspberry Pi Zero</a></li>
-  <li><a href="#raspberry-pi-4-or-5" id="toc-raspberry-pi-4-or-5" class="nav-link" data-scroll-target="#raspberry-pi-4-or-5">Raspberry Pi 4 or 5</a></li>
+  <li><a href="#raspberry-pi-zero-raspi-zero" id="toc-raspberry-pi-zero-raspi-zero" class="nav-link" data-scroll-target="#raspberry-pi-zero-raspi-zero">Raspberry Pi Zero (Raspi-Zero)</a></li>
+  <li><a href="#raspberry-pi-4-or-5-raspi-4-or-raspi-5" id="toc-raspberry-pi-4-or-5-raspi-4-or-raspi-5" class="nav-link" data-scroll-target="#raspberry-pi-4-or-5-raspi-4-or-raspi-5">Raspberry Pi 4 or 5 (Raspi-4 or Raspi-5)</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML_Made_Ease_ebook/edit/main/raspi/setup/setup.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML_Made_Ease_ebook/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML_Made_Ease_ebook/blob/main/raspi/setup/setup.qmd" class="toc-action">View source</a></p></div></div></nav>
@@ -330,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>This chapter will guide you through setting up Raspberry Pi Zero 2 W (<em>Raspi-Zero</em>) and Raspberry Pi 5 (<em>Raspi-5</em>) models. We’ll cover hardware setup, operating system installation, initial configuration, and tests.</p>
 <blockquote class="blockquote">
-<p>The general instructions for the <em>Rasp-5</em> also apply to the older Raspberry Pi versions, such as the Rasp-3 and Raspi-4.</p>
+<p>The general instructions for the <em>Raspi-5</em> also apply to the older Raspberry Pi versions, such as the Raspi-3 and Raspi-4.</p>
 </blockquote>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
@@ -403,6 +403,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Ports</strong>: 2 × micro HDMI ports, 2 × USB 3.0 ports, 2 × USB 2.0 ports, CSI camera port, DSI display port</li>
 <li><strong>Power</strong>: 5V DC via USB-C connector (3A)</li>
 </ul>
+<blockquote class="blockquote">
+<p>In the labs, we will use different names to address the Raspberry: <code>Raspi</code>, <code>Raspi-5</code>, <code>Raspi-Zero</code>, etc. Usually, <code>Raspi</code> is used when the instructions or comments apply to every model.</p>
+</blockquote>
 </section>
 </section>
 <section id="installing-the-operating-system" class="level2">
@@ -456,7 +459,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <img src="images/png/zero-burn.png" class="img-fluid" alt="img">
 <blockquote class="blockquote">
-<p>Due to its reduced SDRAM (512MB), the recommended OS for the Rasp Zero is the 32-bit version. However, to run some machine learning models, such as the YOLOv8 from Ultralitics, we should use the 64-bit version. Although Raspi-Zero can run a <em>desktop</em>, we will choose the LITE version (no Desktop) to reduce the RAM needed for regular operation.</p>
+<p>Due to its reduced SDRAM (512MB), the recommended OS for the Raspi-Zero is the 32-bit version. However, to run some machine learning models, such as the YOLOv8 from Ultralitics, we should use the 64-bit version. Although Raspi-Zero can run a <em>desktop</em>, we will choose the LITE version (no Desktop) to reduce the RAM needed for regular operation.</p>
 </blockquote>
 <ul>
 <li>For <strong>Raspi-5</strong>: We can select the full 64-bit version, which includes a desktop: <code>Raspberry Pi OS (64-bit)</code></li>
@@ -471,7 +474,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Write the image to the microSD card.</li>
 </ol>
 <blockquote class="blockquote">
-<p>In the examples here, we will use different hostnames: raspi, raspi-5, raspi-Zero, etc. You should replace by the one that you are using.</p>
+<p>In the examples here, we will use different hostnames depending on the device used: raspi, raspi-5, raspi-Zero, etc. It would help if you replaced it with the one you are using.</p>
 </blockquote>
 </section>
 <section id="initial-configuration" class="level3">
@@ -490,7 +493,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="remote-access">Remote Access</h2>
 <section id="ssh-access" class="level3">
 <h3 class="anchored" data-anchor-id="ssh-access">SSH Access</h3>
-<p>The easiest way to interact with the Rasp-Zero is via SSH (“Headless”). You can use a Terminal (MAC/Linux), <a href="https://www.putty.org/">PuTTy (</a>Windows), or any other.</p>
+<p>The easiest way to interact with the Raspi-Zero is via SSH (“Headless”). You can use a Terminal (MAC/Linux), <a href="https://www.putty.org/">PuTTy (</a>Windows), or any other.</p>
 <ol type="1">
 <li><p>Find your Raspberry Pi’s IP address (for example, check your router).</p></li>
 <li><p>On your computer, open a terminal and connect via SSH:</p>
@@ -575,7 +578,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Search for the <strong>CONF_SWAPSIZE</strong> variable (default is 200) and update it to <strong>2000</strong>:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="va">CONF_SWAPSIZE</span><span class="op">=</span>2000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And save the file.</p>
-<p>Next, turn on the swapfile again and reboot the Rasp-zero:</p>
+<p>Next, turn on the swapfile again and reboot the Raspi-zero:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dphys-swapfile setup</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dphys-swapfile swapon</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -586,7 +589,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="installing-a-camera" class="level2">
 <h2 class="anchored" data-anchor-id="installing-a-camera">Installing a Camera</h2>
-<p>The Raspi is an excellent device for computer vision applications; a camera is needed for it. We can install a standard USB webcam on the micro-USB port using a USB OTG adapter (Raspi-Zero and Rasp-5) or a camera module connected to the Raspi CSI (Camera Serial Interface) port.</p>
+<p>The Raspi is an excellent device for computer vision applications; a camera is needed for it. We can install a standard USB webcam on the micro-USB port using a USB OTG adapter (Raspi-Zero and Raspi-5) or a camera module connected to the Raspi CSI (Camera Serial Interface) port.</p>
 <blockquote class="blockquote">
 <p>USB Webcams generally have inferior quality to the camera modules that connect to the CSI port. They can also not be controlled using the <code>raspistill</code> and <code>rasivid</code> commands in the terminal or the <code>picamera</code> recording package in Python. Nevertheless, there may be reasons why you want to connect a USB camera to your Raspberry Pi, such as because of the benefit that it is much easier to set up multiple cameras with a single Raspberry Pi, long cables, or simply because you have such a camera on hand.</p>
 </blockquote>
@@ -740,22 +743,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="model-specific-considerations" class="level2">
 <h2 class="anchored" data-anchor-id="model-specific-considerations">Model-Specific Considerations</h2>
-<section id="raspberry-pi-zero" class="level3">
-<h3 class="anchored" data-anchor-id="raspberry-pi-zero">Raspberry Pi Zero</h3>
+<section id="raspberry-pi-zero-raspi-zero" class="level3">
+<h3 class="anchored" data-anchor-id="raspberry-pi-zero-raspi-zero">Raspberry Pi Zero (Raspi-Zero)</h3>
 <ul>
 <li>Limited processing power, best for lightweight projects</li>
-<li>Use headless setup (SSH) to conserve resources.</li>
+<li>It is better to use a headless setup (SSH) to conserve resources.</li>
 <li>Consider increasing swap space for memory-intensive tasks.</li>
+<li>It can be used for Image Classification and Object Detection Labs but not for the LLM (SLM).</li>
 </ul>
 </section>
-<section id="raspberry-pi-4-or-5" class="level3">
-<h3 class="anchored" data-anchor-id="raspberry-pi-4-or-5">Raspberry Pi 4 or 5</h3>
+<section id="raspberry-pi-4-or-5-raspi-4-or-raspi-5" class="level3">
+<h3 class="anchored" data-anchor-id="raspberry-pi-4-or-5-raspi-4-or-raspi-5">Raspberry Pi 4 or 5 (Raspi-4 or Raspi-5)</h3>
 <ul>
 <li>Suitable for more demanding projects, including AI and machine learning.</li>
-<li>Can run full desktop environment smoothly.</li>
-<li>For Pi 5, consider using an active cooler for temperature management during intensive tasks.</li>
+<li>It can run the whole desktop environment smoothly.</li>
+<li>Raspi-4 can be used for Image Classification and Object Detection Labs but will not work well with LLMs (SLM).</li>
+<li>For Raspi-5, consider using an active cooler for temperature management during intensive tasks, as in the LLMs (SLMs) lab.</li>
 </ul>
-<p>Remember to adjust your project requirements based on the specific Raspberry Pi model you’re using. The Pi Zero is great for low-power, space-constrained projects, while the Pi 4/5 models are better suited for more computationally intensive tasks.</p>
+<p>Remember to adjust your project requirements based on the specific Raspberry Pi model you’re using. The Raspi-Zero is great for low-power, space-constrained projects, while the Raspi-4 or 5 models are better suited for more computationally intensive tasks.</p>
 
 
 </section>

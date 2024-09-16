@@ -1063,7 +1063,7 @@ Let’s create a general function to give an image as input, and we get the Top-
 <p>Exposure to these variations during training can help prevent your model from taking shortcuts by “memorizing” superficial clues in your training data, meaning it may better reflect the deep underlying patterns in your dataset.</p>
 <p>The final dense layer of our model will have 0 neurons with a 10% dropout for overfitting prevention. Here is the Training result:</p>
 <p><img src="images/png/result-train.png" class="img-fluid"></p>
-<p>The result is excellent, with a reasonable 35ms of latency (for a Rasp-4), which should result in around 30 fps (frames per second) during inference. A Raspi-Zero should be slower, and the Rasp-5, faster.</p>
+<p>The result is excellent, with a reasonable 35ms of latency (for a Raspi-4), which should result in around 30 fps (frames per second) during inference. A Raspi-Zero should be slower, and the Raspi-5, faster.</p>
 </section>
 <section id="trading-off-accuracy-versus-speed" class="level3">
 <h3 class="anchored" data-anchor-id="trading-off-accuracy-versus-speed">Trading off: Accuracy versus speed</h3>
@@ -1286,7 +1286,7 @@ Let’s create a general function to give an image as input, and we get the Top-
 <p><img src="images/png/infer-int8-160.png" class="img-fluid"></p>
 <p>Let’s download a smaller model, such as the one trained for the <a href="https://studio.edgeimpulse.com/public/353482/live">Nicla Vision Lab</a> (int8 quantized model (96x96 alpha = 0.1), as a test. We can use the same function:</p>
 <p><img src="images/png/infer-int8-96.png" class="img-fluid"></p>
-<p>The model lost some accuracy, but it is still OK once our model does not look for many details. Regarding latency, we are around <strong>ten times faster</strong> on the Rasp-Zero.</p>
+<p>The model lost some accuracy, but it is still OK once our model does not look for many details. Regarding latency, we are around <strong>ten times faster</strong> on the Raspi-Zero.</p>
 </section>
 </section>
 <section id="live-image-classification" class="level2">
@@ -1585,7 +1585,7 @@ Using the nano on the terminal, save the code below, such as <code>img_class_liv
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion:</h2>
-<p>Image classification has emerged as a powerful and versatile application of machine learning, with significant implications for various fields, from healthcare to environmental monitoring. This chapter has demonstrated how to implement a robust image classification system on edge devices like the Raspi-Zero and Rasp-5, showcasing the potential for real-time, on-device intelligence.</p>
+<p>Image classification has emerged as a powerful and versatile application of machine learning, with significant implications for various fields, from healthcare to environmental monitoring. This chapter has demonstrated how to implement a robust image classification system on edge devices like the Raspi-Zero and Raspi-5, showcasing the potential for real-time, on-device intelligence.</p>
 <p>We’ve explored the entire pipeline of an image classification project, from data collection and model training using Edge Impulse Studio to deploying and running inferences on a Raspi. The process highlighted several key points:</p>
 <ol type="1">
 <li>The importance of proper data collection and preprocessing for training effective models.</li>
