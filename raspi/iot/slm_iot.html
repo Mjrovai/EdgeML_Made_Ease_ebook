@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Edge AI Engineering - Experimenting with SLMs for IoT Control</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../references.html" rel="next">
+<link href="../../raspi/physical_comp/RPi_Physical_Computing.html" rel="prev">
+<link href="../../images/cover.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="../../Edge-AI-Engineering.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="../../Edge-AI-Engineering.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/iot/slm_iot.html">Experimenting with SLMs for IoT Control</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a>
+  <ul class="collapse">
+  <li><a href="#hardware-setup" id="toc-hardware-setup" class="nav-link" data-scroll-target="#hardware-setup">Hardware Setup</a></li>
+  <li><a href="#software-prerequisites" id="toc-software-prerequisites" class="nav-link" data-scroll-target="#software-prerequisites">Software Prerequisites</a></li>
+  </ul></li>
+  <li><a href="#basic-sensor-integration" id="toc-basic-sensor-integration" class="nav-link" data-scroll-target="#basic-sensor-integration">Basic Sensor Integration</a></li>
+  <li><a href="#slm-basic-analysis" id="toc-slm-basic-analysis" class="nav-link" data-scroll-target="#slm-basic-analysis">SLM Basic Analysis</a></li>
+  <li><a href="#active-control-implementation" id="toc-active-control-implementation" class="nav-link" data-scroll-target="#active-control-implementation">Active Control Implementation</a></li>
+  <li><a href="#natural-language-interaction-user-command" id="toc-natural-language-interaction-user-command" class="nav-link" data-scroll-target="#natural-language-interaction-user-command">Natural Language Interaction (User Command)</a>
+  <ul class="collapse">
+  <li><a href="#key-components-and-features" id="toc-key-components-and-features" class="nav-link" data-scroll-target="#key-components-and-features">Key Components and Features</a></li>
+  <li><a href="#system-capabilities" id="toc-system-capabilities" class="nav-link" data-scroll-target="#system-capabilities">System Capabilities</a></li>
+  <li><a href="#example-usage" id="toc-example-usage" class="nav-link" data-scroll-target="#example-usage">Example Usage</a></li>
+  </ul></li>
+  <li><a href="#data-logging-and-analysis" id="toc-data-logging-and-analysis" class="nav-link" data-scroll-target="#data-logging-and-analysis">Data Logging and Analysis</a></li>
+  <li><a href="#evolution-to-structured-command-processing" id="toc-evolution-to-structured-command-processing" class="nav-link" data-scroll-target="#evolution-to-structured-command-processing">Evolution to Structured Command Processing</a>
+  <ul class="collapse">
+  <li><a href="#structured-data-models" id="toc-structured-data-models" class="nav-link" data-scroll-target="#structured-data-models">Structured Data Models</a></li>
+  <li><a href="#improved-command-processing" id="toc-improved-command-processing" class="nav-link" data-scroll-target="#improved-command-processing">Improved Command Processing</a></li>
+  <li><a href="#benefits-of-the-new-approach" id="toc-benefits-of-the-new-approach" class="nav-link" data-scroll-target="#benefits-of-the-new-approach">Benefits of the New Approach</a></li>
+  <li><a href="#handling-different-model-capabilities" id="toc-handling-different-model-capabilities" class="nav-link" data-scroll-target="#handling-different-model-capabilities">Handling Different Model Capabilities</a></li>
+  </ul></li>
+  <li><a href="#example-usage-1" id="toc-example-usage-1" class="nav-link" data-scroll-target="#example-usage-1">Example Usage</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#resourses" id="toc-resourses" class="nav-link" data-scroll-target="#resourses">Resourses</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/iot/slm_iot.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/iot/slm_iot.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Experimenting with SLMs for IoT Control</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><img src="./images/png/cover.png" class="img-fluid"></p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This lab explores the implementation of Small Language Models (SLMs) in IoT control systems, demonstrating the possibility of creating a monitoring and control system using edge AI. We’ll integrate these models with physical sensors and actuators, creating an <strong>intelligent IoT system capable of natural language interaction</strong>. While this implementation shows the potential of integrating AI with physical systems, it also highlights current limitations and areas for improvement.</p>
+<blockquote class="blockquote">
+<p>This project builds upon the concepts introduced in “Small Language Models (SLMs)” and “Physical Computing with Raspberry Pi.”</p>
+</blockquote>
+<p>The <strong>Physical Computing</strong> lab laid the groundwork for interfacing with hardware components using the Raspberry Pi’s GPIO pins. We’ll revisit these concepts, focusing on connecting and interacting with sensors (DHT22 for temperature and humidity, BMP280 for temperature and pressure, and a push-button for digital inputs), besides controlling actuators (LEDs) in a more sophisticated setup.</p>
+<p>We will progress from a simple IoT system to a more advanced platform that combines real-time monitoring, historical data analysis, and natural language processing (NLP).</p>
+<p><img src="./images/png/block-sys.png" class="img-fluid"></p>
+<p>This lab demonstrates a progressive evolution through several key stages:</p>
+<ol type="1">
+<li>Basic Sensor Integration
+<ul>
+<li>Hardware interface with DHT22 (temperature/humidity) and BMP280 (temperature/pressure) sensors</li>
+<li>Digital input through a push-button</li>
+<li>Output control via RGB LEDs</li>
+<li>Foundational data collection and device control</li>
+</ul></li>
+<li>SLM Basic Analysis
+<ul>
+<li>Initial integration with small language models</li>
+<li>Simple observation and reporting of system state</li>
+<li>Demonstration of SLM’s ability to interpret sensor data</li>
+</ul></li>
+<li>Active Control Implementation
+<ul>
+<li>Direct LED control based on SLM decisions</li>
+<li>Temperature threshold monitoring</li>
+<li>Emergency state detection via button input</li>
+<li>Real-time system state analysis</li>
+</ul></li>
+<li>Natural Language Interaction
+<ul>
+<li>Free-form command interpretation</li>
+<li>Context-aware responses</li>
+<li>Multiple SLM model support</li>
+<li>Flexible query handling</li>
+</ul></li>
+<li>Data Logging and Analysis
+<ul>
+<li>Continuous system state recording</li>
+<li>Trend analysis and pattern detection</li>
+<li>Historical data querying</li>
+<li>Performance monitoring</li>
+</ul></li>
+</ol>
+<p>Let’s begin by setting up our hardware and software environment, building upon the foundation established in our previous labs.</p>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<section id="hardware-setup" class="level3">
+<h3 class="anchored" data-anchor-id="hardware-setup">Hardware Setup</h3>
+<section id="connection-diagram" class="level4">
+<h4 class="anchored" data-anchor-id="connection-diagram">Connection Diagram</h4>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>GPIO Pin</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>DHT22</td>
+<td>GPIO16</td>
+</tr>
+<tr class="even">
+<td>BMP280 - SCL</td>
+<td>GPIO03</td>
+</tr>
+<tr class="odd">
+<td>BMP280 - SDA</td>
+<td>GPIO02</td>
+</tr>
+<tr class="even">
+<td>Red LED</td>
+<td>GPIO13</td>
+</tr>
+<tr class="odd">
+<td>Yellow LED</td>
+<td>GPIO19</td>
+</tr>
+<tr class="even">
+<td>Green LED</td>
+<td>GPIO26</td>
+</tr>
+<tr class="odd">
+<td>Button</td>
+<td>GPIO20</td>
+</tr>
+</tbody>
+</table>
+<p><img src="./images/png/block_diagram.png" class="img-fluid"></p>
+<ul>
+<li>Raspberry Pi 5 (with an OS installed, as detailed in previous labs)</li>
+<li>DHT22 temperature and humidity sensor</li>
+<li>BMP280 temperature and pressure sensor</li>
+<li>3 LEDs (red, yellow, green)</li>
+<li>Push button</li>
+<li>330Ω resistors (3)</li>
+<li>Jumper wires and breadboard</li>
+</ul>
+</section>
+</section>
+<section id="software-prerequisites" class="level3">
+<h3 class="anchored" data-anchor-id="software-prerequisites">Software Prerequisites</h3>
+<ol type="1">
+<li>Install required libraries:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install adafruit-circuitpython-dht </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install adafruit-circuitpython-bmp280</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="basic-sensor-integration" class="level2">
+<h2 class="anchored" data-anchor-id="basic-sensor-integration">Basic Sensor Integration</h2>
+<p>Let’s create a Python script (<code>monitor.py</code>) to handle the sensors and actuators. This script will contain functions to be called from other scripts later:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> board</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> adafruit_dht</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> adafruit_bmp280</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED, Button</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>DHT22Sensor <span class="op">=</span> adafruit_dht.DHT22(board.D16)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>i2c <span class="op">=</span> board.I2C()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>bmp280Sensor <span class="op">=</span> adafruit_bmp280.Adafruit_BMP280_I2C(i2c, address<span class="op">=</span><span class="bn">0x76</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>bmp280Sensor.sea_level_pressure <span class="op">=</span> <span class="fl">1013.25</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ledRed <span class="op">=</span> LED(<span class="dv">13</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>ledYlw <span class="op">=</span> LED(<span class="dv">19</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>ledGrn <span class="op">=</span> LED(<span class="dv">26</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>button <span class="op">=</span> Button(<span class="dv">20</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> collect_data():</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        temperature_dht <span class="op">=</span> DHT22Sensor.temperature</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        humidity <span class="op">=</span> DHT22Sensor.humidity</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        temperature_bmp <span class="op">=</span> bmp280Sensor.temperature</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        pressure <span class="op">=</span> bmp280Sensor.pressure</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        button_pressed <span class="op">=</span> button.is_pressed</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> temperature_dht, humidity, temperature_bmp, pressure, button_pressed</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">RuntimeError</span>:</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span>, <span class="va">None</span>, <span class="va">None</span>, <span class="va">None</span>, <span class="va">None</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> led_status():</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    ledRedSts <span class="op">=</span> ledRed.is_lit</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    ledYlwSts <span class="op">=</span> ledYlw.is_lit</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    ledGrnSts <span class="op">=</span> ledGrn.is_lit </span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ledRedSts, ledYlwSts, ledGrnSts</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> control_leds(red, yellow, green):</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    ledRed.on() <span class="cf">if</span> red <span class="cf">else</span> ledRed.off()</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    ledYlw.on() <span class="cf">if</span> yellow <span class="cf">else</span> ledYlw.off()</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    ledGrn.on() <span class="cf">if</span> green <span class="cf">else</span> ledGrn.off()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can test the functions using:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    ledRedSts, ledYlwSts, ledGrnSts  <span class="op">=</span> led_status()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    temp_dht, hum, temp_bmp, press, button_state  <span class="op">=</span> collect_data()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">#control_leds(True, True, True)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">all</span>(v <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">for</span> v <span class="kw">in</span> [temp_dht, hum, temp_bmp, press]):</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"DHT22 Temp: </span><span class="sc">{</span>temp_dht<span class="sc">:.1f}</span><span class="ss">°C, Humidity: </span><span class="sc">{</span>hum<span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"BMP280 Temp: </span><span class="sc">{</span>temp_bmp<span class="sc">:.1f}</span><span class="ss">°C, Pressure: </span><span class="sc">{</span>press<span class="sc">:.2f}</span><span class="ss">hPa"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Button </span><span class="sc">{</span><span class="st">'pressed'</span> <span class="cf">if</span> button_state <span class="cf">else</span> <span class="st">'not pressed'</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Red LED </span><span class="sc">{</span><span class="st">'is on'</span> <span class="cf">if</span> ledRedSts <span class="cf">else</span> <span class="st">'is off'</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Yellow LED </span><span class="sc">{</span><span class="st">'is on'</span> <span class="cf">if</span> ledYlwSts <span class="cf">else</span> <span class="st">'is off'</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Green LED </span><span class="sc">{</span><span class="st">'is on'</span> <span class="cf">if</span> ledGrnSts <span class="cf">else</span> <span class="st">'is off'</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/monitor.png" class="img-fluid"></p>
+<p>Install Ollama on your Raspberry Pi (follow Ollama’s official documentation or the SLM lab)</p>
+</section>
+<section id="slm-basic-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="slm-basic-analysis">SLM Basic Analysis</h2>
+<p>Now, let’s create a new script, <code>slm_basic_analysis.py</code>, which will be responsible for analysing the hardware components’ status, according to the following diagram:</p>
+<p><img src="./images/png/slm_basic_analysis_sw_diagram.png" class="img-fluid"></p>
+<p>The diagram shows the basic analysis system, which consists of:</p>
+<ol type="1">
+<li><strong>Hardware Layer</strong>:
+<ul>
+<li>Sensors: DHT22 (temperature/humidity), BMP280 (temperature/pressure)</li>
+<li>Input: Emergency button</li>
+<li>Output: Three LEDs (Red, Yellow, Green)</li>
+</ul></li>
+<li><strong>monitor.py</strong>:
+<ul>
+<li>Handles all hardware interactions</li>
+<li>Provides two main functions:
+<ul>
+<li><code>collect_data()</code>: Reads all sensor values</li>
+<li><code>led_status()</code>: Checks current LED states</li>
+</ul></li>
+</ul></li>
+<li><strong>slm_basic_analysis.py</strong>:
+<ul>
+<li>Creates a descriptive prompt using sensor data</li>
+<li>Sends prompt to SLM (for example, the <code>Llama 3.2 1B</code>)</li>
+<li>Displays analysis results</li>
+<li>In this step we will not control the LEDs (observation only)</li>
+</ul></li>
+</ol>
+<p>Okay, let’s implement the code. First, if you haven’t already, install <code>Ollama</code> on your Raspberry Pi (follow Ollama’s official documentation or the SLM lab).</p>
+<p>Let’s import the Ollama library and the functions to monitor the HW (from the previous script):</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> monitor <span class="im">import</span> collect_data, led_status</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Calling the monitor functions, we will get all data:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ledRedSts, ledYlwSts, ledGrnSts  <span class="op">=</span> led_status()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>temp_dht, hum, temp_bmp, press, button_state  <span class="op">=</span> collect_data()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, the heart of out code, we will <strong>generate the Prompt</strong>, using the data captured on the previous variables:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ss">        You are an experienced environmental scientist. </span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ss">        Analyze the information received from an IoT system:</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ss">        DHT22 Temp: </span><span class="sc">{</span>temp_dht<span class="sc">:.1f}</span><span class="ss">°C and Humidity: </span><span class="sc">{</span>hum<span class="sc">:.1f}</span><span class="ss">%</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ss">        BMP280 Temp: </span><span class="sc">{</span>temp_bmp<span class="sc">:.1f}</span><span class="ss">°C and Pressure: </span><span class="sc">{</span>press<span class="sc">:.2f}</span><span class="ss">hPa</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="ss">        Button </span><span class="sc">{</span><span class="st">"pressed"</span> <span class="cf">if</span> button_state <span class="cf">else</span> <span class="st">"not pressed"</span><span class="sc">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ss">        Red LED </span><span class="sc">{</span><span class="st">"is on"</span> <span class="cf">if</span> ledRedSts <span class="cf">else</span> <span class="st">"is off"</span><span class="sc">}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="ss">        Yellow LED </span><span class="sc">{</span><span class="st">"is on"</span> <span class="cf">if</span> ledYlwSts <span class="cf">else</span> <span class="st">"is off"</span><span class="sc">}</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="ss">        Green LED </span><span class="sc">{</span><span class="st">"is on"</span> <span class="cf">if</span> ledGrnSts <span class="cf">else</span> <span class="st">"is off"</span><span class="sc">}</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="ss">        Where,</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="ss">        - The button, not pressed, shows a normal operation</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="ss">        - The button, when pressed, shows an emergency</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="ss">        - Red LED when is on, indicates a problem/emergency.</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="ss">        - Yellow LED when is on indicates a warning situation.</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="ss">        - Green LED when is on, indicates system is OK.</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="ss">        If the temperature is over 20°C, mean a warning situation</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="ss">        You should answer only with: "Activate Red LED" or </span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="ss">        "Activate Yellow LED" or "Activate Green LED"</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, the Prompt will be passed to the SLM, which will generate a <code>response</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>MODEL <span class="op">=</span> <span class="st">'llama3.2:1b'</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>PROMPT <span class="op">=</span> prompt</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> ollama.generate(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>MODEL, </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    prompt<span class="op">=</span>PROMPT</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The last stage will be show the real monitored data and the SLM’s response:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Smart IoT Analyser using </span><span class="sc">{</span>MODEL<span class="sc">}</span><span class="ss"> model</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"SYSTEM REAL DATA"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f" - DHT22 ==&gt; Temp: </span><span class="sc">{</span>temp_dht<span class="sc">:.1f}</span><span class="ss">°C, Humidity: </span><span class="sc">{</span>hum<span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f" - BMP280 =&gt; Temp: </span><span class="sc">{</span>temp_bmp<span class="sc">:.1f}</span><span class="ss">°C, Pressure: </span><span class="sc">{</span>press<span class="sc">:.2f}</span><span class="ss">hPa"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f" - Button </span><span class="sc">{</span><span class="st">'pressed'</span> <span class="cf">if</span> button_state <span class="cf">else</span> <span class="st">'not pressed'</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f" - Red LED </span><span class="sc">{</span><span class="st">'is on'</span> <span class="cf">if</span> ledRedSts <span class="cf">else</span> <span class="st">'is off'</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f" - Yellow LED </span><span class="sc">{</span><span class="st">'is on'</span> <span class="cf">if</span> ledYlwSts <span class="cf">else</span> <span class="st">'is off'</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f" - Green LED </span><span class="sc">{</span><span class="st">'is on'</span> <span class="cf">if</span> ledGrnSts <span class="cf">else</span> <span class="st">'is off'</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">&gt;&gt; </span><span class="sc">{</span>MODEL<span class="sc">}</span><span class="ss"> Response: </span><span class="sc">{</span>response[<span class="st">'response'</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Runing the Python script, we got:</p>
+<p><img src="./images/png/slm_analysis.png" class="img-fluid"></p>
+<p>In this initial experiment, the system successfully collected sensor data (temperatures of 26.3°C and 26.1°C from DHT22 and BMP280, respectively, 40.2% humidity, and 908.84hPa pressure) and processed this information through the SLM, which produced a coherent response recommending the activation of the yellow LED due to elevated temperature conditions.</p>
+<p>The model’s ability to interpret sensor data and provide logical, rule-based decisions shows promise. Still, the simplistic nature of the current implementation (using basic thresholds and binary LED outputs) suggests room for significant enhancement through more sophisticated prompting strategies, historical data integration, and the implementation of safety mechanisms. Also, the result is probabilistic, meaning it should change after execution.</p>
+</section>
+<section id="active-control-implementation" class="level2">
+<h2 class="anchored" data-anchor-id="active-control-implementation">Active Control Implementation</h2>
+<p>OK, let’s get a usable output from the SLM by activating one of the LEDs. For that, we will create an action system flow diagram to understand the code implementation better:</p>
+<p><img src="./images/png/action_system_flow.png" class="img-fluid"></p>
+<p>The diagram shows the new action-based system, which adds a <code>User Interface</code> where a user will choose which <code>Model</code> to use based on the SLMs pulled by Ollama. The user will also select the temperature threshold for the test (For example, the actual temperature over this threshold should be configured as a “warning”).</p>
+<p>The SLM will proceed with a decision-making process regarding what the active LED should be based on the data captured by the system.</p>
+<p>The key differences for this new code are:</p>
+<ol type="1">
+<li>The basic analysis version only observes and reports</li>
+<li>The action version actively controls the LEDs</li>
+<li>The action version includes user configuration</li>
+<li>The action version implements a continuous monitoring loop</li>
+</ol>
+<p>Ok, let’s implement the code. Go to the GitHub and download the script <code>slm_basic_analysis_action.py</code></p>
+<p>The script implementation consists of several key components:</p>
+<ol type="1">
+<li><strong>Model Selection System</strong>:</li>
+</ol>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>MODELS <span class="op">=</span> {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>: (<span class="st">'deepseek-r1:1.5b'</span>, <span class="st">'DeepSeek R1 1.5B'</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span>: (<span class="st">'llama3.2:1b'</span>, <span class="st">'Llama 3.2 1B'</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">3</span>: (<span class="st">'llama3.2:3b'</span>, <span class="st">'Llama 3.2 3B'</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">4</span>: (<span class="st">'phi3:latest'</span>, <span class="st">'Phi-3'</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">5</span>: (<span class="st">'gemma:2b'</span>, <span class="st">'Gemma 2B'</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Provides multiple SLM options</li>
+<li>Each model offers different capabilities and performance characteristics</li>
+<li>Users can select based on their needs (speed vs.&nbsp;accuracy)</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>User Interface Functions</strong>:</li>
+</ol>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_user_input():</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Get user input for model selection and temperature threshold"""</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Available Models:"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> num, (_, name) <span class="kw">in</span> MODELS.items():</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>num<span class="sc">}</span><span class="ss">. </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get model selection</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>            model_num <span class="op">=</span> <span class="bu">int</span>(<span class="bu">input</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Select model (1-4): "</span>))</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> model_num <span class="kw">in</span> MODELS:</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Please select a number between 1 and 4."</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Please enter a valid number."</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get temperature threshold</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>            temp_threshold <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">"Enter temperature threshold (°C): "</span>))</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">ValueError</span>:</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Please enter a valid number for temperature threshold."</span>)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> MODELS[model_num][<span class="dv">0</span>], MODELS[model_num][<span class="dv">1</span>], temp_threshold</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Handles model selection</li>
+<li>Sets temperature threshold</li>
+<li>Includes input validation</li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Response Parser</strong>:</li>
+</ol>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_llm_response(response_text):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Parse the LLM response to extract LED control instructions."""</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    response_lower <span class="op">=</span> response_text.lower()</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    red_led <span class="op">=</span> <span class="st">'activate red led'</span> <span class="kw">in</span> response_lower</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    yellow_led <span class="op">=</span> <span class="st">'activate yellow led'</span> <span class="kw">in</span> response_lower</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    green_led <span class="op">=</span> <span class="st">'activate green led'</span> <span class="kw">in</span> response_lower</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (red_led, yellow_led, green_led)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Converts text response to control signals</li>
+<li>Simple but effective parsing strategy</li>
+<li>Returns boolean tuple for LED states</li>
+</ul>
+<ol start="4" type="1">
+<li><strong>Monitoring System</strong>:</li>
+</ol>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> monitor_system(model, model_name, temp_threshold):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Monitor system continuously"""</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Collect sensor data</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            temp_dht, hum, temp_bmp, press, button_state <span class="op">=</span> collect_data()</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Generate prompt and get SLM response</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>            response <span class="op">=</span> ollama.generate(</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>                model<span class="op">=</span>model,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>                prompt<span class="op">=</span>current_prompt</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Control LEDs based on response</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>            red, yellow, green <span class="op">=</span> parse_llm_response(response[<span class="st">'response'</span>])</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>            control_leds(red, yellow, green)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Print status</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>            print_status(...)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="dv">2</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Monitoring stopped by user"</span>)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>            control_leds(<span class="va">False</span>, <span class="va">False</span>, <span class="va">False</span>)  <span class="co"># Turn off all LEDs</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Continuous monitoring loop</li>
+<li>Error handling</li>
+<li>Clean shutdown capability</li>
+<li>Status reporting</li>
+</ul>
+<ol start="5" type="1">
+<li><strong>Prompt Engineering</strong>:</li>
+</ol>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ss">    You are monitoring an IoT system which is showing the </span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ss">    following sensor status: </span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="ss">    - DHT22 Temp: </span><span class="sc">{</span>temp_dht<span class="sc">:.1f}</span><span class="ss">°C and Humidity: </span><span class="sc">{</span>hum<span class="sc">:.1f}</span><span class="ss">%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="ss">    - BMP280 Temp: </span><span class="sc">{</span>temp_bmp<span class="sc">:.1f}</span><span class="ss">°C and Pressure: </span><span class="sc">{</span>press<span class="sc">:.2f}</span><span class="ss">hPa</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Button </span><span class="sc">{</span><span class="st">"pressed"</span> <span class="cf">if</span> button_state <span class="cf">else</span> <span class="st">"not pressed"</span><span class="sc">}</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="ss">    Based on the Rules: </span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="ss">    - If system is working in normal conditions → Activate Green LED </span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    - If DHT22 Temp or BMP280 Temp are greater </span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="ss">      than </span><span class="sc">{</span>temp_threshold<span class="sc">}</span><span class="ss">°C → Activate Yellow LED </span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="ss">    - If Button pressed, it is an emergency → Activate Red LED</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="ss">    You should provide a brief answer only with: "Activate Red LED" </span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="ss">    or "Activate Yellow LED" or "Activate Green LED"</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Structured prompt format</li>
+<li>Clear rules and conditions</li>
+<li>Constrained response format</li>
+</ul>
+<p>In the <a href="https://youtu.be/ul2fhD8b_KU">video,</a> we can see how the system works with different models.</p>
+<p>And here one screen-shot of the SLM working on the Raspi:</p>
+<p><img src="./images/png/action-working.png" class="img-fluid"></p>
+<p>So, at this point, what we have is something like:</p>
+<p><img src="./images/png/slm-acti-block.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>What we can realize is that the <strong>SLM-based system can read and react to the physical world,</strong> but with a simple prompt, we cannot guarantee that the result will be correct.</p>
+</blockquote>
+<p>Let’s see how it evolved from the previous code to a new approach, where the SLM should react to a user’s command.</p>
+</section>
+<section id="natural-language-interaction-user-command" class="level2">
+<h2 class="anchored" data-anchor-id="natural-language-interaction-user-command">Natural Language Interaction (User Command)</h2>
+<p>After implementing a basic monitoring and automated LED control with <code>slm_basic_analysis_action.py</code>, we can now create a more interactive system that responds to user commands in natural language. This represents an evolution where the SLM makes decisions based on sensor data and understands and responds to user queries and commands.</p>
+<section id="key-components-and-features" class="level3">
+<h3 class="anchored" data-anchor-id="key-components-and-features">Key Components and Features</h3>
+<ol type="1">
+<li><p><strong>Model Selection</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>MODELS <span class="op">=</span> {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>: (<span class="st">'deepseek-r1:1.5b'</span>, <span class="st">'DeepSeek R1 1.5B'</span>),</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span>: (<span class="st">'llama3.2:1b'</span>, <span class="st">'Llama 3.2 1B'</span>),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">3</span>: (<span class="st">'llama3.2:3b'</span>, <span class="st">'Llama 3.2 3B'</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">4</span>: (<span class="st">'phi3:latest'</span>, <span class="st">'Phi-3'</span>),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="dv">5</span>: (<span class="st">'gemma:2b'</span>, <span class="st">'Gemma 2B'</span>),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Maintains the same model options as previous versions</li>
+<li>Users can select their preferred SLM model for interaction</li>
+</ul></li>
+<li><p><strong>Command Processing</strong></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_command(model, temp_threshold, user_input):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ss">        You are monitoring an IoT system which is showing the </span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="ss">        following sensor status: </span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ss">        - DHT22 Temp: </span><span class="sc">{</span>temp_dht<span class="sc">:.1f}</span><span class="ss">°C and Humidity: </span><span class="sc">{</span>hum<span class="sc">:.1f}</span><span class="ss">%</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="ss">        - BMP280 Temp: </span><span class="sc">{</span>temp_bmp<span class="sc">:.1f}</span><span class="ss">°C and Pressure: </span><span class="sc">{</span>press<span class="sc">:.2f}</span><span class="ss">hPa</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ss">        - Button </span><span class="sc">{</span><span class="st">"pressed"</span> <span class="cf">if</span> button_state <span class="cf">else</span> <span class="st">"not pressed"</span><span class="sc">}</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="ss">        The user command is: "</span><span class="sc">{</span>user_input<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Takes natural language input from users</li>
+<li>Creates context-aware prompts by including current sensor data</li>
+<li>Maintains temperature threshold monitoring</li>
+</ul></li>
+<li><p><strong>LED Control</strong></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_llm_response(response_text):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Parse the LLM response to extract LED control instructions."""</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    response_lower <span class="op">=</span> response_text.lower()</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    red_led <span class="op">=</span> <span class="st">'activate red led'</span> <span class="kw">in</span> response_lower</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    yellow_led <span class="op">=</span> <span class="st">'activate yellow led'</span> <span class="kw">in</span> response_lower</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    green_led <span class="op">=</span> <span class="st">'activate green led'</span> <span class="kw">in</span> response_lower</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (red_led, yellow_led, green_led)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Uses the same reliable parsing mechanism from previous versions</li>
+<li>Maintains consistency in LED control commands</li>
+</ul></li>
+<li><p><strong>Interactive Loop</strong></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    user_input <span class="op">=</span> <span class="bu">input</span>(<span class="st">"Command: "</span>).strip().lower()</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> user_input <span class="op">==</span> <span class="st">'quit'</span>:</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Shutting down..."</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        control_leds(<span class="va">False</span>, <span class="va">False</span>, <span class="va">False</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    process_command(model, temp_threshold, user_input)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Provides continuous interaction through a command prompt</li>
+<li>Processes one command at a time</li>
+<li>Allows clean system shutdown</li>
+</ul></li>
+</ol>
+</section>
+<section id="system-capabilities" class="level3">
+<h3 class="anchored" data-anchor-id="system-capabilities">System Capabilities</h3>
+<p>The system can now: 1. Accept natural language commands and queries 2. Provide information about sensor readings 3. Control LEDs based on user commands 4. Monitor temperature thresholds 5. Display comprehensive system status after each command</p>
+</section>
+<section id="example-usage" class="level3">
+<h3 class="anchored" data-anchor-id="example-usage">Example Usage</h3>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Select</span> model <span class="er">(</span><span class="ex">1-5</span><span class="kw">)</span><span class="bu">:</span> 2</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> temperature threshold <span class="er">(</span><span class="ex">°C</span><span class="kw">)</span><span class="bu">:</span> 25</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Starting</span> IoT control system with Llama 3.2 1B</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Temperature</span> threshold: 25°C</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Type</span> <span class="st">'quit'</span> to exit</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Command:</span> what<span class="st">'s the current temperature?</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="st">==================================================</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="st">Time: 14:30:45</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="st">DHT22: 22.4°C, 44.8%</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="st">BMP280: 23.2°C, 905.4hPa</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="st">Button: not pressed</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="st">SLM Response: The current temperature is 22.4°C from the DHT22 sensor </span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="st">and 23.2°C from the BMP280 sensor.</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="st">LED Status: R=off, Y=off, G=off</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="st">==================================================</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="st">Command: turn on the red led</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="st">[System activates red LED and shows status]</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a><span class="st">Command: quit</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="st">Shutting down...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The previous diagram can be update as:</p>
+<p><img src="./images/png/slm-interaction-block.png" class="img-fluid"></p>
+<p>Let’s see the system runing the above example using the model Llama 3.2 3B:</p>
+<p><img src="./images/jpeg/slm-turn-on-led-thres-5.png" class="img-fluid"></p>
+<p>Or, for example, asking for the SLM to turn on the red LED in case the push-button is activated:</p>
+<p><img src="./images/jpeg/slm-butt-led-3.jpg" class="img-fluid"></p>
+<p>Or the green LED, in case the push-button is not activated:</p>
+<p><img src="./images/jpeg/slm-butt-led-6.jpg" class="img-fluid"></p>
+<p>The <a href="https://youtu.be/fRnWvAyxaNQ">video</a> shows several examples of how the system works.</p>
+<p>Let’s continue evolving the system, which now includes a log to record what happens with the IoT sensors and actuators every minute.</p>
+</section>
+</section>
+<section id="data-logging-and-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="data-logging-and-analysis">Data Logging and Analysis</h2>
+<p>In this step, we enhance our IoT system by adding data logging, analysis capabilities, and more sophisticated interaction. We split the functionality into two files: <code>monitor_log.py</code> for logging and data analysis and <code>slm_basic_interaction_log.py</code> for user interaction.</p>
+<section id="the-logging-system-monitor_log.py" class="level4">
+<h4 class="anchored" data-anchor-id="the-logging-system-monitor_log.py">The Logging System (<code>monitor_log.py</code>)</h4>
+<p>This module handles all data logging and analysis functions. Let’s break down its key components:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Core functionality</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> setup_log_file():</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Create or verify log file with headers"""</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    headers <span class="op">=</span> [<span class="st">'timestamp'</span>, <span class="st">'temp_dht'</span>, <span class="st">'humidity'</span>, <span class="st">'temp_bmp'</span>, <span class="st">'pressure'</span>, </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>              <span class="st">'button_state'</span>, <span class="st">'led_red'</span>, <span class="st">'led_yellow'</span>, <span class="st">'led_green'</span>, <span class="st">'command'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The system creates a CSV file with headers for all sensor data, LED states, and user commands.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_data(timestamp, sensors, leds, command<span class="op">=</span><span class="st">""</span>):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Log system data to CSV file"""</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    temp_dht, hum, temp_bmp, press, button <span class="op">=</span> sensors</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    red, yellow, green <span class="op">=</span> leds</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> [</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        timestamp,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>temp_dht<span class="sc">:.1f}</span><span class="ss">"</span> <span class="cf">if</span> temp_dht <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="st">"NA"</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"</span><span class="sc">{</span>hum<span class="sc">:.1f}</span><span class="ss">"</span> <span class="cf">if</span> hum <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="st">"NA"</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># ... other sensor and state data</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This function formats and logs each data point with proper error handling.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> automatic_logging():</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Background thread for automatic logging every minute"""</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="kw">not</span> stop_logging.is_set():</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>            sensors <span class="op">=</span> collect_data()</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>            leds <span class="op">=</span> led_status()</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            <span class="co"># ... log data every minute</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>A background thread that automatically logs system state every minute.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> count_state_changes(series):</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Count actual state changes in a binary series"""</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    series <span class="op">=</span> series.astype(<span class="bu">int</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    changes <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    last_state <span class="op">=</span> series.iloc[<span class="dv">0</span>]</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> state <span class="kw">in</span> series[<span class="dv">1</span>:]:</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> state <span class="op">!=</span> last_state:</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>            changes <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>            last_state <span class="op">=</span> state</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Accurately counts state changes for LEDs and button presses.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> analyze_log_data():</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Analyze log data and return statistics"""</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculates:</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># - Temperature, humidity, and pressure trends</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># - Averages for all sensor readings</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># - LED and button state changes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_log_summary():</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Get a formatted summary of log data for SLM prompts"""</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Formats all statistics into a readable summary</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here is an example of the log summary generated, which will be sent to the SLM per request:</p>
+<p><img src="./images/png/log-summary.png" class="img-fluid"></p>
+</section>
+<section id="the-interaction-system-slm_basic_interaction_log.py" class="level4">
+<h4 class="anchored" data-anchor-id="the-interaction-system-slm_basic_interaction_log.py">2. The Interaction System (<code>slm_basic_interaction_log.py</code>)</h4>
+<p>This module handles user interaction and SLM integration:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>MODELS <span class="op">=</span> {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>: (<span class="st">'deepseek-r1:1.5b'</span>, <span class="st">'DeepSeek R1 1.5B'</span>),</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span>: (<span class="st">'llama3.2:1b'</span>, <span class="st">'Llama 3.2 1B'</span>),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ... other models</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Available SLM models for interaction.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_command(model, temp_threshold, user_input):</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Process a single user command"""</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Handles:</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Log queries</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. LED control commands</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Sensor data queries</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> query_log(query, model):</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Query the log data using SLM"""</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Gets log summary</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Creates context-aware prompt</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Returns SLM analysis</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="key-features-and-improvements" class="level4">
+<h4 class="anchored" data-anchor-id="key-features-and-improvements">Key Features and Improvements:</h4>
+<ol type="1">
+<li><strong>Data Logging</strong>
+<ul>
+<li>Automatic background logging every minute</li>
+<li>Comprehensive data storage in CSV format</li>
+<li>Command history tracking</li>
+</ul></li>
+<li><strong>Data Analysis</strong>
+<ul>
+<li>Temperature and humidity trends</li>
+<li>LED and button state change tracking</li>
+<li>Statistical analysis of sensor data</li>
+</ul></li>
+<li><strong>Natural Language Interaction</strong>
+<ul>
+<li>Log querying using natural language</li>
+<li>Trend analysis and reporting</li>
+<li>Historical data access</li>
+</ul></li>
+<li><strong>Improved Error Handling</strong>
+<ul>
+<li>Robust sensor reading protection</li>
+<li>Data validation</li>
+<li>Graceful error recovery</li>
+</ul></li>
+</ol>
+<p>The below flow diagram shows how, in a simplified way, the modules interact and their internal processes.</p>
+<p><img src="./images/png/log-flow.png" class="img-fluid"></p>
+<p>And in this, with more details:</p>
+<p><img src="./images/png/log-flow-detail.png" class="img-fluid"></p>
+<p>Now, we can run the <code>slm_basic_interaction_log.py</code>, which will call the other two modules.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> slm_basic_interaction_log.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can try queries like:</p>
+<pre><code>"what's the temperature trend?"
+"show me button press history"
+"turn on the red LED"
+"how many times was the button pressed?"</code></pre>
+<p>Examples:</p>
+<p><img src="./images/png/trend-temp.png" class="img-fluid"></p>
+<p><img src="./images/png/log-average.png" class="img-fluid"></p>
+<p>This modular design separates concerns between data logging/analysis and user interaction, making the system more maintainable and extensible. The SLM integration allows for natural language interaction with current and historical data.</p>
+<p>Below is an example of the log created.</p>
+<p><img src="./images/png/log-test.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="evolution-to-structured-command-processing" class="level2">
+<h2 class="anchored" data-anchor-id="evolution-to-structured-command-processing">Evolution to Structured Command Processing</h2>
+<p>In our journey to improve the IoT control system, we should explore a more robust approach to handling commands and responses using <strong>structured data models</strong>, as we saw in the “Calculating Distance project” section of the SLM Chapter, where the Pydantic python library was used for type checking. This evolution can significantly improve code reliability, maintainability, and extensibility.</p>
+<p>Our original implementation in <code>slm_basic_interaction.py</code> used simple string parsing and direct command processing. While functional, this approach had several limitations:</p>
+<ol type="1">
+<li><strong>Inconsistent Responses</strong>: The SLM could return responses in varying formats, requiring complex parsing logic</li>
+<li><strong>Limited Validation</strong>: No built-in validation for command structures or responses</li>
+<li><strong>Error-Prone</strong>: String parsing could break with slight variations in model outputs</li>
+<li><strong>Difficult Maintenance</strong>: Adding new features or command types required modifying multiple code sections</li>
+</ol>
+<section id="structured-data-models" class="level3">
+<h3 class="anchored" data-anchor-id="structured-data-models">Structured Data Models</h3>
+<p>As we did in the SLM chapter, we can use <code>Pydantic</code> to create structured data models that define exactly what our commands and responses should look like. Here’s an example of how we can define our core data structures:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel, Field</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LEDCommand(BaseModel):</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    red: <span class="bu">bool</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Whether to turn on red LED"</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    yellow: <span class="bu">bool</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Whether to turn on yellow LED"</span>)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    green: <span class="bu">bool</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Whether to turn on green LED"</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    reason: <span class="bu">str</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Reasoning behind LED state changes"</span>)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SensorQuery(BaseModel):</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    temperature_dht: Optional[<span class="bu">bool</span>] <span class="op">=</span> Field(<span class="va">False</span>, </span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>        description<span class="op">=</span><span class="st">"Whether to include DHT22 temperature"</span>)</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    temperature_bmp: Optional[<span class="bu">bool</span>] <span class="op">=</span> Field(<span class="va">False</span>, </span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>        description<span class="op">=</span><span class="st">"Whether to include BMP280 temperature"</span>)</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    humidity: Optional[<span class="bu">bool</span>] <span class="op">=</span> Field(<span class="va">False</span>, </span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>        description<span class="op">=</span><span class="st">"Whether to include humidity"</span>)</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    pressure: Optional[<span class="bu">bool</span>] <span class="op">=</span> Field(<span class="va">False</span>, </span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>        description<span class="op">=</span><span class="st">"Whether to include pressure"</span>)</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    button: Optional[<span class="bu">bool</span>] <span class="op">=</span> Field(<span class="va">False</span>, </span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>        description<span class="op">=</span><span class="st">"Whether to include button state"</span>)</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CommandResponse(BaseModel):</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    command_type: <span class="bu">str</span> <span class="op">=</span> Field(..., </span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>        description<span class="op">=</span><span class="st">"Type of command (led_control, sensor_query, or system_status)"</span>)</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>    led_command: Optional[LEDCommand] <span class="op">=</span> Field(<span class="va">None</span>, </span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>        description<span class="op">=</span><span class="st">"LED control instructions if applicable"</span>)</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>    sensor_query: Optional[SensorQuery] <span class="op">=</span> Field(<span class="va">None</span>, </span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>        description<span class="op">=</span><span class="st">"Sensor query specifications if applicable"</span>)</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>    response_text: <span class="bu">str</span> <span class="op">=</span> Field(..., </span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>        description<span class="op">=</span><span class="st">"Human-readable response to the command"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>These models provide several benefits:</p>
+<ol type="1">
+<li><strong>Type Safety</strong>: Automatic validation of data types and structures</li>
+<li><strong>Self-Documenting</strong>: Field descriptions provide built-in documentation</li>
+<li><strong>Clear Interface</strong>: Explicit definition of what data is expected and provided</li>
+<li><strong>Error Handling</strong>: Automatic validation with clear error messages</li>
+</ol>
+</section>
+<section id="improved-command-processing" class="level3">
+<h3 class="anchored" data-anchor-id="improved-command-processing">Improved Command Processing</h3>
+<p>The command processing system should be changed to use these models, ensuring consistent handling:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_command(model: <span class="bu">str</span>, </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                    temp_threshold: <span class="bu">float</span>, </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                    user_input: <span class="bu">str</span>) <span class="op">-&gt;</span> CommandResponse:</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Process user command and return structured response"""</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get current system state</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    temp_dht, hum, temp_bmp, press, button_state <span class="op">=</span> collect_data()</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create structured prompt</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    You are an IoT system interface. Current system state:</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="ss">    - DHT22: Temperature </span><span class="sc">{</span>temp_dht<span class="sc">:.1f}</span><span class="ss">°C, Humidity </span><span class="sc">{</span>hum<span class="sc">:.1f}</span><span class="ss">%</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="ss">    - BMP280: Temperature </span><span class="sc">{</span>temp_bmp<span class="sc">:.1f}</span><span class="ss">°C, Pressure </span><span class="sc">{</span>press<span class="sc">:.2f}</span><span class="ss">hPa</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Button: </span><span class="sc">{</span><span class="st">"pressed"</span> <span class="cf">if</span> button_state <span class="cf">else</span> <span class="st">"not pressed"</span><span class="sc">}</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Temperature threshold: </span><span class="sc">{</span>temp_threshold<span class="sc">}</span><span class="ss">°C</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="ss">    User command: "</span><span class="sc">{</span>user_input<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="ss">    Provide a response in this exact JSON format:</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="ch">{{</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a><span class="ss">        "command_type": "led_control/sensor_query/system_status",</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="ss">        "led_command": </span><span class="ch">{{</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a><span class="ss">            "red": boolean,</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a><span class="ss">            "yellow": boolean,</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a><span class="ss">            "green": boolean,</span></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a><span class="ss">            "reason": "string"</span></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a><span class="ss">        </span><span class="ch">}}</span><span class="ss">,</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a><span class="ss">        "sensor_query": </span><span class="ch">{{</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a><span class="ss">            "temperature_dht": boolean,</span></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a><span class="ss">            "temperature_bmp": boolean,</span></span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a><span class="ss">            "humidity": boolean,</span></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a><span class="ss">            "pressure": boolean,</span></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a><span class="ss">            "button": boolean</span></span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a><span class="ss">        </span><span class="ch">}}</span><span class="ss">,</span></span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a><span class="ss">        "response_text": "human readable response"</span></span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="ch">}}</span></span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get and parse response</span></span>
+<span id="cb31-39"><a href="#cb31-39" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb31-40"><a href="#cb31-40" aria-hidden="true" tabindex="-1"></a>        model<span class="op">=</span>model,</span>
+<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a>        messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: prompt}],</span>
+<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a>        response_model<span class="op">=</span>CommandResponse,</span>
+<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a>        max_retries<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb31-44"><a href="#cb31-44" aria-hidden="true" tabindex="-1"></a>        temperature<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb31-45"><a href="#cb31-45" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb31-46"><a href="#cb31-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-47"><a href="#cb31-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Execute LED commands if present</span></span>
+<span id="cb31-48"><a href="#cb31-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> response.led_command:</span>
+<span id="cb31-49"><a href="#cb31-49" aria-hidden="true" tabindex="-1"></a>        control_leds(</span>
+<span id="cb31-50"><a href="#cb31-50" aria-hidden="true" tabindex="-1"></a>            response.led_command.red,</span>
+<span id="cb31-51"><a href="#cb31-51" aria-hidden="true" tabindex="-1"></a>            response.led_command.yellow,</span>
+<span id="cb31-52"><a href="#cb31-52" aria-hidden="true" tabindex="-1"></a>            response.led_command.green</span>
+<span id="cb31-53"><a href="#cb31-53" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb31-54"><a href="#cb31-54" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-55"><a href="#cb31-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="benefits-of-the-new-approach" class="level3">
+<h3 class="anchored" data-anchor-id="benefits-of-the-new-approach">Benefits of the New Approach</h3>
+<ol type="1">
+<li><p><strong>Reliability</strong>:</p>
+<ul>
+<li>Structured responses ensure consistent data format</li>
+<li>Automatic validation catches errors early</li>
+<li>Clear error messages for debugging</li>
+</ul></li>
+<li><p><strong>Maintainability</strong>:</p>
+<ul>
+<li>Models separate data structure from logic</li>
+<li>Easy to add new fields or command types</li>
+<li>Self-documenting code with clear interfaces</li>
+</ul></li>
+<li><p><strong>Extensibility</strong>:</p>
+<ul>
+<li>New command types can be added by extending models</li>
+<li>Easy to add validation rules</li>
+<li>Simple to integrate with other systems</li>
+</ul></li>
+<li><p><strong>Better Error Handling</strong>:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> process_command(model, temp_threshold, user_input)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    print_status(response, collect_data())</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> e:</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Invalid command or response: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Error processing command: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+</section>
+<section id="handling-different-model-capabilities" class="level3">
+<h3 class="anchored" data-anchor-id="handling-different-model-capabilities">Handling Different Model Capabilities</h3>
+<p>Different SLM models may have varying capabilities in generating structured responses. This new approach handles this through:</p>
+<ol type="1">
+<li><strong>Clear Prompting</strong>: Explicit examples and format specifications</li>
+<li><strong>Fallback Mechanisms</strong>: Graceful degradation for simpler models</li>
+<li><strong>Error Recovery</strong>: Ability to extract partial information from responses</li>
+</ol>
+</section>
+</section>
+<section id="example-usage-1" class="level2">
+<h2 class="anchored" data-anchor-id="example-usage-1">Example Usage</h2>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example command: "What's the temperature?"</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>Response:</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"command_type"</span>: <span class="st">"sensor_query"</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sensor_query"</span>: {</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"temperature_dht"</span>: true,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"temperature_bmp"</span>: true,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"humidity"</span>: false,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"pressure"</span>: false,</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"button"</span>: false</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"response_text"</span>: <span class="st">"Current temperature readings: DHT22: 22.4°C, BMP280: 22.8°C"</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Example command: "Turn on red LED"</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>Response:</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"command_type"</span>: <span class="st">"led_control"</span>,</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"led_command"</span>: {</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"red"</span>: true,</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"yellow"</span>: false,</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">"green"</span>: false,</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">"reason"</span>: <span class="st">"User requested red LED activation"</span></span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"response_text"</span>: <span class="st">"Activating red LED as requested"</span></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The evolution to structured command processing may significantly improve our IoT control system, providing a more robust and maintainable foundation for future enhancements.</p>
+<blockquote class="blockquote">
+<p>While the structured approach adds some overhead, the benefits in reliability and maintainability outweigh the minimal performance impact.</p>
+</blockquote>
+<p>I did not play extensively with this approach, but a first attempt can be found in the <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/SLMs_for_IoT_CONTROL">GitHub repo</a>.</p>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
+<p>This lab involved experimenting with simple applications and verifying the feasibility of using an SLM to control IoT devices. The final result is far from something usable in the real world, but it can give the start point for more interesting applications. Below are some observations and suggestions for improvement:</p>
+<ul>
+<li><p>SLM responses can be probabilistic and inconsistent. To increase reliability, consider implementing a confidence threshold or voting system using multiple prompts/responses.</p></li>
+<li><p>Try to add data validation and sanity checks for sensor readings before passing them to the SLM.</p></li>
+<li><p>Apply <strong>Structured Response Parsing</strong> as discussed early. Future improvements in this approuch could include:</p>
+<ul>
+<li>Add more sophisticated validation rules</li>
+<li>Implement command history tracking</li>
+<li>Add support for compound commands</li>
+<li>Integrate with the logging system</li>
+<li>Add user permission levels</li>
+<li>Implement command templates for common operations</li>
+</ul></li>
+<li><p>Consider implementing a fallback mechanism when SLM responses are ambiguous or inconsistent.</p></li>
+<li><p>Study using RAG and fine-tuning to increase the system’s reliability when using very small models.</p></li>
+<li><p>Consider adding input validation for user commands to prevent potential issues.</p></li>
+<li><p>The current implementation queries the SLM for every command. We did it to study how SLMs would behave. We should consider implementing a caching mechanism for common queries.</p></li>
+<li><p>Some simple commands could be handled without SLM intervention. We can do it programmatically.</p></li>
+<li><p>Consider implementing a proper state machine for LED control to ensure consistent behavior.</p></li>
+<li><p>Implement more sophisticated trend analysis using statistical methods.</p></li>
+<li><p>Add support for more complex queries combining multiple data points.</p></li>
+</ul>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>This lab has demonstrated the progressive evolution of an IoT system from basic sensor integration to an intelligent, interactive platform powered by Small Language Models. Through our journey, we’ve explored several key aspects of combining edge AI with physical computing:</p>
+<section id="key-achievements" class="level4">
+<h4 class="anchored" data-anchor-id="key-achievements">Key Achievements</h4>
+<ol type="1">
+<li><strong>Progressive System Development</strong>
+<ul>
+<li>Started with basic sensor integration and LED control</li>
+<li>Advanced to SLM-based analysis and decision making</li>
+<li>Implemented natural language interaction</li>
+<li>Added historical data logging and analysis</li>
+<li>Created a complete interactive system</li>
+</ul></li>
+<li><strong>SLM Integration Insights</strong>
+<ul>
+<li>Demonstrated the feasibility of using SLMs for IoT control</li>
+<li>Explored different models and their capabilities</li>
+<li>Implemented various prompting strategies</li>
+<li>Handled both real-time and historical data analysis</li>
+</ul></li>
+<li><strong>Practical Learning Outcomes</strong>
+<ul>
+<li>Hardware-software integration techniques</li>
+<li>Real-time sensor data processing</li>
+<li>Natural language command interpretation</li>
+<li>Data logging and trend analysis</li>
+<li>Error handling and system reliability</li>
+</ul></li>
+</ol>
+</section>
+<section id="challenges-and-limitations" class="level4">
+<h4 class="anchored" data-anchor-id="challenges-and-limitations">Challenges and Limitations</h4>
+<p>Our implementation revealed several important challenges:</p>
+<ol type="1">
+<li><strong>SLM Reliability</strong>
+<ul>
+<li>Probabilistic nature of responses</li>
+<li>Consistency issues in decision making</li>
+<li>Need for better validation and verification</li>
+</ul></li>
+<li><strong>System Performance</strong>
+<ul>
+<li>Response time considerations</li>
+<li>Resource usage on edge devices</li>
+<li>Efficiency of data logging and analysis</li>
+</ul></li>
+<li><strong>Architectural Constraints</strong>
+<ul>
+<li>Simple state management</li>
+<li>Basic error handling</li>
+<li>Limited data validation</li>
+</ul></li>
+</ol>
+</section>
+<section id="final-thoughts" class="level4">
+<h4 class="anchored" data-anchor-id="final-thoughts">Final Thoughts</h4>
+<p>While this implementation demonstrates the potential of combining SLMs with IoT systems, it also highlights the exciting possibilities and challenges ahead. Though experimental, the system we’ve built provides a solid foundation for understanding how edge AI can enhance IoT applications. As SLMs evolve and improve, their integration with physical computing systems will likely become more robust and practical for real-world applications.</p>
+<p>This lab has shown that even with current limitations, SLMs can provide intelligent, natural language interfaces to IoT systems, opening new possibilities for human-machine interaction in the physical world. The future of IoT systems is shaped by intelligent, edge-based solutions that combine AI’s power with the practicality of physical computing.</p>
+</section>
+<section id="resourses" class="level2">
+<h2 class="anchored" data-anchor-id="resourses">Resourses</h2>
+<ul>
+<li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/SLMs_for_IoT_CONTROL">Python Scripts</a></li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Physical Computing with Raspberry Pi</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>
