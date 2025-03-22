@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>EdgeAI Engineering - Advancing EdgeAI: Beyond Basic SLMs</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../references.html" rel="next">
+<link href="../../raspi/iot/slm_iot.html" rel="prev">
+<link href="../../images/cover.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">EdgeAI Engineering</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="../../EdgeAI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/advancing_adgeai/adv_edgeai.html">Advancing EdgeAI: Beyond Basic SLMs</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#understanding-slm-limitations" id="toc-understanding-slm-limitations" class="nav-link active" data-scroll-target="#understanding-slm-limitations">Understanding SLM Limitations</a>
+  <ul class="collapse">
+  <li><a href="#knowledge-constraints" id="toc-knowledge-constraints" class="nav-link" data-scroll-target="#knowledge-constraints">1. Knowledge Constraints</a></li>
+  <li><a href="#reasoning-limitations" id="toc-reasoning-limitations" class="nav-link" data-scroll-target="#reasoning-limitations">2. Reasoning Limitations</a></li>
+  <li><a href="#inconsistent-outputs" id="toc-inconsistent-outputs" class="nav-link" data-scroll-target="#inconsistent-outputs">3. Inconsistent Outputs</a></li>
+  <li><a href="#domain-specialization" id="toc-domain-specialization" class="nav-link" data-scroll-target="#domain-specialization">4. Domain Specialization</a></li>
+  </ul></li>
+  <li><a href="#techniques-for-enhancing-slm-at-the-edge" id="toc-techniques-for-enhancing-slm-at-the-edge" class="nav-link" data-scroll-target="#techniques-for-enhancing-slm-at-the-edge">Techniques for Enhancing SLM at the Edge</a></li>
+  <li><a href="#optimizing-prompting-strategies" id="toc-optimizing-prompting-strategies" class="nav-link" data-scroll-target="#optimizing-prompting-strategies">Optimizing Prompting Strategies</a>
+  <ul class="collapse">
+  <li><a href="#chain-of-thought-prompting" id="toc-chain-of-thought-prompting" class="nav-link" data-scroll-target="#chain-of-thought-prompting">Chain-of-Thought Prompting</a></li>
+  <li><a href="#few-shot-learning" id="toc-few-shot-learning" class="nav-link" data-scroll-target="#few-shot-learning">Few-Shot Learning</a></li>
+  <li><a href="#task-decomposition" id="toc-task-decomposition" class="nav-link" data-scroll-target="#task-decomposition">Task Decomposition</a></li>
+  </ul></li>
+  <li><a href="#building-agents-with-slms" id="toc-building-agents-with-slms" class="nav-link" data-scroll-target="#building-agents-with-slms">Building Agents with SLMs</a>
+  <ul class="collapse">
+  <li><a href="#general-knowledge-router" id="toc-general-knowledge-router" class="nav-link" data-scroll-target="#general-knowledge-router">General Knowledge Router</a></li>
+  </ul></li>
+  <li><a href="#improving-agent-reliability" id="toc-improving-agent-reliability" class="nav-link" data-scroll-target="#improving-agent-reliability">Improving Agent Reliability</a>
+  <ul class="collapse">
+  <li><a href="#function-calling-with-pydantic" id="toc-function-calling-with-pydantic" class="nav-link" data-scroll-target="#function-calling-with-pydantic">1. Function Calling with Pydantic</a></li>
+  <li><a href="#response-validation" id="toc-response-validation" class="nav-link" data-scroll-target="#response-validation">2. Response Validation</a></li>
+  </ul></li>
+  <li><a href="#retrieval-augmented-generation-rag" id="toc-retrieval-augmented-generation-rag" class="nav-link" data-scroll-target="#retrieval-augmented-generation-rag">Retrieval-Augmented Generation (RAG)</a>
+  <ul class="collapse">
+  <li><a href="#understanding-rag" id="toc-understanding-rag" class="nav-link" data-scroll-target="#understanding-rag">Understanding RAG</a></li>
+  <li><a href="#implementing-a-basic-rag-system" id="toc-implementing-a-basic-rag-system" class="nav-link" data-scroll-target="#implementing-a-basic-rag-system">Implementing a Basic RAG System</a></li>
+  <li><a href="#key-components-of-our-edge-rag-system" id="toc-key-components-of-our-edge-rag-system" class="nav-link" data-scroll-target="#key-components-of-our-edge-rag-system">Key Components of Our Edge RAG System</a></li>
+  <li><a href="#advantages-of-rag-for-edge-ai" id="toc-advantages-of-rag-for-edge-ai" class="nav-link" data-scroll-target="#advantages-of-rag-for-edge-ai">Advantages of RAG for Edge AI</a></li>
+  <li><a href="#optimizing-rag-for-edge-devices" id="toc-optimizing-rag-for-edge-devices" class="nav-link" data-scroll-target="#optimizing-rag-for-edge-devices">Optimizing RAG for Edge Devices</a></li>
+  <li><a href="#application-enhanced-weather-station-with-rag" id="toc-application-enhanced-weather-station-with-rag" class="nav-link" data-scroll-target="#application-enhanced-weather-station-with-rag">Application: Enhanced Weather Station with RAG</a></li>
+  <li><a href="#using-the-rag-system-for-edge-ai-engineering" id="toc-using-the-rag-system-for-edge-ai-engineering" class="nav-link" data-scroll-target="#using-the-rag-system-for-edge-ai-engineering">Using the RAG System for Edge AI Engineering</a></li>
+  <li><a href="#testing-different-models-and-chunk-sizes" id="toc-testing-different-models-and-chunk-sizes" class="nav-link" data-scroll-target="#testing-different-models-and-chunk-sizes">Testing Different Models and Chunk Sizes</a></li>
+  </ul></li>
+  <li><a href="#advanced-agentic-rag-system" id="toc-advanced-agentic-rag-system" class="nav-link" data-scroll-target="#advanced-agentic-rag-system">Advanced Agentic RAG System</a>
+  <ul class="collapse">
+  <li><a href="#system-architecture" id="toc-system-architecture" class="nav-link" data-scroll-target="#system-architecture">System Architecture</a></li>
+  <li><a href="#key-workflow" id="toc-key-workflow" class="nav-link" data-scroll-target="#key-workflow">Key Workflow</a></li>
+  <li><a href="#important-code-sections" id="toc-important-code-sections" class="nav-link" data-scroll-target="#important-code-sections">Important Code Sections</a></li>
+  <li><a href="#detailed-workflow-diagram" id="toc-detailed-workflow-diagram" class="nav-link" data-scroll-target="#detailed-workflow-diagram">Detailed Workflow Diagram</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  </ul></li>
+  <li><a href="#fine-tuning-slms-for-edge-deployment" id="toc-fine-tuning-slms-for-edge-deployment" class="nav-link" data-scroll-target="#fine-tuning-slms-for-edge-deployment">Fine-Tuning SLMs for Edge Deployment</a>
+  <ul class="collapse">
+  <li><a href="#preparing-for-fine-tuning" id="toc-preparing-for-fine-tuning" class="nav-link" data-scroll-target="#preparing-for-fine-tuning">Preparing for Fine-Tuning</a></li>
+  <li><a href="#setting-up-a-fine-tuning-process" id="toc-setting-up-a-fine-tuning-process" class="nav-link" data-scroll-target="#setting-up-a-fine-tuning-process">Setting Up a Fine-Tuning Process</a></li>
+  <li><a href="#real-implementation-supervised-fine-tuning-sft" id="toc-real-implementation-supervised-fine-tuning-sft" class="nav-link" data-scroll-target="#real-implementation-supervised-fine-tuning-sft">Real implementation: Supervised Fine-Tuning (SFT)</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/advancing_adgeai/adv_edgeai.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/advancing_adgeai/adv_edgeai.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Advancing EdgeAI: Beyond Basic SLMs</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="exploring-cot-prompting-agents-function-calling-rag-and-more." class="level4">
+<h4 class="anchored" data-anchor-id="exploring-cot-prompting-agents-function-calling-rag-and-more.">Exploring CoT Prompting, Agents, Function Calling, RAG, and more.</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/cover.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption"><em>Image from author, with a Raspberry Pi from ImageFX - prompt - Create a cartoon image with a single Raspberry Pi with a white background</em></figcaption>
+</figure>
+</div>
+<p>Building on the foundation established in previous chapters of “Edge AI Engineering,” this chapter explores the limitations of Small Language Models (SLMs) and advanced techniques to enhance their capabilities at the edge. While we’ve demonstrated the feasibility of running SLMs on devices like the Raspberry Pi, practical applications often require addressing inherent limitations in these models.</p>
+<p>As we explore techniques like chain-of-thought prompting, agent architectures, function calling, response validation, and Retrieval-Augmented Generation (RAG), we’ll see how clever engineering and system design can mitigate SLMs’ limitations.</p>
+</section>
+<section id="understanding-slm-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-slm-limitations">Understanding SLM Limitations</h2>
+<p>Small Language Models, while impressive in their ability to run on edge devices, face several key limitations:</p>
+<section id="knowledge-constraints" class="level3">
+<h3 class="anchored" data-anchor-id="knowledge-constraints">1. Knowledge Constraints</h3>
+<p>SLMs have limited knowledge based on their training data, often outdated and incomplete. Unlike their larger counterparts, they cannot store the vast information needed for comprehensive expertise across all domains.</p>
+<p>Let’s run the below example to verify this limitation.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> ollama.generate(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"llama3.2:1b"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    prompt<span class="op">=</span><span class="st">"Who won the 2024 Summer Olympics men's 100m sprint final?"</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response[<span class="st">'response'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The output of the previous code will likely show hallucination or admission of not knowing, as in the case below:</p>
+<p><img src="./images/png/image-20250318170527154.png" class="img-fluid"></p>
+<p>This constraint could be solved simply by having an <strong>Agent</strong> search the Internet for the answer or using <strong>Retrieval-Augmented Generation (RAG)</strong>, as we will see later.</p>
+</section>
+<section id="reasoning-limitations" class="level3">
+<h3 class="anchored" data-anchor-id="reasoning-limitations">2. Reasoning Limitations</h3>
+<p>Complex reasoning tasks often exceed the capabilities of SLMs, which struggle with multi-step logical deductions, mathematical computations, and a nuanced understanding of context. <strong>Agents</strong> can be used to mitigate such limitations.</p>
+<p>For example, let’s reuse the previous code and ask to the SLM to multiply two numbers :</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> ollama.generate(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"llama3.2:3b"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    prompt<span class="op">=</span><span class="st">"Multiply 123456 by 123456"</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response[<span class="st">'response'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/image-20250318174737037.png" class="img-fluid"></p>
+<p>The response is wrong; once the multiplication result should be <code>15,241,383,936</code>. This is expected once the language models are not suitable for mathematical computations. Still, we can use an “<strong>agent</strong>” to determine whether a user asks for multiplication or a general question. We will learn how to create an agent later.</p>
+</section>
+<section id="inconsistent-outputs" class="level3">
+<h3 class="anchored" data-anchor-id="inconsistent-outputs">3. Inconsistent Outputs</h3>
+<p>SLMs may produce inconsistent responses to the same query, making them unreliable for critical applications requiring deterministic outputs. Several enhancements, such as <strong>Function Calling</strong> and <strong>Response Validation</strong>, can improve reliability.</p>
+</section>
+<section id="domain-specialization" class="level3">
+<h3 class="anchored" data-anchor-id="domain-specialization">4. Domain Specialization</h3>
+<p>SLMs perform worse than specialized models in domain-specific tasks like visual recognition or time-series analysis. <strong>Fine-tuning</strong> can adapt models to specific domains or tasks, improving performance for targeted applications.</p>
+</section>
+</section>
+<section id="techniques-for-enhancing-slm-at-the-edge" class="level2">
+<h2 class="anchored" data-anchor-id="techniques-for-enhancing-slm-at-the-edge">Techniques for Enhancing SLM at the Edge</h2>
+<p>Small Language Models (SLMs) offer remarkable capabilities for edge devices, but various techniques can significantly enhance their effectiveness. Here, we present a comprehensive framework for optimizing SLMs on resource-constrained devices like the Raspberry Pi, organized from fundamental to advanced approaches.</p>
+<p>We will divide those technics into 3 segments:</p>
+<ul>
+<li><p><strong>Fundamentals</strong>: Optimizing Prompting Strategies</p>
+<ul>
+<li><p>Chain-of-Thought Prompting</p></li>
+<li><p>Few-Shot Learning</p></li>
+<li><p>Task Decomposition</p></li>
+</ul></li>
+<li><p><strong>Intermediate</strong>: Building Intelligence Systems</p>
+<ul>
+<li><p>Building Agents with SLMs</p></li>
+<li><p>General Knowledge Router</p></li>
+<li><p>Function Calling</p></li>
+<li><p>Response Validation</p></li>
+</ul></li>
+<li><p><strong>Advanced:</strong> Extending Knowledge and Specialization</p>
+<ul>
+<li><p>Retrieval-Augmented Generation (RAG)</p></li>
+<li><p>Fine-Tuning for Domain Specialization</p></li>
+</ul></li>
+<li><p><strong>Integration</strong>: Combining Techniques for Optimal Performance</p></li>
+</ul>
+<p>The true power of these techniques emerges when they’re strategically combined:</p>
+<ol type="1">
+<li><strong>Agent Architecture with RAG</strong>: Create agents that can access both tools and knowledge bases</li>
+<li><strong>Validation-Enhanced RAG</strong>: Apply response validation to ensure RAG outputs are accurate</li>
+<li><strong>Fine-Tuned Routers</strong>: Use specialized fine-tuned models to handle routing decisions</li>
+<li><strong>Chain-of-Thought with Function Calling</strong>: Combine reasoning traces with structured outputs</li>
+</ol>
+<p>For example, a comprehensive weather monitoring system, as we introduced in the chapter “Experimenting with SLMs for IoT Control,” might use the following:</p>
+<ul>
+<li>RAG to access historical weather patterns and interpretation guides</li>
+<li>Function calling to structure sensor data analysis</li>
+<li>Response validation to verify recommendations</li>
+<li>Task decomposition to handle complex multi-part weather analysis</li>
+</ul>
+</section>
+<section id="optimizing-prompting-strategies" class="level2">
+<h2 class="anchored" data-anchor-id="optimizing-prompting-strategies">Optimizing Prompting Strategies</h2>
+<section id="chain-of-thought-prompting" class="level3">
+<h3 class="anchored" data-anchor-id="chain-of-thought-prompting">Chain-of-Thought Prompting</h3>
+<p>Chain-of-thought prompting encourages SLMs to break down complex problems into step-by-step reasoning, leading to more accurate results:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> solve_math_problem(problem):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ss">    Problem: </span><span class="sc">{</span>problem<span class="sc">}</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ss">    Let's think about this step by step:</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ss">    1. First, I'll identify what we're looking for</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ss">    2. Then, I'll identify the relevant information</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ss">    3. Next, I'll set up the appropriate equations</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ss">    4. Finally, I'll solve the problem carefully</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ss">    Solving:</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> ollama.generate(model<span class="op">=</span><span class="st">"llama3.2:3b"</span>, prompt<span class="op">=</span>prompt)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response[<span class="st">'response'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This technique significantly improves performance on reasoning tasks by emulating human problem-solving approaches.</p>
+</section>
+<section id="few-shot-learning" class="level3">
+<h3 class="anchored" data-anchor-id="few-shot-learning">Few-Shot Learning</h3>
+<p>Few-shot learning provides examples within the prompt, helping SLMs understand the expected response format and reasoning pattern:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_sentiment(text):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ss">    Task: Classify the sentiment of the text as positive, negative, or neutral.</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ss">    Examples:</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ss">    Text: "I love this product, it works perfectly!"</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ss">    Sentiment: positive</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ss">    Text: "This is the worst experience I've ever had."</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ss">    Sentiment: negative</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ss">    Text: "The package arrived on time."</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    Sentiment: neutral</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="ss">    Text: "</span><span class="sc">{</span>text<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="ss">    Sentiment:</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> ollama.generate(model<span class="op">=</span><span class="st">"llama3.2:1b"</span>, prompt<span class="op">=</span>prompt)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response[<span class="st">'response'</span>].strip()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This approach is particularly effective for classification tasks and standardized outputs.</p>
+</section>
+<section id="task-decomposition" class="level3">
+<h3 class="anchored" data-anchor-id="task-decomposition">Task Decomposition</h3>
+<p>For complex tasks, breaking them into smaller subtasks helps SLMs manage complexity:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> analyze_product_review(review):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 1: Extract main points</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    points_prompt <span class="op">=</span> <span class="ss">f"Extract the main points from this product review: </span><span class="sc">{</span>review<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    points_response <span class="op">=</span> ollama.generate(model<span class="op">=</span><span class="st">"llama3.2:1b"</span>, prompt<span class="op">=</span>points_prompt)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    main_points <span class="op">=</span> points_response[<span class="st">'response'</span>]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 2: Determine sentiment</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    sentiment_prompt <span class="op">=</span> <span class="ss">f"Determine the overall sentiment of this review: </span><span class="sc">{</span>review<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    sentiment_response <span class="op">=</span> ollama.generate(model<span class="op">=</span><span class="st">"llama3.2:1b"</span>, </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                                         prompt<span class="op">=</span>sentiment_prompt)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    sentiment <span class="op">=</span> sentiment_response[<span class="st">'response'</span>]</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 3: Identify improvement suggestions</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    improvements_prompt <span class="op">=</span> <span class="ss">f"What suggestions for improvement can be found in </span><span class="ch">\</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="ss">    this review? </span><span class="sc">{</span>review<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    improvements_response <span class="op">=</span> ollama.generate(model<span class="op">=</span><span class="st">"llama3.2:1b"</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>                                            prompt<span class="op">=</span>improvements_prompt)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    improvements <span class="op">=</span> improvements_response[<span class="st">'response'</span>]</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Final synthesis</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    final_prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    Create a concise analysis of this product review based on:</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    Main points: </span><span class="sc">{</span>main_points<span class="sc">}</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    Overall sentiment: </span><span class="sc">{</span>sentiment<span class="sc">}</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    Improvement suggestions: </span><span class="sc">{</span>improvements<span class="sc">}</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    final_response <span class="op">=</span> ollama.generate(model<span class="op">=</span><span class="st">"llama3.2:1b"</span>, </span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>                                     prompt<span class="op">=</span>final_prompt)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> final_response[<span class="st">'response'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This technique distributes cognitive load across multiple simpler prompts, enabling SLMs to handle tasks that might otherwise exceed their capabilities.</p>
+</section>
+</section>
+<section id="building-agents-with-slms" class="level2">
+<h2 class="anchored" data-anchor-id="building-agents-with-slms">Building Agents with SLMs</h2>
+<p>To address some of these limitations, we can develop agents that leverage SLMs as part of a more extensive system with additional capabilities.</p>
+<blockquote class="blockquote">
+<p>What is an Agent? It is an <strong>AI model capable of reasoning, planning, and interacting with its environment</strong>. It can be called an <em>Agent</em> because it has an <em>agency</em> that can interact with the environment.</p>
+</blockquote>
+<p>Let’s think about the multiplication problem that we faced before. An Agent can be used for that.</p>
+<p>An agent is a system that uses an AI Model as its core reasoning engine to:</p>
+<ul>
+<li><strong>Understand natural language:</strong> (1) Interpret and respond to human instructions meaningfully.</li>
+<li><strong>Reason and plan:</strong> (2) Analyze information, make decisions, and devise problem-solving strategies.</li>
+<li><strong>Interact with its environment:</strong> (3 and 4) Gather information, take actions, and observe the results of those actions.</li>
+</ul>
+<p><img src="./images/png/image-20250319093008853.png" class="img-fluid"></p>
+<p>For example, if it is a multiplication, we can use a Python function as a “tool” to calculate it, as shown in the diagram:</p>
+<p><img src="./images/png/image-20250319162640705.png" class="img-fluid"></p>
+<p>Our code works through the following steps:</p>
+<ol type="1">
+<li><p><strong>User Input</strong>: The user types a query like “What is 7 times 8?” or “What is the capital of France?”</p></li>
+<li><p><strong>Process Query</strong>: The <code>process_query()</code> function handles the input and decides what to do with it.</p></li>
+<li><p><strong>Classification</strong>: The <code>ask_ollama_for_classification()</code> function sends the user’s query to the SLM (using Ollama) with a prompt asking it to classify whether the query is requesting multiplication or asking a general question.</p></li>
+<li><p><strong>Decision</strong>: Based on the SLM’s classification:</p>
+<ul>
+<li>If it’s a multiplication request, the SLM also extracts the numbers, and we use our <code>multiply()</code> function.</li>
+<li>If it’s a general question, we send the original query to the SLM for a direct answer.</li>
+</ul></li>
+<li><p><strong>Response</strong>: The system returns either the multiplication result or the SLM’s answer to the general question.</p></li>
+</ol>
+<p>Here’s a Python script that creates a simple agent (or router) between multiplication operations and general questions as described:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Configuration</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>OLLAMA_URL <span class="op">=</span> <span class="st">"http://localhost:11434/api"</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>MODEL <span class="op">=</span> <span class="st">"llama3.2:3b"</span>  <span class="co"># You can change this to any model you have installed</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>VERBOSE <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ask_ollama_for_classification(user_input):</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">    Ask Ollama to classify whether the query is a multiplication request or a </span><span class="ch">\</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">    general question.</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    classification_prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="ss">    Analyze the following query and determine if it's asking for multiplication </span><span class="ch">\</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="ss">    or if it's a general question.</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="ss">    Query: "</span><span class="sc">{</span>user_input<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    If it's asking for multiplication, respond with a JSON object in this format:</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="ch">{{</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="ss">      "type": "multiplication",</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="ss">      "numbers": [number1, number2]</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="ch">}}</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    If it's a general question, respond with a JSON object in this format:</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="ch">{{</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="ss">      "type": "general_question"</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="ch">}}</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="ss">    Respond ONLY with the JSON object, nothing else.</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> VERBOSE:</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Sending classification request to Ollama"</span>)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> requests.post(</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"</span><span class="sc">{</span>OLLAMA_URL<span class="sc">}</span><span class="ss">/generate"</span>,</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>            json<span class="op">=</span>{</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>                <span class="st">"model"</span>: MODEL,</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>                <span class="st">"prompt"</span>: classification_prompt,</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>                <span class="st">"stream"</span>: <span class="va">False</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> response.status_code <span class="op">==</span> <span class="dv">200</span>:</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>            response_text <span class="op">=</span> response.json().get(<span class="st">"response"</span>, <span class="st">""</span>).strip()</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> VERBOSE:</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"Classification response: </span><span class="sc">{</span>response_text<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Try to parse the JSON response</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Find JSON content if there's any surrounding text</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>                start_index <span class="op">=</span> response_text.find(<span class="st">'{'</span>)</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>                end_index <span class="op">=</span> response_text.rfind(<span class="st">'}'</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> start_index <span class="op">&gt;=</span> <span class="dv">0</span> <span class="kw">and</span> end_index <span class="op">&gt;</span> start_index:</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>                    json_str <span class="op">=</span> response_text[start_index:end_index]</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">return</span> json.loads(json_str)</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> {<span class="st">"type"</span>: <span class="st">"general_question"</span>}</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> json.JSONDecodeError:</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> VERBOSE:</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f"Failed to parse JSON: </span><span class="sc">{</span>response_text<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> {<span class="st">"type"</span>: <span class="st">"general_question"</span>}</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> VERBOSE:</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"Error: Received status code </span><span class="sc">{</span>response<span class="sc">.</span>status_code<span class="sc">}</span><span class="ss"> </span><span class="ch">\</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a><span class="ss">                from Ollama."</span>)</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> {<span class="st">"type"</span>: <span class="st">"general_question"</span>}</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> VERBOSE:</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Error connecting to Ollama: </span><span class="sc">{</span><span class="bu">str</span>(e)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {<span class="st">"type"</span>: <span class="st">"general_question"</span>}</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> multiply(a, b):</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a><span class="co">    Perform multiplication and return a formatted response.</span></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> a <span class="op">*</span> b</span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"The product of </span><span class="sc">{</span>a<span class="sc">}</span><span class="ss"> and </span><span class="sc">{</span>b<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>result<span class="sc">}</span><span class="ss">."</span></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ask_ollama(query):</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="co">    Send a query to Ollama for general question answering.</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> VERBOSE:</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Sending query to Ollama"</span>)</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> requests.post(</span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"</span><span class="sc">{</span>OLLAMA_URL<span class="sc">}</span><span class="ss">/generate"</span>,</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>            json<span class="op">=</span>{</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>                <span class="st">"model"</span>: MODEL,</span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>                <span class="st">"prompt"</span>: query,</span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>                <span class="st">"stream"</span>: <span class="va">False</span></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> response.status_code <span class="op">==</span> <span class="dv">200</span>:</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> response.json().get(<span class="st">"response"</span>, <span class="st">""</span>)</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="ss">f"Error: Received status code </span><span class="sc">{</span>response<span class="sc">.</span>status_code<span class="sc">}</span><span class="ss"> </span><span class="ch">\</span></span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a><span class="ss">            from Ollama."</span></span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"Error connecting to Ollama: </span><span class="sc">{</span><span class="bu">str</span>(e)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_query(user_input):</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a><span class="co">    Process the user input by first asking Ollama to classify it,</span></span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a><span class="co">    then either performing multiplication or sending it back as a </span></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a><span class="co">    general question.</span></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Let Ollama classify the query</span></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>    classification <span class="op">=</span> ask_ollama_for_classification(user_input)</span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> VERBOSE:</span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Ollama classification:"</span>, classification)</span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> classification.get(<span class="st">"type"</span>) <span class="op">==</span> <span class="st">"multiplication"</span>:</span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>        numbers <span class="op">=</span> classification.get(<span class="st">"numbers"</span>, [<span class="dv">0</span>, <span class="dv">0</span>])</span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(numbers) <span class="op">&gt;=</span> <span class="dv">2</span>:</span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> multiply(numbers[<span class="dv">0</span>], numbers[<span class="dv">1</span>])</span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="st">"I understood you wanted multiplication, but couldn't </span><span class="ch">\</span></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a><span class="st">            extract the numbers properly."</span></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ask_ollama(user_input)</span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a><span class="co">    Main function to run the agent interactively.</span></span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Ollama Agent (Type 'exit' to quit)"</span>)</span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"-----------------------------------"</span>)</span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>        user_input <span class="op">=</span> <span class="bu">input</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">You: "</span>)</span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> user_input.lower() <span class="kw">in</span> [<span class="st">"exit"</span>, <span class="st">"quit"</span>, <span class="st">"bye"</span>]:</span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Goodbye!"</span>)</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> process_query(user_input)</span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Agent: </span><span class="sc">{</span>response<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set to True to see detailed logging</span></span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a>    VERBOSE <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a>    main()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When we run the script, we can see that, first, the SLM chooses <code>multiplication</code>, passing the numbers entered by the user to the “tool,” which, in this case, is the <code>multiply()</code> function. As a result, we got 15,241,383,936, which it is correct.</p>
+<p><img src="./images/png/image-20250318180551713.png" class="img-fluid"></p>
+<p>Let’s now enter with another question that has no relation with arithmetic, for example: <code>What is the capital of Brazil?</code> In this case, the SLM will decide that the query is a <code>general question</code> and pass it on to the SLM to answer it.</p>
+<p><img src="./images/png/image-20250318181417088.png" class="img-fluid"></p>
+<p>This simple agent (or router) demonstrates the fundamental concept of using an SLM to make decisions about processing different types of user inputs. It shows both the power of SLMs for natural language understanding and their limitations in structured tasks.</p>
+<section id="limitations-and-considerations" class="level4">
+<h4 class="anchored" data-anchor-id="limitations-and-considerations">Limitations and Considerations</h4>
+<p>This agent seems to resolve our problem, but it has several limitations that are common when working with SLMs:</p>
+<ol type="1">
+<li><strong>JSON Parsing Issues</strong>: SLMs don’t always perfectly format JSON responses as requested. The code includes error handling for this.</li>
+<li><strong>Classification Reliability</strong>: The SLM might not always correctly classify the query, especially with ambiguous questions.</li>
+<li><strong>Number Extraction</strong>: The SLM might extract numbers incorrectly or miss them entirely.</li>
+<li><strong>Error Handling</strong>: Robust error handling is essential when working with SLMs because their outputs can be unpredictable.</li>
+<li><strong>Latency</strong>: Significant latency is involved in making multiple calls to the SLM. For example, for the above simple agent, the latency was about <code>50s</code> when using the <code>llama3.2:3B</code> on a <code>Raspberry Pi 5</code>.</li>
+</ol>
+<p>Here, you can see the SLM latency (simple query) per device (in tokens/s):</p>
+<table class="table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 45%">
+<col style="width: 11%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Raspi 5 (Cortex A-76)</th>
+<th>PC (i7)</th>
+<th>Mac (M1 Pro)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Gemma3:4b</strong></td>
+<td>3.8</td>
+<td>8.7</td>
+<td>39</td>
+</tr>
+<tr class="even">
+<td><strong>Llama3.2:3b</strong></td>
+<td>5.5</td>
+<td>12</td>
+<td>63</td>
+</tr>
+<tr class="odd">
+<td><strong>Llama3.2:1b</strong></td>
+<td>7.5</td>
+<td>19.5</td>
+<td>111</td>
+</tr>
+<tr class="even">
+<td><strong>Gemma3:1b</strong></td>
+<td>12</td>
+<td>22.45</td>
+<td>91</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>In my simple tests, the 1B models struggled to classify the tasks correctly. The the 3B and 4B models worked fine</p>
+</blockquote>
+</section>
+<section id="improvements" class="level4">
+<h4 class="anchored" data-anchor-id="improvements">Improvements</h4>
+<p>To create a more robust agent, we can, for example:</p>
+<ol type="1">
+<li><strong>Expand Capabilities</strong>: Add support for more operations (addition, subtraction, division).</li>
+<li><strong>Better Error Handling</strong>: Improve fallback mechanisms when the SLM fails to extract numbers or classify correctly.</li>
+<li><strong>Model Preloading</strong>: Initialize the model at startup to reduce latency.</li>
+<li><strong>Adding Regex Fallbacks</strong>: Use regular expressions as a fallback to extract numbers when the SLM fails.</li>
+<li><strong>Context Preservation</strong>: Maintain conversation context for multi-turn interactions.</li>
+</ol>
+<p>A more robust script can be used with the above improvements. The diagram shows how it would work:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/diag1.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">image-20250322113135882</figcaption>
+</figure>
+</div>
+<p>The diagram illustrates the key components of the system:</p>
+<ol type="1">
+<li><strong>Initialization:</strong>
+<ul>
+<li>The system starts by initializing both models in parallel threads</li>
+<li>This prevents cold starts and reduces latency</li>
+</ul></li>
+<li><strong>Query Processing Flow:</strong>
+<ul>
+<li>User input is first sent to a classification step</li>
+<li>A model (llama3.2:3B) determines if it’s a calculation or a general question (we can choose a different model here).</li>
+<li>If it’s a calculation:
+<ul>
+<li>The system extracts the operation type and numbers</li>
+<li>Numbers are converted from strings to floats</li>
+<li>The appropriate calculation is performed</li>
+<li>Results are formatted with comma separators (e.g., 1,234,567.89)</li>
+</ul></li>
+<li>If it’s a general question:
+<ul>
+<li>The query is sent to the main model (llama3.2:3b) for answering (we can choose a different model here)</li>
+</ul></li>
+</ul></li>
+<li><strong>Optimizations</strong> (highlighted in the subgraph):
+<ul>
+<li>Persistent HTTP session for connection reuse</li>
+<li>Keep-alive parameter to prevent model unloading</li>
+<li>Simplified classification prompt for faster processing</li>
+<li>Using a smaller model for the classification task</li>
+<li>Rule-based fallback logic if the model classification fails</li>
+</ul></li>
+</ol>
+<p>The main performance improvements come from:</p>
+<ol type="1">
+<li>Keeping models loaded in memory</li>
+<li>Using connection pooling</li>
+<li>Simplifying the classification task</li>
+<li>Using a smaller model for classification</li>
+<li>Initializing models in parallel</li>
+</ol>
+<p>This approach maintains the intelligent classification capability while significantly reducing execution time compared to the original implementation.</p>
+<p>Runing the script <code>3-ollama-calculator-agent.py</code>, we get correct results with reduced latency of about 60%.</p>
+<p><img src="./images/png/image-20250318184225534.png" class="img-fluid"></p>
+<p><img src="./images/png/image-20250318185238027.png" class="img-fluid"></p>
+</section>
+<section id="general-knowledge-router" class="level3">
+<h3 class="anchored" data-anchor-id="general-knowledge-router">General Knowledge Router</h3>
+<p>Remember when we asked our SLM: <code>Who won the 2024 Summer Olympics men's 100m sprint final?</code> We could not receive an answer because the modes were trained with information previously in late 2023.</p>
+<p>To solve this issue, let’s build a more advanced agent to classify whether it should use its knowledge to answer a question or fetch updated information from the Internet. This addresses a key limitation of Small Language Models: their knowledge cutoff date.</p>
+<p>The general architecture of our agent will be similar to the calculator, but now, we will use a web search API as a tool.</p>
+<p>This agent addresses a critical limitation of SLMs - their knowledge cutoff date - by determining when to use the model’s built-in knowledge versus when to search for up-to-date information from the web.</p>
+<section id="how-it-works" class="level4">
+<h4 class="anchored" data-anchor-id="how-it-works">How it works:</h4>
+<p><strong>Uses SLM for Classification</strong>: Relies entirely on the SLM to determine whether a query needs web search or can be answered from the model’s knowledge.</p>
+<p><strong>Provides Date Context</strong>: This section supplies the current date to help the SLM make informed decisions about whether information is outdated.</p>
+<p><strong>Integrates Tavily Search</strong>: Uses <a href="https://tavily.com/">Tavily’s powerful search API</a> to find relevant information for queries that need external data.</p>
+<p><strong>Handles Timeouts</strong>: Includes fallback mechanisms when the model takes too long to respond.</p>
+<p><strong>Maintains Source Attribution</strong>: Clearly indicates to the user whether the answer comes from the model’s knowledge or web search.</p>
+<p>Let’s run the script: <code>4-ollama-search-agent.py</code></p>
+<p>But first, we should install the required libraries:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install requests</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install tavily-python</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Replace <code>"tvly-YOUR_API_KEY"</code> with your actual Tavily API key.</p>
+<blockquote class="blockquote">
+<p>Why Tavily is Superior for This Use Case</p>
+<ol type="1">
+<li><strong>Built for RAG</strong>: Tavily is specifically designed for retrieval-augmented generation, making it perfect for our knowledge router.</li>
+<li><strong>High-Quality Results</strong>: It prioritizes reputable sources and provides context-relevant results.</li>
+<li><strong>Built-in Summarization</strong>: The API can provide an AI-generated summary of search results, giving an additional layer of processing before your SLM.</li>
+<li><strong>Simple Integration</strong>: Clean API with straightforward responses that are easy to parse.</li>
+<li><strong>Generous Free Tier</strong>: 1,000 free searches is plenty for testing and personal use.</li>
+</ol>
+</blockquote>
+<p>Runing the script and entering with the same questions that could not be answered before, we now have: <code>Noah Lyles won the men's 100m sprint final at the 2024 Summer Olympics. He set a new personal best time of 9.79 seconds. This victory marked the United States' first win in the event since 2004.</code></p>
+<p><img src="./images/png/image-20250319110111383.png" class="img-fluid"></p>
+<p>When the user enters a common-knowledge question, the agent will send it directly to the SLM. For example, if the user asks, <code>"Who is Albert Einstein?"</code>, we get:</p>
+<p><img src="./images/png/image-20250319120043766.png" class="img-fluid"></p>
+</section>
+</section>
+</section>
+<section id="improving-agent-reliability" class="level2">
+<h2 class="anchored" data-anchor-id="improving-agent-reliability">Improving Agent Reliability</h2>
+<p>There are several ways to enhance an agent’s reliability. One is to implement effective, approved, structured function calling, which makes agents’ responses more consistent and predictable.</p>
+<section id="function-calling-with-pydantic" class="level3">
+<h3 class="anchored" data-anchor-id="function-calling-with-pydantic">1. Function Calling with Pydantic</h3>
+<p>In the SLM chapter, we explored function calling when we created an <em>app</em> where the user enters a country’s name and gets, as an output, the distance in km from the capital city of such a country and the app’s location.</p>
+<p><img src="./images/png/func_call.png" class="img-fluid"></p>
+<p>Once the user enters a country name, the model will return the name of its capital city (as a string) and the latitude and longitude of such city (in float). Using those coordinates, the app used a simple Python library (<a href="https://pypi.org/project/haversine/">haversine</a>) to calculate the distance between those 2 points.</p>
+<p>The critical library used was <a href="https://docs.pydantic.dev/latest/">Pydantic</a> (and instructor), a robust data validation and settings management library engineered by Python to enhance the robustness and reliability of our codebase. In short, <em>Pydantic</em> helps ensure that the model’s response will always be consistent.</p>
+<p>Function calling can improve an agent’s reliability by ensuring structured outputs and clear tool selection logic. Here’s a generic template about how we can implement it :</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel, Field</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional, List</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> instructor</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ToolCall(BaseModel):</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    tool_name: <span class="bu">str</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Name of the tool to call"</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    parameters: <span class="bu">dict</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Parameters for the tool"</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    reasoning: <span class="bu">str</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Reasoning for using this tool"</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AgentResponse(BaseModel):</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    needs_tool: <span class="bu">bool</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Whether a tool is needed"</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    tool_calls: Optional[List[ToolCall]] <span class="op">=</span> Field(<span class="va">None</span>, </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                                 description<span class="op">=</span><span class="st">"Tools to call"</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    direct_response: Optional[<span class="bu">str</span>] <span class="op">=</span> Field(<span class="va">None</span>, </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                                           description<span class="op">=</span><span class="st">"Direct response if no </span><span class="ch">\</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="st">                                           tool needed"</span>)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the client with structured output</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> instructor.patch(</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    OpenAI(</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        base_url<span class="op">=</span><span class="st">"http://localhost:11434/v1"</span>,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        api_key<span class="op">=</span><span class="st">"ollama"</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span>instructor.Mode.JSON,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> structured_think(query, available_tools, model):</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    tool_descriptions <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([<span class="ss">f"- </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>desc<span class="sc">}</span><span class="ss">"</span> </span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>                                 <span class="cf">for</span> name, desc <span class="kw">in</span> available_tools.items()])</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="ss">    Available tools:</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>tool_descriptions<span class="sc">}</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="ss">    User query: </span><span class="sc">{</span>query<span class="sc">}</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="ss">    Determine if any tools are needed to answer this query accurately.</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>        model<span class="op">=</span>model,</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>        messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: prompt}],</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>        response_model<span class="op">=</span>AgentResponse,</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>        max_retries<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="response-validation" class="level3">
+<h3 class="anchored" data-anchor-id="response-validation">2. Response Validation</h3>
+<p>Response validation is crucial to developing and deploying AI agents powered by language models. Here are key points regarding LLM validation for agents: Types of Validation</p>
+<ul>
+<li>Response Relevancy: Determines if the LLM output addresses the input informatively and concisely.</li>
+<li>Prompt Alignment: Check if the LLM output follows instructions from the prompt template.</li>
+<li>Correctness: Assesses factual accuracy based on ground truth.</li>
+<li>Hallucination Detection: Identifies fake or made-up information in LLM outputs.</li>
+</ul>
+<p>Adding validation prevents incorrect or harmful responses, and here, we can test it with a simple script:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> validate_response(query, response):</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Validate that the response is appropriate for the query"""</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    validation_prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ss">    User query: </span><span class="sc">{</span>query<span class="sc">}</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="ss">    Generated response: </span><span class="sc">{</span>response<span class="sc">}</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    Evaluate if this response:</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="ss">    1. Directly addresses the user's query</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="ss">    2. Is factually accurate to the best of your knowledge</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="ss">    3. Is helpful and complete</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="ss">    Respond in the following JSON format:</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="ch">{{</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="ss">        "valid": true/false,</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="ss">        "reason": "Explanation if invalid",</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="ss">        "score": 0-10</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="ch">}}</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        validation <span class="op">=</span> ollama.generate(</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>            model<span class="op">=</span><span class="st">"llama3.2:3b"</span>,  </span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>            prompt<span class="op">=</span>validation_prompt</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> json.loads(validation[<span class="st">'response'</span>])</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> result</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error during validation: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {<span class="st">"valid"</span>: <span class="va">False</span>, <span class="st">"reason"</span>: <span class="st">"Validation error"</span>, <span class="st">"score"</span>: <span class="dv">0</span>}</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Test</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"What is the Raspberry Pi 5?"</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> <span class="st">"It is a pie created with raspberry and cooked in an oven"</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>validation <span class="op">=</span> validate_response(query, response)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(validation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/image-20250322111057535.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="retrieval-augmented-generation-rag" class="level2">
+<h2 class="anchored" data-anchor-id="retrieval-augmented-generation-rag">Retrieval-Augmented Generation (RAG)</h2>
+<p>RAG systems enhance Small Language Models (SLMs) by providing relevant information from external sources before generation. This is particularly valuable for edge devices with limited model sizes, as it allows them to access knowledge beyond their training data without increasing the model size.</p>
+<section id="understanding-rag" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-rag">Understanding RAG</h3>
+<p>In a basic interaction between a user and a language model, the user asks a question, which is sent as a prompt to the model. The model generates a response based solely on its pre-trained knowledge. In a RAG process, there’s an additional step between the user’s question and the model’s response. The user’s question triggers a retrieval process from a knowledge base.</p>
+<p><img src="./images/png/rag-1.png" class="img-fluid"></p>
+<p>The RAG process consists of these key steps:</p>
+<ol type="1">
+<li><strong>Query Processing</strong>: When a user asks a question, the system converts it into an embedding (a numerical representation).</li>
+<li><strong>Document Retrieval</strong>: The system searches a knowledge base for documents with similar embeddings.</li>
+<li><strong>Context Enhancement</strong>: Relevant documents are retrieved and combined with the original query.</li>
+<li><strong>Generation</strong>: The SLM generates a response using both the query and the retrieved context.</li>
+</ol>
+</section>
+<section id="implementing-a-basic-rag-system" class="level3">
+<h3 class="anchored" data-anchor-id="implementing-a-basic-rag-system">Implementing a Basic RAG System</h3>
+<p>We will develop two crucial components (scripts) of an RAG system:</p>
+<ol type="1">
+<li>Creating the Vector Database (<code>10-Create-Persistent-Vector-Database.py</code>). This script builds a knowledge base by:
+<ul>
+<li>Loading documents from PDFs and URLs</li>
+<li>Splitting them into manageable chunks</li>
+<li>Creating embeddings for each chunk</li>
+<li>Storing these embeddings in a vector database (Chroma)</li>
+</ul></li>
+<li>Querying the Database (<code>20-Query-the-Persistent-RAG-Database.py</code>). This script:
+<ul>
+<li>Loads the saved vector database</li>
+<li>Accepts user queries</li>
+<li>Retrieves relevant documents based on query similarity</li>
+<li>Combines documents with the query in a prompt</li>
+<li>Generates a response using the SLM</li>
+</ul></li>
+</ol>
+<p>Let’s examine how these components work together to implement a RAG system on edge devices.</p>
+</section>
+<section id="key-components-of-our-edge-rag-system" class="level3">
+<h3 class="anchored" data-anchor-id="key-components-of-our-edge-rag-system">Key Components of Our Edge RAG System</h3>
+<ol type="1">
+<li><strong>Document Processing</strong></li>
+</ol>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_vectorstore():</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load documents from PDFs and URLs</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    docs_list <span class="op">=</span> []</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># [Document loading code]</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Split documents into chunks</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    text_splitter <span class="op">=</span> RecursiveCharacterTextSplitter.from_tiktoken_encoder(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        chunk_size<span class="op">=</span><span class="dv">300</span>, chunk_overlap<span class="op">=</span><span class="dv">30</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    doc_splits <span class="op">=</span> text_splitter.split_documents(docs_list)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create embeddings and store in vector database</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    embedding_function <span class="op">=</span> OllamaEmbeddings(model<span class="op">=</span><span class="st">"nomic-embed-text"</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    vectorstore <span class="op">=</span> Chroma.from_documents(</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        documents<span class="op">=</span>doc_splits,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        collection_name<span class="op">=</span><span class="st">"rag-edgeai-eng-chroma"</span>,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        embedding<span class="op">=</span>embedding_function,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        persist_directory<span class="op">=</span>PERSIST_DIRECTORY</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Persist to disk</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    vectorstore.persist()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This function processes our documents, creating a searchable knowledge base. Notice we’re using <code>OllamaEmbeddings</code>with the <code>nomic-embed-text</code> model, which can run efficiently on edge devices like the Raspberry Pi.</p>
+<ol type="1">
+<li><strong>Query Processing and Retrieval</strong></li>
+</ol>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> answer_question(question, retriever):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Retrieve relevant documents</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    docs <span class="op">=</span> retriever.invoke(question)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    docs_content <span class="op">=</span> <span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>.join(doc.page_content <span class="cf">for</span> doc <span class="kw">in</span> docs)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate answer using RAG prompt</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    rag_prompt <span class="op">=</span> hub.pull(<span class="st">"rlm/rag-prompt"</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    rag_chain <span class="op">=</span> rag_prompt <span class="op">|</span> llm <span class="op">|</span> StrOutputParser()</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate the answer</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    answer <span class="op">=</span> rag_chain.invoke({<span class="st">"context"</span>: docs_content, <span class="st">"question"</span>: question})</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> answer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This function retrieves relevant documents based on the query and combines them with a specialized RAG prompt to generate a response. The RAG prompt is particularly important as it tells the model how to use the context documents to answer the question.</p>
+<ol type="1">
+<li><strong>SLM Integration</strong></li>
+</ol>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the LLM</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>local_llm <span class="op">=</span> <span class="st">"llama3.2:3b"</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>llm <span class="op">=</span> ChatOllama(model<span class="op">=</span>local_llm, temperature<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We’re using Ollama to run the SLM locally on our edge device, in this case using the 3B parameter version of Llama 3.2.</p>
+</section>
+<section id="advantages-of-rag-for-edge-ai" class="level3">
+<h3 class="anchored" data-anchor-id="advantages-of-rag-for-edge-ai">Advantages of RAG for Edge AI</h3>
+<p>Using RAG on edge devices offers several significant advantages:</p>
+<ol type="1">
+<li><strong>Knowledge Extension</strong>: RAG allows small models to access knowledge beyond their training data, effectively extending their capabilities without increasing model size.</li>
+<li><strong>Reduced Hallucination</strong>: By providing factual context, RAG significantly reduces the likelihood of SLMs generating incorrect information.</li>
+<li><strong>Up-to-date Information</strong>: Unlike the fixed knowledge in a model’s weights, RAG knowledge bases can be updated regularly with new information.</li>
+<li><strong>Domain Specialization</strong>: RAG can make general SLMs perform like domain specialists by providing domain-specific knowledge bases.</li>
+<li><strong>Resource Efficiency</strong>: RAG allows smaller models (which require less memory and computation) to achieve performance comparable to much larger models.</li>
+</ol>
+</section>
+<section id="optimizing-rag-for-edge-devices" class="level3">
+<h3 class="anchored" data-anchor-id="optimizing-rag-for-edge-devices">Optimizing RAG for Edge Devices</h3>
+<p>When implementing RAG on resource-constrained edge devices like the Raspberry Pi, consider these optimizations:</p>
+<ol type="1">
+<li><strong>Chunk Size</strong>: Smaller chunks (300-500 tokens) reduce memory usage during retrieval and generation.</li>
+<li><strong>Retrieval Limits</strong>: Limit the number of retrieved documents (k=3 to 5) to reduce context size.</li>
+<li><strong>Embedding Model Selection</strong>: Choose lightweight embedding models like <code>nomic-embed-text</code> (137M parameters) or <code>all-minilm</code> (23M parameters).</li>
+<li><strong>Persistent Storage</strong>: As shown in our examples, using persistent storage prevents recomputing embeddings every time that the RAG system is initiated.</li>
+<li><strong>Query Optimization</strong>: Implement query preprocessing to improve retrieval accuracy while reducing computational load.</li>
+</ol>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> optimize_query(query):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Optimize the query for better retrieval results"""</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove filler words, focus on key terms</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    stop_words <span class="op">=</span> {<span class="st">"and"</span>, <span class="st">"or"</span>, <span class="st">"the"</span>, <span class="st">"a"</span>, <span class="st">"an"</span>, <span class="st">"in"</span>, <span class="st">"on"</span>, <span class="st">"at"</span>, <span class="st">"to"</span>, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"for"</span>, <span class="st">"with"</span>}</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    terms <span class="op">=</span> [term <span class="cf">for</span> term <span class="kw">in</span> query.lower().split() <span class="cf">if</span> term <span class="kw">not</span> <span class="kw">in</span> stop_words]</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">" "</span>.join(terms)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="application-enhanced-weather-station-with-rag" class="level3">
+<h3 class="anchored" data-anchor-id="application-enhanced-weather-station-with-rag">Application: Enhanced Weather Station with RAG</h3>
+<p>Building on our advanced weather station (see the chapter “Experimenting with SLMs for IoT Control”), we can, for example, integrate RAG to provide more contextual responses about weather conditions and historical patterns:</p>
+<p><img src="./images/png/image-20250319153645241.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> weather_station_with_rag(retriever, model<span class="op">=</span><span class="st">"llama3.2:3b"</span>):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get current sensor readings</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    temp_dht, humidity, temp_bmp, pressure, button_state <span class="op">=</span> collect_data()</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Formulate a query for the RAG system based on current readings</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    query <span class="op">=</span> <span class="ss">f"Analysis of temperature </span><span class="sc">{</span>temp_dht<span class="sc">}</span><span class="ss">°C, humidity </span><span class="sc">{</span>humidity<span class="sc">}</span><span class="ss">%, </span><span class="ch">\</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="ss">    and pressure </span><span class="sc">{</span>pressure<span class="sc">}</span><span class="ss">hPa"</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Retrieve relevant context</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    docs <span class="op">=</span> retriever.invoke(query)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    context <span class="op">=</span> <span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>.join(doc.page_content <span class="cf">for</span> doc <span class="kw">in</span> docs)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a prompt that combines current readings with retrieved context</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="ss">    Current Weather Station Data:</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Temperature (DHT22): </span><span class="sc">{</span>temp_dht<span class="sc">:.1f}</span><span class="ss">°C</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Humidity: </span><span class="sc">{</span>humidity<span class="sc">:.1f}</span><span class="ss">%</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Pressure: </span><span class="sc">{</span>pressure<span class="sc">:.2f}</span><span class="ss">hPa</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    Reference Information:</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>context<span class="sc">}</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    Based on current readings and the reference information, provide:</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    1. An analysis of current weather conditions</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    2. What these conditions typically indicate</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    3. Recommendations for any actions needed</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate response using SLM</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    llm <span class="op">=</span> ChatOllama(model<span class="op">=</span>model, temperature<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> llm.invoke(prompt)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response.content</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This function enhances our weather station by providing context-aware responses incorporating current sensor readings and relevant information from our knowledge base. This is only an example. To use it, we should have “Weather Reference Data,” which we do not currently have. Instead, let’s create a general RAG system specializing in Edge AI Engineering.</p>
+</section>
+<section id="using-the-rag-system-for-edge-ai-engineering" class="level3">
+<h3 class="anchored" data-anchor-id="using-the-rag-system-for-edge-ai-engineering">Using the RAG System for Edge AI Engineering</h3>
+<p>For our RAG system, we will create a database with all chapters alheady written for the <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/"><em>EdgeAI Engineering</em> book</a> (chapters as URLs) and a PDF <a href="https://www.wevolver.com/article/2025-edge-ai-technology-report">Wevolver 2025 Edge AI Technology Report</a>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF documents to include</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>pdf_paths <span class="op">=</span> [<span class="st">"./data/2025_Edge_AI_Technology_Report.pdf"</span>]</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define URLs for document sources</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>urls <span class="op">=</span> [</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi</span><span class="ch">\</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="st">    /object_detection/object_detection.html"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/image_classification</span><span class="ch">\</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="st">    /image_classification.html"</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/setup/setup.html"</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/counting_objects_yolo</span><span class="ch">\</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="st">    /counting_objects_yolo.html"</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/llm/llm.html"</span>,</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/vlm/vlm.html"</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/physical_comp</span><span class="ch">\</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="st">    /RPi_Physical_Computing.html"</span>,</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/iot/slm_iot.html"</span>,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Using the RAG system is straightforward. First, ensure you’ve created the vector database:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run once to create the database</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>python <span class="dv">10</span><span class="op">-</span>Create<span class="op">-</span>Persistent<span class="op">-</span>Vector<span class="op">-</span>Database.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/image-20250319154030732.png" class="img-fluid"></p>
+<p>Then, interact with the system through queries:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start the interactive query interface</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>python <span class="dv">20</span><span class="op">-</span>Query<span class="op">-</span>the<span class="op">-</span>Persistent<span class="op">-</span>RAG<span class="op">-</span>Database.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example interactions:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> question: What is edge AI<span class="pp">?</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> answer...</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Question:</span> what is EdgeAI<span class="pp">?</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Retrieving</span> documents...</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Retrieved</span> 4 document chunks</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> answer...</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Response</span> latency: 165.72 seconds using model: llama3.2:3b</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="ex">ANSWER:</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="ex">==================================================</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="ex">EdgeAI</span> refers to the application of artificial intelligence <span class="er">(</span><span class="ex">AI</span><span class="kw">)</span> <span class="ex">at</span> the edge </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="ex">of</span> a network, typically in real-time applications such as IoT sensors, industrial </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="ex">robots,</span> and smart cameras. The Edge AI ecosystem includes edge devices, edge </span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="ex">servers,</span> and cloud platforms that work together to enable low-latency AI </span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="ex">inferencing</span> and processing of data on-site without relying on continuous cloud connectivity. Edge AI technologies aim to solve the world<span class="st">'s biggest challenges </span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="st">in AI by leveraging energy-efficient, affordable, and scalable solutions for machine</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="st">learning and advanced edge computing.</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="st">==================================================</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/image-20250319160337591.png" class="img-fluid"></p>
+<p>Those responses demonstrate how RAG enhances the SLM’s response with specific information from our knowledge base about Edge AI applications on Raspberry Pi. One issue that should be addressed is the latency.</p>
+<p>To reduce latency, we can use for embedding, the <code>all-minilm</code> model which is much smaller (23M parameters vs.&nbsp;137M for <code>nomic-embed-text</code>) and creates 384-dimensional embeddings instead of 768, significantly reducing computation time.</p>
+<p>Also, smaller chunks can be helpful but have some disadvantages. For example, let’s say that we can use a small chunk size (100 tokens with 50 overlap). Here are some considerations:</p>
+<section id="advantages" class="level4">
+<h4 class="anchored" data-anchor-id="advantages">Advantages</h4>
+<ol type="1">
+<li><strong>Memory Efficiency</strong>: Smaller chunks require less memory during retrieval and processing, which is beneficial for resource-constrained devices like the Raspberry Pi.</li>
+<li><strong>More Granular Retrieval</strong>: Smaller chunks can potentially provide more precise matches to specific questions, especially for targeted queries about very specific details.</li>
+<li><strong>Reduced Context Window Usage</strong>: SLMs have limited context windows; smaller chunks allow you to include more distinct pieces of information while staying within these limits.</li>
+</ol>
+</section>
+<section id="disadvantages" class="level4">
+<h4 class="anchored" data-anchor-id="disadvantages">Disadvantages</h4>
+<ol type="1">
+<li><strong>Loss of Context</strong>: 100 tokens is approximately 75-80 words, which is often insufficient to capture complete concepts or explanations. Many paragraphs and technical descriptions require more space to convey their full meaning.</li>
+<li><strong>Increased Vector Store Size</strong>: More chunks mean more embeddings to store, potentially increasing the overall size of your vector database.</li>
+<li><strong>Fragmented Information</strong>: With such small chunks, related information will be split across multiple chunks, making it harder for the model to synthesize coherent answers.</li>
+</ol>
+</section>
+</section>
+<section id="testing-different-models-and-chunk-sizes" class="level3">
+<h3 class="anchored" data-anchor-id="testing-different-models-and-chunk-sizes">Testing Different Models and Chunk Sizes</h3>
+<p>A good practice would be to experiment with different chunk sizes and embedding models and measure:</p>
+<ol type="1">
+<li><strong>Retrieval Quality</strong>: Are the retrieved chunks relevant to our queries?</li>
+<li><strong>Answer Accuracy</strong>: Does the SLM generate correct and comprehensive answers?</li>
+<li><strong>Memory Usage</strong>: Is the system staying within the memory constraints of our device?</li>
+<li><strong>Response Time</strong>: How does chunk size affect latency?</li>
+</ol>
+<p>We can create a simple benchmarking function to have one embedding model defined test the best chunk size:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> benchmark_chunk_sizes(document_list, </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                          query_list, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                          sizes<span class="op">=</span>[(<span class="dv">100</span>, <span class="dv">50</span>), (<span class="dv">300</span>, <span class="dv">30</span>), (<span class="dv">500</span>, <span class="dv">50</span>), (<span class="dv">1000</span>, <span class="dv">100</span>)]):</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Test different chunk sizes and measure performance"""</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> {}</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> chunk_size, overlap <span class="kw">in</span> sizes:</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Testing chunk_size=</span><span class="sc">{</span>chunk_size<span class="sc">}</span><span class="ss">, overlap=</span><span class="sc">{</span>overlap<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create splitter with current settings</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        text_splitter <span class="op">=</span> RecursiveCharacterTextSplitter.from_tiktoken_encoder(</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>            chunk_size<span class="op">=</span>chunk_size, chunk_overlap<span class="op">=</span>overlap</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Split documents</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        start_time <span class="op">=</span> time.time()</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>        doc_splits <span class="op">=</span> text_splitter.split_documents(document_list)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>        split_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create embeddings and store</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>        embedding_function <span class="op">=</span> OllamaEmbeddings(model<span class="op">=</span><span class="st">"nomic-embed-text"</span>)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>        temp_db_path <span class="op">=</span> <span class="ss">f"temp_db_</span><span class="sc">{</span>chunk_size<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>overlap<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>        start_time <span class="op">=</span> time.time()</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>        vectorstore <span class="op">=</span> Chroma.from_documents(</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>            documents<span class="op">=</span>doc_splits,</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>            collection_name<span class="op">=</span><span class="st">"benchmark"</span>,</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>            embedding<span class="op">=</span>embedding_function,</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>            persist_directory<span class="op">=</span>temp_db_path</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>        db_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create retriever</span></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>        retriever <span class="op">=</span> vectorstore.as_retriever(k<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Test queries</span></span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>        query_times <span class="op">=</span> []</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> query <span class="kw">in</span> query_list:</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>            start_time <span class="op">=</span> time.time()</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>            docs <span class="op">=</span> retriever.invoke(query)</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>            query_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>            query_times.append(query_time)</span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Store results</span></span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>        results[(chunk_size, overlap)] <span class="op">=</span> {</span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>            <span class="st">"num_chunks"</span>: <span class="bu">len</span>(doc_splits),</span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>            <span class="st">"splitting_time"</span>: split_time,</span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>            <span class="st">"db_creation_time"</span>: db_time,</span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>            <span class="st">"avg_query_time"</span>: <span class="bu">sum</span>(query_times) <span class="op">/</span> <span class="bu">len</span>(query_times),</span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>            <span class="st">"max_query_time"</span>: <span class="bu">max</span>(query_times),</span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>            <span class="st">"min_query_time"</span>: <span class="bu">min</span>(query_times)</span>
+<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Clean up temporary DB</span></span>
+<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a>        shutil.rmtree(temp_db_path)</span>
+<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Regarding the query side, some optimations can also reduce the latency at the edge. Let’s modify the previous script, with:</p>
+<ol type="1">
+<li><strong>Direct Ollama API Calls</strong>: Bypasses the LangChain abstraction layer for embedding and LLM generation to reduce overhead.</li>
+<li><strong>Embedding Caching</strong>: Uses <code>lru_cache</code> to prevent recalculating embeddings for repeated queries.</li>
+<li><strong>Preloading Models</strong>: Initializes models at startup to avoid cold-start latency.</li>
+<li><strong>Optimized Retriever Settings</strong>: Uses minimal k-value (2) and adds a score threshold to filter out irrelevant matches.</li>
+<li><strong>Reduced Dependency Usage</strong>: Removes unnecessary imports and simplifies the pipeline.</li>
+<li><strong>Concurrent Processing</strong>: Uses ThreadPoolExecutor for batch document embedding (when needed).</li>
+<li><strong>Early Termination</strong>: Checks for empty document results before running the LLM.</li>
+<li><strong>Simplified Prompt</strong>: Uses a more concise prompt template focused on getting direct answers.</li>
+<li><strong>Fixed Seed</strong>: Uses a consistent seed for the LLM to reduce variability in response times.</li>
+</ol>
+<p>This optimized version (<code>25-optimized_RAG_query.py</code>) significantly reduces the latency compared to our original implementation while maintaining compatibility with our existing <code>nomic-embed-text</code> vector database and chunk size (<code>300/30</code>).</p>
+<blockquote class="blockquote">
+<p>The direct Ollama API approach removes several layers of abstraction in the LangChain implementations.</p>
+</blockquote>
+<p>We can see latency improvements from 2 minutes down to approximately 50-110 seconds, depending on the complexity of the queries.</p>
+<p><img src="./images/png/image-20250319174250633.png" class="img-fluid"></p>
+<p>In the next section, we’ll explore how RAG can be combined with our agent architecture to create even more powerful edge AI systems.</p>
+</section>
+</section>
+<section id="advanced-agentic-rag-system" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-agentic-rag-system">Advanced Agentic RAG System</h2>
+<p>We can significantly enhance traditional RAG implementations by incorporating some of the modules discussed earlier, such as intelligent routing, validation feedback loops, and explicit knowledge gap identification. This will provide more reliable and transparent answers for users querying document-based knowledge bases.</p>
+<p>For example, let’s enhance the last RAG system created on the Edge AI Engineering dataset so that the agent can use tools, such as a calculator for arithmetic calculations.</p>
+<blockquote class="blockquote">
+<p>Note that any tool could be used here; the calculator is only a simple example to demonstrate the concept.</p>
+</blockquote>
+<p>When the user asks a question, the system first determines if it needs to use a tool or the RAG approach. For knowledge queries, the RAG system enhances the response with information from the database. The system then validates the answer quality, and if it’s not sufficient, tries again with an improved prompt. In cases where questions fall outside the database’s scope, the system will clearly inform the user rather than attempting to generate potentially misleading answers.</p>
+<section id="system-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="system-architecture">System Architecture</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/diag2.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">image-20250322113245945</figcaption>
+</figure>
+</div>
+<p>The system functions through several key components:</p>
+<ol type="1">
+<li><strong>Query Router</strong>
+<ul>
+<li>Analyzes incoming queries to determine if they’re calculations or knowledge queries</li>
+<li>Can use the same model for the response generator or a lightweight model to reduce overhead</li>
+<li>Implements rule-based fallbacks for robust classification</li>
+</ul></li>
+<li><strong>Document Retriever</strong>
+<ul>
+<li>Connects to a persistent vector database (Chroma)</li>
+<li>Uses semantic embeddings to find relevant documents</li>
+<li>Returns contextually similar content for knowledge generation</li>
+</ul></li>
+<li><strong>Response Generator</strong>
+<ul>
+<li>Creates answers based on retrieved documents</li>
+<li>Implements a two-stage approach with validation and improvement</li>
+<li>Adds appropriate disclaimers when information is insufficient</li>
+</ul></li>
+<li><strong>Validation Engine</strong>
+<ul>
+<li>Evaluates answer quality using structured criteria</li>
+<li>Assigns a numerical score to each generated response</li>
+<li>Triggers enhancement processes when quality is insufficient</li>
+</ul></li>
+<li><strong>Interactive Interface</strong>
+<ul>
+<li>Provides user-friendly interaction with clear quality indicators</li>
+<li>Supports model switching and verbosity control</li>
+<li>Offers guidance for improving query outcomes</li>
+</ul></li>
+</ol>
+</section>
+<section id="key-workflow" class="level3">
+<h3 class="anchored" data-anchor-id="key-workflow">Key Workflow</h3>
+<p>The system follows this high-level workflow:</p>
+<ol type="1">
+<li>User submits a query</li>
+<li>Router determines the query type (calculation vs.&nbsp;knowledge)</li>
+<li>For calculations:
+<ul>
+<li>Extract operation and numbers</li>
+<li>Compute and return result</li>
+</ul></li>
+<li>For knowledge queries:
+<ul>
+<li>Retrieve relevant documents</li>
+<li>Generate initial answer with RAG</li>
+<li>Validate response quality</li>
+<li>If quality is low, attempt enhancement with improved prompt</li>
+<li>If still insufficient, add disclaimer about knowledge gaps</li>
+</ul></li>
+<li>Return final answer with quality metrics</li>
+</ol>
+</section>
+<section id="important-code-sections" class="level3">
+<h3 class="anchored" data-anchor-id="important-code-sections">Important Code Sections</h3>
+<section id="query-routing" class="level4">
+<h4 class="anchored" data-anchor-id="query-routing">Query Routing</h4>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> route_query(query: <span class="bu">str</span>) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, Any]:</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Determine if the query is a calculation, otherwise use RAG"""</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> VERBOSE:</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Routing query: </span><span class="sc">{</span>query<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check for calculation keywords</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    calc_terms <span class="op">=</span> [<span class="st">"+"</span>, <span class="st">"add"</span>, <span class="st">"plus"</span>, <span class="st">"sum"</span>, <span class="st">"-"</span>, <span class="st">"subtract"</span>, <span class="st">"minus"</span>, </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"difference"</span>, <span class="st">"*"</span>, <span class="st">"×"</span>, <span class="st">"multiply"</span>, <span class="st">"times"</span>, <span class="st">"product"</span>, </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"/"</span>, <span class="st">"÷"</span>, <span class="st">"divide"</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"division"</span>, <span class="st">"quotient"</span>]</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simple rule-based detection for calculations</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    is_calc <span class="op">=</span> <span class="bu">any</span>(term <span class="kw">in</span> query.lower() <span class="cf">for</span> term <span class="kw">in</span> calc_terms) <span class="kw">and</span> <span class="op">\</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    re.search(<span class="vs">r'\d+'</span>, query)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> is_calc:</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use smaller, faster model for operation and number extraction</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># ...extraction logic here...</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> route_info</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For everything else, use RAG</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"type"</span>: <span class="st">"rag"</span>, <span class="st">"reasoning"</span>: <span class="st">"Non-calculation query, using RAG"</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="enhanced-rag-with-feedback-loop" class="level4">
+<h4 class="anchored" data-anchor-id="enhanced-rag-with-feedback-loop">Enhanced RAG with Feedback Loop</h4>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First RAG attempt with standard prompt</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>answer <span class="op">=</span> get_answer_with_rag(query, documents, llm)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>processing_type <span class="op">=</span> <span class="st">"rag_standard"</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Validate the response quality</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>validation <span class="op">=</span> validate_response(llm, query, answer)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>validation_score <span class="op">=</span> validation.get(<span class="st">"score"</span>, <span class="dv">5</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># If validation score is low, try again with enhanced prompt</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> validation_score <span class="op">&lt;</span> <span class="dv">7</span>:</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> VERBOSE:</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"First RAG attempt validation score: </span><span class="sc">{</span>validation_score<span class="sc">}</span><span class="ss">/10. </span><span class="ch">\</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="ss">        Trying enhanced prompt."</span>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Second RAG attempt with enhanced prompt</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    enhanced_context <span class="op">=</span> <span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>.join(documents)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    enhanced_prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="ss">    I need a more detailed and accurate answer to the following question:</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>query<span class="sc">}</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    The previous answer wasn't satisfactory. Let me provide you with </span><span class="ch">\</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    relevant information:</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>enhanced_context<span class="sc">}</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    Based strictly on this information, provide a comprehensive answer.</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="ss">    Focus specifically on addressing the user's question with precise </span><span class="ch">\</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="ss">    information from the provided context.</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="ss">    If the information doesn't fully answer the question, clearly state </span><span class="ch">\</span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="ss">    what you can determine</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="ss">    from the available information and what remains unknown.</span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ... process enhanced response ...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="knowledge-gap-handling" class="level4">
+<h4 class="anchored" data-anchor-id="knowledge-gap-handling">Knowledge Gap Handling</h4>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If still low quality after enhancement, add a note</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> improved_score <span class="op">&lt;</span> <span class="dv">6</span>:</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    processing_type <span class="op">=</span> <span class="st">"rag_insufficient_info"</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    information_gap_note <span class="op">=</span> (</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"</span><span class="ch">\n\n</span><span class="st">Note: The information in my knowledge base may be incomplete on this"</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"topic. I've provided the best answer based on available information, but"</span> </span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"there might be gaps or additional details that would provide a more "</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"complete answer."</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    answer <span class="op">=</span> answer <span class="op">+</span> information_gap_note</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="detailed-workflow-diagram" class="level3">
+<h3 class="anchored" data-anchor-id="detailed-workflow-diagram">Detailed Workflow Diagram</h3>
+<p><img src="./images/png/diag3-1.png" class="img-fluid"></p>
+<p><img src="./images/png/diag3-2.png" class="img-fluid"></p>
+<p><img src="./images/png/diag3-3.png" class="img-fluid"></p>
+</section>
+<section id="examples" class="level3">
+<h3 class="anchored" data-anchor-id="examples">Examples</h3>
+<p>Run the script <code>30-advanced_agentic_rag.py</code>:</p>
+<section id="simple-calculation" class="level4">
+<h4 class="anchored" data-anchor-id="simple-calculation">Simple Calculation</h4>
+<p><img src="./images/png/image-20250321102922239.png" class="img-fluid"></p>
+</section>
+<section id="first-pass-rag" class="level4">
+<h4 class="anchored" data-anchor-id="first-pass-rag">First Pass Rag</h4>
+<p><img src="./images/png/image-20250321103127903.png" class="img-fluid"></p>
+</section>
+<section id="more-complex-queries" class="level4">
+<h4 class="anchored" data-anchor-id="more-complex-queries">More Complex Queries</h4>
+<p><img src="./images/png/image-20250321103556957.png" class="img-fluid"></p>
+</section>
+<section id="queries-outside-of-the-database-scope" class="level4">
+<h4 class="anchored" data-anchor-id="queries-outside-of-the-database-scope">Queries outside of the database scope:</h4>
+<p><img src="./images/png/image-20250321103745068.png" class="img-fluid"></p>
+</section>
+</section>
+</section>
+<section id="fine-tuning-slms-for-edge-deployment" class="level2">
+<h2 class="anchored" data-anchor-id="fine-tuning-slms-for-edge-deployment">Fine-Tuning SLMs for Edge Deployment</h2>
+<p>Fine-tuning can adapt models to specific domains or tasks, improving performance for targeted applications.</p>
+<section id="preparing-for-fine-tuning" class="level3">
+<h3 class="anchored" data-anchor-id="preparing-for-fine-tuning">Preparing for Fine-Tuning</h3>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example dataset for fine-tuning a weather response model</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>training_data <span class="op">=</span> [</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"input"</span>: <span class="st">"What's the weather in London?"</span>, </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>     <span class="st">"output"</span>: <span class="st">"I need to check London's current weather. Please use the </span><span class="ch">\</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="st">     weather tool."</span>},</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"input"</span>: <span class="st">"Is it going to rain tomorrow in Paris?"</span>, </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>     <span class="st">"output"</span>: <span class="st">"To answer about tomorrow's weather in Paris, </span><span class="ch">\</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="st">     I need to use the weather tool."</span>},</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"input"</span>: <span class="st">"Will it be sunny this weekend in Tokyo?"</span>, </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>     <span class="st">"output"</span>: <span class="st">"To predict Tokyo's weekend weather, </span><span class="ch">\</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="st">     I should use the weather tool."</span>}</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Format data for fine-tuning</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>formatted_data <span class="op">=</span> []</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item <span class="kw">in</span> training_data:</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    formatted_data.append({</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"prompt"</span>: item[<span class="st">"input"</span>],</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"response"</span>: item[<span class="st">"output"</span>]</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Save formatted data to a file</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"weather_finetune_data.json"</span>, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>    json.dump(formatted_data, f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="setting-up-a-fine-tuning-process" class="level3">
+<h3 class="anchored" data-anchor-id="setting-up-a-fine-tuning-process">Setting Up a Fine-Tuning Process</h3>
+<p>Fine-tuning on edge devices is typically impractical due to resource constraints. Instead, fine-tune on a more powerful machine and deploy the result to the edge:</p>
+<blockquote class="blockquote">
+<p>This is a conceptual example - actual implementation depends on the framework</p>
+</blockquote>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prepare_for_finetuning(data_path, output_path):</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">      Prepare a model for fine-tuning </span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">      (run this on a more powerful machine)</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is a conceptual example </span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Fine-tuning model using data from </span><span class="sc">{</span>data_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Fine-tuned model will be saved to </span><span class="sc">{</span>output_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The process would typically involve:</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Loading the base model</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Loading and preprocessing the training data</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Setting up training parameters (learning rate, epochs, etc.)</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 4. Running the fine-tuning process</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 5. Evaluating the fine-tuned model</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 6. Saving and optimizing for edge deployment</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For Ollama, we would create a custom model definition (Modelfile)</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    modelfile <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    FROM llama3.2:1b</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    # Fine-tuning settings would go here</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    PARAMETER temperature 0.7</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    PARAMETER top_p 0.9</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    PARAMETER top_k 40</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    # Custom system prompt for the specific domain</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a><span class="ss">    SYSTEM You are a specialized assistant for weather-related questions.</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(output_path, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>        f.write(modelfile)</span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Model preparation complete. Next steps:"</span>)</span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"1. Run fine-tuning on a powerful machine"</span>)</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"2. Optimize the resulting model for edge deployment"</span>)</span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"3. Deploy to your Raspberry Pi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="real-implementation-supervised-fine-tuning-sft" class="level3">
+<h3 class="anchored" data-anchor-id="real-implementation-supervised-fine-tuning-sft">Real implementation: Supervised Fine-Tuning (SFT)</h3>
+<p>Supervised fine tuning (SFT) is a method to <strong>improve and customize</strong> pre-trained LLMs. It involves retraining base models on a smaller dataset of instructions and answers. The main goal is to transform a basic model that predicts text into an assistant that can follow instructions and answer questions. SFT can also enhance the model’s overall performance, add new knowledge, or adapt it to specific tasks and domains</p>
+<p>Before considering SFT, it is recommended to try prompt engineering techniques like few-shot prompting or retrieval augmented generation (RAG), as discussed previously. In practice, these methods can solve many problems without fine-tuning. If this approach doesn’t meet our objectives (regarding quality, cost, latency, etc.), then SFT becomes a viable option when instruction data is available. SFT also offers benefits like additional control and customizability to create personalized LLMs.</p>
+<p>However, SFT has limitations. It works best when leveraging knowledge already present in the base model. Learning completely new information, like an unknown language, can be challenging and lead to more frequent hallucinations. For new domains unknown to the base model, it is recommended that it be continuously pre-trained on a raw dataset first.</p>
+<p>On the opposite end of the spectrum, instruct models (i.e., already fine-tuned models) can be very close to our requirements. By providing chosen and rejected samples for a small set of instructions (between 100 and 1000 samples), we can force the LLM to behave as we need.</p>
+<p>The easiest way to finetune an SLM is by using <a href="https://docs.unsloth.ai/get-started/fine-tuning-guide">Unsloth</a>. The three most popular SFT techniques are full fine-tuning, LoRA, and QLoRA.</p>
+<blockquote class="blockquote">
+<p>For details, see: <a href="https://huggingface.co/blog/mlabonne/sft-llama3">Fine-tune Llama 3.1 Ultra-Efficiently with Unsloth</a>.</p>
+</blockquote>
+<p>For example, using this <a href="https://docs.unsloth.ai/get-started/unsloth-notebooks">link</a>, it is possible to find several notebooks with the steps to finetune SLMs—for instance, the <a href="https://colab.research.google.com/github/unslothai/notebooks/blob/main/nb/Gemma3_(1B)-GRPO.ipynb">Gemma 3:1B</a>.</p>
+<p>The fine-tuned model can be saved on HF Hub or locally as <strong>GGUF</strong>, and to run a GGUF model locally, we can use Ollama, as shown below:</p>
+<ol type="1">
+<li><p>Download the finetuned GGUF model</p></li>
+<li><p>Create a Modelfile in the home directory:</p></li>
+</ol>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> Modelfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="3" type="1">
+<li>In the Modelfile, specify the path to the GGUF file:</li>
+</ol>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">FROM</span> ~/Downloads/your-model-name.gguf</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">PARAMETER</span> temperature 1.0</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="ex">PARAMETER</span> top_p 0.95</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="ex">PARAMETER</span> top_k 64</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="4" type="1">
+<li><p>Save the Modelfile and exit the editor.</p></li>
+<li><p>Create the loadable model in Ollama:</p></li>
+</ol>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> create your-model-name <span class="at">-f</span> Modelfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>The model name here can be anything.</p>
+</blockquote>
+<ol start="6" type="1">
+<li>We can now use the model through as we have done with the llama3.2:3B in this chapter..</li>
+</ol>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This chapter has explored comprehensive strategies for overcoming the inherent limitations of Small Language Models in edge computing environments. By implementing techniques ranging from optimized prompting strategies to sophisticated agent architectures and knowledge integration systems, we’ve demonstrated that it’s possible to significantly enhance the capabilities of edge AI systems without requiring more powerful hardware or cloud connectivity.</p>
+<p>The techniques presented—chain-of-thought prompting, task decomposition, function calling, response validation, and RAG—form a toolkit that edge AI engineers can apply individually or in combination to address specific challenges. Each approach offers unique advantages: prompting techniques improve reasoning capabilities with minimal overhead, agent architectures enable SLMs to perform actions beyond text generation, and RAG systems dramatically expand an SLM’s knowledge without increasing model size.</p>
+<p>Our practical implementations on the Raspberry Pi showcase that these enhancements are not merely theoretical but can be deployed in real-world edge scenarios. From the simple calculator agent to the more sophisticated knowledge router and RAG-enabled question answering system, these examples provide templates that developers can adapt to their specific application requirements.</p>
+<p>The true power of these techniques emerges when they’re strategically combined. An agent architecture with RAG capabilities, enhanced by chain-of-thought reasoning and validated with a feedback loop, creates an edge AI system that approaches the capabilities of much larger models while maintaining the advantages of edge deployment—privacy preservation, reduced latency, and operation without internet connectivity.</p>
+<p>As edge AI continues to evolve, these techniques will become increasingly important in bridging the gap between the limited resources available on edge devices and the growing expectations for AI capabilities. By thoughtfully applying these approaches, developers can create intelligent systems that process data locally, respect user privacy, and operate reliably in diverse environments.</p>
+<p>The future of edge AI lies not necessarily in deploying ever-larger models but in developing more innovative systems that combine efficient models with intelligent architectures, contextual knowledge integration, and robust validation mechanisms. By mastering these techniques, edge AI practitioners can create solutions that are not just technologically impressive but genuinely useful and trustworthy in addressing real-world challenges.</p>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<p>The scripts used in this chapter can be found here: <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/Advancing_EdgeAI">Advancing EdgeAI Scripts</a></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/iot/slm_iot.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Experimenting with SLMs for IoT Control</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>
