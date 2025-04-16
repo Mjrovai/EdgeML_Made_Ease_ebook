@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>EdgeAI Engineering - Small Language Models (SLM)</title>
+<title>Edge AI Engineering - Small Language Models (SLM)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,12 +108,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">EdgeAI Engineering</span>
+    <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../EdgeAI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -195,6 +195,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">About this Book</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">A Fixed Function AI (Reactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
@@ -219,6 +231,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link active">
@@ -249,6 +265,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../references.html" class="sidebar-item-text sidebar-link">
@@ -273,17 +305,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#raspberry-pi-active-cooler" id="toc-raspberry-pi-active-cooler" class="nav-link" data-scroll-target="#raspberry-pi-active-cooler">Raspberry Pi Active Cooler</a></li>
   </ul></li>
   <li><a href="#generative-ai-genai" id="toc-generative-ai-genai" class="nav-link" data-scroll-target="#generative-ai-genai">Generative AI (GenAI)</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#large-language-models-llms" id="toc-large-language-models-llms" class="nav-link" data-scroll-target="#large-language-models-llms">Large Language Models (LLMs)</a></li>
   <li><a href="#closed-vs-open-models" id="toc-closed-vs-open-models" class="nav-link" data-scroll-target="#closed-vs-open-models">Closed vs Open Models:</a></li>
   <li><a href="#small-language-models-slms" id="toc-small-language-models-slms" class="nav-link" data-scroll-target="#small-language-models-slms">Small Language Models (SLMs)</a></li>
   </ul></li>
   <li><a href="#ollama" id="toc-ollama" class="nav-link" data-scroll-target="#ollama">Ollama</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#installing-ollama" id="toc-installing-ollama" class="nav-link" data-scroll-target="#installing-ollama">Installing Ollama</a></li>
   <li><a href="#meta-llama-3.2-1b3b" id="toc-meta-llama-3.2-1b3b" class="nav-link" data-scroll-target="#meta-llama-3.2-1b3b">Meta Llama 3.2 1B/3B</a></li>
   <li><a href="#google-gemma-2-2b" id="toc-google-gemma-2-2b" class="nav-link" data-scroll-target="#google-gemma-2-2b">Google Gemma 2 2B</a></li>
@@ -292,8 +324,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#inspecting-local-resources" id="toc-inspecting-local-resources" class="nav-link" data-scroll-target="#inspecting-local-resources">Inspecting local resources</a></li>
   </ul></li>
   <li><a href="#ollama-python-library" id="toc-ollama-python-library" class="nav-link" data-scroll-target="#ollama-python-library">Ollama Python Library</a>
+  <ul>
+  <li><a href="#function-calling" id="toc-function-calling" class="nav-link" data-scroll-target="#function-calling">Function Calling</a>
   <ul class="collapse">
-  <li><a href="#function-calling" id="toc-function-calling" class="nav-link" data-scroll-target="#function-calling">Function Calling</a></li>
+  <li><a href="#but-what-exactly-is-function-calling" id="toc-but-what-exactly-is-function-calling" class="nav-link" data-scroll-target="#but-what-exactly-is-function-calling">But what exactly is “function calling”?</a></li>
+  <li><a href="#lets-create-a-project." id="toc-lets-create-a-project." class="nav-link" data-scroll-target="#lets-create-a-project.">Let’s create a project.</a></li>
+  </ul></li>
   <li><a href="#importing-libraries" id="toc-importing-libraries" class="nav-link" data-scroll-target="#importing-libraries">1. Importing Libraries</a></li>
   <li><a href="#defining-input-and-model" id="toc-defining-input-and-model" class="nav-link" data-scroll-target="#defining-input-and-model">2. Defining Input and Model</a></li>
   <li><a href="#defining-the-response-data-structure" id="toc-defining-the-response-data-structure" class="nav-link" data-scroll-target="#defining-the-response-data-structure">3. Defining the Response Data Structure</a></li>
@@ -304,7 +340,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#slms-optimization-techniques" id="toc-slms-optimization-techniques" class="nav-link" data-scroll-target="#slms-optimization-techniques">SLMs: Optimization Techniques</a></li>
   <li><a href="#rag-implementation" id="toc-rag-implementation" class="nav-link" data-scroll-target="#rag-implementation">RAG Implementation</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#a-simple-rag-project" id="toc-a-simple-rag-project" class="nav-link" data-scroll-target="#a-simple-rag-project">A simple RAG project</a></li>
   <li><a href="#going-further" id="toc-going-further" class="nav-link" data-scroll-target="#going-further">Going Further</a></li>
   </ul></li>

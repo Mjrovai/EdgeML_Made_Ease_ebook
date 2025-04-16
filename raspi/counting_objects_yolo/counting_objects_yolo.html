@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>EdgeAI Engineering - Counting objects with YOLO</title>
+<title>Edge AI Engineering - Counting objects with YOLO</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,12 +108,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">EdgeAI Engineering</span>
+    <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../EdgeAI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -195,6 +195,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">About this Book</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">A Fixed Function AI (Reactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
@@ -219,6 +231,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
@@ -249,6 +265,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../references.html" class="sidebar-item-text sidebar-link">
@@ -273,20 +305,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#installing-and-using-ultralytics-yolov8" id="toc-installing-and-using-ultralytics-yolov8" class="nav-link" data-scroll-target="#installing-and-using-ultralytics-yolov8">Installing and using Ultralytics YOLOv8</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#testing-the-yolo" id="toc-testing-the-yolo" class="nav-link" data-scroll-target="#testing-the-yolo">Testing the YOLO</a></li>
   <li><a href="#export-model-to-ncnn-format" id="toc-export-model-to-ncnn-format" class="nav-link" data-scroll-target="#export-model-to-ncnn-format">Export Model to NCNN format</a></li>
-  <li><a href="#exploring-yolo-with-python" id="toc-exploring-yolo-with-python" class="nav-link" data-scroll-target="#exploring-yolo-with-python">Exploring YOLO with Python</a></li>
+  <li><a href="#exploring-yolo-with-python" id="toc-exploring-yolo-with-python" class="nav-link" data-scroll-target="#exploring-yolo-with-python">Exploring YOLO with Python</a>
+  <ul class="collapse">
+  <li><a href="#note-about-the-latency" id="toc-note-about-the-latency" class="nav-link" data-scroll-target="#note-about-the-latency">Note about the Latency:</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#estimating-the-number-of-bees" id="toc-estimating-the-number-of-bees" class="nav-link" data-scroll-target="#estimating-the-number-of-bees">Estimating the number of Bees</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">Dataset</a></li>
   <li><a href="#pre-processing" id="toc-pre-processing" class="nav-link" data-scroll-target="#pre-processing">Pre-Processing</a></li>
-  <li><a href="#training-yolov8-on-a-customized-dataset" id="toc-training-yolov8-on-a-customized-dataset" class="nav-link" data-scroll-target="#training-yolov8-on-a-customized-dataset">Training YOLOv8 on a Customized Dataset</a></li>
+  <li><a href="#training-yolov8-on-a-customized-dataset" id="toc-training-yolov8-on-a-customized-dataset" class="nav-link" data-scroll-target="#training-yolov8-on-a-customized-dataset">Training YOLOv8 on a Customized Dataset</a>
+  <ul class="collapse">
+  <li><a href="#critical-points-on-the-notebook" id="toc-critical-points-on-the-notebook" class="nav-link" data-scroll-target="#critical-points-on-the-notebook">Critical points on the Notebook:</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#inference-with-the-trained-model-using-the-rasp-zero" id="toc-inference-with-the-trained-model-using-the-rasp-zero" class="nav-link" data-scroll-target="#inference-with-the-trained-model-using-the-rasp-zero">Inference with the trained model, using the Rasp-Zero</a></li>
   <li><a href="#considerations-about-the-post-processing" id="toc-considerations-about-the-post-processing" class="nav-link" data-scroll-target="#considerations-about-the-post-processing">Considerations about the Post-Processing</a>
-  <ul class="collapse">
+  <ul>
+  <li><a href="#setting-up-the-image-capture-with-cron" id="toc-setting-up-the-image-capture-with-cron" class="nav-link" data-scroll-target="#setting-up-the-image-capture-with-cron">Setting Up the Image Capture with <code>cron</code></a></li>
+  <li><a href="#setting-up-the-python-script-for-inference" id="toc-setting-up-the-python-script-for-inference" class="nav-link" data-scroll-target="#setting-up-the-python-script-for-inference">Setting Up the Python Script for Inference</a></li>
   <li><a href="#script-for-reading-the-sqlite-database" id="toc-script-for-reading-the-sqlite-database" class="nav-link" data-scroll-target="#script-for-reading-the-sqlite-database">Script For Reading the SQLite Database</a></li>
   <li><a href="#adding-environment-data" id="toc-adding-environment-data" class="nav-link" data-scroll-target="#adding-environment-data">Adding Environment data</a></li>
   </ul></li>

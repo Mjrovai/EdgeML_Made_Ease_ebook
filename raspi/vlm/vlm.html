@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>EdgeAI Engineering - Vision-Language Models at the Edge</title>
+<title>Edge AI Engineering - Vision-Language Models at the Edge</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,12 +108,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">EdgeAI Engineering</span>
+    <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../EdgeAI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -195,6 +195,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">About this Book</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">A Fixed Function AI (Reactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
@@ -219,6 +231,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
@@ -249,6 +265,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../references.html" class="sidebar-item-text sidebar-link">
@@ -271,26 +303,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#why-florence-2-at-the-edge" id="toc-why-florence-2-at-the-edge" class="nav-link active" data-scroll-target="#why-florence-2-at-the-edge">Why Florence-2 at the Edge?</a></li>
+  <li><a href="#we-will-learn-vison-language-models-across-tasks-such-as-captioning-object-detection-grounding-and-segmentation-on-a-raspberry-pi." id="toc-we-will-learn-vison-language-models-across-tasks-such-as-captioning-object-detection-grounding-and-segmentation-on-a-raspberry-pi." class="nav-link active" data-scroll-target="#we-will-learn-vison-language-models-across-tasks-such-as-captioning-object-detection-grounding-and-segmentation-on-a-raspberry-pi.">We will learn Vison-Language Models across tasks such as captioning, object detection, grounding, and segmentation on a Raspberry Pi.</a></li>
+  <li><a href="#why-florence-2-at-the-edge" id="toc-why-florence-2-at-the-edge" class="nav-link" data-scroll-target="#why-florence-2-at-the-edge">Why Florence-2 at the Edge?</a></li>
   <li><a href="#florence-2-model-architecture" id="toc-florence-2-model-architecture" class="nav-link" data-scroll-target="#florence-2-model-architecture">Florence-2 Model Architecture</a></li>
   <li><a href="#technical-overview" id="toc-technical-overview" class="nav-link" data-scroll-target="#technical-overview">Technical Overview</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture">Architecture</a></li>
   <li><a href="#training-dataset-fld-5b" id="toc-training-dataset-fld-5b" class="nav-link" data-scroll-target="#training-dataset-fld-5b">Training Dataset (FLD-5B)</a></li>
-  <li><a href="#key-capabilities" id="toc-key-capabilities" class="nav-link" data-scroll-target="#key-capabilities">Key Capabilities</a></li>
+  <li><a href="#key-capabilities" id="toc-key-capabilities" class="nav-link" data-scroll-target="#key-capabilities">Key Capabilities</a>
+  <ul class="collapse">
+  <li><a href="#zero-shot-performance" id="toc-zero-shot-performance" class="nav-link" data-scroll-target="#zero-shot-performance">Zero-shot Performance</a></li>
+  <li><a href="#fine-tuned-performance" id="toc-fine-tuned-performance" class="nav-link" data-scroll-target="#fine-tuned-performance">Fine-tuned Performance</a></li>
+  </ul></li>
   <li><a href="#practical-applications" id="toc-practical-applications" class="nav-link" data-scroll-target="#practical-applications">Practical Applications</a></li>
   <li><a href="#comparing-florence-2-with-other-vlms" id="toc-comparing-florence-2-with-other-vlms" class="nav-link" data-scroll-target="#comparing-florence-2-with-other-vlms">Comparing Florence-2 with other VLMs</a></li>
   </ul></li>
   <li><a href="#setup-and-installation" id="toc-setup-and-installation" class="nav-link" data-scroll-target="#setup-and-installation">Setup and Installation</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#environment-configuration" id="toc-environment-configuration" class="nav-link" data-scroll-target="#environment-configuration">Environment configuration</a></li>
-  <li><a href="#testing-the-installation" id="toc-testing-the-installation" class="nav-link" data-scroll-target="#testing-the-installation">Testing the installation</a></li>
-  <li><a href="#defining-the-prompt" id="toc-defining-the-prompt" class="nav-link" data-scroll-target="#defining-the-prompt"><strong>4. Defining the Prompt</strong></a></li>
-  <li><a href="#generating-the-output" id="toc-generating-the-output" class="nav-link" data-scroll-target="#generating-the-output"><strong>7. Generating the Output</strong></a></li>
-  </ul></li>
-  <li><a href="#florence-2-tasks" id="toc-florence-2-tasks" class="nav-link" data-scroll-target="#florence-2-tasks">Florence-2 Tasks</a></li>
-  <li><a href="#exploring-computer-vision-and-vision-language-tasks" id="toc-exploring-computer-vision-and-vision-language-tasks" class="nav-link" data-scroll-target="#exploring-computer-vision-and-vision-language-tasks">Exploring computer vision and vision-language tasks</a>
+  <li><a href="#testing-the-installation" id="toc-testing-the-installation" class="nav-link" data-scroll-target="#testing-the-installation">Testing the installation</a>
   <ul class="collapse">
+  <li><a href="#importing-required-libraries" id="toc-importing-required-libraries" class="nav-link" data-scroll-target="#importing-required-libraries"><strong>1. Importing Required Libraries</strong></a></li>
+  <li><a href="#determining-the-device-and-data-type" id="toc-determining-the-device-and-data-type" class="nav-link" data-scroll-target="#determining-the-device-and-data-type"><strong>2. Determining the Device and Data Type</strong></a></li>
+  <li><a href="#loading-the-model-and-processor" id="toc-loading-the-model-and-processor" class="nav-link" data-scroll-target="#loading-the-model-and-processor"><strong>3. Loading the Model and Processor</strong></a></li>
+  </ul></li>
+  <li><a href="#defining-the-prompt" id="toc-defining-the-prompt" class="nav-link" data-scroll-target="#defining-the-prompt"><strong>4. Defining the Prompt</strong></a>
+  <ul class="collapse">
+  <li><a href="#downloading-and-loading-the-image" id="toc-downloading-and-loading-the-image" class="nav-link" data-scroll-target="#downloading-and-loading-the-image"><strong>5. Downloading and Loading the Image</strong></a></li>
+  <li><a href="#processing-inputs" id="toc-processing-inputs" class="nav-link" data-scroll-target="#processing-inputs"><strong>6. Processing Inputs</strong></a></li>
+  </ul></li>
+  <li><a href="#generating-the-output" id="toc-generating-the-output" class="nav-link" data-scroll-target="#generating-the-output"><strong>7. Generating the Output</strong></a>
+  <ul class="collapse">
+  <li><a href="#decoding-the-generated-text" id="toc-decoding-the-generated-text" class="nav-link" data-scroll-target="#decoding-the-generated-text"><strong>8. Decoding the Generated Text</strong></a></li>
+  <li><a href="#post-processing-the-generation" id="toc-post-processing-the-generation" class="nav-link" data-scroll-target="#post-processing-the-generation"><strong>9. Post-processing the Generation</strong></a></li>
+  <li><a href="#printing-the-output" id="toc-printing-the-output" class="nav-link" data-scroll-target="#printing-the-output"><strong>10. Printing the Output</strong></a></li>
+  <li><a href="#result" id="toc-result" class="nav-link" data-scroll-target="#result"><strong>Result</strong></a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#florence-2-tasks" id="toc-florence-2-tasks" class="nav-link" data-scroll-target="#florence-2-tasks">Florence-2 Tasks</a>
+  <ul>
+  <li><a href="#object-detection-od" id="toc-object-detection-od" class="nav-link" data-scroll-target="#object-detection-od">1. <strong>Object Detection (OD)</strong></a></li>
+  <li><a href="#image-captioning" id="toc-image-captioning" class="nav-link" data-scroll-target="#image-captioning">2. <strong>Image Captioning</strong></a></li>
+  <li><a href="#detailed-captioning" id="toc-detailed-captioning" class="nav-link" data-scroll-target="#detailed-captioning">3. <strong>Detailed Captioning</strong></a></li>
+  <li><a href="#visual-grounding" id="toc-visual-grounding" class="nav-link" data-scroll-target="#visual-grounding">4. <strong>Visual Grounding</strong></a></li>
+  <li><a href="#segmentation" id="toc-segmentation" class="nav-link" data-scroll-target="#segmentation">5. <strong>Segmentation</strong></a></li>
+  <li><a href="#dense-region-captioning" id="toc-dense-region-captioning" class="nav-link" data-scroll-target="#dense-region-captioning">6. <strong>Dense Region Captioning</strong></a></li>
+  <li><a href="#ocr-with-region" id="toc-ocr-with-region" class="nav-link" data-scroll-target="#ocr-with-region">7. <strong>OCR with Region</strong></a></li>
+  <li><a href="#phrase-grounding-for-specific-expressions" id="toc-phrase-grounding-for-specific-expressions" class="nav-link" data-scroll-target="#phrase-grounding-for-specific-expressions">8. <strong>Phrase Grounding for Specific Expressions</strong></a></li>
+  <li><a href="#open-vocabulary-object-detection" id="toc-open-vocabulary-object-detection" class="nav-link" data-scroll-target="#open-vocabulary-object-detection">9. <strong>Open Vocabulary Object Detection</strong></a></li>
+  </ul></li>
+  <li><a href="#exploring-computer-vision-and-vision-language-tasks" id="toc-exploring-computer-vision-and-vision-language-tasks" class="nav-link" data-scroll-target="#exploring-computer-vision-and-vision-language-tasks">Exploring computer vision and vision-language tasks</a>
+  <ul>
   <li><a href="#caption" id="toc-caption" class="nav-link" data-scroll-target="#caption">Caption</a></li>
   <li><a href="#detailed_caption" id="toc-detailed_caption" class="nav-link" data-scroll-target="#detailed_caption">DETAILED_CAPTION</a></li>
   <li><a href="#more_detailed_caption" id="toc-more_detailed_caption" class="nav-link" data-scroll-target="#more_detailed_caption">MORE_DETAILED_CAPTION</a></li>
@@ -307,7 +370,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#latency-summary" id="toc-latency-summary" class="nav-link" data-scroll-target="#latency-summary">Latency Summary</a></li>
   <li><a href="#fine-tunning" id="toc-fine-tunning" class="nav-link" data-scroll-target="#fine-tunning">Fine-Tunning</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#key-advantages-of-florence-2" id="toc-key-advantages-of-florence-2" class="nav-link" data-scroll-target="#key-advantages-of-florence-2">Key Advantages of Florence-2</a></li>
   <li><a href="#trade-offs" id="toc-trade-offs" class="nav-link" data-scroll-target="#trade-offs">Trade-offs</a></li>
   <li><a href="#best-use-cases" id="toc-best-use-cases" class="nav-link" data-scroll-target="#best-use-cases">Best Use Cases</a></li>

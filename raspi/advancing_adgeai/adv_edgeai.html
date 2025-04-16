@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>EdgeAI Engineering - Advancing EdgeAI: Beyond Basic SLMs</title>
+<title>Edge AI Engineering - Advancing EdgeAI: Beyond Basic SLMs</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -63,7 +63,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../references.html" rel="next">
 <link href="../../raspi/iot/slm_iot.html" rel="prev">
 <link href="../../images/cover.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
@@ -108,12 +107,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">EdgeAI Engineering</span>
+    <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../EdgeAI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -195,6 +194,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">About this Book</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">A Fixed Function AI (Reactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
@@ -219,6 +230,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
@@ -249,6 +264,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../references.html" class="sidebar-item-text sidebar-link">
@@ -271,8 +302,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#understanding-slm-limitations" id="toc-understanding-slm-limitations" class="nav-link active" data-scroll-target="#understanding-slm-limitations">Understanding SLM Limitations</a>
-  <ul class="collapse">
+  <li><a href="#exploring-cot-prompting-agents-function-calling-rag-and-more." id="toc-exploring-cot-prompting-agents-function-calling-rag-and-more." class="nav-link active" data-scroll-target="#exploring-cot-prompting-agents-function-calling-rag-and-more.">Exploring CoT Prompting, Agents, Function Calling, RAG, and more.</a></li>
+  <li><a href="#understanding-slm-limitations" id="toc-understanding-slm-limitations" class="nav-link" data-scroll-target="#understanding-slm-limitations">Understanding SLM Limitations</a>
+  <ul>
   <li><a href="#knowledge-constraints" id="toc-knowledge-constraints" class="nav-link" data-scroll-target="#knowledge-constraints">1. Knowledge Constraints</a></li>
   <li><a href="#reasoning-limitations" id="toc-reasoning-limitations" class="nav-link" data-scroll-target="#reasoning-limitations">2. Reasoning Limitations</a></li>
   <li><a href="#inconsistent-outputs" id="toc-inconsistent-outputs" class="nav-link" data-scroll-target="#inconsistent-outputs">3. Inconsistent Outputs</a></li>
@@ -280,41 +312,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#techniques-for-enhancing-slm-at-the-edge" id="toc-techniques-for-enhancing-slm-at-the-edge" class="nav-link" data-scroll-target="#techniques-for-enhancing-slm-at-the-edge">Techniques for Enhancing SLM at the Edge</a></li>
   <li><a href="#optimizing-prompting-strategies" id="toc-optimizing-prompting-strategies" class="nav-link" data-scroll-target="#optimizing-prompting-strategies">Optimizing Prompting Strategies</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#chain-of-thought-prompting" id="toc-chain-of-thought-prompting" class="nav-link" data-scroll-target="#chain-of-thought-prompting">Chain-of-Thought Prompting</a></li>
   <li><a href="#few-shot-learning" id="toc-few-shot-learning" class="nav-link" data-scroll-target="#few-shot-learning">Few-Shot Learning</a></li>
   <li><a href="#task-decomposition" id="toc-task-decomposition" class="nav-link" data-scroll-target="#task-decomposition">Task Decomposition</a></li>
   </ul></li>
   <li><a href="#building-agents-with-slms" id="toc-building-agents-with-slms" class="nav-link" data-scroll-target="#building-agents-with-slms">Building Agents with SLMs</a>
+  <ul>
+  <li><a href="#limitations-and-considerations" id="toc-limitations-and-considerations" class="nav-link" data-scroll-target="#limitations-and-considerations">Limitations and Considerations</a></li>
+  <li><a href="#improvements" id="toc-improvements" class="nav-link" data-scroll-target="#improvements">Improvements</a></li>
+  <li><a href="#general-knowledge-router" id="toc-general-knowledge-router" class="nav-link" data-scroll-target="#general-knowledge-router">General Knowledge Router</a>
   <ul class="collapse">
-  <li><a href="#general-knowledge-router" id="toc-general-knowledge-router" class="nav-link" data-scroll-target="#general-knowledge-router">General Knowledge Router</a></li>
+  <li><a href="#how-it-works" id="toc-how-it-works" class="nav-link" data-scroll-target="#how-it-works">How it works:</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#improving-agent-reliability" id="toc-improving-agent-reliability" class="nav-link" data-scroll-target="#improving-agent-reliability">Improving Agent Reliability</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#function-calling-with-pydantic" id="toc-function-calling-with-pydantic" class="nav-link" data-scroll-target="#function-calling-with-pydantic">1. Function Calling with Pydantic</a></li>
   <li><a href="#response-validation" id="toc-response-validation" class="nav-link" data-scroll-target="#response-validation">2. Response Validation</a></li>
   </ul></li>
   <li><a href="#retrieval-augmented-generation-rag" id="toc-retrieval-augmented-generation-rag" class="nav-link" data-scroll-target="#retrieval-augmented-generation-rag">Retrieval-Augmented Generation (RAG)</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#understanding-rag" id="toc-understanding-rag" class="nav-link" data-scroll-target="#understanding-rag">Understanding RAG</a></li>
   <li><a href="#implementing-a-basic-rag-system" id="toc-implementing-a-basic-rag-system" class="nav-link" data-scroll-target="#implementing-a-basic-rag-system">Implementing a Basic RAG System</a></li>
   <li><a href="#key-components-of-our-edge-rag-system" id="toc-key-components-of-our-edge-rag-system" class="nav-link" data-scroll-target="#key-components-of-our-edge-rag-system">Key Components of Our Edge RAG System</a></li>
   <li><a href="#advantages-of-rag-for-edge-ai" id="toc-advantages-of-rag-for-edge-ai" class="nav-link" data-scroll-target="#advantages-of-rag-for-edge-ai">Advantages of RAG for Edge AI</a></li>
   <li><a href="#optimizing-rag-for-edge-devices" id="toc-optimizing-rag-for-edge-devices" class="nav-link" data-scroll-target="#optimizing-rag-for-edge-devices">Optimizing RAG for Edge Devices</a></li>
   <li><a href="#application-enhanced-weather-station-with-rag" id="toc-application-enhanced-weather-station-with-rag" class="nav-link" data-scroll-target="#application-enhanced-weather-station-with-rag">Application: Enhanced Weather Station with RAG</a></li>
-  <li><a href="#using-the-rag-system-for-edge-ai-engineering" id="toc-using-the-rag-system-for-edge-ai-engineering" class="nav-link" data-scroll-target="#using-the-rag-system-for-edge-ai-engineering">Using the RAG System for Edge AI Engineering</a></li>
+  <li><a href="#using-the-rag-system-for-edge-ai-engineering" id="toc-using-the-rag-system-for-edge-ai-engineering" class="nav-link" data-scroll-target="#using-the-rag-system-for-edge-ai-engineering">Using the RAG System for Edge AI Engineering</a>
+  <ul class="collapse">
+  <li><a href="#advantages" id="toc-advantages" class="nav-link" data-scroll-target="#advantages">Advantages</a></li>
+  <li><a href="#disadvantages" id="toc-disadvantages" class="nav-link" data-scroll-target="#disadvantages">Disadvantages</a></li>
+  </ul></li>
   <li><a href="#testing-different-models-and-chunk-sizes" id="toc-testing-different-models-and-chunk-sizes" class="nav-link" data-scroll-target="#testing-different-models-and-chunk-sizes">Testing Different Models and Chunk Sizes</a></li>
   </ul></li>
   <li><a href="#advanced-agentic-rag-system" id="toc-advanced-agentic-rag-system" class="nav-link" data-scroll-target="#advanced-agentic-rag-system">Advanced Agentic RAG System</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#system-architecture" id="toc-system-architecture" class="nav-link" data-scroll-target="#system-architecture">System Architecture</a></li>
   <li><a href="#key-workflow" id="toc-key-workflow" class="nav-link" data-scroll-target="#key-workflow">Key Workflow</a></li>
-  <li><a href="#important-code-sections" id="toc-important-code-sections" class="nav-link" data-scroll-target="#important-code-sections">Important Code Sections</a></li>
+  <li><a href="#important-code-sections" id="toc-important-code-sections" class="nav-link" data-scroll-target="#important-code-sections">Important Code Sections</a>
+  <ul class="collapse">
+  <li><a href="#query-routing" id="toc-query-routing" class="nav-link" data-scroll-target="#query-routing">Query Routing</a></li>
+  <li><a href="#enhanced-rag-with-feedback-loop" id="toc-enhanced-rag-with-feedback-loop" class="nav-link" data-scroll-target="#enhanced-rag-with-feedback-loop">Enhanced RAG with Feedback Loop</a></li>
+  <li><a href="#knowledge-gap-handling" id="toc-knowledge-gap-handling" class="nav-link" data-scroll-target="#knowledge-gap-handling">Knowledge Gap Handling</a></li>
+  </ul></li>
   <li><a href="#detailed-workflow-diagram" id="toc-detailed-workflow-diagram" class="nav-link" data-scroll-target="#detailed-workflow-diagram">Detailed Workflow Diagram</a></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
+  <ul class="collapse">
+  <li><a href="#simple-calculation" id="toc-simple-calculation" class="nav-link" data-scroll-target="#simple-calculation">Simple Calculation</a></li>
+  <li><a href="#first-pass-rag" id="toc-first-pass-rag" class="nav-link" data-scroll-target="#first-pass-rag">First Pass Rag</a></li>
+  <li><a href="#more-complex-queries" id="toc-more-complex-queries" class="nav-link" data-scroll-target="#more-complex-queries">More Complex Queries</a></li>
+  <li><a href="#queries-outside-of-the-database-scope" id="toc-queries-outside-of-the-database-scope" class="nav-link" data-scroll-target="#queries-outside-of-the-database-scope">Queries outside of the database scope:</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#fine-tuning-slms-for-edge-deployment" id="toc-fine-tuning-slms-for-edge-deployment" class="nav-link" data-scroll-target="#fine-tuning-slms-for-edge-deployment">Fine-Tuning SLMs for Edge Deployment</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#preparing-for-fine-tuning" id="toc-preparing-for-fine-tuning" class="nav-link" data-scroll-target="#preparing-for-fine-tuning">Preparing for Fine-Tuning</a></li>
   <li><a href="#setting-up-a-fine-tuning-process" id="toc-setting-up-a-fine-tuning-process" class="nav-link" data-scroll-target="#setting-up-a-fine-tuning-process">Setting Up a Fine-Tuning Process</a></li>
   <li><a href="#real-implementation-supervised-fine-tuning-sft" id="toc-real-implementation-supervised-fine-tuning-sft" class="nav-link" data-scroll-target="#real-implementation-supervised-fine-tuning-sft">Real implementation: Supervised Fine-Tuning (SFT)</a></li>
@@ -1840,9 +1892,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../references.html" class="pagination-link">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

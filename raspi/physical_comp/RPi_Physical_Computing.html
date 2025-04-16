@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>EdgeAI Engineering - Physical Computing with Raspberry Pi</title>
+<title>Edge AI Engineering - Physical Computing with Raspberry Pi</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,12 +108,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">EdgeAI Engineering</span>
+    <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../EdgeAI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -195,6 +195,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">About this Book</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">A Fixed Function AI (Reactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
@@ -219,6 +231,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
@@ -249,6 +265,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../references.html" class="sidebar-item-text sidebar-link">
@@ -275,17 +307,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
   <li><a href="#install-the-raspi-operating-system" id="toc-install-the-raspi-operating-system" class="nav-link" data-scroll-target="#install-the-raspi-operating-system">Install the Raspi Operating System</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#interacting-with-the-raspi-via-ssh" id="toc-interacting-with-the-raspi-via-ssh" class="nav-link" data-scroll-target="#interacting-with-the-raspi-via-ssh">Interacting with the Raspi via SSH</a></li>
   </ul></li>
   <li><a href="#accessing-the-gpios" id="toc-accessing-the-gpios" class="nav-link" data-scroll-target="#accessing-the-gpios">Accessing the GPIOs</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#pin-numbering" id="toc-pin-numbering" class="nav-link" data-scroll-target="#pin-numbering">Pin Numbering</a></li>
   <li><a href="#hello-world-blinking-an-led" id="toc-hello-world-blinking-an-led" class="nav-link" data-scroll-target="#hello-world-blinking-an-led">“Hello World”: Blinking an LED</a></li>
   <li><a href="#installing-all-leds-the-actuators" id="toc-installing-all-leds-the-actuators" class="nav-link" data-scroll-target="#installing-all-leds-the-actuators">Installing all LEDs (the “actuators”)</a></li>
   </ul></li>
   <li><a href="#sensors-installation-and-setup" id="toc-sensors-installation-and-setup" class="nav-link" data-scroll-target="#sensors-installation-and-setup">Sensors Installation and setup</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#button" id="toc-button" class="nav-link" data-scroll-target="#button">Button</a></li>
   <li><a href="#installing-adafruit-circuitpython" id="toc-installing-adafruit-circuitpython" class="nav-link" data-scroll-target="#installing-adafruit-circuitpython">Installing Adafruit CircuitPython</a></li>
   <li><a href="#dht22---temperature-humidity-sensor" id="toc-dht22---temperature-humidity-sensor" class="nav-link" data-scroll-target="#dht22---temperature-humidity-sensor">DHT22 - Temperature &amp; Humidity Sensor</a></li>
@@ -293,7 +325,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#measuring-weather-and-altitude-with-bmp280" id="toc-measuring-weather-and-altitude-with-bmp280" class="nav-link" data-scroll-target="#measuring-weather-and-altitude-with-bmp280">Measuring Weather and Altitude With BMP280</a></li>
   </ul></li>
   <li><a href="#playing-with-sensors-and-actuators" id="toc-playing-with-sensors-and-actuators" class="nav-link" data-scroll-target="#playing-with-sensors-and-actuators">Playing with Sensors and Actuators</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#installing-jupyter-notebook" id="toc-installing-jupyter-notebook" class="nav-link" data-scroll-target="#installing-jupyter-notebook">Installing Jupyter Notebook</a></li>
   <li><a href="#testing-the-notebook-setup" id="toc-testing-the-notebook-setup" class="nav-link" data-scroll-target="#testing-the-notebook-setup">Testing the Notebook setup</a></li>
   <li><a href="#initialization" id="toc-initialization" class="nav-link" data-scroll-target="#initialization">Initialization</a></li>
@@ -304,9 +336,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#interacting-an-slm-with-the-physical-world" id="toc-interacting-an-slm-with-the-physical-world" class="nav-link" data-scroll-target="#interacting-an-slm-with-the-physical-world">Interacting an SLM with the Physical world</a></li>
   <li><a href="#other-models" id="toc-other-models" class="nav-link" data-scroll-target="#other-models">Other Models</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#key-achievements" id="toc-key-achievements" class="nav-link" data-scroll-target="#key-achievements">Key Achievements</a></li>
-  <li><a href="#technical-insights" id="toc-technical-insights" class="nav-link" data-scroll-target="#technical-insights">Technical Insights</a></li>
+  <li><a href="#technical-insights" id="toc-technical-insights" class="nav-link" data-scroll-target="#technical-insights">Technical Insights</a>
+  <ul class="collapse">
+  <li><a href="#hardware-integration" id="toc-hardware-integration" class="nav-link" data-scroll-target="#hardware-integration">Hardware Integration</a></li>
+  <li><a href="#software-architecture" id="toc-software-architecture" class="nav-link" data-scroll-target="#software-architecture">Software Architecture</a></li>
+  <li><a href="#ai-integration-learnings" id="toc-ai-integration-learnings" class="nav-link" data-scroll-target="#ai-integration-learnings">AI Integration Learnings</a></li>
+  </ul></li>
   <li><a href="#practical-applications" id="toc-practical-applications" class="nav-link" data-scroll-target="#practical-applications">Practical Applications</a></li>
   <li><a href="#challenges-and-solutions" id="toc-challenges-and-solutions" class="nav-link" data-scroll-target="#challenges-and-solutions">Challenges and Solutions</a></li>
   <li><a href="#future-enhancements" id="toc-future-enhancements" class="nav-link" data-scroll-target="#future-enhancements">Future Enhancements</a></li>

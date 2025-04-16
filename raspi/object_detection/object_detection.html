@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>EdgeAI Engineering - Object Detection</title>
+<title>Edge AI Engineering - Object Detection</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,12 +108,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">EdgeAI Engineering</span>
+    <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../EdgeAI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -195,6 +195,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">About this Book</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">A Fixed Function AI (Reactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
@@ -219,6 +231,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
@@ -249,6 +265,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../references.html" class="sidebar-item-text sidebar-link">
@@ -272,24 +304,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul>
+  <li><a href="#object-detection-fundamentals" id="toc-object-detection-fundamentals" class="nav-link" data-scroll-target="#object-detection-fundamentals">Object Detection Fundamentals</a>
   <ul class="collapse">
-  <li><a href="#object-detection-fundamentals" id="toc-object-detection-fundamentals" class="nav-link" data-scroll-target="#object-detection-fundamentals">Object Detection Fundamentals</a></li>
+  <li><a href="#image-classification-vs.-object-detection" id="toc-image-classification-vs.-object-detection" class="nav-link" data-scroll-target="#image-classification-vs.-object-detection">Image Classification vs.&nbsp;Object Detection</a></li>
+  <li><a href="#key-components-of-object-detection" id="toc-key-components-of-object-detection" class="nav-link" data-scroll-target="#key-components-of-object-detection">Key Components of Object Detection</a></li>
+  <li><a href="#challenges-in-object-detection" id="toc-challenges-in-object-detection" class="nav-link" data-scroll-target="#challenges-in-object-detection">Challenges in Object Detection</a></li>
+  <li><a href="#approaches-to-object-detection" id="toc-approaches-to-object-detection" class="nav-link" data-scroll-target="#approaches-to-object-detection">Approaches to Object Detection</a></li>
+  <li><a href="#evaluation-metrics" id="toc-evaluation-metrics" class="nav-link" data-scroll-target="#evaluation-metrics">Evaluation Metrics</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#pre-trained-object-detection-models-overview" id="toc-pre-trained-object-detection-models-overview" class="nav-link" data-scroll-target="#pre-trained-object-detection-models-overview">Pre-Trained Object Detection Models Overview</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#setting-up-the-tflite-environment" id="toc-setting-up-the-tflite-environment" class="nav-link" data-scroll-target="#setting-up-the-tflite-environment">Setting Up the TFLite Environment</a></li>
   <li><a href="#creating-a-working-directory" id="toc-creating-a-working-directory" class="nav-link" data-scroll-target="#creating-a-working-directory">Creating a Working Directory:</a></li>
   <li><a href="#inference-and-post-processing" id="toc-inference-and-post-processing" class="nav-link" data-scroll-target="#inference-and-post-processing">Inference and Post-Processing</a></li>
   <li><a href="#efficientdet" id="toc-efficientdet" class="nav-link" data-scroll-target="#efficientdet">EfficientDet</a></li>
   </ul></li>
   <li><a href="#object-detection-project" id="toc-object-detection-project" class="nav-link" data-scroll-target="#object-detection-project">Object Detection Project</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#the-goal" id="toc-the-goal" class="nav-link" data-scroll-target="#the-goal">The Goal</a></li>
   <li><a href="#raw-data-collection" id="toc-raw-data-collection" class="nav-link" data-scroll-target="#raw-data-collection">Raw Data Collection</a></li>
-  <li><a href="#labeling-data" id="toc-labeling-data" class="nav-link" data-scroll-target="#labeling-data">Labeling Data</a></li>
+  <li><a href="#labeling-data" id="toc-labeling-data" class="nav-link" data-scroll-target="#labeling-data">Labeling Data</a>
+  <ul class="collapse">
+  <li><a href="#annotate" id="toc-annotate" class="nav-link" data-scroll-target="#annotate">Annotate</a></li>
+  <li><a href="#data-pre-processing" id="toc-data-pre-processing" class="nav-link" data-scroll-target="#data-pre-processing">Data Pre-Processing</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#training-an-ssd-mobilenet-model-on-edge-impulse-studio" id="toc-training-an-ssd-mobilenet-model-on-edge-impulse-studio" class="nav-link" data-scroll-target="#training-an-ssd-mobilenet-model-on-edge-impulse-studio">Training an SSD MobileNet Model on Edge Impulse Studio</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#uploading-the-annotated-data" id="toc-uploading-the-annotated-data" class="nav-link" data-scroll-target="#uploading-the-annotated-data">Uploading the annotated data</a></li>
   <li><a href="#the-impulse-design" id="toc-the-impulse-design" class="nav-link" data-scroll-target="#the-impulse-design">The Impulse Design</a></li>
   <li><a href="#preprocessing-all-dataset" id="toc-preprocessing-all-dataset" class="nav-link" data-scroll-target="#preprocessing-all-dataset">Preprocessing all dataset</a></li>
@@ -298,20 +341,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#inference-and-post-processing-1" id="toc-inference-and-post-processing-1" class="nav-link" data-scroll-target="#inference-and-post-processing-1">Inference and Post-Processing</a></li>
   </ul></li>
   <li><a href="#training-a-fomo-model-at-edge-impulse-studio" id="toc-training-a-fomo-model-at-edge-impulse-studio" class="nav-link" data-scroll-target="#training-a-fomo-model-at-edge-impulse-studio">Training a FOMO Model at Edge Impulse Studio</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#how-fomo-works" id="toc-how-fomo-works" class="nav-link" data-scroll-target="#how-fomo-works">How FOMO works?</a></li>
   <li><a href="#impulse-design-new-training-and-testing" id="toc-impulse-design-new-training-and-testing" class="nav-link" data-scroll-target="#impulse-design-new-training-and-testing">Impulse Design, new Training and Testing</a></li>
   <li><a href="#deploying-the-model-1" id="toc-deploying-the-model-1" class="nav-link" data-scroll-target="#deploying-the-model-1">Deploying the model</a></li>
   <li><a href="#inference-and-post-processing-2" id="toc-inference-and-post-processing-2" class="nav-link" data-scroll-target="#inference-and-post-processing-2">Inference and Post-Processing</a></li>
   </ul></li>
   <li><a href="#exploring-a-yolo-model-using-ultralitics" id="toc-exploring-a-yolo-model-using-ultralitics" class="nav-link" data-scroll-target="#exploring-a-yolo-model-using-ultralitics">Exploring a YOLO Model using Ultralitics</a>
+  <ul>
+  <li><a href="#talking-about-the-yolo-model" id="toc-talking-about-the-yolo-model" class="nav-link" data-scroll-target="#talking-about-the-yolo-model">Talking about the YOLO Model</a>
   <ul class="collapse">
-  <li><a href="#talking-about-the-yolo-model" id="toc-talking-about-the-yolo-model" class="nav-link" data-scroll-target="#talking-about-the-yolo-model">Talking about the YOLO Model</a></li>
+  <li><a href="#key-features" id="toc-key-features" class="nav-link" data-scroll-target="#key-features">Key Features:</a></li>
+  </ul></li>
   <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
   <li><a href="#testing-the-yolo" id="toc-testing-the-yolo" class="nav-link" data-scroll-target="#testing-the-yolo">Testing the YOLO</a></li>
   <li><a href="#export-model-to-ncnn-format" id="toc-export-model-to-ncnn-format" class="nav-link" data-scroll-target="#export-model-to-ncnn-format">Export Model to NCNN format</a></li>
   <li><a href="#exploring-yolo-with-python" id="toc-exploring-yolo-with-python" class="nav-link" data-scroll-target="#exploring-yolo-with-python">Exploring YOLO with Python</a></li>
-  <li><a href="#training-yolov8-on-a-customized-dataset" id="toc-training-yolov8-on-a-customized-dataset" class="nav-link" data-scroll-target="#training-yolov8-on-a-customized-dataset">Training YOLOv8 on a Customized Dataset</a></li>
+  <li><a href="#training-yolov8-on-a-customized-dataset" id="toc-training-yolov8-on-a-customized-dataset" class="nav-link" data-scroll-target="#training-yolov8-on-a-customized-dataset">Training YOLOv8 on a Customized Dataset</a>
+  <ul class="collapse">
+  <li><a href="#critical-points-on-the-notebook" id="toc-critical-points-on-the-notebook" class="nav-link" data-scroll-target="#critical-points-on-the-notebook">Critical points on the Notebook:</a></li>
+  </ul></li>
   <li><a href="#inference-with-the-trained-model-using-the-raspi" id="toc-inference-with-the-trained-model-using-the-raspi" class="nav-link" data-scroll-target="#inference-with-the-trained-model-using-the-raspi">Inference with the trained model, using the Raspi</a></li>
   </ul></li>
   <li><a href="#object-detection-on-a-live-stream" id="toc-object-detection-on-a-live-stream" class="nav-link" data-scroll-target="#object-detection-on-a-live-stream">Object Detection on a live stream</a></li>

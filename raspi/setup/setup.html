@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>EdgeAI Engineering - Setup</title>
+<title>Edge AI Engineering - Setup</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,7 +64,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
 <link href="../../raspi/image_classification/image_classification.html" rel="next">
-<link href="../../about_book.html" rel="prev">
 <link href="../../images/cover.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -108,12 +107,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">EdgeAI Engineering</span>
+    <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../EdgeAI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -195,6 +194,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">About this Book</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">A Fixed Function AI (Reactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link active">
@@ -219,6 +230,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
@@ -249,6 +264,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../references.html" class="sidebar-item-text sidebar-link">
@@ -272,38 +303,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#key-features" id="toc-key-features" class="nav-link" data-scroll-target="#key-features">Key Features</a></li>
   <li><a href="#raspberry-pi-models-covered-in-this-book" id="toc-raspberry-pi-models-covered-in-this-book" class="nav-link" data-scroll-target="#raspberry-pi-models-covered-in-this-book">Raspberry Pi Models (covered in this book)</a></li>
   <li><a href="#engineering-applications" id="toc-engineering-applications" class="nav-link" data-scroll-target="#engineering-applications">Engineering Applications</a></li>
   </ul></li>
   <li><a href="#hardware-overview" id="toc-hardware-overview" class="nav-link" data-scroll-target="#hardware-overview">Hardware Overview</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#raspberry-pi-zero-2w" id="toc-raspberry-pi-zero-2w" class="nav-link" data-scroll-target="#raspberry-pi-zero-2w">Raspberry Pi Zero 2W</a></li>
   <li><a href="#raspberry-pi-5" id="toc-raspberry-pi-5" class="nav-link" data-scroll-target="#raspberry-pi-5">Raspberry Pi 5</a></li>
   </ul></li>
   <li><a href="#installing-the-operating-system" id="toc-installing-the-operating-system" class="nav-link" data-scroll-target="#installing-the-operating-system">Installing the Operating System</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#the-operating-system-os" id="toc-the-operating-system-os" class="nav-link" data-scroll-target="#the-operating-system-os">The Operating System (OS)</a></li>
   <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
   <li><a href="#initial-configuration" id="toc-initial-configuration" class="nav-link" data-scroll-target="#initial-configuration">Initial Configuration</a></li>
   </ul></li>
   <li><a href="#remote-access" id="toc-remote-access" class="nav-link" data-scroll-target="#remote-access">Remote Access</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#ssh-access" id="toc-ssh-access" class="nav-link" data-scroll-target="#ssh-access">SSH Access</a></li>
   <li><a href="#to-shut-down-the-raspi-via-terminal" id="toc-to-shut-down-the-raspi-via-terminal" class="nav-link" data-scroll-target="#to-shut-down-the-raspi-via-terminal">To shut down the Raspi via terminal:</a></li>
-  <li><a href="#transfer-files-between-the-raspi-and-a-computer" id="toc-transfer-files-between-the-raspi-and-a-computer" class="nav-link" data-scroll-target="#transfer-files-between-the-raspi-and-a-computer">Transfer Files between the Raspi and a computer</a></li>
+  <li><a href="#transfer-files-between-the-raspi-and-a-computer" id="toc-transfer-files-between-the-raspi-and-a-computer" class="nav-link" data-scroll-target="#transfer-files-between-the-raspi-and-a-computer">Transfer Files between the Raspi and a computer</a>
+  <ul class="collapse">
+  <li><a href="#using-secure-copy-protocol-scp" id="toc-using-secure-copy-protocol-scp" class="nav-link" data-scroll-target="#using-secure-copy-protocol-scp">Using Secure Copy Protocol (<code>scp</code>):</a></li>
+  <li><a href="#transferring-files-using-ftp" id="toc-transferring-files-using-ftp" class="nav-link" data-scroll-target="#transferring-files-using-ftp">Transferring files using FTP</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#increasing-swap-memory" id="toc-increasing-swap-memory" class="nav-link" data-scroll-target="#increasing-swap-memory">Increasing SWAP Memory</a></li>
   <li><a href="#installing-a-camera" id="toc-installing-a-camera" class="nav-link" data-scroll-target="#installing-a-camera">Installing a Camera</a>
+  <ul>
+  <li><a href="#installing-a-usb-webcam" id="toc-installing-a-usb-webcam" class="nav-link" data-scroll-target="#installing-a-usb-webcam">Installing a USB WebCam</a>
   <ul class="collapse">
-  <li><a href="#installing-a-usb-webcam" id="toc-installing-a-usb-webcam" class="nav-link" data-scroll-target="#installing-a-usb-webcam">Installing a USB WebCam</a></li>
+  <li><a href="#video-streaming" id="toc-video-streaming" class="nav-link" data-scroll-target="#video-streaming">Video Streaming</a></li>
+  </ul></li>
   <li><a href="#installing-a-camera-module-on-the-csi-port" id="toc-installing-a-camera-module-on-the-csi-port" class="nav-link" data-scroll-target="#installing-a-camera-module-on-the-csi-port">Installing a Camera Module on the CSI port</a></li>
   </ul></li>
   <li><a href="#running-the-raspi-desktop-remotely" id="toc-running-the-raspi-desktop-remotely" class="nav-link" data-scroll-target="#running-the-raspi-desktop-remotely">Running the Raspi Desktop remotely</a></li>
   <li><a href="#updating-and-installing-software" id="toc-updating-and-installing-software" class="nav-link" data-scroll-target="#updating-and-installing-software">Updating and Installing Software</a></li>
   <li><a href="#model-specific-considerations" id="toc-model-specific-considerations" class="nav-link" data-scroll-target="#model-specific-considerations">Model-Specific Considerations</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#raspberry-pi-zero-raspi-zero" id="toc-raspberry-pi-zero-raspi-zero" class="nav-link" data-scroll-target="#raspberry-pi-zero-raspi-zero">Raspberry Pi Zero (Raspi-Zero)</a></li>
   <li><a href="#raspberry-pi-4-or-5-raspi-4-or-raspi-5" id="toc-raspberry-pi-4-or-5-raspi-4-or-raspi-5" class="nav-link" data-scroll-target="#raspberry-pi-4-or-5-raspi-4-or-raspi-5">Raspberry Pi 4 or 5 (Raspi-4 or Raspi-5)</a></li>
   </ul></li>
@@ -1026,9 +1064,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../about_book.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">About this Book</span>
-      </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../../raspi/image_classification/image_classification.html" class="pagination-link">

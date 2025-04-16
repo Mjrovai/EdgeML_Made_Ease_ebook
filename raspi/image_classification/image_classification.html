@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>EdgeAI Engineering - Image Classification</title>
+<title>Edge AI Engineering - Image Classification</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,12 +108,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">EdgeAI Engineering</span>
+    <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../EdgeAI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -195,6 +195,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">About this Book</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">A Fixed Function AI (Reactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
@@ -219,6 +231,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
@@ -249,6 +265,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../references.html" class="sidebar-item-text sidebar-link">
@@ -272,12 +304,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#applications-in-real-world-scenarios" id="toc-applications-in-real-world-scenarios" class="nav-link" data-scroll-target="#applications-in-real-world-scenarios">Applications in Real-World Scenarios</a></li>
   <li><a href="#advantages-of-running-classification-on-edge-devices-like-raspberry-pi" id="toc-advantages-of-running-classification-on-edge-devices-like-raspberry-pi" class="nav-link" data-scroll-target="#advantages-of-running-classification-on-edge-devices-like-raspberry-pi">Advantages of Running Classification on Edge Devices like Raspberry Pi</a></li>
   </ul></li>
   <li><a href="#setting-up-the-environment" id="toc-setting-up-the-environment" class="nav-link" data-scroll-target="#setting-up-the-environment">Setting Up the Environment</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#updating-the-raspberry-pi" id="toc-updating-the-raspberry-pi" class="nav-link" data-scroll-target="#updating-the-raspberry-pi">Updating the Raspberry Pi</a></li>
   <li><a href="#installing-required-libraries" id="toc-installing-required-libraries" class="nav-link" data-scroll-target="#installing-required-libraries">Installing Required Libraries</a></li>
   <li><a href="#setting-up-a-virtual-environment-optional-but-recommended" id="toc-setting-up-a-virtual-environment-optional-but-recommended" class="nav-link" data-scroll-target="#setting-up-a-virtual-environment-optional-but-recommended">Setting up a Virtual Environment (Optional but Recommended)</a></li>
@@ -288,22 +320,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#verifying-the-setup" id="toc-verifying-the-setup" class="nav-link" data-scroll-target="#verifying-the-setup">Verifying the Setup</a></li>
   </ul></li>
   <li><a href="#making-inferences-with-mobilenet-v2" id="toc-making-inferences-with-mobilenet-v2" class="nav-link" data-scroll-target="#making-inferences-with-mobilenet-v2">Making inferences with Mobilenet V2</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#define-a-general-image-classification-function" id="toc-define-a-general-image-classification-function" class="nav-link" data-scroll-target="#define-a-general-image-classification-function">Define a general Image Classification function</a></li>
   <li><a href="#testing-with-a-model-trained-from-scratch" id="toc-testing-with-a-model-trained-from-scratch" class="nav-link" data-scroll-target="#testing-with-a-model-trained-from-scratch">Testing with a model trained from scratch</a></li>
   <li><a href="#installing-picamera2" id="toc-installing-picamera2" class="nav-link" data-scroll-target="#installing-picamera2">Installing Picamera2</a></li>
   </ul></li>
   <li><a href="#image-classification-project" id="toc-image-classification-project" class="nav-link" data-scroll-target="#image-classification-project">Image Classification Project</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#the-goal" id="toc-the-goal" class="nav-link" data-scroll-target="#the-goal">The Goal</a></li>
-  <li><a href="#data-collection" id="toc-data-collection" class="nav-link" data-scroll-target="#data-collection">Data Collection</a></li>
+  <li><a href="#data-collection" id="toc-data-collection" class="nav-link" data-scroll-target="#data-collection">Data Collection</a>
+  <ul class="collapse">
+  <li><a href="#key-features" id="toc-key-features" class="nav-link" data-scroll-target="#key-features">Key Features:</a></li>
+  <li><a href="#main-components" id="toc-main-components" class="nav-link" data-scroll-target="#main-components">Main Components:</a></li>
+  <li><a href="#key-functions" id="toc-key-functions" class="nav-link" data-scroll-target="#key-functions">Key Functions:</a></li>
+  <li><a href="#usage-flow" id="toc-usage-flow" class="nav-link" data-scroll-target="#usage-flow">Usage Flow:</a></li>
+  <li><a href="#technical-notes" id="toc-technical-notes" class="nav-link" data-scroll-target="#technical-notes">Technical Notes:</a></li>
+  <li><a href="#customization-possibilities" id="toc-customization-possibilities" class="nav-link" data-scroll-target="#customization-possibilities">Customization Possibilities:</a></li>
+  <li><a href="#number-of-samples-on-dataset" id="toc-number-of-samples-on-dataset" class="nav-link" data-scroll-target="#number-of-samples-on-dataset">Number of samples on Dataset:</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#training-the-model-with-edge-impulse-studio" id="toc-training-the-model-with-edge-impulse-studio" class="nav-link" data-scroll-target="#training-the-model-with-edge-impulse-studio">Training the model with Edge Impulse Studio</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">Dataset</a></li>
   </ul></li>
   <li><a href="#the-impulse-design" id="toc-the-impulse-design" class="nav-link" data-scroll-target="#the-impulse-design">The Impulse Design</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#image-pre-processing" id="toc-image-pre-processing" class="nav-link" data-scroll-target="#image-pre-processing">Image Pre-Processing</a></li>
   <li><a href="#model-design" id="toc-model-design" class="nav-link" data-scroll-target="#model-design">Model Design</a></li>
   <li><a href="#model-training" id="toc-model-training" class="nav-link" data-scroll-target="#model-training">Model Training</a></li>
@@ -311,7 +352,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#model-testing" id="toc-model-testing" class="nav-link" data-scroll-target="#model-testing">Model Testing</a></li>
   <li><a href="#deploying-the-model" id="toc-deploying-the-model" class="nav-link" data-scroll-target="#deploying-the-model">Deploying the model</a></li>
   </ul></li>
-  <li><a href="#live-image-classification" id="toc-live-image-classification" class="nav-link" data-scroll-target="#live-image-classification">Live Image Classification</a></li>
+  <li><a href="#live-image-classification" id="toc-live-image-classification" class="nav-link" data-scroll-target="#live-image-classification">Live Image Classification</a>
+  <ul>
+  <li><a href="#key-components" id="toc-key-components" class="nav-link" data-scroll-target="#key-components">Key Components:</a></li>
+  <li><a href="#main-features" id="toc-main-features" class="nav-link" data-scroll-target="#main-features">Main Features:</a></li>
+  <li><a href="#code-structure" id="toc-code-structure" class="nav-link" data-scroll-target="#code-structure">Code Structure:</a></li>
+  <li><a href="#key-concepts" id="toc-key-concepts" class="nav-link" data-scroll-target="#key-concepts">Key Concepts:</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage:</a></li>
+  </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion:</a></li>
   <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
   </ul>

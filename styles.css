@@ -63,4 +63,20 @@
   word-wrap: normal;
   overflow-x: auto;
 }
+
+/* Section Headers (PART titles) */
+.part {
+  background-color: #D8C3A5; /* Muted beige-grey */
+  color: #3B2E2A; /* Rich dark brown */
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-weight: oblique;
+  margin-bottom: 10px;
+}
+
+/* Highlighted PART header (active section) */
+.part.active {
+  background-color: #C4B295; /* Slightly darker beige */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
     

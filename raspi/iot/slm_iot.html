@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>EdgeAI Engineering - Experimenting with SLMs for IoT Control</title>
+<title>Edge AI Engineering - Experimenting with SLMs for IoT Control</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,12 +108,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">EdgeAI Engineering</span>
+    <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../EdgeAI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -195,6 +195,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">About this Book</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">A Fixed Function AI (Reactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
@@ -219,6 +231,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
@@ -249,6 +265,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../references.html" class="sidebar-item-text sidebar-link">
@@ -273,22 +305,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a>
+  <ul>
+  <li><a href="#hardware-setup" id="toc-hardware-setup" class="nav-link" data-scroll-target="#hardware-setup">Hardware Setup</a>
   <ul class="collapse">
-  <li><a href="#hardware-setup" id="toc-hardware-setup" class="nav-link" data-scroll-target="#hardware-setup">Hardware Setup</a></li>
+  <li><a href="#connection-diagram" id="toc-connection-diagram" class="nav-link" data-scroll-target="#connection-diagram">Connection Diagram</a></li>
+  </ul></li>
   <li><a href="#software-prerequisites" id="toc-software-prerequisites" class="nav-link" data-scroll-target="#software-prerequisites">Software Prerequisites</a></li>
   </ul></li>
   <li><a href="#basic-sensor-integration" id="toc-basic-sensor-integration" class="nav-link" data-scroll-target="#basic-sensor-integration">Basic Sensor Integration</a></li>
   <li><a href="#slm-basic-analysis" id="toc-slm-basic-analysis" class="nav-link" data-scroll-target="#slm-basic-analysis">SLM Basic Analysis</a></li>
   <li><a href="#active-control-implementation" id="toc-active-control-implementation" class="nav-link" data-scroll-target="#active-control-implementation">Active Control Implementation</a></li>
   <li><a href="#natural-language-interaction-user-command" id="toc-natural-language-interaction-user-command" class="nav-link" data-scroll-target="#natural-language-interaction-user-command">Natural Language Interaction (User Command)</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#key-components-and-features" id="toc-key-components-and-features" class="nav-link" data-scroll-target="#key-components-and-features">Key Components and Features</a></li>
   <li><a href="#system-capabilities" id="toc-system-capabilities" class="nav-link" data-scroll-target="#system-capabilities">System Capabilities</a></li>
   <li><a href="#example-usage" id="toc-example-usage" class="nav-link" data-scroll-target="#example-usage">Example Usage</a></li>
   </ul></li>
-  <li><a href="#data-logging-and-analysis" id="toc-data-logging-and-analysis" class="nav-link" data-scroll-target="#data-logging-and-analysis">Data Logging and Analysis</a></li>
+  <li><a href="#data-logging-and-analysis" id="toc-data-logging-and-analysis" class="nav-link" data-scroll-target="#data-logging-and-analysis">Data Logging and Analysis</a>
+  <ul>
+  <li><a href="#the-logging-system-monitor_log.py" id="toc-the-logging-system-monitor_log.py" class="nav-link" data-scroll-target="#the-logging-system-monitor_log.py">The Logging System (<code>monitor_log.py</code>)</a></li>
+  <li><a href="#the-interaction-system-slm_basic_interaction_log.py" id="toc-the-interaction-system-slm_basic_interaction_log.py" class="nav-link" data-scroll-target="#the-interaction-system-slm_basic_interaction_log.py">2. The Interaction System (<code>slm_basic_interaction_log.py</code>)</a></li>
+  <li><a href="#key-features-and-improvements" id="toc-key-features-and-improvements" class="nav-link" data-scroll-target="#key-features-and-improvements">Key Features and Improvements:</a></li>
+  </ul></li>
   <li><a href="#evolution-to-structured-command-processing" id="toc-evolution-to-structured-command-processing" class="nav-link" data-scroll-target="#evolution-to-structured-command-processing">Evolution to Structured Command Processing</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#structured-data-models" id="toc-structured-data-models" class="nav-link" data-scroll-target="#structured-data-models">Structured Data Models</a></li>
   <li><a href="#improved-command-processing" id="toc-improved-command-processing" class="nav-link" data-scroll-target="#improved-command-processing">Improved Command Processing</a></li>
   <li><a href="#benefits-of-the-new-approach" id="toc-benefits-of-the-new-approach" class="nav-link" data-scroll-target="#benefits-of-the-new-approach">Benefits of the New Approach</a></li>
@@ -297,7 +337,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#example-usage-1" id="toc-example-usage-1" class="nav-link" data-scroll-target="#example-usage-1">Example Usage</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
-  <ul class="collapse">
+  <ul>
+  <li><a href="#key-achievements" id="toc-key-achievements" class="nav-link" data-scroll-target="#key-achievements">Key Achievements</a></li>
+  <li><a href="#challenges-and-limitations" id="toc-challenges-and-limitations" class="nav-link" data-scroll-target="#challenges-and-limitations">Challenges and Limitations</a></li>
+  <li><a href="#final-thoughts" id="toc-final-thoughts" class="nav-link" data-scroll-target="#final-thoughts">Final Thoughts</a></li>
   <li><a href="#resourses" id="toc-resourses" class="nav-link" data-scroll-target="#resourses">Resourses</a></li>
   </ul></li>
   </ul>
