@@ -323,7 +323,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#ssh-access" id="toc-ssh-access" class="nav-link" data-scroll-target="#ssh-access">SSH Access</a></li>
   <li><a href="#to-shut-down-the-raspi-via-terminal" id="toc-to-shut-down-the-raspi-via-terminal" class="nav-link" data-scroll-target="#to-shut-down-the-raspi-via-terminal">To shut down the Raspi via terminal:</a></li>
-  <li><a href="#transfer-files-between-the-raspi-and-a-computer" id="toc-transfer-files-between-the-raspi-and-a-computer" class="nav-link" data-scroll-target="#transfer-files-between-the-raspi-and-a-computer">Transfer Files between the Raspi and a computer</a>
+  <li><a href="#transfer-files-between-the-raspberry-pi-and-a-computer" id="toc-transfer-files-between-the-raspberry-pi-and-a-computer" class="nav-link" data-scroll-target="#transfer-files-between-the-raspberry-pi-and-a-computer">Transfer Files between the Raspberry Pi and a computer</a>
   <ul class="collapse">
   <li><a href="#using-secure-copy-protocol-scp" id="toc-using-secure-copy-protocol-scp" class="nav-link" data-scroll-target="#using-secure-copy-protocol-scp">Using Secure Copy Protocol (<code>scp</code>):</a></li>
   <li><a href="#transferring-files-using-ftp" id="toc-transferring-files-using-ftp" class="nav-link" data-scroll-target="#transferring-files-using-ftp">Transferring files using FTP</a></li>
@@ -332,11 +332,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#increasing-swap-memory" id="toc-increasing-swap-memory" class="nav-link" data-scroll-target="#increasing-swap-memory">Increasing SWAP Memory</a></li>
   <li><a href="#installing-a-camera" id="toc-installing-a-camera" class="nav-link" data-scroll-target="#installing-a-camera">Installing a Camera</a>
   <ul>
+  <li><a href="#installing-a-camera-module-on-the-csi-port" id="toc-installing-a-camera-module-on-the-csi-port" class="nav-link" data-scroll-target="#installing-a-camera-module-on-the-csi-port">Installing a Camera Module on the CSI port</a></li>
   <li><a href="#installing-a-usb-webcam" id="toc-installing-a-usb-webcam" class="nav-link" data-scroll-target="#installing-a-usb-webcam">Installing a USB WebCam</a>
   <ul class="collapse">
   <li><a href="#video-streaming" id="toc-video-streaming" class="nav-link" data-scroll-target="#video-streaming">Video Streaming</a></li>
   </ul></li>
-  <li><a href="#installing-a-camera-module-on-the-csi-port" id="toc-installing-a-camera-module-on-the-csi-port" class="nav-link" data-scroll-target="#installing-a-camera-module-on-the-csi-port">Installing a Camera Module on the CSI port</a></li>
   </ul></li>
   <li><a href="#running-the-raspi-desktop-remotely" id="toc-running-the-raspi-desktop-remotely" class="nav-link" data-scroll-target="#running-the-raspi-desktop-remotely">Running the Raspi Desktop remotely</a></li>
   <li><a href="#updating-and-installing-software" id="toc-updating-and-installing-software" class="nav-link" data-scroll-target="#updating-and-installing-software">Updating and Installing Software</a></li>
@@ -374,7 +374,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption class="figure-caption"><em>DALL·E prompt - An electronics laboratory environment inspired by the 1950s, with a cartoon style. The lab should have vintage equipment, large oscilloscopes, old-fashioned tube radios, and large, boxy computers. The Raspberry Pi 5 board is prominently displayed, accurately shown in its real size, similar to a credit card, on a workbench. The Pi board is surrounded by classic lab tools like a soldering iron, resistors, and wires. The overall scene should be vibrant, with exaggerated colors and playful details characteristic of a cartoon. No logos or text should be included.</em></figcaption>
 </figure>
 </div>
-<p>This chapter will guide you through setting up Raspberry Pi Zero 2 W (<em>Raspi-Zero</em>) and Raspberry Pi 5 (<em>Raspi-5</em>) models. We’ll cover hardware setup, operating system installation, initial configuration, and tests.</p>
+<p>This chapter will guide you through setting up the Raspberry Pi Zero 2 W (Raspi-Zero) and the Raspberry Pi 5 (<em>Raspi-5</em>) models. We’ll cover hardware setup, operating system installation, initial configuration, and tests.</p>
 <blockquote class="blockquote">
 <p>The general instructions for the <em>Raspi-5</em> also apply to the older Raspberry Pi versions, such as the Raspi-3 and Raspi-4.</p>
 </blockquote>
@@ -398,12 +398,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Raspberry Pi Zero 2 W</strong> (<em>Raspi-Zero</em>):
 <ul>
 <li>Ideal for: Compact embedded systems</li>
-<li>Key specs: 1GHz single-core CPU (ARM Cortex-A53), 512MB RAM, minimal power consumption</li>
+<li>Key specs: 1GHz single-core CPU (ARM Cortex-A53), 512MB RAM, minimal power consumption (usually, around 600mW in Idle. Also, the power-off (“zombie current”) is very low, around 45mA (225mW), which is significantly less than full-size Raspberry Pi models.</li>
 </ul></li>
 <li><strong>Raspberry Pi 5</strong> (<em>Raspi-5</em>):
 <ul>
-<li>Ideal for: More demanding applications such as edge computing, computer vision, and edgeAI applications, including LLMs.</li>
-<li>Key specs: 2.4GHz quad-core CPU (ARM Cortex A-76), up to 8GB RAM, PCIe interface for expansions</li>
+<li>Ideal for more demanding applications, such as edge computing, computer vision, and edgeAI applications, including LLMs.</li>
+<li>Key specs: 2.4GHz quad-core CPU (ARM Cortex A-76), up to 8GB RAM, PCIe interface for expansions, higher power consumption (usually, around 3-3.5W in Idle)</li>
 </ul></li>
 </ol>
 </section>
@@ -432,7 +432,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>RAM</strong>: 512MB SDRAM</li>
 <li><strong>Wireless</strong>: 2.4GHz 802.11 b/g/n wireless LAN, Bluetooth 4.2, BLE</li>
 <li><strong>Ports</strong>: Mini HDMI, micro USB OTG, CSI-2 camera connector</li>
-<li><strong>Power</strong>: 5V via micro USB port</li>
+<li><strong>Power</strong>: 5V/2.5A via micro USB port <a href="https://www.raspberrypi.com/products/micro-usb-power-supply/">12.5W Micro USB power supply</a></li>
 </ul>
 </section>
 <section id="raspberry-pi-5" class="level3">
@@ -445,12 +445,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Pi 4: Quad-core Cortex-A72 (ARM v8) 64-bit SoC @ 1.5GHz</li>
 </ul></li>
 <li><strong>RAM</strong>: 2GB, 4GB, or 8GB options (8GB recommended for AI tasks)</li>
-<li><strong>Wireless</strong>: Dual-band 802.11ac wireless, Bluetooth 5.0</li>
+<li><strong>Wireless</strong>: Dual-band 802.11ac wireless (2.4 GHz and 5 GHz), Bluetooth 5.0</li>
 <li><strong>Ports</strong>: 2 × micro HDMI ports, 2 × USB 3.0 ports, 2 × USB 2.0 ports, CSI camera port, DSI display port</li>
-<li><strong>Power</strong>: 5V DC via USB-C connector (3A)</li>
+<li><strong>Power</strong>: 5V/5A, 5V/3A limits peripherals to 600mA, via USB-C connector <a href="https://www.raspberrypi.com/products/27w-power-supply/">27W USB-C power supply</a></li>
 </ul>
 <blockquote class="blockquote">
-<p>In the labs, we will use different names to address the Raspberry: <code>Raspi</code>, <code>Raspi-5</code>, <code>Raspi-Zero</code>, etc. Usually, <code>Raspi</code> is used when the instructions or comments apply to every model.</p>
+<p>In the labs, we will use different names to address the Raspberry Pi: <code>Raspi</code>, <code>Raspi-5</code>, <code>Raspi-Zero</code>, etc. Usually, <code>Raspi</code> or <code>Raspberry Pi</code> is used when the instructions or comments apply to every model.</p>
 </blockquote>
 </section>
 </section>
@@ -458,7 +458,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="installing-the-operating-system">Installing the Operating System</h2>
 <section id="the-operating-system-os" class="level3">
 <h3 class="anchored" data-anchor-id="the-operating-system-os">The Operating System (OS)</h3>
-<p>An operating system (OS) is fundamental software that manages computer hardware and software resources, providing standard services for computer programs. It is the core software that runs on a computer, acting as an intermediary between hardware and application software. The OS manages the computer’s memory, processes, device drivers, files, and security protocols.</p>
+<p>An operating system (OS) is essential software that manages computer hardware and software resources, providing standard services for computer programs. It is the core software that runs on a computer, serving as an intermediary between hardware and application software. The OS oversees the computer’s memory, processes, device drivers, files, and security protocols.</p>
 <ol type="1">
 <li><strong>Key functions</strong>:
 <ul>
@@ -494,7 +494,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="installation">Installation</h3>
 <p>To use the Raspberry Pi, we will need an operating system. By default, Raspberry Pis checks for an operating system on any SD card inserted in the slot, so we should install an operating system using <a href="https://www.raspberrypi.com/software/">Raspberry Pi Imager.</a></p>
 <p><em>Raspberry Pi Imager</em> is a tool for downloading and writing images on <em>macOS</em>, <em>Windows</em>, and <em>Linux</em>. It includes many popular operating system images for Raspberry Pi. We will also use the Imager to preconfigure credentials and remote access settings.</p>
-<p>Follow the steps to install the OS in your Raspi.</p>
+<p>Follow the steps to install the OS on your Raspberry Pi.</p>
 <ol type="1">
 <li><a href="https://www.raspberrypi.com/software/">Download</a> and install the Raspberry Pi Imager on your computer.</li>
 <li>Insert a microSD card into your computer (a 32GB SD card is recommended) .</li>
@@ -520,18 +520,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Write the image to the microSD card.</li>
 </ol>
 <blockquote class="blockquote">
-<p>In the examples here, we will use different hostnames depending on the device used: raspi, raspi-5, raspi-Zero, etc. It would help if you replaced it with the one you are using.</p>
+<p>In the examples here, we will use different hostnames depending on the device used: raspi, raspi-5, raspi-Zero, etc. Please replace it with the one you’re currently using.</p>
 </blockquote>
 </section>
 <section id="initial-configuration" class="level3">
 <h3 class="anchored" data-anchor-id="initial-configuration">Initial Configuration</h3>
 <ol type="1">
-<li>Insert the microSD card into your Raspberry Pi.</li>
-<li>Connect power to boot up the Raspberry Pi.</li>
-<li>Please wait for the initial boot process to complete (it may take a few minutes).</li>
+<li><p>Insert the microSD card into your Raspberry Pi.</p></li>
+<li><p>Connect power to boot up the Raspberry Pi. For the Rasp-5, use a 5V/3A (or 5A) external Power supply. For the Rasp-Zero, use a 5V/2.5A external Power supply (Optionally, for light uses, it is possible to use the computer’s USB to power on the Rasp-Zero.)</p></li>
+<li><p>Please wait for the initial boot process to complete (it may take a few minutes).</p></li>
 </ol>
 <blockquote class="blockquote">
-<p>You can find the most common Linux commands to be used with the Raspi <a href="https://www.jwdittrich.people.ysu.edu/raspberrypi/UsefulRaspberryPiCommands.pdf">here</a> or <a href="https://www.codecademy.com/learn/learn-raspberry-pi/modules/raspberry-pi-command-line-module/cheatsheet">here</a>.</p>
+<p>You can find the most common Linux commands to be used with the Raspberry Pi <a href="https://www.jwdittrich.people.ysu.edu/raspberrypi/UsefulRaspberryPiCommands.pdf">here</a> or <a href="https://www.codecademy.com/learn/learn-raspberry-pi/modules/raspberry-pi-command-line-module/cheatsheet">here</a>.</p>
 </blockquote>
 </section>
 </section>
@@ -540,18 +540,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="ssh-access" class="level3">
 <h3 class="anchored" data-anchor-id="ssh-access">SSH Access</h3>
 <p>The easiest way to interact with the Raspi-Zero is via SSH (“Headless”). You can use a Terminal (MAC/Linux), <a href="https://www.putty.org/">PuTTy (</a>Windows), or any other.</p>
+<blockquote class="blockquote">
+<p>The Raspberry Pi and the notebook should be on the same WiFi network. Note that the Raspberry Pi 5 is dual-band 802.11ac Wi-Fi (2.4 GHz and 5 GHz), but the Raspberry Pi Zero 2W is only 2.4GHz.</p>
+</blockquote>
 <ol type="1">
-<li><p>Find your Raspberry Pi’s IP address (for example, check your router).</p></li>
+<li><p>Fi nd your Raspberry Pi’s IP address (for example, check your router).</p></li>
 <li><p>On your computer, open a terminal and connect via SSH:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> username@<span class="pp">[</span><span class="ss">raspberry_pi_ip_address</span><span class="pp">]</span>   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Alternatively, if you do not have the IP address, you can try the following: <code>bash ssh username@hostname.local</code> for example, <code>ssh mjrovai@rpi-5.local</code> , <code>ssh mjrovai@raspi.local</code> , etc.</p>
 <img src="images/png/ssh.png" class="img-fluid" alt="img">
 <p>When you see the prompt:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mjrovai@rpi-5:~</span> $</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>It means that you are interacting remotely with your Raspi. It is a good practice to update/upgrade the system regularly. For that, you should run:</p>
+<p>It means that you are interacting remotely with your Raspberry Pi. It is a good practice to update/upgrade the system regularly. For that, you should run:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt upgrade</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You should confirm the Raspi IP address. On the terminal, you can use:</p>
+<p>You should confirm the Raspberry Pi IP address. On the terminal, you can use:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span> <span class="at">-I</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ol>
 <p><img src="images/png/pasted_graphic_11_ILcmyOYU7X.png" class="img-fluid"></p>
@@ -559,14 +562,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="to-shut-down-the-raspi-via-terminal" class="level3">
 <h3 class="anchored" data-anchor-id="to-shut-down-the-raspi-via-terminal">To shut down the Raspi via terminal:</h3>
 <p>When you want to turn off your Raspberry Pi, there are better ideas than just pulling the power cord. This is because the Raspi may still be writing data to the SD card, in which case merely powering down may result in data loss or, even worse, a corrupted SD card.</p>
-<p>For safety shut down, use the command line:</p>
+<p>For a safety shutdown, use the command line:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> shutdown <span class="at">-h</span> now</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
 <p>To avoid possible data loss and SD card corruption, before removing the power, you should wait a few seconds after shutdown for the Raspberry Pi’s LED to stop blinking and go dark. Once the LED goes out, it’s safe to power down.</p>
 </blockquote>
 </section>
-<section id="transfer-files-between-the-raspi-and-a-computer" class="level3">
-<h3 class="anchored" data-anchor-id="transfer-files-between-the-raspi-and-a-computer">Transfer Files between the Raspi and a computer</h3>
+<section id="transfer-files-between-the-raspberry-pi-and-a-computer" class="level3">
+<h3 class="anchored" data-anchor-id="transfer-files-between-the-raspberry-pi-and-a-computer">Transfer Files between the Raspberry Pi and a computer</h3>
 <p>Transferring files between the Raspi and our main computer can be done using a pen drive, directly on the terminal (with scp), or an FTP program over the network.</p>
 <section id="using-secure-copy-protocol-scp" class="level4">
 <h4 class="anchored" data-anchor-id="using-secure-copy-protocol-scp">Using Secure Copy Protocol (<code>scp</code>):</h4>
@@ -602,16 +605,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="transferring-files-using-ftp" class="level4">
 <h4 class="anchored" data-anchor-id="transferring-files-using-ftp">Transferring files using FTP</h4>
-<p>Transferring files using FTP, such as <a href="https://filezilla-project.org/download.php?type=client">FileZilla FTP Client</a>, is also possible. Follow the instructions, install the program for your Desktop OS, and use the Raspi IP address as the <code>Host</code>. For example:</p>
+<p>Transferring files using FTP, such as <a href="https://filezilla-project.org/download.php?type=client">FileZilla FTP Client</a>, is also possible. Follow the instructions to install the program on your Desktop, then use the Raspberry Pi’s IP address as the <code>Host</code>. For example:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sftp://192.168.4.210</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>and enter your Raspi <code>username and password</code>. Pressing <code>Quickconnect</code> will open two windows, one for your host computer desktop (right) and another for the Raspi (left).</p>
+<p>Enter your Raspberry Pi <code>username and password</code>. Pressing <code>Quickconnect</code> will open two windows, one for your host computer desktop (right) and another for the Raspberry Pi (left).</p>
 <p><img src="images/png/filezila.png" class="img-fluid"></p>
 </section>
 </section>
 </section>
 <section id="increasing-swap-memory" class="level2">
 <h2 class="anchored" data-anchor-id="increasing-swap-memory">Increasing SWAP Memory</h2>
-<p>Using <code>htop</code>, a cross-platform interactive process viewer, you can easily monitor the resources running on your Raspi, such as the list of processes, the running CPUs, and the memory used in real-time. To lunch <code>hop</code>, enter with the command on the terminal:</p>
+<p>Using <code>htop</code>, a cross-platform interactive process viewer, you can easily monitor the resources running on your Raspberry Pi, such as the list of processes, the running CPUs, and the memory used in real-time. To lunch <code>hop</code>, enter with the command on the terminal:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">htop</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/htop.png" class="img-fluid"></p>
 <p>Regarding memory, among the devices in the Raspberry Pi family, the Raspi-Zero has the smallest amount of SRAM (500MB), compared to a selection of 2GB to 8GB on the Raspis 4 or 5. For any Raspi, it is possible to increase the memory available to the system with “Swap.” Swap memory, also known as swap space, is a technique used in computer operating systems to temporarily store data from RAM (Random Access Memory) on the SD card when the physical RAM is fully utilized. This allows the operating system (OS) to continue running even when RAM is full, which can prevent system crashes or slowdowns.</p>
@@ -639,12 +642,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>USB Webcams generally have inferior quality to the camera modules that connect to the CSI port. They can also not be controlled using the <code>raspistill</code> and <code>rasivid</code> commands in the terminal or the <code>picamera</code> recording package in Python. Nevertheless, there may be reasons why you want to connect a USB camera to your Raspberry Pi, such as because of the benefit that it is much easier to set up multiple cameras with a single Raspberry Pi, long cables, or simply because you have such a camera on hand.</p>
 </blockquote>
+<section id="installing-a-camera-module-on-the-csi-port" class="level3">
+<h3 class="anchored" data-anchor-id="installing-a-camera-module-on-the-csi-port">Installing a Camera Module on the CSI port</h3>
+<p>There are now several Raspberry Pi camera modules. The original 5-megapixel model was <a href="https://www.raspberrypi.com/news/camera-board-available-for-sale/">released</a>in 2013, followed by an <a href="https://www.raspberrypi.com/products/camera-module-v2/">8-megapixel Camera Module 2,</a> released in 2016. The latest camera model is the <a href="https://www.raspberrypi.com/documentation/accessories/camera.html#:~:text=the%2012-megapixel-,Camera%20Module%203,-which%20was%20released">12-megapixel Camera Module 3,</a> released in 2023.</p>
+<p>The original 5MP camera (<strong>Arducam OV5647</strong>) is no longer available from Raspberry Pi but can be found from several alternative suppliers. Below is an example of such a camera on a Raspi-Zero.</p>
+<p><img src="images/jpeg/rasp-zero-with-cam.jpg" class="img-fluid"></p>
+<p>Here is another example of a v2 Camera Module, which has a <strong>Sony IMX219</strong> 8-megapixel sensor:</p>
+<p><img src="images/png/raspi-5-cam.png" class="img-fluid"></p>
+<p>First try to list the installed cameras:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-hello</span> <span class="at">--list-cameras</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If the command is not recognize, install</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install libcamera-apps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Try to list the installed camera again. If Ok, you should see something as:</p>
+<p><img src="./images/png/camera-installed.png" class="img-fluid"></p>
+<p>Any camera module will work on the Raspis, but for that, it is possible that the <code>onfiguration.txt</code> file must be updated:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /boot/firmware/config.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>At the bottom of the file, for example, to use the 5MP Arducam OV5647 camera, add the line:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="va">dtoverlay</span><span class="op">=</span>ov5647,cam0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Or for the v2 module, wich has the 8MP Sony IMX219 camera:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="va">dtoverlay</span><span class="op">=</span>imx219,cam0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Save the file (CTRL+O [ENTER] CRTL+X) and reboot the Raspi:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After the boot, you can see if the camera is listed:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-hello</span> <span class="at">--list-cameras</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/jpeg/list_cams_raspi-zero.jpg" class="img-fluid"></p>
+<p><img src="images/png/list_cams_raspi-5.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p><a href="https://www.raspberrypi.com/documentation/computers/camera_software.html#libcamera">libcamera</a>is an open-source software library that supports camera systems directly from the Linux operating system on Arm processors. It minimizes proprietary code running on the Broadcom GPU.</p>
+</blockquote>
+<p>Let’s capture a jpeg image with a resolution of 640 x 480 for testing and save it to a file named <code>test_cli_camera.jpg</code></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-jpeg</span> <span class="at">--output</span> test_cli_camera.jpg <span class="at">--width</span> 640 <span class="at">--height</span> 480</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>if we want to see the file saved, we should use <code>ls -f</code>, which lists all current directory content in long format. As before, we can use scp to view the image:</p>
+<p><img src="images/png/test_camera_raspi-5.png" class="img-fluid"></p>
+<p>Or transfer it to your desktop with FileZilla.</p>
+</section>
 <section id="installing-a-usb-webcam" class="level3">
 <h3 class="anchored" data-anchor-id="installing-a-usb-webcam">Installing a USB WebCam</h3>
 <ol type="1">
 <li>Power off the Raspi:</li>
 </ol>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> shutdown <span class="at">-h</span> no</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> shutdown <span class="at">-h</span> no</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="2" type="1">
 <li>Connect the USB Webcam (USB Camera Module 30fps,1280x720) to your Raspi (In this example, I am using the Raspi-Zero, but the instructions work for all Raspis).</li>
 </ol>
@@ -653,20 +690,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Power on again and run the SSH</li>
 <li>To check if your USB camera is recognized, run:</li>
 </ol>
-<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lsusb</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lsusb</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You should see your camera listed in the output.</p>
 <p><img src="images/png/USB-CAM-2.png" class="img-fluid"></p>
 <ol start="5" type="1">
 <li>To take a test picture with your USB camera, use:</li>
 </ol>
-<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fswebcam</span> test_image.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fswebcam</span> test_image.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This will save an image named “test_image.jpg” in your current directory.</p>
 <p><img src="images/png/image-test.png" class="img-fluid"></p>
 <ol start="6" type="1">
 <li>Since we are using SSH to connect to our Rapsi, we must transfer the image to our main computer so we can view it. We can use FileZilla or SCP for this:</li>
 </ol>
 <p>Open a terminal <strong>on your host computer</strong> and run:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> mjrovai@raspi-zero.local:~/test_image.jpg .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> mjrovai@raspi-zero.local:~/test_image.jpg .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
 <p>Replace “mjrovai” with your username and “raspi-zero” with Pi’s hostname.</p>
 </blockquote>
@@ -674,7 +711,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol start="7" type="1">
 <li>If the image quality isn’t satisfactory, you can adjust various settings; for example, define a resolution that is suitable for YOLO (640x640):</li>
 </ol>
-<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fswebcam</span> <span class="at">-r</span> 640x640 <span class="at">--no-banner</span> test_image_yolo.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fswebcam</span> <span class="at">-r</span> 640x640 <span class="at">--no-banner</span> test_image_yolo.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This captures a higher-resolution image without the default banner.</p>
 <p><img src="images/png/usb-cam-test-2.png" class="img-fluid"></p>
 <p>An ordinary USB Webcam can also be used:</p>
@@ -685,48 +722,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="video-streaming">Video Streaming</h4>
 <p>For stream video (which is more resource-intensive), we can install and use mjpg-streamer:</p>
 <p>First, install Git:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Now, we should install the necessary dependencies for mjpg-streamer, clone the repository, and proceed with the installation:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install cmake libjpeg62-turbo-dev</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/jacksonliam/mjpg-streamer.git</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> mjpg-streamer/mjpg-streamer-experimental</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> make install</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install cmake libjpeg62-turbo-dev</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/jacksonliam/mjpg-streamer.git</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> mjpg-streamer/mjpg-streamer-experimental</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> make install</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then start the stream with:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mjpg_streamer</span> <span class="at">-i</span> <span class="st">"input_uvc.so"</span> <span class="at">-o</span> <span class="st">"output_http.so -w ./www"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mjpg_streamer</span> <span class="at">-i</span> <span class="st">"input_uvc.so"</span> <span class="at">-o</span> <span class="st">"output_http.so -w ./www"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We can then access the stream by opening a web browser and navigating to:</p>
 <p><code>http://&lt;your_pi_ip_address&gt;:8080</code>. In my case: http://192.168.4.210:8080</p>
 <p>We should see a webpage with options to view the stream. Click on the link that says “Stream” or try accessing:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">http://</span><span class="op">&lt;</span>raspberry_pi_ip_address<span class="op">&gt;</span>:8080/<span class="pp">?</span>action=stream</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">http://</span><span class="op">&lt;</span>raspberry_pi_ip_address<span class="op">&gt;</span>:8080/<span class="pp">?</span>action=stream</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/streem.png" class="img-fluid"></p>
 </section>
-</section>
-<section id="installing-a-camera-module-on-the-csi-port" class="level3">
-<h3 class="anchored" data-anchor-id="installing-a-camera-module-on-the-csi-port">Installing a Camera Module on the CSI port</h3>
-<p>There are now several Raspberry Pi camera modules. The original 5-megapixel model was <a href="https://www.raspberrypi.com/news/camera-board-available-for-sale/">released</a>in 2013, followed by an <a href="https://www.raspberrypi.com/products/camera-module-v2/">8-megapixel Camera Module 2,</a> released in 2016. The latest camera model is the <a href="https://www.raspberrypi.com/documentation/accessories/camera.html#:~:text=the%2012-megapixel-,Camera%20Module%203,-which%20was%20released">12-megapixel Camera Module 3,</a> released in 2023.</p>
-<p>The original 5MP camera (<strong>Arducam OV5647</strong>) is no longer available from Raspberry Pi but can be found from several alternative suppliers. Below is an example of such a camera on a Raspi-Zero.</p>
-<p><img src="images/jpeg/rasp-zero-with-cam.jpg" class="img-fluid"></p>
-<p>Here is another example of a v2 Camera Module, which has a <strong>Sony IMX219</strong> 8-megapixel sensor:</p>
-<p><img src="images/png/raspi-5-cam.png" class="img-fluid"></p>
-<p>Any camera module will work on the Raspis, but for that, the <code>onfiguration.txt</code> file must be updated:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /boot/firmware/config.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>At the bottom of the file, for example, to use the 5MP Arducam OV5647 camera, add the line:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="va">dtoverlay</span><span class="op">=</span>ov5647,cam0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Or for the v2 module, wich has the 8MP Sony IMX219 camera:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="va">dtoverlay</span><span class="op">=</span>imx219,cam0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Save the file (CTRL+O [ENTER] CRTL+X) and reboot the Raspi:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>After the boot, you can see if the camera is listed:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">libcamera-hello</span> <span class="at">--list-cameras</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="images/jpeg/list_cams_raspi-zero.jpg" class="img-fluid"></p>
-<p><img src="images/png/list_cams_raspi-5.png" class="img-fluid"></p>
-<blockquote class="blockquote">
-<p><a href="https://www.raspberrypi.com/documentation/computers/camera_software.html#libcamera">libcamera</a>is an open-source software library that supports camera systems directly from the Linux operating system on Arm processors. It minimizes proprietary code running on the Broadcom GPU.</p>
-</blockquote>
-<p>Let’s capture a jpeg image with a resolution of 640 x 480 for testing and save it to a file named <code>test_cli_camera.jpg</code></p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-jpeg</span> <span class="at">--output</span> test_cli_camera.jpg <span class="at">--width</span> 640 <span class="at">--height</span> 480</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>if we want to see the file saved, we should use <code>ls -f</code>, which lists all current directory content in long format. As before, we can use scp to view the image:</p>
-<p><img src="images/png/test_camera_raspi-5.png" class="img-fluid"></p>
 </section>
 </section>
 <section id="running-the-raspi-desktop-remotely" class="level2">
@@ -737,7 +747,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><p>Connect to your Raspberry Pi via SSH.</p></li>
 <li><p>Run the Raspberry Pi configuration tool by entering:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Navigate to <code>Interface Options</code> using the arrow keys.</p></li>
 </ul>
 <p><img src="images/png/vnc-1.png" class="img-fluid"></p>
@@ -754,7 +764,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Download and install a VNC viewer application on your main computer. Popular options include RealVNC Viewer, TightVNC, or VNC Viewer by RealVNC. We will install <a href="https://www.realvnc.com/en/connect/download/viewer">VNC Viewer</a> by RealVNC.</li>
 </ul></li>
 <li><p>Once installed, you should confirm the Raspi IP address. For example, on the terminal, you can use:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span> <span class="at">-I</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span> <span class="at">-I</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/vnc-4.png" class="img-fluid"></p></li>
 <li><p>Connect to Your Raspberry Pi:</p>
 <ul>
@@ -780,11 +790,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="updating-and-installing-software">Updating and Installing Software</h2>
 <ol type="1">
 <li><p>Update your system:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Install essential software:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install python3-pip <span class="at">-y</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install python3-pip <span class="at">-y</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Enable pip for Python projects:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> rm /usr/lib/python3.11/EXTERNALLY-MANAGED</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> rm /usr/lib/python3.11/EXTERNALLY-MANAGED</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ol>
 </section>
 <section id="model-specific-considerations" class="level2">
@@ -803,7 +813,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Suitable for more demanding projects, including AI and machine learning.</li>
 <li>It can run the whole desktop environment smoothly.</li>
-<li>Raspi-4 can be used for Image Classification and Object Detection Labs but will not work well with LLMs (SLM).</li>
+<li>Raspi-4 can be used for Image Classification and Object Detection Labs, but will not work well with LLMs (SLM).</li>
 <li>For Raspi-5, consider using an active cooler for temperature management during intensive tasks, as in the LLMs (SLMs) lab.</li>
 </ul>
 <p>Remember to adjust your project requirements based on the specific Raspberry Pi model you’re using. The Raspi-Zero is great for low-power, space-constrained projects, while the Raspi-4 or 5 models are better suited for more computationally intensive tasks.</p>
