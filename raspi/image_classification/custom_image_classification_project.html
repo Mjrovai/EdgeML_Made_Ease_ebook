@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Edge AI Engineering - Custom Image Classification Project</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/object_detection/object_detection.html" rel="next">
+<link href="../../raspi/image_classification/image_classification_fund.html" rel="prev">
+<link href="../../images/cover.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/image_classification/custom_image_classification_project.html">Custom Image Classification Project</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-image-classification-image-classification-project-d575" id="toc-sec-image-classification-image-classification-project-d575" class="nav-link active" data-scroll-target="#sec-image-classification-image-classification-project-d575">Image Classification Project</a>
+  <ul>
+  <li><a href="#sec-image-classification-goal-d333" id="toc-sec-image-classification-goal-d333" class="nav-link" data-scroll-target="#sec-image-classification-goal-d333">The Goal</a></li>
+  <li><a href="#sec-image-classification-data-collection-5cf0" id="toc-sec-image-classification-data-collection-5cf0" class="nav-link" data-scroll-target="#sec-image-classification-data-collection-5cf0">Data Collection</a>
+  <ul class="collapse">
+  <li><a href="#sec-image-classification-key-features-5fcb" id="toc-sec-image-classification-key-features-5fcb" class="nav-link" data-scroll-target="#sec-image-classification-key-features-5fcb">Key Features:</a></li>
+  <li><a href="#sec-image-classification-main-components-4971" id="toc-sec-image-classification-main-components-4971" class="nav-link" data-scroll-target="#sec-image-classification-main-components-4971">Main Components:</a></li>
+  <li><a href="#sec-image-classification-key-functions-e434" id="toc-sec-image-classification-key-functions-e434" class="nav-link" data-scroll-target="#sec-image-classification-key-functions-e434">Key Functions:</a></li>
+  <li><a href="#sec-image-classification-usage-flow-522f" id="toc-sec-image-classification-usage-flow-522f" class="nav-link" data-scroll-target="#sec-image-classification-usage-flow-522f">Usage Flow:</a></li>
+  <li><a href="#sec-image-classification-technical-notes-47e3" id="toc-sec-image-classification-technical-notes-47e3" class="nav-link" data-scroll-target="#sec-image-classification-technical-notes-47e3">Technical Notes:</a></li>
+  <li><a href="#sec-image-classification-customization-possibilities-edd9" id="toc-sec-image-classification-customization-possibilities-edd9" class="nav-link" data-scroll-target="#sec-image-classification-customization-possibilities-edd9">Customization Possibilities:</a></li>
+  <li><a href="#sec-image-classification-number-samples-dataset-496d" id="toc-sec-image-classification-number-samples-dataset-496d" class="nav-link" data-scroll-target="#sec-image-classification-number-samples-dataset-496d">Number of samples on Dataset:</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#sec-image-classification-training-model-edge-impulse-studio-671f" id="toc-sec-image-classification-training-model-edge-impulse-studio-671f" class="nav-link" data-scroll-target="#sec-image-classification-training-model-edge-impulse-studio-671f">Training the model with Edge Impulse Studio</a>
+  <ul>
+  <li><a href="#sec-image-classification-dataset-bc03" id="toc-sec-image-classification-dataset-bc03" class="nav-link" data-scroll-target="#sec-image-classification-dataset-bc03">Dataset</a></li>
+  </ul></li>
+  <li><a href="#sec-image-classification-impulse-design-cfb1" id="toc-sec-image-classification-impulse-design-cfb1" class="nav-link" data-scroll-target="#sec-image-classification-impulse-design-cfb1">The Impulse Design</a>
+  <ul>
+  <li><a href="#sec-image-classification-image-preprocessing-d237" id="toc-sec-image-classification-image-preprocessing-d237" class="nav-link" data-scroll-target="#sec-image-classification-image-preprocessing-d237">Image Pre-Processing</a></li>
+  <li><a href="#sec-image-classification-model-design-a48a" id="toc-sec-image-classification-model-design-a48a" class="nav-link" data-scroll-target="#sec-image-classification-model-design-a48a">Model Design</a></li>
+  <li><a href="#sec-image-classification-model-training-0aba" id="toc-sec-image-classification-model-training-0aba" class="nav-link" data-scroll-target="#sec-image-classification-model-training-0aba">Model Training</a></li>
+  <li><a href="#sec-image-classification-trading-accuracy-versus-speed-8538" id="toc-sec-image-classification-trading-accuracy-versus-speed-8538" class="nav-link" data-scroll-target="#sec-image-classification-trading-accuracy-versus-speed-8538">Trading off: Accuracy versus speed</a></li>
+  <li><a href="#sec-image-classification-model-testing-0b30" id="toc-sec-image-classification-model-testing-0b30" class="nav-link" data-scroll-target="#sec-image-classification-model-testing-0b30">Model Testing</a></li>
+  <li><a href="#sec-image-classification-deploying-model-4db1" id="toc-sec-image-classification-deploying-model-4db1" class="nav-link" data-scroll-target="#sec-image-classification-deploying-model-4db1">Deploying the model</a></li>
+  </ul></li>
+  <li><a href="#sec-image-classification-live-image-classification-f123" id="toc-sec-image-classification-live-image-classification-f123" class="nav-link" data-scroll-target="#sec-image-classification-live-image-classification-f123">Live Image Classification</a>
+  <ul>
+  <li><a href="#sec-image-classification-key-components-a5d4" id="toc-sec-image-classification-key-components-a5d4" class="nav-link" data-scroll-target="#sec-image-classification-key-components-a5d4">Key Components:</a></li>
+  <li><a href="#sec-image-classification-main-features-8e04" id="toc-sec-image-classification-main-features-8e04" class="nav-link" data-scroll-target="#sec-image-classification-main-features-8e04">Main Features:</a></li>
+  <li><a href="#sec-image-classification-code-structure-7aa0" id="toc-sec-image-classification-code-structure-7aa0" class="nav-link" data-scroll-target="#sec-image-classification-code-structure-7aa0">Code Structure:</a></li>
+  <li><a href="#sec-image-classification-key-concepts-e0a5" id="toc-sec-image-classification-key-concepts-e0a5" class="nav-link" data-scroll-target="#sec-image-classification-key-concepts-e0a5">Key Concepts:</a></li>
+  <li><a href="#sec-image-classification-usage-d85a" id="toc-sec-image-classification-usage-d85a" class="nav-link" data-scroll-target="#sec-image-classification-usage-d85a">Usage:</a></li>
+  </ul></li>
+  <li><a href="#sec-image-classification-summary-9796" id="toc-sec-image-classification-summary-9796" class="nav-link" data-scroll-target="#sec-image-classification-summary-9796">Summary:</a></li>
+  <li><a href="#sec-image-classification-resources-1d0e" id="toc-sec-image-classification-resources-1d0e" class="nav-link" data-scroll-target="#sec-image-classification-resources-1d0e">Resources</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/image_classification/custom_image_classification_project.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/image_classification/custom_image_classification_project.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Custom Image Classification Project</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/jpeg/img_class_cover.jpg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption"><em>DALL·E prompt - A cover image for an ‘Image Classification’ chapter in a Raspberry Pi tutorial, designed in the same vintage 1950s electronics lab style as previous covers. The scene should feature a Raspberry Pi connected to a camera module, with the camera capturing a photo of the small blue robot provided by the user. The robot should be placed on a workbench, surrounded by classic lab tools like soldering irons, resistors, and wires. The lab background should include vintage equipment like oscilloscopes and tube radios, maintaining the detailed and nostalgic feel of the era. No text or logos should be included.</em></figcaption>
+</figure>
+</div>
+<section id="sec-image-classification-image-classification-project-d575" class="level2">
+<h2 class="anchored" data-anchor-id="sec-image-classification-image-classification-project-d575">Image Classification Project</h2>
+<p>In this chapter, we will develop a complete Image Classification project using the Edge Impulse Studio. As we did with the MobiliNet V2, the trained and converted TFLite model will be used for inference using a Python script.</p>
+<p>Here a typical ML workflow that we will use in our project:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/pipeline-sensecraft.png" class="img-fluid figure-img" style="width:85.0%"></p>
+</figure>
+</div>
+<section id="sec-image-classification-goal-d333" class="level3">
+<h3 class="anchored" data-anchor-id="sec-image-classification-goal-d333">The Goal</h3>
+<p>The first step in any ML project is to define its goal. In this case, it is to detect and classify two specific objects present in one image. For this project, we will use two small toys: a robot and a small Brazilian parrot (named Periquito). We will also collect images of a <em>background</em> where those two objects are absent.</p>
+<p> <img src="images/jpeg/project_goal.jpg" class="img-fluid" style="width:65.0%" data-fig-align="center"></p>
+</section>
+<section id="sec-image-classification-data-collection-5cf0" class="level3">
+<h3 class="anchored" data-anchor-id="sec-image-classification-data-collection-5cf0">Data Collection</h3>
+<p>Once we have defined our Machine Learning project goal, the next and most crucial step is collecting the dataset. We can use a phone for the image capture, but we will use the Raspi here. Let’s set up a simple web server on our Raspberry Pi to view the <code>QVGA (320 x 240)</code> captured images in a browser.</p>
+<ol type="1">
+<li><p>First, let’s install Flask, a lightweight web framework for Python:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install flask</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Let’s create a new Python script combining image capture with a web server. We’ll call it <code>get_img_data.py</code>:</p></li>
+</ol>
+<div class="scroll-code-block">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> flask <span class="im">import</span> Flask, Response, render_template_string,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                  request, redirect, url_for</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> picamera2 <span class="im">import</span> Picamera2</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> io</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> threading</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> signal</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> Flask(<span class="va">__name__</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Global variables</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>base_dir <span class="op">=</span> <span class="st">"dataset"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>picam2 <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>frame <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>frame_lock <span class="op">=</span> threading.Lock()</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>capture_counts <span class="op">=</span> {}</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>current_label <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>shutdown_event <span class="op">=</span> threading.Event()</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> initialize_camera():</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> picam2</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    picam2 <span class="op">=</span> Picamera2()</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    config <span class="op">=</span> picam2.create_preview_configuration(</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>             main<span class="op">=</span>{<span class="st">"size"</span>: (<span class="dv">320</span>, <span class="dv">240</span>)}</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    picam2.configure(config)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    picam2.start()</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">2</span>)  <span class="co"># Wait for camera to warm up</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_frame():</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> frame</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="kw">not</span> shutdown_event.is_set():</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        stream <span class="op">=</span> io.BytesIO()</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        picam2.capture_file(stream, <span class="bu">format</span><span class="op">=</span><span class="st">'jpeg'</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> frame_lock:</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>            frame <span class="op">=</span> stream.getvalue()</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="fl">0.1</span>)  <span class="co"># Adjust as needed for smooth preview</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_frames():</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="kw">not</span> shutdown_event.is_set():</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> frame_lock:</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> frame <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>                <span class="cf">yield</span> (<span class="st">b'--frame</span><span class="ch">\r\n</span><span class="st">'</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>                       <span class="st">b'Content-Type: image/jpeg</span><span class="ch">\r\n\r\n</span><span class="st">'</span> <span class="op">+</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>                                       frame <span class="op">+</span> <span class="st">b'</span><span class="ch">\r\n</span><span class="st">'</span>)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="fl">0.1</span>)  <span class="co"># Adjust as needed for smooth streaming</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> shutdown_server():</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    shutdown_event.<span class="bu">set</span>()</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> picam2:</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>        picam2.stop()</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Give some time for other threads to finish</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">2</span>)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Send SIGINT to the main process</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    os.kill(os.getpid(), signal.SIGINT)</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/'</span>, methods<span class="op">=</span>[<span class="st">'GET'</span>, <span class="st">'POST'</span>])</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> index():</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> current_label</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> request.method <span class="op">==</span> <span class="st">'POST'</span>:</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>        current_label <span class="op">=</span> request.form[<span class="st">'label'</span>]</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> current_label <span class="kw">not</span> <span class="kw">in</span> capture_counts:</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>            capture_counts[current_label] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>        os.makedirs(os.path.join(base_dir, current_label),</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>                                 exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> redirect(url_for(<span class="st">'capture_page'</span>))</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> render_template_string(<span class="st">'''</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;!DOCTYPE html&gt;</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;html&gt;</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;head&gt;</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;title&gt;Dataset Capture - Label Entry&lt;/title&gt;</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/head&gt;</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;body&gt;</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;h1&gt;Enter Label for Dataset&lt;/h1&gt;</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;form method="post"&gt;</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="st">                &lt;input type="text" name="label" required&gt;</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="st">                &lt;input type="submit" value="Start Capture"&gt;</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;/form&gt;</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/body&gt;</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/html&gt;</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="st">    '''</span>)</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/capture'</span>)</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> capture_page():</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> render_template_string(<span class="st">'''</span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;!DOCTYPE html&gt;</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;html&gt;</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;head&gt;</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;title&gt;Dataset Capture&lt;/title&gt;</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;script&gt;</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="st">                var shutdownInitiated = false;</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="st">                function checkShutdown() {</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="st">                    if (!shutdownInitiated) {</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="st">                        fetch('/check_shutdown')</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="st">                            .then(response =&gt; response.json())</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="st">                            .then(data =&gt; {</span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="st">                                if (data.shutdown) {</span></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="st">                                    shutdownInitiated = true;</span></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a><span class="st">                                    document.getElementById(</span></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="st">                                          'video-feed').src = '';</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a><span class="st">                                    document.getElementById(</span></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a><span class="st">                                          'shutdown-message')</span></span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a><span class="st">                                    .style.display = 'block';</span></span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="st">                                }</span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a><span class="st">                            });</span></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="st">                    }</span></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="st">                }</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="st">                setInterval(checkShutdown, 1000); // Check</span></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a><span class="st">                                                     every second</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;/script&gt;</span></span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/head&gt;</span></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;body&gt;</span></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;h1&gt;Dataset Capture&lt;/h1&gt;</span></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;p&gt;Current Label: </span><span class="sc">{{</span><span class="st"> label </span><span class="sc">}}</span><span class="st">&lt;/p&gt;</span></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;p&gt;Images captured for this label: </span><span class="sc">{{</span><span class="st"> capture_count</span></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a><span class="st">                                                  </span><span class="sc">}}</span><span class="st">&lt;/p&gt;</span></span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;img id="video-feed" src="</span><span class="sc">{{</span><span class="st"> url_for('video_feed')</span></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a><span class="st">                                         </span><span class="sc">}}</span><span class="st">" width="640"</span></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a><span class="st">            height="480" /&gt;</span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;div id="shutdown-message" style="display: none;</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a><span class="st">                                              color: red;"&gt;</span></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a><span class="st">                Capture process has been stopped.</span></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a><span class="st">                You can close this window.</span></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;/div&gt;</span></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;form action="/capture_image" method="post"&gt;</span></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a><span class="st">                &lt;input type="submit" value="Capture Image"&gt;</span></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;/form&gt;</span></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;form action="/stop" method="post"&gt;</span></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="st">                &lt;input type="submit" value="Stop Capture"</span></span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a><span class="st">                style="background-color: #ff6666;"&gt;</span></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;/form&gt;</span></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;form action="/" method="get"&gt;</span></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a><span class="st">                &lt;input type="submit" value="Change Label"</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a><span class="st">                style="background-color: #ffff66;"&gt;</span></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;/form&gt;</span></span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/body&gt;</span></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/html&gt;</span></span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="st">    '''</span>, label<span class="op">=</span>current_label, capture_count<span class="op">=</span>capture_counts.get(</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>                                            current_label, <span class="dv">0</span>))</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/video_feed'</span>)</span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> video_feed():</span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Response(generate_frames(),</span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>                    mimetype<span class="op">=</span><span class="st">'multipart/x-mixed-replace;</span></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a><span class="er">                    boundary=frame')</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/capture_image'</span>, methods<span class="op">=</span>[<span class="st">'POST'</span>])</span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> capture_image():</span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> capture_counts</span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> current_label <span class="kw">and</span> <span class="kw">not</span> shutdown_event.is_set():</span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>        capture_counts[current_label] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>        timestamp <span class="op">=</span> time.strftime(<span class="st">"%Y%m</span><span class="sc">%d</span><span class="st">-%H%M%S"</span>)</span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>        filename <span class="op">=</span> <span class="ss">f"image_</span><span class="sc">{</span>timestamp<span class="sc">}</span><span class="ss">.jpg"</span></span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>        full_path <span class="op">=</span> os.path.join(base_dir, current_label,</span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>                                 filename)</span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>        picam2.capture_file(full_path)</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> redirect(url_for(<span class="st">'capture_page'</span>))</span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/stop'</span>, methods<span class="op">=</span>[<span class="st">'POST'</span>])</span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stop():</span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>    summary <span class="op">=</span> render_template_string(<span class="st">'''</span></span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;!DOCTYPE html&gt;</span></span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;html&gt;</span></span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;head&gt;</span></span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;title&gt;Dataset Capture - Stopped&lt;/title&gt;</span></span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/head&gt;</span></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;body&gt;</span></span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;h1&gt;Dataset Capture Stopped&lt;/h1&gt;</span></span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;p&gt;The capture process has been stopped.</span></span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a><span class="st">               You can close this window.&lt;/p&gt;</span></span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;p&gt;Summary of captures:&lt;/p&gt;</span></span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;ul&gt;</span></span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a><span class="st">            {</span><span class="sc">% f</span><span class="st">or label, count in capture_counts.items() %}</span></span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a><span class="st">                &lt;li&gt;</span><span class="sc">{{</span><span class="st"> label </span><span class="sc">}}</span><span class="st">: </span><span class="sc">{{</span><span class="st"> count </span><span class="sc">}}</span><span class="st"> images&lt;/li&gt;</span></span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a><span class="st">            {</span><span class="sc">% e</span><span class="st">ndfor %}</span></span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;/ul&gt;</span></span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/body&gt;</span></span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/html&gt;</span></span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a><span class="st">    '''</span>, capture_counts<span class="op">=</span>capture_counts)</span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Start a new thread to shutdown the server</span></span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a>    threading.Thread(target<span class="op">=</span>shutdown_server).start()</span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> summary</span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/check_shutdown'</span>)</span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_shutdown():</span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">'shutdown'</span>: shutdown_event.is_set()}</span>
+<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:</span>
+<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a>    initialize_camera()</span>
+<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a>    threading.Thread(target<span class="op">=</span>get_frame, daemon<span class="op">=</span><span class="va">True</span>).start()</span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a>    app.run(host<span class="op">=</span><span class="st">'0.0.0.0'</span>, port<span class="op">=</span><span class="dv">5000</span>, threaded<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="3" type="1">
+<li>Run this script:</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    <span class="ex">python3</span> get_img_data.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="4" type="1">
+<li><p>Access the web interface:</p>
+<ul>
+<li>On the Raspberry Pi itself (if you have a GUI): Open a web browser and go to <code>http://localhost:5000</code></li>
+<li>From another device on the same network: Open a web browser and go to <code>http://&lt;raspberry_pi_ip&gt;:5000</code> (Replace <code>&lt;raspberry_pi_ip&gt;</code> with your Raspberry Pi’s IP address). For example: <code>http://192.168.4.210:5000/</code></li>
+</ul></li>
+</ol>
+<p>This Python script creates a web-based interface for capturing and organizing image datasets using a Raspberry Pi and its camera. It’s handy for machine learning projects that require labeled image data.</p>
+<section id="sec-image-classification-key-features-5fcb" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-key-features-5fcb">Key Features:</h4>
+<ol type="1">
+<li><strong>Web Interface</strong>: Accessible from any device on the same network as the Raspberry Pi.</li>
+<li><strong>Live Camera Preview</strong>: This shows a real-time feed from the camera.</li>
+<li><strong>Labeling System</strong>: Allows users to input labels for different categories of images.</li>
+<li><strong>Organized Storage</strong>: Automatically saves images in label-specific subdirectories.</li>
+<li><strong>Per-Label Counters</strong>: Keeps track of how many images are captured for each label.</li>
+<li><strong>Summary Statistics</strong>: Provides a summary of captured images when stopping the capture process.</li>
+</ol>
+</section>
+<section id="sec-image-classification-main-components-4971" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-main-components-4971">Main Components:</h4>
+<ol type="1">
+<li><strong>Flask Web Application</strong>: Handles routing and serves the web interface.</li>
+<li><strong>Picamera2 Integration</strong>: Controls the Raspberry Pi camera.</li>
+<li><strong>Threaded Frame Capture</strong>: Ensures smooth live preview.</li>
+<li><strong>File Management</strong>: Organizes captured images into labeled directories.</li>
+</ol>
+</section>
+<section id="sec-image-classification-key-functions-e434" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-key-functions-e434">Key Functions:</h4>
+<ul>
+<li><code>initialize_camera()</code>: Sets up the Picamera2 instance.</li>
+<li><code>get_frame()</code>: Continuously captures frames for the live preview.</li>
+<li><code>generate_frames()</code>: Yields frames for the live video feed.</li>
+<li><code>shutdown_server()</code>: Sets the shutdown event, stops the camera, and shuts down the Flask server</li>
+<li><code>index()</code>: Handles the label input page.</li>
+<li><code>capture_page()</code>: Displays the main capture interface.</li>
+<li><code>video_feed()</code>: Shows a live preview to position the camera</li>
+<li><code>capture_image()</code>: Saves an image with the current label.</li>
+<li><code>stop()</code>: Stops the capture process and displays a summary.</li>
+</ul>
+</section>
+<section id="sec-image-classification-usage-flow-522f" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-usage-flow-522f">Usage Flow:</h4>
+<ol type="1">
+<li>Start the script on your Raspberry Pi.</li>
+<li>Access the web interface from a browser.</li>
+<li>Enter a label for the images you want to capture and press <code>Start Capture</code>.</li>
+</ol>
+<p> <img src="images/png/enter_label.png" class="img-fluid" style="width:55.0%" data-fig-align="center"></p>
+<ol start="4" type="1">
+<li>Use the live preview to position the camera.</li>
+<li>Click <code>Capture Image</code> to save images under the current label.</li>
+</ol>
+<p> <img src="images/png/capture.png" class="img-fluid" style="width:55.0%" data-fig-align="center"></p>
+<ol start="6" type="1">
+<li>Change labels as needed for different categories, selecting <code>Change Label</code>.</li>
+<li>Click <code>Stop Capture</code> when finished to see a summary.</li>
+</ol>
+<p> <img src="images/png/stop.png" class="img-fluid" style="width:55.0%" data-fig-align="center"></p>
+</section>
+<section id="sec-image-classification-technical-notes-47e3" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-technical-notes-47e3">Technical Notes:</h4>
+<ul>
+<li>The script uses threading to handle concurrent frame capture and web serving.</li>
+<li>Images are saved with timestamps in their filenames for uniqueness.</li>
+<li>The web interface is responsive and can be accessed from mobile devices.</li>
+</ul>
+</section>
+<section id="sec-image-classification-customization-possibilities-edd9" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-customization-possibilities-edd9">Customization Possibilities:</h4>
+<ul>
+<li>Adjust image resolution in the <code>initialize_camera()</code> function. Here we used QVGA <span class="math inline">\((320\times 240)\)</span>.</li>
+<li>Modify the HTML templates for a different look and feel.</li>
+<li>Add additional image processing or analysis steps in the <code>capture_image()</code> function.</li>
+</ul>
+</section>
+<section id="sec-image-classification-number-samples-dataset-496d" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-number-samples-dataset-496d">Number of samples on Dataset:</h4>
+<p>Get around 60 images from each category (<code>periquito</code>, <code>robot</code> and <code>background</code>). Try to capture different angles, backgrounds, and light conditions. On the Raspi, we will end with a folder named <code>dataset</code>, witch contains 3 sub-folders <em>periquito,</em> <em>robot</em>, and <em>background</em>. one for each class of images.</p>
+<p>You can use <code>Filezilla</code> to transfer the created dataset to your main computer.</p>
+</section>
+</section>
+</section>
+<section id="sec-image-classification-training-model-edge-impulse-studio-671f" class="level2">
+<h2 class="anchored" data-anchor-id="sec-image-classification-training-model-edge-impulse-studio-671f">Training the model with Edge Impulse Studio</h2>
+<p>We will use the Edge Impulse Studio to train our model. Go to the <a href="https://edgeimpulse.com/">Edge Impulse Page</a>, enter your account credentials, and create a new project:</p>
+<p> <img src="images/png/new-proj-ei.png" class="img-fluid" style="width:65.0%" data-fig-align="center"></p>
+<blockquote class="blockquote">
+<p>Here, you can clone a similar project: <a href="https://studio.edgeimpulse.com/public/510251/live">Raspi - Img Class</a>.</p>
+</blockquote>
+<section id="sec-image-classification-dataset-bc03" class="level3">
+<h3 class="anchored" data-anchor-id="sec-image-classification-dataset-bc03">Dataset</h3>
+<p>We will walk through four main steps using the EI Studio (or Studio). These steps are crucial in preparing our model for use on the Raspi: Dataset, Impulse, Tests, and Deploy (on the Edge Device, in this case, the Raspi).</p>
+<blockquote class="blockquote">
+<p>Regarding the Dataset, it is essential to point out that our Original Dataset, captured with the Raspi, will be split into <em>Training</em>, <em>Validation</em>, and <em>Test</em>. The Test Set will be separated from the beginning and reserved for use only in the Test phase after training. The Validation Set will be used during training.</p>
+</blockquote>
+<p>On Studio, follow the steps to upload the captured data:</p>
+<ol type="1">
+<li>Go to the <code>Data acquisition</code> tab, and in the <code>UPLOAD DATA</code> section, upload the files from your computer in the chosen categories.</li>
+<li>Leave to the Studio the splitting of the original dataset into <em>train and test</em> and choose the label about</li>
+<li>Repeat the procedure for all three classes. At the end, you should see your “raw data” in the Studio:</li>
+</ol>
+<p> <img src="images/png/data-Aquisition.png" class="img-fluid" style="width:70.0%" data-fig-align="center"></p>
+<p>The Studio allows you to explore your data, showing a complete view of all the data in your project. You can clear, inspect, or change labels by clicking on individual data items. In our case, a straightforward project, the data seems OK.</p>
+<p> <img src="images/png/data-esplorer.png" class="img-fluid" style="width:70.0%" data-fig-align="center"></p>
+</section>
+</section>
+<section id="sec-image-classification-impulse-design-cfb1" class="level2">
+<h2 class="anchored" data-anchor-id="sec-image-classification-impulse-design-cfb1">The Impulse Design</h2>
+<p>In this phase, we should define how to:</p>
+<ul>
+<li><p>Pre-process our data, which consists of resizing the individual images and determining the <code>color depth</code> to use (be it RGB or Grayscale) and</p></li>
+<li><p>Specify a Model. In this case, it will be the <code>Transfer Learning (Images)</code> to fine-tune a pre-trained MobileNet V2 image classification model on our data. This method performs well even with relatively small image datasets (around 180 images in our case).</p></li>
+</ul>
+<p>Transfer Learning with MobileNet offers a streamlined approach to model training, which is especially beneficial for resource-constrained environments and projects with limited labeled data. MobileNet, known for its lightweight architecture, is a pre-trained model that has already learned valuable features from a large dataset (ImageNet).</p>
+<p> <img src="images/jpeg/model_1.jpg" class="img-fluid" style="width:103.0%" data-fig-align="center"></p>
+<p>By leveraging these learned features, we can train a new model for your specific task with fewer data and computational resources and achieve competitive accuracy.</p>
+<p> <img src="images/jpeg/model_2.jpg" class="img-fluid" style="width:103.0%" data-fig-align="center"></p>
+<p>This approach significantly reduces training time and computational cost, making it ideal for quick prototyping and deployment on embedded devices where efficiency is paramount.</p>
+<p>Go to the Impulse Design Tab and create the <em>impulse</em>, defining an image size of <span class="math inline">\(160\times 160\)</span> and squashing them (squared form, without cropping). Select Image and Transfer Learning blocks. Save the Impulse.</p>
+<p> <img src="images/png/impulse.png" class="img-fluid" style="width:85.0%" data-fig-align="center"></p>
+<section id="sec-image-classification-image-preprocessing-d237" class="level3">
+<h3 class="anchored" data-anchor-id="sec-image-classification-image-preprocessing-d237">Image Pre-Processing</h3>
+<p>All the input QVGA/RGB565 images will be converted to 76,800 features <span class="math inline">\((160\times 160\times 3)\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/png/preproc.png" class="img-fluid figure-img" style="width:85.0%"></p>
+</figure>
+</div>
+<p>Press <code>Save parameters</code> and select <code>Generate features</code> in the next tab.</p>
+</section>
+<section id="sec-image-classification-model-design-a48a" class="level3">
+<h3 class="anchored" data-anchor-id="sec-image-classification-model-design-a48a">Model Design</h3>
+<p>MobileNet is a family of efficient convolutional neural networks designed for mobile and embedded vision applications. The key features of MobileNet are:</p>
+<ol type="1">
+<li>Lightweight: Optimized for mobile devices and embedded systems with limited computational resources.</li>
+<li>Speed: Fast inference times, suitable for real-time applications.</li>
+<li>Accuracy: Maintains good accuracy despite its compact size.</li>
+</ol>
+<p><a href="https://arxiv.org/abs/1801.04381">MobileNetV2</a>, introduced in 2018, improves the original MobileNet architecture. Key features include:</p>
+<ol type="1">
+<li>Inverted Residuals: Inverted residual structures are used where shortcut connections are made between thin bottleneck layers.</li>
+<li>Linear Bottlenecks: Removes non-linearities in the narrow layers to prevent the destruction of information.</li>
+<li>Depth-wise Separable Convolutions: Continues to use this efficient operation from MobileNetV1.</li>
+</ol>
+<p>In our project, we will do a <code>Transfer Learning</code> with the <code>MobileNetV2 160x160 1.0</code>, which means that the images used for training (and future inference) should have an <em>input Size</em> of <span class="math inline">\(160\times 160\)</span> pixels and a <em>Width Multiplier</em> of 1.0 (full width, not reduced). This configuration balances between model size, speed, and accuracy.</p>
+</section>
+<section id="sec-image-classification-model-training-0aba" class="level3">
+<h3 class="anchored" data-anchor-id="sec-image-classification-model-training-0aba">Model Training</h3>
+<p>Another valuable deep learning technique is <strong>Data Augmentation</strong>. Data augmentation improves the accuracy of machine learning models by creating additional artificial data. A data augmentation system makes small, random changes to the training data during the training process (such as flipping, cropping, or rotating the images).</p>
+<p>Looking under the hood, here you can see how Edge Impulse implements a data Augmentation policy on your data:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Implements the data augmentation policy</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> augment_image(image, label):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flips the image randomly</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> tf.image.random_flip_left_right(image)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Increase the image size, then randomly crop it down to</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the original dimensions</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    resize_factor <span class="op">=</span> random.uniform(<span class="dv">1</span>, <span class="fl">1.2</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    new_height <span class="op">=</span> math.floor(resize_factor <span class="op">*</span> INPUT_SHAPE[<span class="dv">0</span>])</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    new_width <span class="op">=</span> math.floor(resize_factor <span class="op">*</span> INPUT_SHAPE[<span class="dv">1</span>])</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> tf.image.resize_with_crop_or_pad(image, new_height,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                                             new_width)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> tf.image.random_crop(image, size<span class="op">=</span>INPUT_SHAPE)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Vary the brightness of the image</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> tf.image.random_brightness(image, max_delta<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> image, label</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Exposure to these variations during training can help prevent your model from taking shortcuts by “memorizing” superficial clues in your training data, meaning it may better reflect the deep underlying patterns in your dataset.</p>
+<p>The final dense layer of our model will have 0 neurons with a 10% dropout for overfitting prevention. Here is the Training result:</p>
+<p> <img src="images/png/result-train.png" class="img-fluid"></p>
+<p>The result is excellent, with a reasonable 35 ms of latency (for a Raspi-4), which should result in around 30 fps (frames per second) during inference. A Raspi-Zero should be slower, and the Raspi-5, faster.</p>
+</section>
+<section id="sec-image-classification-trading-accuracy-versus-speed-8538" class="level3">
+<h3 class="anchored" data-anchor-id="sec-image-classification-trading-accuracy-versus-speed-8538">Trading off: Accuracy versus speed</h3>
+<p>If faster inference is needed, we should train the model using smaller alphas (0.35, 0.5, and 0.75) or even reduce the image input size, trading with accuracy. However, reducing the input image size and decreasing the alpha (width multiplier) can speed up inference for MobileNet V2, but they have different trade-offs. Let’s compare:</p>
+<ol type="1">
+<li>Reducing Image Input Size:</li>
+</ol>
+<p>Pros:</p>
+<ul>
+<li>Significantly reduces the computational cost across all layers.</li>
+<li>Decreases memory usage.</li>
+<li>It often provides a substantial speed boost.</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>It may reduce the model’s ability to detect small features or fine details.</li>
+<li>It can significantly impact accuracy, especially for tasks requiring fine-grained recognition.</li>
+</ul>
+<ol start="2" type="1">
+<li>Reducing Alpha (Width Multiplier):</li>
+</ol>
+<p>Pros:</p>
+<ul>
+<li>Reduces the number of parameters and computations in the model.</li>
+<li>Maintains the original input resolution, potentially preserving more detail.</li>
+<li>It can provide a good balance between speed and accuracy.</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>It may not speed up inference as dramatically as reducing input size.</li>
+<li>It can reduce the model’s capacity to learn complex features.</li>
+</ul>
+<p>Comparison:</p>
+<ol type="1">
+<li>Speed Impact:
+<ul>
+<li>Reducing input size often provides a more substantial speed boost because it reduces computations quadratically (halving both width and height reduces computations by about 75%).</li>
+<li>Reducing alpha provides a more linear reduction in computations.</li>
+</ul></li>
+<li>Accuracy Impact:
+<ul>
+<li>Reducing input size can severely impact accuracy, especially when detecting small objects or fine details.</li>
+<li>Reducing alpha tends to have a more gradual impact on accuracy.</li>
+</ul></li>
+<li>Model Architecture:
+<ul>
+<li>Changing input size doesn’t alter the model’s architecture.</li>
+<li>Changing alpha modifies the model’s structure by reducing the number of channels in each layer.</li>
+</ul></li>
+</ol>
+<p>Recommendation:</p>
+<ol type="1">
+<li>If our application doesn’t require detecting tiny details and can tolerate some loss in accuracy, reducing the input size is often the most effective way to speed up inference.</li>
+<li>Reducing alpha might be preferable if maintaining the ability to detect fine details is crucial or if you need a more balanced trade-off between speed and accuracy.</li>
+<li>For best results, you might want to experiment with both:
+<ul>
+<li>Try MobileNet V2 with input sizes like <span class="math inline">\(160\times 160\)</span> or <span class="math inline">\(92\times 92\)</span></li>
+<li>Experiment with alpha values like 1.0, 0.75, 0.5 or 0.35.</li>
+</ul></li>
+<li>Always benchmark the different configurations on your specific hardware and with your particular dataset to find the optimal balance for your use case.</li>
+</ol>
+<blockquote class="blockquote">
+<p>Remember, the best choice depends on your specific requirements for accuracy, speed, and the nature of the images you’re working with. It’s often worth experimenting with combinations to find the optimal configuration for your particular use case.</p>
+</blockquote>
+</section>
+<section id="sec-image-classification-model-testing-0b30" class="level3">
+<h3 class="anchored" data-anchor-id="sec-image-classification-model-testing-0b30">Model Testing</h3>
+<p>Now, you should take the data set aside at the start of the project and run the trained model using it as input. Again, the result is excellent (92.22%).</p>
+</section>
+<section id="sec-image-classification-deploying-model-4db1" class="level3">
+<h3 class="anchored" data-anchor-id="sec-image-classification-deploying-model-4db1">Deploying the model</h3>
+<p>As we did in the previous section, we can deploy the trained model as .tflite and use Raspi to run it using Python.</p>
+<p>On the <code>Dashboard</code> tab, go to Transfer learning model (int8 quantized) and click on the download icon:</p>
+<p> <img src="images/png/model.png" class="img-fluid" style="width:75.0%" data-fig-align="center"></p>
+<blockquote class="blockquote">
+<p>Let’s also download the float32 version for comparison</p>
+</blockquote>
+<p>Transfer the model from your computer to the Raspi (./models), for example, using FileZilla. Also, capture some images for inference (./images).</p>
+<p>Let’s remember what we did in the last chapter:</p>
+<p>Activate the environment:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>source <span class="op">~/</span>tflite_env<span class="op">/</span><span class="bu">bin</span><span class="op">/</span>activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Run a Jupyter Notebook, using the command:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>jupyter notebook <span class="op">--</span>ip<span class="op">=</span><span class="fl">192.168.4.210</span> <span class="op">--</span>no<span class="op">-</span>browser</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>Change the IP address for yours</p>
+</blockquote>
+<p>Open a new notebook and enter with the code below:</p>
+<p>Import the needed libraries:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tflite_runtime.interpreter <span class="im">as</span> tflite</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Define the paths and labels:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">"./images/robot.jpg"</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/ei-raspi-img-class-int8-quantized-</span><span class="ch">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="st">                model.tflite"</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [<span class="st">'background'</span>, <span class="st">'periquito'</span>, <span class="st">'robot'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>Note that the models trained on the Edge Impulse Studio will output values with index 0, 1, 2, etc., where the actual labels will follow an alphabetic order.</p>
+</blockquote>
+<p>Load the model, allocate the tensors, and get the input and output tensor details:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the TFLite model</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>interpreter.allocate_tensors()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Get input and output tensors</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>input_details <span class="op">=</span> interpreter.get_input_details()</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>output_details <span class="op">=</span> interpreter.get_output_details()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>One important difference to note is that the <code>dtype</code> of the input details of the model is now <code>int8</code>, which means that the input values go from –128 to +127, while each pixel of our image goes from 0 to 255. This means that we should pre-process the image to match it. We can check here:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>input_dtype <span class="op">=</span> input_details[<span class="dv">0</span>][<span class="st">'dtype'</span>]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>input_dtype</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>numpy.int8</code></pre>
+<p>So, let’s open the image and show it:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p> <img src="images/png/infer_robot.png" class="img-fluid" style="width:60.0%" data-fig-align="center"></p>
+<p>And perform the pre-processing:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>scale, zero_point <span class="op">=</span> input_details[<span class="dv">0</span>][<span class="st">'quantization'</span>]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> img.resize((input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">1</span>],</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                  input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">2</span>]))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>img_array <span class="op">=</span> np.array(img, dtype<span class="op">=</span>np.float32) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>img_array <span class="op">=</span> (</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    (img_array <span class="op">/</span> scale <span class="op">+</span> zero_point)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    .clip(<span class="op">-</span><span class="dv">128</span>, <span class="dv">127</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    .astype(np.int8)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>input_data <span class="op">=</span> np.expand_dims(img_array, axis<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Checking the input data, we can verify that the input tensor is compatible with what is expected by the model:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>input_data.shape, input_data.dtype</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>((1, 160, 160, 3), dtype('int8'))</code></pre>
+<p>Now, it is time to perform the inference. Let’s also calculate the latency of the model:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inference on Raspi-Zero</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> time.time()</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>interpreter.set_tensor(input_details[<span class="dv">0</span>][<span class="st">'index'</span>], input_data)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>interpreter.invoke()</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>end_time <span class="op">=</span> time.time()</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> (end_time <span class="op">-</span> start_time) <span class="op">*</span> <span class="dv">1000</span> <span class="co"># Convert</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                                                <span class="co"># to milliseconds</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">"Inference time: </span><span class="sc">{:.1f}</span><span class="st">ms"</span>.<span class="bu">format</span>(inference_time))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The model will take around 125ms to perform the inference in the Raspi-Zero, which is 3 to 4 times longer than a Raspi-5.</p>
+<p>Now, we can get the output labels and probabilities. It is also important to note that the model trained on the Edge Impulse Studio has a softmax in its output (different from the original Movilenet V2), and we should use the model’s raw output as the “probabilities.”</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain results and map them to the classes</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">0</span>]</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                                     [<span class="st">'index'</span>])[<span class="dv">0</span>]</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Get indices of the top k results</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>top_k_results<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>top_k_indices <span class="op">=</span> np.argsort(predictions)[::<span class="op">-</span><span class="dv">1</span>][:top_k_results]</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Get quantization parameters</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>scale, zero_point <span class="op">=</span> output_details[<span class="dv">0</span>][<span class="st">'quantization'</span>]</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Dequantize the output</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>dequantized_output <span class="op">=</span> (predictions.astype(np.float32) <span class="op">-</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                      zero_point) <span class="op">*</span> scale</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>probabilities <span class="op">=</span> dequantized_output</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\t</span><span class="st">[PREDICTION]        [Prob]</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(top_k_results):</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="sc">{:20}</span><span class="st">: </span><span class="sc">{:.2f}</span><span class="st">%"</span>.<span class="bu">format</span>(</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        labels[top_k_indices[i]],</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>        probabilities[top_k_indices[i]] <span class="op">*</span> <span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p> <img src="images/png/infer-result.png" class="img-fluid" style="width:65.0%" data-fig-align="center"></p>
+<p>Let’s modify the function created before so that we can handle different type of models:</p>
+<div class="scroll-code-block">
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> image_classification(img_path, model_path, labels,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                         top_k_results<span class="op">=</span><span class="dv">3</span>, apply_softmax<span class="op">=</span><span class="va">False</span>):</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load the image</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    plt.imshow(img)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load the TFLite model</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    interpreter.allocate_tensors()</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get input and output tensors</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    input_details <span class="op">=</span> interpreter.get_input_details()</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    output_details <span class="op">=</span> interpreter.get_output_details()</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Preprocess</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> img.resize((input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">1</span>],</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>                      input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">2</span>]))</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    input_dtype <span class="op">=</span> input_details[<span class="dv">0</span>][<span class="st">'dtype'</span>]</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> input_dtype <span class="op">==</span> np.uint8:</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>        input_data <span class="op">=</span> np.expand_dims(np.array(img), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> input_dtype <span class="op">==</span> np.int8:</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>        scale, zero_point <span class="op">=</span> input_details[<span class="dv">0</span>][<span class="st">'quantization'</span>]</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>        img_array <span class="op">=</span> np.array(img, dtype<span class="op">=</span>np.float32) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>        img_array <span class="op">=</span> (</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>            img_array <span class="op">/</span> scale</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>            <span class="op">+</span> zero_point</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>        ).clip(<span class="op">-</span><span class="dv">128</span>, <span class="dv">127</span>).astype(np.int8)</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>        input_data <span class="op">=</span> np.expand_dims(img_array, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:  <span class="co"># float32</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>        input_data <span class="op">=</span> np.expand_dims(</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>            np.array(img, dtype<span class="op">=</span>np.float32),</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>            axis<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>        ) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inference on Raspi-Zero</span></span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>    start_time <span class="op">=</span> time.time()</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>    interpreter.set_tensor(input_details[<span class="dv">0</span>][<span class="st">'index'</span>], input_data)</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>    interpreter.invoke()</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>    end_time <span class="op">=</span> time.time()</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>    inference_time <span class="op">=</span> (end_time <span class="op">-</span></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>                        start_time</span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>                      ) <span class="op">*</span> <span class="dv">1000</span> <span class="co"># Convert to milliseconds</span></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Obtain results</span></span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    predictions <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">0</span>]</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>                                         [<span class="st">'index'</span>])[<span class="dv">0</span>]</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get indices of the top k results</span></span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>    top_k_indices <span class="op">=</span> np.argsort(predictions)[::<span class="op">-</span><span class="dv">1</span>][:top_k_results]</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Handle output based on type</span></span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>    output_dtype <span class="op">=</span> output_details[<span class="dv">0</span>][<span class="st">'dtype'</span>]</span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> output_dtype <span class="kw">in</span> [np.int8, np.uint8]:</span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Dequantize the output</span></span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>        scale, zero_point <span class="op">=</span> output_details[<span class="dv">0</span>][<span class="st">'quantization'</span>]</span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>        predictions <span class="op">=</span> (predictions.astype(np.float32) <span class="op">-</span></span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>                       zero_point) <span class="op">*</span> scale</span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> apply_softmax:</span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Apply softmax</span></span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a>        exp_preds <span class="op">=</span> np.exp(predictions <span class="op">-</span> np.<span class="bu">max</span>(predictions))</span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a>        probabilities <span class="op">=</span> exp_preds <span class="op">/</span> np.<span class="bu">sum</span>(exp_preds)</span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a>        probabilities <span class="op">=</span> predictions</span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\t</span><span class="st">[PREDICTION]        [Prob]</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(top_k_results):</span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="sc">{:20}</span><span class="st">: </span><span class="sc">{:.1f}</span><span class="st">%"</span>.<span class="bu">format</span>(</span>
+<span id="cb18-73"><a href="#cb18-73" aria-hidden="true" tabindex="-1"></a>            labels[top_k_indices[i]],</span>
+<span id="cb18-74"><a href="#cb18-74" aria-hidden="true" tabindex="-1"></a>            probabilities[top_k_indices[i]] <span class="op">*</span> <span class="dv">100</span>))</span>
+<span id="cb18-75"><a href="#cb18-75" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"</span><span class="ch">\n\t</span><span class="st">Inference time: </span><span class="sc">{:.1f}</span><span class="st">ms"</span>.<span class="bu">format</span>(inference_time))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And test it with different images and the int8 quantized model (<strong>160x160 alpha =1.0</strong>).</p>
+<p> <img src="images/png/infer-int8-160.png" class="img-fluid"></p>
+<p>Let’s download a smaller model, such as the one trained for the <a href="https://studio.edgeimpulse.com/public/353482/live">Nicla Vision Lab</a> (int8 quantized model, 96x96, alpha = 0.1), as a test. We can use the same function:</p>
+<p> <img src="images/png/infer-int8-96.png" class="img-fluid"></p>
+<p>The model lost some accuracy, but it is still OK once our model does not look for many details. Regarding latency, we are around <strong>ten times faster</strong> on the Raspi-Zero.</p>
+</section>
+</section>
+<section id="sec-image-classification-live-image-classification-f123" class="level2">
+<h2 class="anchored" data-anchor-id="sec-image-classification-live-image-classification-f123">Live Image Classification</h2>
+<p>Let’s develop an app that captures images with the camera in real-time and displays their classification.</p>
+<p>Using the nano on the terminal, save the code below, such as <code>img_class_live_infer.py</code>.</p>
+<div class="scroll-code-block">
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> flask <span class="im">import</span> Flask, Response, render_template_string,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                  request, jsonify</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> picamera2 <span class="im">import</span> Picamera2</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> io</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> threading</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tflite_runtime.interpreter <span class="im">as</span> tflite</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> queue <span class="im">import</span> Queue</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> Flask(<span class="va">__name__</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Global variables</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>picam2 <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>frame <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>frame_lock <span class="op">=</span> threading.Lock()</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>is_classifying <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>confidence_threshold <span class="op">=</span> <span class="fl">0.8</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/ei-raspi-img-class-int8-quantized-</span><span class="ch">\</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="st">                model.tflite"</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [<span class="st">'background'</span>, <span class="st">'periquito'</span>, <span class="st">'robot'</span>]</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>classification_queue <span class="op">=</span> Queue(maxsize<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> initialize_camera():</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> picam2</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    picam2 <span class="op">=</span> Picamera2()</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    config <span class="op">=</span> picam2.create_preview_configuration(</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>        main<span class="op">=</span>{<span class="st">"size"</span>: (<span class="dv">320</span>, <span class="dv">240</span>)}</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    picam2.configure(config)</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>    picam2.start()</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">2</span>)  <span class="co"># Wait for camera to warm up</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_frame():</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> frame</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>        stream <span class="op">=</span> io.BytesIO()</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>        picam2.capture_file(stream, <span class="bu">format</span><span class="op">=</span><span class="st">'jpeg'</span>)</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> frame_lock:</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>            frame <span class="op">=</span> stream.getvalue()</span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="fl">0.1</span>)  <span class="co"># Capture frames more frequently</span></span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_frames():</span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> frame_lock:</span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> frame <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>                <span class="cf">yield</span> (</span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>                   <span class="st">b'--frame</span><span class="ch">\r\n</span><span class="st">'</span></span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>                   <span class="st">b'Content-Type: image/jpeg</span><span class="ch">\r\n\r\n</span><span class="st">'</span></span>
+<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>                   <span class="op">+</span> frame <span class="op">+</span> <span class="st">b'</span><span class="ch">\r\n</span><span class="st">'</span></span>
+<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="fl">0.1</span>)</span>
+<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_model():</span>
+<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> interpreter</span>
+<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> interpreter <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a>        interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
+<span id="cb19-60"><a href="#cb19-60" aria-hidden="true" tabindex="-1"></a>        interpreter.allocate_tensors()</span>
+<span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> interpreter</span>
+<span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-63"><a href="#cb19-63" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classify_image(img, interpreter):</span>
+<span id="cb19-64"><a href="#cb19-64" aria-hidden="true" tabindex="-1"></a>    input_details <span class="op">=</span> interpreter.get_input_details()</span>
+<span id="cb19-65"><a href="#cb19-65" aria-hidden="true" tabindex="-1"></a>    output_details <span class="op">=</span> interpreter.get_output_details()</span>
+<span id="cb19-66"><a href="#cb19-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-67"><a href="#cb19-67" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> img.resize((input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">1</span>],</span>
+<span id="cb19-68"><a href="#cb19-68" aria-hidden="true" tabindex="-1"></a>                      input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">2</span>]))</span>
+<span id="cb19-69"><a href="#cb19-69" aria-hidden="true" tabindex="-1"></a>    input_data <span class="op">=</span> np.expand_dims(np.array(img), axis<span class="op">=</span><span class="dv">0</span>)<span class="op">\</span></span>
+<span id="cb19-70"><a href="#cb19-70" aria-hidden="true" tabindex="-1"></a>                             .astype(input_details[<span class="dv">0</span>][<span class="st">'dtype'</span>])</span>
+<span id="cb19-71"><a href="#cb19-71" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-72"><a href="#cb19-72" aria-hidden="true" tabindex="-1"></a>    interpreter.set_tensor(input_details[<span class="dv">0</span>][<span class="st">'index'</span>], input_data)</span>
+<span id="cb19-73"><a href="#cb19-73" aria-hidden="true" tabindex="-1"></a>    interpreter.invoke()</span>
+<span id="cb19-74"><a href="#cb19-74" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-75"><a href="#cb19-75" aria-hidden="true" tabindex="-1"></a>    predictions <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">0</span>]</span>
+<span id="cb19-76"><a href="#cb19-76" aria-hidden="true" tabindex="-1"></a>                                         [<span class="st">'index'</span>])[<span class="dv">0</span>]</span>
+<span id="cb19-77"><a href="#cb19-77" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Handle output based on type</span></span>
+<span id="cb19-78"><a href="#cb19-78" aria-hidden="true" tabindex="-1"></a>    output_dtype <span class="op">=</span> output_details[<span class="dv">0</span>][<span class="st">'dtype'</span>]</span>
+<span id="cb19-79"><a href="#cb19-79" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> output_dtype <span class="kw">in</span> [np.int8, np.uint8]:</span>
+<span id="cb19-80"><a href="#cb19-80" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Dequantize the output</span></span>
+<span id="cb19-81"><a href="#cb19-81" aria-hidden="true" tabindex="-1"></a>        scale, zero_point <span class="op">=</span> output_details[<span class="dv">0</span>][<span class="st">'quantization'</span>]</span>
+<span id="cb19-82"><a href="#cb19-82" aria-hidden="true" tabindex="-1"></a>        predictions <span class="op">=</span> (predictions.astype(np.float32) <span class="op">-</span></span>
+<span id="cb19-83"><a href="#cb19-83" aria-hidden="true" tabindex="-1"></a>                       zero_point) <span class="op">*</span> scale</span>
+<span id="cb19-84"><a href="#cb19-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> predictions</span>
+<span id="cb19-85"><a href="#cb19-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-86"><a href="#cb19-86" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classification_worker():</span>
+<span id="cb19-87"><a href="#cb19-87" aria-hidden="true" tabindex="-1"></a>    interpreter <span class="op">=</span> load_model()</span>
+<span id="cb19-88"><a href="#cb19-88" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb19-89"><a href="#cb19-89" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> is_classifying:</span>
+<span id="cb19-90"><a href="#cb19-90" aria-hidden="true" tabindex="-1"></a>            <span class="cf">with</span> frame_lock:</span>
+<span id="cb19-91"><a href="#cb19-91" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> frame <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb19-92"><a href="#cb19-92" aria-hidden="true" tabindex="-1"></a>                    img <span class="op">=</span> Image.<span class="bu">open</span>(io.BytesIO(frame))</span>
+<span id="cb19-93"><a href="#cb19-93" aria-hidden="true" tabindex="-1"></a>            predictions <span class="op">=</span> classify_image(img, interpreter)</span>
+<span id="cb19-94"><a href="#cb19-94" aria-hidden="true" tabindex="-1"></a>            max_prob <span class="op">=</span> np.<span class="bu">max</span>(predictions)</span>
+<span id="cb19-95"><a href="#cb19-95" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> max_prob <span class="op">&gt;=</span> confidence_threshold:</span>
+<span id="cb19-96"><a href="#cb19-96" aria-hidden="true" tabindex="-1"></a>                label <span class="op">=</span> labels[np.argmax(predictions)]</span>
+<span id="cb19-97"><a href="#cb19-97" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb19-98"><a href="#cb19-98" aria-hidden="true" tabindex="-1"></a>                label <span class="op">=</span> <span class="st">'Uncertain'</span></span>
+<span id="cb19-99"><a href="#cb19-99" aria-hidden="true" tabindex="-1"></a>            classification_queue.put({</span>
+<span id="cb19-100"><a href="#cb19-100" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'label'</span>: label,</span>
+<span id="cb19-101"><a href="#cb19-101" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'probability'</span>: <span class="bu">float</span>(max_prob)</span>
+<span id="cb19-102"><a href="#cb19-102" aria-hidden="true" tabindex="-1"></a>            })</span>
+<span id="cb19-103"><a href="#cb19-103" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="fl">0.1</span>)  <span class="co"># Adjust based on your needs</span></span>
+<span id="cb19-104"><a href="#cb19-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-105"><a href="#cb19-105" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/'</span>)</span>
+<span id="cb19-106"><a href="#cb19-106" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> index():</span>
+<span id="cb19-107"><a href="#cb19-107" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> render_template_string(<span class="st">'''</span></span>
+<span id="cb19-108"><a href="#cb19-108" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;!DOCTYPE html&gt;</span></span>
+<span id="cb19-109"><a href="#cb19-109" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;html&gt;</span></span>
+<span id="cb19-110"><a href="#cb19-110" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;head&gt;</span></span>
+<span id="cb19-111"><a href="#cb19-111" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;title&gt;Image Classification&lt;/title&gt;</span></span>
+<span id="cb19-112"><a href="#cb19-112" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;script</span></span>
+<span id="cb19-113"><a href="#cb19-113" aria-hidden="true" tabindex="-1"></a><span class="st">            src="https://code.jquery.com/jquery-3.6.0.min.js"&gt;</span></span>
+<span id="cb19-114"><a href="#cb19-114" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;/script&gt;</span></span>
+<span id="cb19-115"><a href="#cb19-115" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;script&gt;</span></span>
+<span id="cb19-116"><a href="#cb19-116" aria-hidden="true" tabindex="-1"></a><span class="st">              function startClassification() {</span></span>
+<span id="cb19-117"><a href="#cb19-117" aria-hidden="true" tabindex="-1"></a><span class="st">                  $.post('/start');</span></span>
+<span id="cb19-118"><a href="#cb19-118" aria-hidden="true" tabindex="-1"></a><span class="st">                  $('#startBtn').prop('disabled', true);</span></span>
+<span id="cb19-119"><a href="#cb19-119" aria-hidden="true" tabindex="-1"></a><span class="st">                  $('#stopBtn').prop('disabled', false);</span></span>
+<span id="cb19-120"><a href="#cb19-120" aria-hidden="true" tabindex="-1"></a><span class="st">              }</span></span>
+<span id="cb19-121"><a href="#cb19-121" aria-hidden="true" tabindex="-1"></a><span class="st">              function stopClassification() {</span></span>
+<span id="cb19-122"><a href="#cb19-122" aria-hidden="true" tabindex="-1"></a><span class="st">                  $.post('/stop');</span></span>
+<span id="cb19-123"><a href="#cb19-123" aria-hidden="true" tabindex="-1"></a><span class="st">                  $('#startBtn').prop('disabled', false);</span></span>
+<span id="cb19-124"><a href="#cb19-124" aria-hidden="true" tabindex="-1"></a><span class="st">                  $('#stopBtn').prop('disabled', true);</span></span>
+<span id="cb19-125"><a href="#cb19-125" aria-hidden="true" tabindex="-1"></a><span class="st">              }</span></span>
+<span id="cb19-126"><a href="#cb19-126" aria-hidden="true" tabindex="-1"></a><span class="st">              function updateConfidence() {</span></span>
+<span id="cb19-127"><a href="#cb19-127" aria-hidden="true" tabindex="-1"></a><span class="st">                  var confidence = $('#confidence').val();</span></span>
+<span id="cb19-128"><a href="#cb19-128" aria-hidden="true" tabindex="-1"></a><span class="st">                  $.post('/update_confidence',</span></span>
+<span id="cb19-129"><a href="#cb19-129" aria-hidden="true" tabindex="-1"></a><span class="st">                         {confidence: confidence}</span></span>
+<span id="cb19-130"><a href="#cb19-130" aria-hidden="true" tabindex="-1"></a><span class="st">                        );</span></span>
+<span id="cb19-131"><a href="#cb19-131" aria-hidden="true" tabindex="-1"></a><span class="st">              }</span></span>
+<span id="cb19-132"><a href="#cb19-132" aria-hidden="true" tabindex="-1"></a><span class="st">              function updateClassification() {</span></span>
+<span id="cb19-133"><a href="#cb19-133" aria-hidden="true" tabindex="-1"></a><span class="st">                  $.get('/get_classification', function(data) {</span></span>
+<span id="cb19-134"><a href="#cb19-134" aria-hidden="true" tabindex="-1"></a><span class="st">                    $('#classification').text(data.label + ': '</span></span>
+<span id="cb19-135"><a href="#cb19-135" aria-hidden="true" tabindex="-1"></a><span class="st">                    + data.probability.toFixed(2));</span></span>
+<span id="cb19-136"><a href="#cb19-136" aria-hidden="true" tabindex="-1"></a><span class="st">                  });</span></span>
+<span id="cb19-137"><a href="#cb19-137" aria-hidden="true" tabindex="-1"></a><span class="st">              }</span></span>
+<span id="cb19-138"><a href="#cb19-138" aria-hidden="true" tabindex="-1"></a><span class="st">              $(document).ready(function() {</span></span>
+<span id="cb19-139"><a href="#cb19-139" aria-hidden="true" tabindex="-1"></a><span class="st">                  setInterval(updateClassification, 100);</span></span>
+<span id="cb19-140"><a href="#cb19-140" aria-hidden="true" tabindex="-1"></a><span class="st">                  // Update every 100ms</span></span>
+<span id="cb19-141"><a href="#cb19-141" aria-hidden="true" tabindex="-1"></a><span class="st">              });</span></span>
+<span id="cb19-142"><a href="#cb19-142" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;/script&gt;</span></span>
+<span id="cb19-143"><a href="#cb19-143" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;/head&gt;</span></span>
+<span id="cb19-144"><a href="#cb19-144" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;body&gt;</span></span>
+<span id="cb19-145"><a href="#cb19-145" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;h1&gt;Image Classification&lt;/h1&gt;</span></span>
+<span id="cb19-146"><a href="#cb19-146" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;img src="</span><span class="sc">{{</span><span class="st"> url_for('video_feed') </span><span class="sc">}}</span><span class="st">"</span></span>
+<span id="cb19-147"><a href="#cb19-147" aria-hidden="true" tabindex="-1"></a><span class="st">               width="640"</span></span>
+<span id="cb19-148"><a href="#cb19-148" aria-hidden="true" tabindex="-1"></a><span class="st">               height="480" /&gt;</span></span>
+<span id="cb19-149"><a href="#cb19-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-150"><a href="#cb19-150" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;br&gt;</span></span>
+<span id="cb19-151"><a href="#cb19-151" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;button id="startBtn"</span></span>
+<span id="cb19-152"><a href="#cb19-152" aria-hidden="true" tabindex="-1"></a><span class="st">                  onclick="startClassification()"&gt;</span></span>
+<span id="cb19-153"><a href="#cb19-153" aria-hidden="true" tabindex="-1"></a><span class="st">            Start Classification</span></span>
+<span id="cb19-154"><a href="#cb19-154" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;/button&gt;</span></span>
+<span id="cb19-155"><a href="#cb19-155" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb19-156"><a href="#cb19-156" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;button id="stopBtn"</span></span>
+<span id="cb19-157"><a href="#cb19-157" aria-hidden="true" tabindex="-1"></a><span class="st">                  onclick="stopClassification()"</span></span>
+<span id="cb19-158"><a href="#cb19-158" aria-hidden="true" tabindex="-1"></a><span class="st">                  disabled&gt;</span></span>
+<span id="cb19-159"><a href="#cb19-159" aria-hidden="true" tabindex="-1"></a><span class="st">            Stop Classification</span></span>
+<span id="cb19-160"><a href="#cb19-160" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;/button&gt;</span></span>
+<span id="cb19-161"><a href="#cb19-161" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb19-162"><a href="#cb19-162" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;br&gt;</span></span>
+<span id="cb19-163"><a href="#cb19-163" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;label for="confidence"&gt;Confidence Threshold:&lt;/label&gt;</span></span>
+<span id="cb19-164"><a href="#cb19-164" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;input type="number"</span></span>
+<span id="cb19-165"><a href="#cb19-165" aria-hidden="true" tabindex="-1"></a><span class="st">                 id="confidence"</span></span>
+<span id="cb19-166"><a href="#cb19-166" aria-hidden="true" tabindex="-1"></a><span class="st">                 name="confidence"</span></span>
+<span id="cb19-167"><a href="#cb19-167" aria-hidden="true" tabindex="-1"></a><span class="st">                 min="0" max="1"</span></span>
+<span id="cb19-168"><a href="#cb19-168" aria-hidden="true" tabindex="-1"></a><span class="st">                 step="0.1"</span></span>
+<span id="cb19-169"><a href="#cb19-169" aria-hidden="true" tabindex="-1"></a><span class="st">                 value="0.8"</span></span>
+<span id="cb19-170"><a href="#cb19-170" aria-hidden="true" tabindex="-1"></a><span class="st">                 onchange="updateConfidence()" /&gt;</span></span>
+<span id="cb19-171"><a href="#cb19-171" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb19-172"><a href="#cb19-172" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;br&gt;</span></span>
+<span id="cb19-173"><a href="#cb19-173" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;div id="classification"&gt;</span></span>
+<span id="cb19-174"><a href="#cb19-174" aria-hidden="true" tabindex="-1"></a><span class="st">             Waiting for classification...</span></span>
+<span id="cb19-175"><a href="#cb19-175" aria-hidden="true" tabindex="-1"></a><span class="st">          &lt;/div&gt;</span></span>
+<span id="cb19-176"><a href="#cb19-176" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb19-177"><a href="#cb19-177" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;/body&gt;</span></span>
+<span id="cb19-178"><a href="#cb19-178" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;/html&gt;</span></span>
+<span id="cb19-179"><a href="#cb19-179" aria-hidden="true" tabindex="-1"></a><span class="st">   '''</span>)</span>
+<span id="cb19-180"><a href="#cb19-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-181"><a href="#cb19-181" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/video_feed'</span>)</span>
+<span id="cb19-182"><a href="#cb19-182" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> video_feed():</span>
+<span id="cb19-183"><a href="#cb19-183" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Response(</span>
+<span id="cb19-184"><a href="#cb19-184" aria-hidden="true" tabindex="-1"></a>       generate_frames(),</span>
+<span id="cb19-185"><a href="#cb19-185" aria-hidden="true" tabindex="-1"></a>       mimetype<span class="op">=</span><span class="st">'multipart/x-mixed-replace; boundary=frame'</span></span>
+<span id="cb19-186"><a href="#cb19-186" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb19-187"><a href="#cb19-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-188"><a href="#cb19-188" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/start'</span>, methods<span class="op">=</span>[<span class="st">'POST'</span>])</span>
+<span id="cb19-189"><a href="#cb19-189" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> start_classification():</span>
+<span id="cb19-190"><a href="#cb19-190" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> is_classifying</span>
+<span id="cb19-191"><a href="#cb19-191" aria-hidden="true" tabindex="-1"></a>    is_classifying <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb19-192"><a href="#cb19-192" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">''</span>, <span class="dv">204</span></span>
+<span id="cb19-193"><a href="#cb19-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-194"><a href="#cb19-194" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/stop'</span>, methods<span class="op">=</span>[<span class="st">'POST'</span>])</span>
+<span id="cb19-195"><a href="#cb19-195" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stop_classification():</span>
+<span id="cb19-196"><a href="#cb19-196" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> is_classifying</span>
+<span id="cb19-197"><a href="#cb19-197" aria-hidden="true" tabindex="-1"></a>    is_classifying <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb19-198"><a href="#cb19-198" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">''</span>, <span class="dv">204</span></span>
+<span id="cb19-199"><a href="#cb19-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-200"><a href="#cb19-200" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/update_confidence'</span>, methods<span class="op">=</span>[<span class="st">'POST'</span>])</span>
+<span id="cb19-201"><a href="#cb19-201" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> update_confidence():</span>
+<span id="cb19-202"><a href="#cb19-202" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> confidence_threshold</span>
+<span id="cb19-203"><a href="#cb19-203" aria-hidden="true" tabindex="-1"></a>    confidence_threshold <span class="op">=</span> <span class="bu">float</span>(request.form[<span class="st">'confidence'</span>])</span>
+<span id="cb19-204"><a href="#cb19-204" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">''</span>, <span class="dv">204</span></span>
+<span id="cb19-205"><a href="#cb19-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-206"><a href="#cb19-206" aria-hidden="true" tabindex="-1"></a><span class="at">@app.route</span>(<span class="st">'/get_classification'</span>)</span>
+<span id="cb19-207"><a href="#cb19-207" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_classification():</span>
+<span id="cb19-208"><a href="#cb19-208" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> is_classifying:</span>
+<span id="cb19-209"><a href="#cb19-209" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> jsonify({<span class="st">'label'</span>: <span class="st">'Not classifying'</span>,</span>
+<span id="cb19-210"><a href="#cb19-210" aria-hidden="true" tabindex="-1"></a>                       <span class="st">'probability'</span>: <span class="dv">0</span>})</span>
+<span id="cb19-211"><a href="#cb19-211" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb19-212"><a href="#cb19-212" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> classification_queue.get_nowait()</span>
+<span id="cb19-213"><a href="#cb19-213" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> Queue.Empty:</span>
+<span id="cb19-214"><a href="#cb19-214" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> {<span class="st">'label'</span>: <span class="st">'Processing'</span>, <span class="st">'probability'</span>: <span class="dv">0</span>}</span>
+<span id="cb19-215"><a href="#cb19-215" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> jsonify(result)</span>
+<span id="cb19-216"><a href="#cb19-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-217"><a href="#cb19-217" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:</span>
+<span id="cb19-218"><a href="#cb19-218" aria-hidden="true" tabindex="-1"></a>    initialize_camera()</span>
+<span id="cb19-219"><a href="#cb19-219" aria-hidden="true" tabindex="-1"></a>    threading.Thread(target<span class="op">=</span>get_frame, daemon<span class="op">=</span><span class="va">True</span>).start()</span>
+<span id="cb19-220"><a href="#cb19-220" aria-hidden="true" tabindex="-1"></a>    threading.Thread(target<span class="op">=</span>classification_worker,</span>
+<span id="cb19-221"><a href="#cb19-221" aria-hidden="true" tabindex="-1"></a>                     daemon<span class="op">=</span><span class="va">True</span>).start()</span>
+<span id="cb19-222"><a href="#cb19-222" aria-hidden="true" tabindex="-1"></a>    app.run(host<span class="op">=</span><span class="st">'0.0.0.0'</span>, port<span class="op">=</span><span class="dv">5000</span>, threaded<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>On the terminal, run:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> img_class_live_infer.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And access the web interface:</p>
+<ul>
+<li>On the Raspberry Pi itself (if you have a GUI): Open a web browser and go to <code>http://localhost:5000</code></li>
+<li>From another device on the same network: Open a web browser and go to <code>http://&lt;raspberry_pi_ip&gt;:5000</code> (Replace <code>&lt;raspberry_pi_ip&gt;</code> with your Raspberry Pi’s IP address). For example: <code>http://192.168.4.210:5000/</code></li>
+</ul>
+<p>Here are some screenshots of the app running on an external desktop</p>
+<p> <img src="images/png/app-inference.png" class="img-fluid"></p>
+<p>Here, you can see the app running on the YouTube:</p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/o1QsQrpCMw4" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p>The code creates a web application for real-time image classification using a Raspberry Pi, its camera module, and a TensorFlow Lite model. The application uses Flask to serve a web interface where is possible to view the camera feed and see live classification results.</p>
+<section id="sec-image-classification-key-components-a5d4" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-key-components-a5d4">Key Components:</h4>
+<ol type="1">
+<li><strong>Flask Web Application</strong>: Serves the user interface and handles requests.</li>
+<li><strong>PiCamera2</strong>: Captures images from the Raspberry Pi camera module.</li>
+<li><strong>TensorFlow Lite</strong>: Runs the image classification model.</li>
+<li><strong>Threading</strong>: Manages concurrent operations for smooth performance.</li>
+</ol>
+</section>
+<section id="sec-image-classification-main-features-8e04" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-main-features-8e04">Main Features:</h4>
+<ul>
+<li>Live camera feed display</li>
+<li>Real-time image classification</li>
+<li>Adjustable confidence threshold</li>
+<li>Start/Stop classification on demand</li>
+</ul>
+</section>
+<section id="sec-image-classification-code-structure-7aa0" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-code-structure-7aa0">Code Structure:</h4>
+<ol type="1">
+<li><strong>Imports and Setup</strong>:
+<ul>
+<li>Flask for web application</li>
+<li>PiCamera2 for camera control</li>
+<li>TensorFlow Lite for inference</li>
+<li>Threading and Queue for concurrent operations</li>
+</ul></li>
+<li><strong>Global Variables</strong>:
+<ul>
+<li>Camera and frame management</li>
+<li>Classification control</li>
+<li>Model and label information</li>
+</ul></li>
+<li><strong>Camera Functions</strong>:
+<ul>
+<li><code>initialize_camera()</code>: Sets up the PiCamera2</li>
+<li><code>get_frame()</code>: Continuously captures frames</li>
+<li><code>generate_frames()</code>: Yields frames for the web feed</li>
+</ul></li>
+<li><strong>Model Functions</strong>:
+<ul>
+<li><code>load_model()</code>: Loads the TFLite model</li>
+<li><code>classify_image()</code>: Performs inference on a single image</li>
+</ul></li>
+<li><strong>Classification Worker</strong>:
+<ul>
+<li>Runs in a separate thread</li>
+<li>Continuously classifies frames when active</li>
+<li>Updates a queue with the latest results</li>
+</ul></li>
+<li><strong>Flask Routes</strong>:
+<ul>
+<li><code>/</code>: Serves the main HTML page</li>
+<li><code>/video_feed</code>: Streams the camera feed</li>
+<li><code>/start</code> and <code>/stop</code>: Controls classification</li>
+<li><code>/update_confidence</code>: Adjusts the confidence threshold</li>
+<li><code>/get_classification</code>: Returns the latest classification result</li>
+</ul></li>
+<li><strong>HTML Template</strong>:
+<ul>
+<li>Displays camera feed and classification results</li>
+<li>Provides controls for starting/stopping and adjusting settings</li>
+</ul></li>
+<li><strong>Main Execution</strong>:
+<ul>
+<li>Initializes camera and starts necessary threads</li>
+<li>Runs the Flask application</li>
+</ul></li>
+</ol>
+</section>
+<section id="sec-image-classification-key-concepts-e0a5" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-key-concepts-e0a5">Key Concepts:</h4>
+<ol type="1">
+<li><strong>Concurrent Operations</strong>: Using threads to handle camera capture and classification separately from the web server.</li>
+<li><strong>Real-time Updates</strong>: Frequent updates to the classification results without page reloads.</li>
+<li><strong>Model Reuse</strong>: Loading the TFLite model once and reusing it for efficiency.</li>
+<li><strong>Flexible Configuration</strong>: Allowing users to adjust the confidence threshold on the fly.</li>
+</ol>
+</section>
+<section id="sec-image-classification-usage-d85a" class="level4">
+<h4 class="anchored" data-anchor-id="sec-image-classification-usage-d85a">Usage:</h4>
+<ol type="1">
+<li>Ensure all dependencies are installed.</li>
+<li>Run the script on a Raspberry Pi with a camera module.</li>
+<li>Access the web interface from a browser using the Raspberry Pi’s IP address.</li>
+<li>Start classification and adjust settings as needed.</li>
+</ol>
+</section>
+</section>
+<section id="sec-image-classification-summary-9796" class="level2">
+<h2 class="anchored" data-anchor-id="sec-image-classification-summary-9796">Summary:</h2>
+<p>Image classification has emerged as a powerful and versatile application of machine learning, with significant implications for various fields, from healthcare to environmental monitoring. This chapter has demonstrated how to implement a robust image classification system on edge devices like the Raspi-Zero and Raspi-5, showcasing the potential for real-time, on-device intelligence.</p>
+<p>We’ve explored the entire pipeline of an image classification project, from data collection and model training using Edge Impulse Studio to deploying and running inferences on a Raspi. The process highlighted several key points:</p>
+<ol type="1">
+<li>The importance of proper data collection and preprocessing for training effective models.</li>
+<li>The power of transfer learning, allowing us to leverage pre-trained models like MobileNet V2 for efficient training with limited data.</li>
+<li>The trade-offs between model accuracy and inference speed, especially crucial for edge devices.</li>
+<li>The implementation of real-time classification using a web-based interface, demonstrating practical applications.</li>
+</ol>
+<p>The ability to run these models on edge devices like the Raspi opens up numerous possibilities for IoT applications, autonomous systems, and real-time monitoring solutions. It allows for reduced latency, improved privacy, and operation in environments with limited connectivity.</p>
+<p>As we’ve seen, even with the computational constraints of edge devices, it’s possible to achieve impressive results in terms of both accuracy and speed. The flexibility to adjust model parameters, such as input size and alpha values, allows for fine-tuning to meet specific project requirements.</p>
+<p>Looking forward, the field of edge AI and image classification continues to evolve rapidly. Advances in model compression techniques, hardware acceleration, and more efficient neural network architectures promise to further expand the capabilities of edge devices in computer vision tasks.</p>
+<p>This project serves as a foundation for more complex computer vision applications and encourages further exploration into the exciting world of edge AI and IoT. Whether it’s for industrial automation, smart home applications, or environmental monitoring, the skills and concepts covered here provide a solid starting point for a wide range of innovative projects.</p>
+</section>
+<section id="sec-image-classification-resources-1d0e" class="level2">
+<h2 class="anchored" data-anchor-id="sec-image-classification-resources-1d0e">Resources</h2>
+<ul>
+<li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/IMG_CLASS/dataset">Dataset Example</a></li>
+<li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/IMG_CLASS/python_scripts">Python Scripts</a></li>
+<li><a href="https://studio.edgeimpulse.com/public/510251/live">Edge Impulse Project</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/image_classification/image_classification_fund.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Image Classification Fundamentals</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/object_detection/object_detection.html" class="pagination-link">
+        <span class="nav-page-text">Object Detection</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>

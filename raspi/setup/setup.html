@@ -63,7 +63,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../raspi/image_classification/image_classification.html" rel="next">
+<link href="../../raspi/image_classification/image_classification_fund.html" rel="next">
 <link href="../../images/cover.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -204,7 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">A Fixed Function AI (Reactive)</div></span></span>
+ <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -214,8 +214,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../raspi/image_classification/image_classification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Image Classification</span></a>
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -384,7 +390,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="key-features" class="level3">
 <h3 class="anchored" data-anchor-id="key-features">Key Features</h3>
 <ol type="1">
-<li><p><strong>Computational Power</strong>: Despite their small size, Raspberry Pis offers significant processing capabilities, with the latest models featuring multi-core ARM processors and up to 8GB of RAM.</p></li>
+<li><p><strong>Computational Power</strong>: Despite their small size, Raspberry Pis offer significant processing capabilities, with the latest models featuring multi-core ARM processors and up to 8GB of RAM.</p></li>
 <li><p><strong>GPIO Interface</strong>: The 40-pin GPIO header allows direct interaction with sensors, actuators, and other electronic components, facilitating hardware-software integration projects.</p></li>
 <li><p><strong>Extensive Connectivity</strong>: Built-in Wi-Fi, Bluetooth, Ethernet, and multiple USB ports enable diverse communication and networking projects.</p></li>
 <li><p><strong>Low-Level Hardware Access</strong>: Raspberry Pis provides access to interfaces like I2C, SPI, and UART, allowing for detailed control and communication with external devices.</p></li>
@@ -505,7 +511,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <img src="images/png/zero-burn.png" class="img-fluid" alt="img">
 <blockquote class="blockquote">
-<p>Due to its reduced SDRAM (512MB), the recommended OS for the Raspi-Zero is the 32-bit version. However, to run some machine learning models, such as the YOLOv8 from Ultralitics, we should use the 64-bit version. Although Raspi-Zero can run a <em>desktop</em>, we will choose the LITE version (no Desktop) to reduce the RAM needed for regular operation.</p>
+<p>Due to its reduced SDRAM (512MB), the recommended OS for the Raspberry Pi Zero is the 32-bit version. However, to run some machine learning models, such as the YOLOv8 from Ultralitics, we should use the 64-bit version. Although Raspi-Zero can run a <em>desktop</em>, we will choose the LITE version (no Desktop) to reduce the RAM needed for regular operation.</p>
 </blockquote>
 <ul>
 <li>For <strong>Raspi-5</strong>: We can select the full 64-bit version, which includes a desktop: <code>Raspberry Pi OS (64-bit)</code></li>
@@ -513,7 +519,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <img src="images/png/r5-burn.png" class="img-fluid"></li>
 <li>Select your microSD card as the storage device.</li>
 <li>Click on <code>Next</code> and then the <code>gear</code> icon to access advanced options.</li>
-<li>Set the <em>hostname</em>, the Raspi <em>username and password</em>, configure <em>WiFi</em> and <em>enable SSH</em> (Very important!)</li>
+<li>Set the hostname, the Raspberry Pi <em>username and password</em>, configure <em>WiFi,</em> and <em>enable SSH</em> (Very important!)</li>
 </ol>
 <p><img src="images/jpeg/setup.jpg" class="img-fluid"></p>
 <ol start="8" type="1">
@@ -570,7 +576,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="transfer-files-between-the-raspberry-pi-and-a-computer" class="level3">
 <h3 class="anchored" data-anchor-id="transfer-files-between-the-raspberry-pi-and-a-computer">Transfer Files between the Raspberry Pi and a computer</h3>
-<p>Transferring files between the Raspi and our main computer can be done using a pen drive, directly on the terminal (with scp), or an FTP program over the network.</p>
+<p>Transferring files between the Raspberry Pi and our main computer can be done using a pen drive, directly on the terminal (with scp), or an FTP program over the network.</p>
 <section id="using-secure-copy-protocol-scp" class="level4">
 <h4 class="anchored" data-anchor-id="using-secure-copy-protocol-scp">Using Secure Copy Protocol (<code>scp</code>):</h4>
 <section id="copy-files-to-your-raspberry-pi" class="level5">
@@ -617,12 +623,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Using <code>htop</code>, a cross-platform interactive process viewer, you can easily monitor the resources running on your Raspberry Pi, such as the list of processes, the running CPUs, and the memory used in real-time. To lunch <code>hop</code>, enter with the command on the terminal:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">htop</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/htop.png" class="img-fluid"></p>
-<p>Regarding memory, among the devices in the Raspberry Pi family, the Raspi-Zero has the smallest amount of SRAM (500MB), compared to a selection of 2GB to 8GB on the Raspis 4 or 5. For any Raspi, it is possible to increase the memory available to the system with “Swap.” Swap memory, also known as swap space, is a technique used in computer operating systems to temporarily store data from RAM (Random Access Memory) on the SD card when the physical RAM is fully utilized. This allows the operating system (OS) to continue running even when RAM is full, which can prevent system crashes or slowdowns.</p>
-<p>Swap memory benefits devices with limited RAM, such as the Raspi-Zero. Increasing swap can help run more demanding applications or processes, but it’s essential to balance this with the potential performance impact of frequent disk access.</p>
+<p>Regarding memory, among the devices in the Raspberry Pi family, the Raspi-Zero has the smallest amount of SRAM (500MB), compared to a selection of 2GB to 8GB on the Raspberry Pi 4 or 5. For any Raspberry Pi, it is possible to increase the memory available to the system with “Swap.” Swap memory, also known as swap space, is a technique used in computer operating systems to temporarily store data from RAM (Random Access Memory) on the SD card when the physical RAM is fully utilized. This allows the operating system (OS) to continue running even when RAM is full, which can prevent system crashes or slowdowns.</p>
+<p>Swap memory benefits devices with limited RAM, such as the Raspberry Pi Zero. Increasing swap can help run more demanding applications or processes, but it’s essential to balance this with the potential performance impact of frequent disk access.</p>
 <p>By default, the Rapi-Zero’s SWAP (Swp) memory is only 100MB, which is very small for running some more complex and demanding Machine Learning applications (for example, YOLO). Let’s increase it to 2MB:</p>
 <p>First, turn off swap-file:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dphys-swapfile swapoff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Next, you should open and change the file <code>/etc/dphys-swapfile</code>. For that, we will use the nano:</p>
+<p>Next, open and modify the file <code>/etc/dphys-swapfile</code>. For that, we will use the nano:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/dphys-swapfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Search for the <strong>CONF_SWAPSIZE</strong> variable (default is 200) and update it to <strong>2000</strong>:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="va">CONF_SWAPSIZE</span><span class="op">=</span>2000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -638,7 +644,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="installing-a-camera" class="level2">
 <h2 class="anchored" data-anchor-id="installing-a-camera">Installing a Camera</h2>
-<p>The Raspi is an excellent device for computer vision applications; a camera is needed for it. We can install a standard USB webcam on the micro-USB port using a USB OTG adapter (Raspi-Zero and Raspi-5) or a camera module connected to the Raspi CSI (Camera Serial Interface) port.</p>
+<p>The Raspi is an excellent device for computer vision applications, requiring a camera. We can install a standard USB webcam on the micro-USB port using a USB OTG adapter (Raspi-Zero and Raspi-5) or a camera module connected to the Raspi CSI (Camera Serial Interface) port.</p>
 <blockquote class="blockquote">
 <p>USB Webcams generally have inferior quality to the camera modules that connect to the CSI port. They can also not be controlled using the <code>raspistill</code> and <code>rasivid</code> commands in the terminal or the <code>picamera</code> recording package in Python. Nevertheless, there may be reasons why you want to connect a USB camera to your Raspberry Pi, such as because of the benefit that it is much easier to set up multiple cameras with a single Raspberry Pi, long cables, or simply because you have such a camera on hand.</p>
 </blockquote>
@@ -649,13 +655,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="images/jpeg/rasp-zero-with-cam.jpg" class="img-fluid"></p>
 <p>Here is another example of a v2 Camera Module, which has a <strong>Sony IMX219</strong> 8-megapixel sensor:</p>
 <p><img src="images/png/raspi-5-cam.png" class="img-fluid"></p>
-<p>First try to list the installed cameras:</p>
+<p>First, try to list the installed cameras:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-hello</span> <span class="at">--list-cameras</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If the command is not recognize, install</p>
+<p>If the command is not recognized, install</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install libcamera-apps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Try to list the installed camera again. If Ok, you should see something as:</p>
+<p>Try to list the installed camera again. If Ok, you should see something like:</p>
 <p><img src="./images/png/camera-installed.png" class="img-fluid"></p>
-<p>Any camera module will work on the Raspis, but for that, it is possible that the <code>onfiguration.txt</code> file must be updated:</p>
+<p>Any camera module will work on the Raspberry Pi, but for that, it is possible that the <code>config.txt</code> file must be updated:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /boot/firmware/config.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>At the bottom of the file, for example, to use the 5MP Arducam OV5647 camera, add the line:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="va">dtoverlay</span><span class="op">=</span>ov5647,cam0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -670,11 +676,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p><a href="https://www.raspberrypi.com/documentation/computers/camera_software.html#libcamera">libcamera</a>is an open-source software library that supports camera systems directly from the Linux operating system on Arm processors. It minimizes proprietary code running on the Broadcom GPU.</p>
 </blockquote>
-<p>Let’s capture a jpeg image with a resolution of 640 x 480 for testing and save it to a file named <code>test_cli_camera.jpg</code></p>
+<p>Let’s capture a JPEG image with a resolution of 640 x 480 for testing and save it to a file named <code>test_cli_camera.jpg</code></p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-jpeg</span> <span class="at">--output</span> test_cli_camera.jpg <span class="at">--width</span> 640 <span class="at">--height</span> 480</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>if we want to see the file saved, we should use <code>ls -f</code>, which lists all current directory content in long format. As before, we can use scp to view the image:</p>
+<p>To view the saved file, we should use ls -f, which lists all the current directory content in long format. As before, we can use scp to view the image:</p>
 <p><img src="images/png/test_camera_raspi-5.png" class="img-fluid"></p>
-<p>Or transfer it to your desktop with FileZilla.</p>
+<p>Alternatively, you can transfer it to your desktop using <strong>FileZilla</strong>.</p>
 </section>
 <section id="installing-a-usb-webcam" class="level3">
 <h3 class="anchored" data-anchor-id="installing-a-usb-webcam">Installing a USB WebCam</h3>
@@ -683,7 +689,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> shutdown <span class="at">-h</span> no</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="2" type="1">
-<li>Connect the USB Webcam (USB Camera Module 30fps,1280x720) to your Raspi (In this example, I am using the Raspi-Zero, but the instructions work for all Raspis).</li>
+<li>Connect the USB Webcam (USB Camera Module 30fps, 1280x720) to your Raspberry Pi (in this example, I am using the Raspberry Pi Zero, but the instructions work for all Raspberry Pis).</li>
 </ol>
 <p><img src="images/jpeg/usb-cam-2.jpg" class="img-fluid"></p>
 <ol start="3" type="1">
@@ -805,7 +811,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Limited processing power, best for lightweight projects</li>
 <li>It is better to use a headless setup (SSH) to conserve resources.</li>
 <li>Consider increasing swap space for memory-intensive tasks.</li>
-<li>It can be used for Image Classification and Object Detection Labs but not for the LLM (SLM).</li>
+<li>It can be used for Image Classification and Object Detection Labs, but not for the LLM (SLM).</li>
 </ul>
 </section>
 <section id="raspberry-pi-4-or-5-raspi-4-or-raspi-5" class="level3">
@@ -1076,8 +1082,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../raspi/image_classification/image_classification.html" class="pagination-link">
-        <span class="nav-page-text">Image Classification</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../raspi/image_classification/image_classification_fund.html" class="pagination-link">
+        <span class="nav-page-text">Image Classification Fundamentals</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
