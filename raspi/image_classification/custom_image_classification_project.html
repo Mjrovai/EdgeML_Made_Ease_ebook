@@ -63,7 +63,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../raspi/object_detection/object_detection.html" rel="next">
+<link href="../../raspi/object_detection/object_detection_fundamentals.html" rel="next">
 <link href="../../raspi/image_classification/image_classification_fund.html" rel="prev">
 <link href="../../images/cover.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
@@ -229,8 +229,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../raspi/object_detection/object_detection.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Object Detection</span></a>
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -397,7 +403,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li><p>First, let’s install Flask, a lightweight web framework for Python:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install flask</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-<li><p>Let’s create a new Python script combining image capture with a web server. We’ll call it <code>get_img_data.py</code>:</p></li>
+<li><p>Go to the working folder (<code>IMG_CLASS</code>) and create a new Python script combining image capture with a web server. We’ll call it <code>get_img_data.py</code>:</p></li>
 </ol>
 <div class="scroll-code-block">
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> flask <span class="im">import</span> Flask, Response, render_template_string,</span>
@@ -680,7 +686,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="sec-image-classification-number-samples-dataset-496d" class="level4">
 <h4 class="anchored" data-anchor-id="sec-image-classification-number-samples-dataset-496d">Number of samples on Dataset:</h4>
-<p>Get around 60 images from each category (<code>periquito</code>, <code>robot</code> and <code>background</code>). Try to capture different angles, backgrounds, and light conditions. On the Raspi, we will end with a folder named <code>dataset</code>, witch contains 3 sub-folders <em>periquito,</em> <em>robot</em>, and <em>background</em>. one for each class of images.</p>
+<p>Get around 60 images from each category (<code>periquito</code>, <code>robot</code> and <code>background</code>). Try to capture different angles, backgrounds, and light conditions.</p>
+<p>On the Raspi, we will end with a folder named <code>dataset</code>, which contains three sub-folders: periquito, robot, and background, one for each class of images.</p>
 <p>You can use <code>Filezilla</code> to transfer the created dataset to your main computer.</p>
 </section>
 </section>
@@ -852,7 +859,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>Let’s also download the float32 version for comparison</p>
 </blockquote>
-<p>Transfer the model from your computer to the Raspi (./models), for example, using FileZilla. Also, capture some images for inference (./images).</p>
+<p>Transfer the models from your computer to the Raspi (./models), for example, using FileZilla. Also, capture some images for inference and save them in (<code>./images</code>), or use the images in the .<code>/dataset</code> folder.</p>
 <p>Let’s remember what we did in the last chapter:</p>
 <p>Activate the environment:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>source <span class="op">~/</span>tflite_env<span class="op">/</span><span class="bu">bin</span><span class="op">/</span>activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -919,7 +926,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                                                <span class="co"># to milliseconds</span></span>
 <span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">"Inference time: </span><span class="sc">{:.1f}</span><span class="st">ms"</span>.<span class="bu">format</span>(inference_time))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The model will take around 125ms to perform the inference in the Raspi-Zero, which is 3 to 4 times longer than a Raspi-5.</p>
-<p>Now, we can get the output labels and probabilities. It is also important to note that the model trained on the Edge Impulse Studio has a softmax in its output (different from the original Movilenet V2), and we should use the model’s raw output as the “probabilities.”</p>
+<p>Now, we can get the output labels and probabilities. It is also important to note that the model trained on the Edge Impulse Studio has a softmax activation function in its output (different from the original Movilenet V2), and we can use the model’s raw output as the “probabilities.”</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain results and map them to the classes</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">0</span>]</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                                     [<span class="st">'index'</span>])[<span class="dv">0</span>]</span>
@@ -1378,6 +1385,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/IMG_CLASS/dataset">Dataset Example</a></li>
 <li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/IMG_CLASS/python_scripts">Python Scripts</a></li>
 <li><a href="https://studio.edgeimpulse.com/public/510251/live">Edge Impulse Project</a></li>
+<li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/IMG_CLASS/notebooks/30_Image_Classification_edge_impulse.ipynb">Image Classification Project - Edge Impulse Notebook</a></li>
 </ul>
 
 
@@ -1640,8 +1648,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../raspi/object_detection/object_detection.html" class="pagination-link">
-        <span class="nav-page-text">Object Detection</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="pagination-link">
+        <span class="nav-page-text">Object Detection: Fundamentals</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

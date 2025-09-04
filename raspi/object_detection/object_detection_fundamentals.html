@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Edge AI Engineering - Object Detection: Fundamentals</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/object_detection/custom_object_detection.html" rel="next">
+<link href="../../raspi/image_classification/custom_image_classification_project.html" rel="prev">
+<link href="../../images/cover.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/object_detection/object_detection_fundamentals.html">Object Detection: Fundamentals</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul>
+  <li><a href="#object-detection-fundamentals" id="toc-object-detection-fundamentals" class="nav-link" data-scroll-target="#object-detection-fundamentals">Object Detection Fundamentals</a>
+  <ul class="collapse">
+  <li><a href="#image-classification-vs.-object-detection" id="toc-image-classification-vs.-object-detection" class="nav-link" data-scroll-target="#image-classification-vs.-object-detection">Image Classification vs.&nbsp;Object Detection</a></li>
+  <li><a href="#key-components-of-object-detection" id="toc-key-components-of-object-detection" class="nav-link" data-scroll-target="#key-components-of-object-detection">Key Components of Object Detection</a></li>
+  <li><a href="#challenges-in-object-detection" id="toc-challenges-in-object-detection" class="nav-link" data-scroll-target="#challenges-in-object-detection">Challenges in Object Detection</a></li>
+  <li><a href="#approaches-to-object-detection" id="toc-approaches-to-object-detection" class="nav-link" data-scroll-target="#approaches-to-object-detection">Approaches to Object Detection</a></li>
+  <li><a href="#evaluation-metrics" id="toc-evaluation-metrics" class="nav-link" data-scroll-target="#evaluation-metrics">Evaluation Metrics</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#pre-trained-object-detection-models-overview" id="toc-pre-trained-object-detection-models-overview" class="nav-link" data-scroll-target="#pre-trained-object-detection-models-overview">Pre-Trained Object Detection Models Overview</a>
+  <ul>
+  <li><a href="#setting-up-the-tflite-environment" id="toc-setting-up-the-tflite-environment" class="nav-link" data-scroll-target="#setting-up-the-tflite-environment">Setting Up the TFLite Environment</a></li>
+  <li><a href="#creating-a-working-directory" id="toc-creating-a-working-directory" class="nav-link" data-scroll-target="#creating-a-working-directory">Creating a Working Directory:</a></li>
+  <li><a href="#inference-and-post-processing" id="toc-inference-and-post-processing" class="nav-link" data-scroll-target="#inference-and-post-processing">Inference and Post-Processing</a></li>
+  <li><a href="#efficientdet" id="toc-efficientdet" class="nav-link" data-scroll-target="#efficientdet">EfficientDet</a></li>
+  </ul></li>
+  <li><a href="#object-detection-on-a-live-stream" id="toc-object-detection-on-a-live-stream" class="nav-link" data-scroll-target="#object-detection-on-a-live-stream">Object Detection on a live stream</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/object_detection/object_detection_fundamentals.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/object_detection/object_detection_fundamentals.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Object Detection: Fundamentals</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/jpeg/cover.jpg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption"><em>DALL·E prompt - A cover image for an ‘Object Detection’ chapter in a Raspberry Pi tutorial, designed in the same vintage 1950s electronics lab style as previous covers. The scene should prominently feature wheels and cubes, similar to those provided by the user, placed on a workbench in the foreground. A Raspberry Pi with a connected camera module should be capturing an image of these objects. Surround the scene with classic lab tools like soldering irons, resistors, and wires. The lab background should include vintage equipment like oscilloscopes and tube radios, maintaining the detailed and nostalgic feel of the era. No text or logos should be included.</em></figcaption>
+</figure>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Building upon our exploration of image classification, we now turn our attention to a more advanced computer vision task: object detection. While image classification assigns a single label to an entire image, object detection goes further by identifying and locating multiple objects within a single image. This capability opens up many new applications and challenges, particularly in edge computing and IoT devices like the Raspberry Pi.</p>
+<p>Object detection combines the tasks of classification and localization. It not only determines what objects are present in an image but also pinpoints their locations by, for example, drawing bounding boxes around them. This added complexity makes object detection a more powerful tool for understanding visual scenes, but it also requires more sophisticated models and training techniques.</p>
+<p>In edge AI, where we work with constrained computational resources, implementing efficient object detection models becomes crucial. The challenges we faced with image classification—balancing model size, inference speed, and accuracy—are even more pronounced in object detection. However, the rewards are also more significant, as object detection enables more nuanced and detailed analysis of visual data.</p>
+<p>Some applications of object detection on edge devices include:</p>
+<ol type="1">
+<li>Surveillance and security systems</li>
+<li>Autonomous vehicles and drones</li>
+<li>Industrial quality control</li>
+<li>Wildlife monitoring</li>
+<li>Augmented reality applications</li>
+</ol>
+<p>As we put our hands into object detection, we’ll build upon the concepts and techniques we explored in image classification. We’ll examine popular object detection architectures designed for efficiency, such as:</p>
+<ul>
+<li>Single Stage Detectors, such as MobileNet and EfficientDet,</li>
+<li>FOMO (Faster Objects, More Objects), and</li>
+<li>YOLO (You Only Look Once).</li>
+</ul>
+<blockquote class="blockquote">
+<p>To learn more about object detection models, follow the tutorial <a href="https://machinelearningmastery.com/object-recognition-with-deep-learning/">A Gentle Introduction to Object Recognition With Deep Learning</a>.</p>
+</blockquote>
+<p>We will explore those object detection models using:</p>
+<ul>
+<li>TensorFlow Lite Runtime (now changed to <a href="https://ai.google.dev/edge/litert">LiteRT</a>),</li>
+<li>Edge Impulse Linux Python SDK and</li>
+<li>Ultralitics</li>
+</ul>
+<p><img src="./images/png/block.png" class="img-fluid"></p>
+<p>Throughout this lab, we’ll cover the fundamentals of object detection and how it differs from image classification. We’ll also learn how to train, fine-tune, test, optimize, and deploy popular object detection architectures using a dataset created from scratch.</p>
+<section id="object-detection-fundamentals" class="level3">
+<h3 class="anchored" data-anchor-id="object-detection-fundamentals">Object Detection Fundamentals</h3>
+<p>Object detection builds upon the foundations of image classification but extends its capabilities significantly. To understand object detection, it’s crucial first to recognize its key differences from image classification:</p>
+<section id="image-classification-vs.-object-detection" class="level4">
+<h4 class="anchored" data-anchor-id="image-classification-vs.-object-detection">Image Classification vs.&nbsp;Object Detection</h4>
+<p><strong>Image Classification:</strong></p>
+<ul>
+<li>Assigns a single label to an entire image</li>
+<li>Answers the question: “What is this image’s primary object or scene?”</li>
+<li>Outputs a single class prediction for the whole image</li>
+</ul>
+<p><strong>Object Detection:</strong></p>
+<ul>
+<li>Identifies and locates multiple objects within an image</li>
+<li>Answers the questions: “What objects are in this image, and where are they located?”</li>
+<li>Outputs multiple predictions, each consisting of a class label and a bounding box</li>
+</ul>
+<p>To visualize this difference, let’s consider an example:</p>
+<p><img src="images/jpeg/objxclas.jpg" class="img-fluid"></p>
+<p>This diagram illustrates the critical difference: image classification provides a single label for the entire image, while object detection identifies multiple objects, their classes, and their locations within the image.</p>
+</section>
+<section id="key-components-of-object-detection" class="level4">
+<h4 class="anchored" data-anchor-id="key-components-of-object-detection">Key Components of Object Detection</h4>
+<p>Object detection systems typically consist of two main components:</p>
+<ol type="1">
+<li><p>Object Localization: This component identifies the location of objects within the image. It typically outputs bounding boxes, rectangular regions encompassing each detected object.</p></li>
+<li><p>Object Classification: This component determines the class or category of each detected object, similar to image classification but applied to each localized region.</p></li>
+</ol>
+</section>
+<section id="challenges-in-object-detection" class="level4">
+<h4 class="anchored" data-anchor-id="challenges-in-object-detection">Challenges in Object Detection</h4>
+<p>Object detection presents several challenges beyond those of image classification:</p>
+<ul>
+<li>Multiple objects: An image may contain multiple objects of various classes, sizes, and positions.</li>
+<li>Varying scales: Objects can appear at different sizes within the image.</li>
+<li>Occlusion: Objects may be partially hidden or overlapping.</li>
+<li>Background clutter: Distinguishing objects from complex backgrounds can be challenging.</li>
+<li>Real-time performance: Many applications require fast inference times, especially on edge devices.</li>
+</ul>
+</section>
+<section id="approaches-to-object-detection" class="level4">
+<h4 class="anchored" data-anchor-id="approaches-to-object-detection">Approaches to Object Detection</h4>
+<p>There are two main approaches to object detection:</p>
+<ol type="1">
+<li><p>Two-stage detectors: These first propose regions of interest and then classify each region. Examples include R-CNN and its variants (Fast R-CNN, Faster R-CNN).</p></li>
+<li><p>Single-stage detectors: These predict bounding boxes (or centroids) and class probabilities in one forward pass of the network. Examples include YOLO (You Only Look Once), EfficientDet, SSD (Single Shot Detector), and FOMO (Faster Objects, More Objects). These are often faster and more suitable for edge devices, such as the Raspberry Pi.</p></li>
+</ol>
+</section>
+<section id="evaluation-metrics" class="level4">
+<h4 class="anchored" data-anchor-id="evaluation-metrics">Evaluation Metrics</h4>
+<p>Object detection uses different metrics compared to image classification:</p>
+<ul>
+<li><strong>Intersection over Union (IoU)</strong> is a metric used to evaluate the <strong>accuracy</strong> of an object detector. It measures the overlap between two bounding boxes: the <strong>Ground Truth</strong> box (the manually labeled correct box) and the <strong>Predicted</strong> box (the box generated by the object detection model). The IoU value is calculated by dividing the area of the <strong>Intersection</strong> (the overlapping area) by the area of the <strong>Union</strong> (the total area covered by both boxes). A higher IoU value indicates a better prediction.</li>
+</ul>
+<p><img src="./images/png/iou.png" class="img-fluid"></p>
+<ul>
+<li><strong>Mean Average Precision (mAP)</strong> is a widely used metric for evaluating the <strong>performance</strong> of object detection models. It provides a single number that reflects a model’s ability to accurately both <strong>classify</strong> and <strong>localize</strong> objects. The “mean” in mAP refers to the average taken over all object classes in the dataset. The “average precision” (AP) is calculated for each class, and then these AP values are averaged to get the final mAP score. A high mAP score indicates that the model is excellent at identifying all objects and placing a tight-fitting, accurate bounding box around them.</li>
+</ul>
+<p><img src="./images/png/map.png" class="img-fluid"></p>
+<ul>
+<li><strong>Frames Per Second (FPS)</strong>: Measures detection speed, crucial for real-time applications on edge devices.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="pre-trained-object-detection-models-overview" class="level2">
+<h2 class="anchored" data-anchor-id="pre-trained-object-detection-models-overview">Pre-Trained Object Detection Models Overview</h2>
+<p>As we saw in the introduction, given an image or a video stream, an object detection model can identify which of a known set of objects might be present and provide information about their positions within the image.</p>
+<blockquote class="blockquote">
+<p>You can test some common models online by visiting <a href="https://mediapipe-studio.webapps.google.com/studio/demo/object_detector">Object Detection - MediaPipe Studio</a></p>
+</blockquote>
+<p>On <a href="https://www.kaggle.com/models?id=298,130,299">Kaggle</a>, we can find the most common pre-trained TFLite models to use with the Raspberry Pi, <a href="https://www.kaggle.com/models/tensorflow/ssd-mobilenet-v1/tfLite">ssd_mobilenet_v1,</a> and <a href="https://www.kaggle.com/models/tensorflow/efficientdet/tfLite">efficiendet</a>. Those models were trained on the COCO (Common Objects in Context) dataset, with over 200,000 labeled images in 91 categories.</p>
+<p>Download the models and upload them to the <code>./models</code> folder on the Raspberry Pi.</p>
+<blockquote class="blockquote">
+<p>Alternatively<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">,</a> you can find the models and the COCO labels on <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">GitHub</a>.</p>
+</blockquote>
+<p>For the first part of this lab, we will focus on a pre-trained 300x300 SSD-Mobilenet V1 model and compare it with the 320x320 EfficientDet-lite0, also trained using the COCO 2017 dataset. Both models were converted to a TensorFlow Lite format (4.2MB for the SSD Mobilenet and 4.6MB for the EfficientDet).</p>
+<blockquote class="blockquote">
+<p>SSD-Mobilenet V2 or V3 is recommended for transfer learning projects, but once the V1 TFLite model is publicly available, we will use it for this overview.</p>
+</blockquote>
+<p><img src="images/png/model-deploy.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>The model outputs up <strong>to ten detections per image</strong>, including bounding boxes, class IDs, and confidence scores.</p>
+</blockquote>
+<section id="setting-up-the-tflite-environment" class="level3">
+<h3 class="anchored" data-anchor-id="setting-up-the-tflite-environment">Setting Up the TFLite Environment</h3>
+<p>We should confirm the steps done on the last Hands-On Lab, Image Classification, as follows:</p>
+<ul>
+<li><p>Updating the Raspberry Pi</p></li>
+<li><p>Installing Required Libraries</p></li>
+<li><p>Setting up a Virtual Environment (Optional but Recommended)</p></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/tflite/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><p>Installing TensorFlow Lite Runtime</p></li>
+<li><p>Installing Additional Python Libraries (inside the environment)</p></li>
+</ul>
+</section>
+<section id="creating-a-working-directory" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-working-directory">Creating a Working Directory:</h3>
+<p>Considering that we have created the <code>Documents/TFLITE</code> folder in the last Lab, let’s now create the specific folders for this object detection lab:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents/TFLITE/</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> OBJ_DETECT</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> OBJ_DETECT</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> images</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> models</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> models</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="inference-and-post-processing" class="level3">
+<h3 class="anchored" data-anchor-id="inference-and-post-processing">Inference and Post-Processing</h3>
+<p><img src="./images/png/infer_pipeline.png" class="img-fluid"></p>
+<p>Let’s start a new <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/SSD_MobileNetV1.ipynb">notebook</a> to follow all the steps to detect objects in an image:</p>
+<p>Import the needed libraries:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tflite_runtime.interpreter <span class="im">as</span> tflite</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Load the TFLite model and allocate tensors:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/ssd-mobilenet-v1-tflite-default-v1.tflite"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>interpreter.allocate_tensors()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Get input and output tensors.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>input_details <span class="op">=</span> interpreter.get_input_details()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>output_details <span class="op">=</span> interpreter.get_output_details()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Input details</strong> will inform us how the model should be fed with an image. The shape of <code>(1, 300, 300, 3)</code> with a dtype of <code>uint8</code> tells us that a non-normalized (pixel value range from 0 to 255) image with dimensions (300x300x3) should be input one by one (Batch Dimension: 1).</p>
+<p><img src="./images/png/input_details.png" class="img-fluid"></p>
+<p>The <strong>output details</strong> include not only the labels (“classes”) and probabilities (“scores”) but also the relative window position of the bounding boxes (“boxes”) about where the object is located on the image and the number of detected objects (“num_detections”). The output details also tell us that the model can detect a <strong>maximum of 10 objects</strong> in the image.</p>
+<p><img src="./images/png/out-details.png" class="img-fluid"></p>
+<p>So, for the above example, using the same cat image used with the <em>Image Classification Lab</em>, looking for the output, we have a <strong>76% probability</strong> of having found an object with a <strong>class ID of 16</strong> on an area delimited by a <strong>bounding box of [0.028011084, 0.020121813, 0.9886069, 0.802299]</strong>. Those four numbers are related to <code>ymin</code>, <code>xmin</code>, <code>ymax</code>, and <code>xmax</code>, the box coordinates.</p>
+<p><img src="./images/png/inference_result.png" class="img-fluid"></p>
+<p>Considering that y ranges from the top (<code>ymin</code>) to the bottom (<code>ymax</code>) and x ranges from left (<code>xmin</code>) to right (<code>xmax</code>), we have, in fact, the coordinates of the top-left corner and the bottom-right one. With both edges and knowing the shape of the picture, it is possible to draw a rectangle around the object, as shown in the figure below:</p>
+<p><img src="images/png/boulding-boxes.png" class="img-fluid"></p>
+<p>Next, we should find what class ID 16 means. Opening the file <code>coco_labels.txt</code>, as a list, each element has an associated index, and inspecting index 16, we get, as expected, <code>cat</code>. The probability is the value returned from the score.</p>
+<p>Let’s now upload some images with multiple objects on them for testing.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">"./images/cat_dog.jpeg"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>orig_img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the image</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>plt.imshow(orig_img)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Original Image"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/png/cat-dog.png" class="img-fluid"></p>
+<p>Based on the input details, let’s pre-process the image, changing its shape and expanding its dimensions:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> orig_img.resize((input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">1</span>], </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                  input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">2</span>]))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>input_data <span class="op">=</span> np.expand_dims(img, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>input_data.shape, input_data.dtype </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The new input_data shape is<code>(1, 300, 300, 3)</code> with a dtype of <code>uint8</code>, which is compatible with what the model expects.</p>
+<p>Using the input_data, let’s run the interpreter, measure the latency, and get the output:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> time.time()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>interpreter.set_tensor(input_details[<span class="dv">0</span>][<span class="st">'index'</span>], input_data)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>interpreter.invoke()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>end_time <span class="op">=</span> time.time()</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> (end_time <span class="op">-</span> start_time) <span class="op">*</span> <span class="dv">1000</span>  <span class="co"># Convert to milliseconds</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">"Inference time: </span><span class="sc">{:.1f}</span><span class="st">ms"</span>.<span class="bu">format</span>(inference_time))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>With a latency of around 800ms, we can get four distinct outputs:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>boxes <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">0</span>][<span class="st">'index'</span>])[<span class="dv">0</span>] </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">1</span>][<span class="st">'index'</span>])[<span class="dv">0</span>]  </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">2</span>][<span class="st">'index'</span>])[<span class="dv">0</span>]   </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>num_detections <span class="op">=</span> <span class="bu">int</span>(interpreter.get_tensor(output_details[<span class="dv">3</span>][<span class="st">'index'</span>])[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>On a quick inspection, we can see that the model detected two objects with a score over 0.5:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_detections):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> scores[i] <span class="op">&gt;</span> <span class="fl">0.5</span>:  <span class="co"># Confidence threshold</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Object </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">:"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  Bounding Box: </span><span class="sc">{</span>boxes[i]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  Confidence: </span><span class="sc">{</span>scores[i]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  Class: </span><span class="sc">{</span>classes[i]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/png/infer-mobv1.png" class="img-fluid"></p>
+<p>And we can also visualize the results:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(orig_img)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_detections):</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> scores[i] <span class="op">&gt;</span> <span class="fl">0.5</span>:  <span class="co"># Adjust threshold as needed</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        ymin, xmin, ymax, xmax <span class="op">=</span> boxes[i]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        (left, right, top, bottom) <span class="op">=</span> (xmin <span class="op">*</span> orig_img.width, </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                                      xmax <span class="op">*</span> orig_img.width, </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                                      ymin <span class="op">*</span> orig_img.height, </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>                                      ymax <span class="op">*</span> orig_img.height)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        rect <span class="op">=</span> plt.Rectangle((left, top), right<span class="op">-</span>left, bottom<span class="op">-</span>top, </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                             fill<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span><span class="st">'red'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        plt.gca().add_patch(rect)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        class_id <span class="op">=</span> <span class="bu">int</span>(classes[i])</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        class_name <span class="op">=</span> labels[class_id]</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        plt.text(left, top<span class="op">-</span><span class="dv">10</span>, <span class="ss">f'</span><span class="sc">{</span>class_name<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>scores[i]<span class="sc">:.2f}</span><span class="ss">'</span>, </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                 color<span class="op">=</span><span class="st">'red'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, backgroundcolor<span class="op">=</span><span class="st">'white'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/png/visual_inf.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>The choice of the <code>confidence threshold</code> is crucial. For example, changing it to <code>0.2</code> will show false positives. A proper code should handle it.</p>
+</blockquote>
+</section>
+<section id="efficientdet" class="level3">
+<h3 class="anchored" data-anchor-id="efficientdet">EfficientDet</h3>
+<p>EfficientDet is not technically an SSD (Single Shot Detector) model, but it shares some similarities and builds upon ideas from SSD and other object detection architectures:</p>
+<ol type="1">
+<li>EfficientDet:
+<ul>
+<li>Developed by Google researchers in 2019</li>
+<li>Uses EfficientNet as the backbone network</li>
+<li>Employs a novel bi-directional feature pyramid network (BiFPN)</li>
+<li>It uses compound scaling to scale the backbone network and the object detection components efficiently.</li>
+</ul></li>
+<li>Similarities to SSD:
+<ul>
+<li>Both are single-stage detectors, meaning they perform object localization and classification in a single forward pass.</li>
+<li>Both use multi-scale feature maps to detect objects at different scales.</li>
+</ul></li>
+<li>Key differences:
+<ul>
+<li>Backbone: SSD typically uses VGG or MobileNet, while EfficientDet uses EfficientNet.</li>
+<li>Feature fusion: SSD uses a simple feature pyramid, while EfficientDet uses the more advanced BiFPN.</li>
+<li>Scaling method: EfficientDet introduces compound scaling for all components of the network</li>
+</ul></li>
+<li>Advantages of EfficientDet:
+<ul>
+<li>Generally achieves better accuracy-efficiency trade-offs than SSD and many other object detection models.</li>
+<li>More flexible scaling enables a family of models with varying size-performance trade-offs.</li>
+</ul></li>
+</ol>
+<p>While EfficientDet is not an SSD model, it can be seen as an evolution of single-stage detection architectures, incorporating more advanced techniques to improve efficiency and accuracy. When using EfficientDet, we can expect similar output structures to SSD (e.g., bounding boxes and class scores).</p>
+<blockquote class="blockquote">
+<p>On GitHub, you can find another <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/SSD_EfficientDet.ipynb">notebook</a> exploring the EfficientDet model that we did with SSD MobileNet.</p>
+</blockquote>
+</section>
+</section>
+<section id="object-detection-on-a-live-stream" class="level2">
+<h2 class="anchored" data-anchor-id="object-detection-on-a-live-stream">Object Detection on a live stream</h2>
+<p>The object detection models can also detect objects in real-time using a camera. The captured image should be the input for the trained and converted model. For the Raspberry Pi 4 or 5 with a desktop, <code>OpenCV</code> can capture the frames and display the inference result.</p>
+<p>However, even without a desktop, creating a live stream with a webcam to detect objects in real-time is also possible. For example, let’s start with the script developed for the Image Classification app and adapt it for a <em>Real-Time Object Detection Web Application Using TensorFlow Lite and Flask</em>.</p>
+<p>This app version should work for any <code>TFLite</code> models.</p>
+<blockquote class="blockquote">
+<p>Verify if the model is in its correct folder, for example:</p>
+</blockquote>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/ssd-mobilenet-v1-tflite-default-v1.tflite"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Download the Python script <code>object_detection_app.py</code> from <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/python_scripts/object_detection_app.py">GitHub</a>.</p>
+<p>Check the model and labels:</p>
+<p><img src="./images/png/app-model-label.png" class="img-fluid"></p>
+<p>And on the terminal, run:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> object_detection_app.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After starting, you should receive the message on the terminal (the IP is from my Raspberry):</p>
+<blockquote class="blockquote">
+<p>* Running on http://192.168.4.210:5000</p>
+<p>Press CTRL+C to quit</p>
+</blockquote>
+<p>And access the web interface:</p>
+<ul>
+<li>On the Raspberry Pi itself (if you have a GUI): Open a web browser and go to <code>http://localhost:5000</code></li>
+<li>From another device on the same network: Open a web browser and go to <code>http://&lt;raspberry_pi_ip&gt;:5000</code> (Replace <code>&lt;raspberry_pi_ip&gt;</code> with your Raspberry Pi’s IP address). For example: <code>http://192.168.4.210:5000/</code></li>
+</ul>
+<p>Here is a screenshot of the app running on an external desktop</p>
+<p><img src="images/png/app-running.png" class="img-fluid"></p>
+<p>Let’s see a technical description of the key modules used in the object detection application:</p>
+<ol type="1">
+<li><strong>TensorFlow Lite (tflite_runtime)</strong>:
+<ul>
+<li>Purpose: Efficient inference of machine learning models on edge devices.</li>
+<li>Why: TFLite offers reduced model size and optimized performance compared to full TensorFlow, which is crucial for resource-constrained devices like Raspberry Pi. It supports hardware acceleration and quantization, further improving efficiency.</li>
+<li>Key functions: <code>Interpreter</code> for loading and running the model, <code>get_input_details()</code> and <code>get_output_details()</code> for interfacing with the model.</li>
+</ul></li>
+<li><strong>Flask:</strong>
+<ul>
+<li>Purpose: Lightweight web framework for building backend servers.</li>
+<li>Why: Flask’s simplicity and flexibility make it ideal for rapidly developing and deploying web applications. It’s less resource-intensive than larger frameworks suitable for edge devices.</li>
+<li>Key components: route decorators for defining API endpoints, <code>Response</code> objects for streaming video, <code>render_template_string</code> for serving dynamic HTML.</li>
+</ul></li>
+<li><strong>Picamera2:</strong>
+<ul>
+<li>Purpose: Interface with the Raspberry Pi camera module.</li>
+<li>Why: Picamera2 is the latest library for controlling Raspberry Pi cameras, offering improved performance and features over the original Picamera library.</li>
+<li>Key functions: <code>create_preview_configuration()</code> for setting up the camera, <code>capture_file()</code> for capturing frames.</li>
+</ul></li>
+<li><strong>PIL (Python Imaging Library):</strong>
+<ul>
+<li>Purpose: Image processing and manipulation.</li>
+<li>Why: PIL provides a wide range of image processing capabilities. It’s used here to resize images, draw bounding boxes, and convert between image formats.</li>
+<li>Key classes: <code>Image</code> for loading and manipulating images, <code>ImageDraw</code> for drawing shapes and text on images.</li>
+</ul></li>
+<li><strong>NumPy:</strong>
+<ul>
+<li>Purpose: Efficient array operations and numerical computing.</li>
+<li>Why: NumPy’s array operations are much faster than pure Python lists, which is crucial for efficiently processing image data and model inputs/outputs.</li>
+<li>Key functions: <code>array()</code> for creating arrays, <code>expand_dims()</code> for adding dimensions to arrays.</li>
+</ul></li>
+<li><strong>Threading:</strong>
+<ul>
+<li>Purpose: Concurrent execution of tasks.</li>
+<li>Why: Threading enables simultaneous frame capture, object detection, and web server operation, which is crucial for maintaining real-time performance.</li>
+<li>Key components: <code>Thread</code> class creates separate execution threads, and Lock is used for thread synchronization.</li>
+</ul></li>
+<li><strong>io.BytesIO:</strong>
+<ul>
+<li>Purpose: In-memory binary streams.</li>
+<li>Why: Allows efficient handling of image data in memory without needing temporary files, improving speed and reducing I/O operations.</li>
+</ul></li>
+<li><strong>time:</strong>
+<ul>
+<li>Purpose: Time-related functions.</li>
+<li>Why: Used for adding delays (<code>time.sleep()</code>) to control frame rate and for performance measurements.</li>
+</ul></li>
+<li><strong>jQuery (client-side)</strong>:
+<ul>
+<li>Purpose: Simplified DOM manipulation and AJAX requests.</li>
+<li>Why: It makes it easy to update the web interface dynamically and communicate with the server without page reloads.</li>
+<li>Key functions: <code>.get()</code> and <code>.post()</code> for AJAX requests, DOM manipulation methods for updating the UI.</li>
+</ul></li>
+</ol>
+<p>Regarding the main app system architecture:</p>
+<ol type="1">
+<li><strong>Main Thread</strong>: Runs the Flask server, handling HTTP requests and serving the web interface.</li>
+<li><strong>Camera Thread</strong>: Continuously captures frames from the camera.</li>
+<li><strong>Detection Thread</strong>: Processes frames through the TFLite model for object detection.</li>
+<li><strong>Frame Buffer</strong>: Shared memory space (protected by locks) storing the latest frame and detection results.</li>
+</ol>
+<p>And the app data flow, we can describe in short:</p>
+<ol type="1">
+<li>Camera captures frame → Frame Buffer</li>
+<li>Detection thread reads from Frame Buffer → Processes through TFLite model → Updates detection results in Frame Buffer</li>
+<li>Flask routes access Frame Buffer to serve the latest frame and detection results</li>
+<li>Web client receives updates via AJAX and updates UI</li>
+</ol>
+<p>This architecture enables efficient, real-time object detection while maintaining a responsive web interface on a resource-constrained edge device, such as a Raspberry Pi. Threading and efficient libraries, such as TFLite and PIL, enable the system to process video frames in real-time, while Flask and jQuery provide a user-friendly way to interact with them.</p>
+<p>You can test the app with another pre-processed model, such as the EfficientDet, by changing the app line:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/lite-model_efficientdet_lite0_detection_metadata_1.tflite"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>If we want to use the app for the SSD-MobileNetV2 model, trained on Edge Impulse Studio with the “Box versus Wheel” dataset, the code should also be adapted depending on the input details, as we have explored in its <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/EI-SSD-MobileNetV2.ipynb">notebook</a>.</p>
+</blockquote>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This lab has explored the implementation of object detection on edge devices like the Raspberry Pi, demonstrating the power and potential of running advanced computer vision tasks on resource-constrained hardware. We examined the object detection models SSD-MobileNet and EfficientDet, comparing their performance and trade-offs on edge devices.</p>
+<p>The lab exemplified a real-time object detection web application, demonstrating how these models can be integrated into practical, interactive systems.</p>
+<p>The ability to perform object detection on edge devices opens up numerous possibilities across various domains, including precision agriculture, industrial automation, quality control, smart home applications, and environmental monitoring. By processing data locally, these systems can offer reduced latency, improved privacy, and operation in environments with limited connectivity.</p>
+<p>Looking ahead, potential areas for further exploration include: - Using a custom dataset (labeled on Roboflow), walking through the process of training models using Edge Impulse Studio and Ultralytics, and deploying them on Raspberry Pi. - To improve inference speed on edge devices, explore various optimization methods, such as model quantization (TFLite int8) and format conversion (e.g., to NCNN). - Implementing multi-model pipelines for more complex tasks - Exploring hardware acceleration options for Raspberry Pi - Integrating object detection with other sensors for more comprehensive edge AI systems - Developing edge-to-cloud solutions that leverage both local processing and cloud resources</p>
+<p>Object detection on edge devices can create intelligent, responsive systems that bring the power of AI directly into the physical world, opening up new frontiers in how we interact with and understand our environment.</p>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<ul>
+<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/SSD_MobileNetV1.ipynb">SSD-MobileNet Notebook on a Raspi</a></p></li>
+<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/SSD_EfficientDet.ipynb">EfficientDet Notebook on a Raspi</a></p></li>
+<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/python_scripts">Python Scripts</a></p></li>
+<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">Models</a></p>
+<p>​</p></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/image_classification/custom_image_classification_project.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Custom Image Classification Project</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/object_detection/custom_object_detection.html" class="pagination-link">
+        <span class="nav-page-text">Custom Object Detection Project</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>
