@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Edge AI Engineering - Computer Vision Applications with YOLO</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" rel="next">
+<link href="../../raspi/object_detection/custom_object_detection.html" rel="prev">
+<link href="../../images/unifei-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/object_detection/cv_yolo.html">Computer Vision Applications with YOLO</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/cv_yolo.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Computer Vision Applications with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#exploring-a-yolo-models-using-ultralitics" id="toc-exploring-a-yolo-models-using-ultralitics" class="nav-link active" data-scroll-target="#exploring-a-yolo-models-using-ultralitics">Exploring a YOLO Models using Ultralitics</a>
+  <ul>
+  <li><a href="#talking-about-the-yolo-model" id="toc-talking-about-the-yolo-model" class="nav-link" data-scroll-target="#talking-about-the-yolo-model">Talking about the YOLO Model</a>
+  <ul class="collapse">
+  <li><a href="#key-features" id="toc-key-features" class="nav-link" data-scroll-target="#key-features">Key Features:</a></li>
+  </ul></li>
+  <li><a href="#available-model-sizes" id="toc-available-model-sizes" class="nav-link" data-scroll-target="#available-model-sizes">Available Model Sizes</a></li>
+  </ul></li>
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a>
+  <ul>
+  <li><a href="#testing-the-yolo" id="toc-testing-the-yolo" class="nav-link" data-scroll-target="#testing-the-yolo">Testing the YOLO</a>
+  <ul class="collapse">
+  <li><a href="#testing-with-the-yolov11" id="toc-testing-with-the-yolov11" class="nav-link" data-scroll-target="#testing-with-the-yolov11">Testing with the YOLOv11</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#export-models-to-ncnn-format" id="toc-export-models-to-ncnn-format" class="nav-link" data-scroll-target="#export-models-to-ncnn-format">Export Models to NCNN format</a></li>
+  <li><a href="#exploring-yolo-with-python" id="toc-exploring-yolo-with-python" class="nav-link" data-scroll-target="#exploring-yolo-with-python">Exploring YOLO with Python</a>
+  <ul>
+  <li><a href="#inference-arguments" id="toc-inference-arguments" class="nav-link" data-scroll-target="#inference-arguments">Inference Arguments</a></li>
+  </ul></li>
+  <li><a href="#exploring-other-computer-vision-applications" id="toc-exploring-other-computer-vision-applications" class="nav-link" data-scroll-target="#exploring-other-computer-vision-applications">Exploring other Computer Vision Applications</a>
+  <ul>
+  <li><a href="#environment-setup-and-dependencies" id="toc-environment-setup-and-dependencies" class="nav-link" data-scroll-target="#environment-setup-and-dependencies">Environment Setup and Dependencies</a></li>
+  <li><a href="#model-configuration-and-loading" id="toc-model-configuration-and-loading" class="nav-link" data-scroll-target="#model-configuration-and-loading">Model Configuration and Loading</a></li>
+  <li><a href="#performance-characteristics" id="toc-performance-characteristics" class="nav-link" data-scroll-target="#performance-characteristics">Performance Characteristics</a></li>
+  <li><a href="#results-object-structure" id="toc-results-object-structure" class="nav-link" data-scroll-target="#results-object-structure">Results Object Structure</a></li>
+  <li><a href="#bounding-box-analysis" id="toc-bounding-box-analysis" class="nav-link" data-scroll-target="#bounding-box-analysis">Bounding Box Analysis</a></li>
+  <li><a href="#visualization-and-customization" id="toc-visualization-and-customization" class="nav-link" data-scroll-target="#visualization-and-customization">8. <strong>Visualization and Customization</strong></a></li>
+  </ul></li>
+  <li><a href="#exploring-other-computer-vision-tasks" id="toc-exploring-other-computer-vision-tasks" class="nav-link" data-scroll-target="#exploring-other-computer-vision-tasks">Exploring Other Computer Vision Tasks</a>
+  <ul>
+  <li><a href="#instance-segmentation" id="toc-instance-segmentation" class="nav-link" data-scroll-target="#instance-segmentation">Instance Segmentation</a>
+  <ul class="collapse">
+  <li><a href="#pose-estimation" id="toc-pose-estimation" class="nav-link" data-scroll-target="#pose-estimation">Pose Estimation</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#training-yolo-on-a-customized-dataset" id="toc-training-yolo-on-a-customized-dataset" class="nav-link" data-scroll-target="#training-yolo-on-a-customized-dataset">Training YOLO on a Customized Dataset</a>
+  <ul>
+  <li><a href="#object-detection-project" id="toc-object-detection-project" class="nav-link" data-scroll-target="#object-detection-project">Object Detection Project</a></li>
+  <li><a href="#the-dataset" id="toc-the-dataset" class="nav-link" data-scroll-target="#the-dataset">The Dataset</a>
+  <ul class="collapse">
+  <li><a href="#critical-points-on-the-notebook" id="toc-critical-points-on-the-notebook" class="nav-link" data-scroll-target="#critical-points-on-the-notebook">Critical points on the Notebook:</a></li>
+  </ul></li>
+  <li><a href="#inference-with-the-trained-model-using-the-raspi" id="toc-inference-with-the-trained-model-using-the-raspi" class="nav-link" data-scroll-target="#inference-with-the-trained-model-using-the-raspi">Inference with the trained model, using the Raspi</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/object_detection/cv_yolo.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/object_detection/cv_yolo.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Computer Vision Applications with YOLO</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><img src="./images/png/Gemini_yolo.png" class="img-fluid"></p>
+<section id="exploring-a-yolo-models-using-ultralitics" class="level2">
+<h2 class="anchored" data-anchor-id="exploring-a-yolo-models-using-ultralitics">Exploring a YOLO Models using Ultralitics</h2>
+<p>In this chapter, we will explore YOLOv8 and v11. <a href="https://ultralytics.com/">Ultralytics YOLO</a> (v8 and v11) are versions of the acclaimed real-time object detection and image segmentation model, YOLO. YOLOv8 and v11 are built on cutting-edge advancements in deep learning and computer vision, offering unparalleled performance in terms of speed and accuracy. Its streamlined design makes it suitable for various applications and easily adaptable to different hardware platforms, from edge devices to cloud APIs.</p>
+<section id="talking-about-the-yolo-model" class="level3">
+<h3 class="anchored" data-anchor-id="talking-about-the-yolo-model">Talking about the YOLO Model</h3>
+<p>The YOLO (You Only Look Once) model is a highly efficient and widely used object detection algorithm known for its real-time processing capabilities. Unlike traditional object detection systems that repurpose classifiers or localizers to perform detection, YOLO frames the detection problem as a single regression task. This innovative approach enables YOLO to simultaneously predict multiple bounding boxes and their class probabilities from full images in one evaluation, significantly boosting its speed.</p>
+<section id="key-features" class="level4">
+<h4 class="anchored" data-anchor-id="key-features">Key Features:</h4>
+<ol type="1">
+<li><p><strong>Single Network Architecture</strong>:</p>
+<ul>
+<li>YOLO employs a single neural network to process the entire image. This network divides the image into a grid and, for each grid cell, directly predicts bounding boxes and associated class probabilities. This end-to-end training improves speed and simplifies the model architecture.</li>
+</ul></li>
+<li><p><strong>Real-Time Processing</strong>:</p>
+<ul>
+<li>One of YOLO’s standout features is its ability to perform object detection in real-time. Depending on the version and hardware, YOLO can process images at high frames per second (FPS). This makes it ideal for applications requiring quick and accurate object detection, such as video surveillance, autonomous driving, and live sports analysis.</li>
+</ul></li>
+<li><p><strong>Evolution of Versions</strong>:</p>
+<ul>
+<li>Over the years, YOLO has undergone significant improvements, from YOLOv1 to the latest YOLOv12. Each iteration has introduced enhancements in accuracy, speed, and efficiency. YOLOv8, for instance, incorporates advancements in network architecture, improved training methodologies, and better support for various hardware, ensuring a more robust performance.</li>
+<li>YOLOv11 offers substantial improvements in accuracy, speed, and parameter efficiency compared to prior versions such as YOLOv8 and YOLOv10, making it one of the most versatile and powerful real-time object detection models available as of 2025</li>
+</ul>
+<p><img src="./images/png/versions-YOLO.png" class="img-fluid"></p></li>
+<li><p><strong>Accuracy and Efficiency</strong>:</p>
+<ul>
+<li>While early versions of YOLO traded off some accuracy for speed, recent versions have made substantial strides in balancing both. The newer models are faster and more accurate, detecting small objects (such as bees) and performing well on complex datasets.</li>
+</ul></li>
+<li><p><strong>Wide Range of Applications</strong>:</p>
+<ul>
+<li>YOLO’s versatility has led to its adoption in numerous fields. It is used in traffic monitoring systems to detect and count vehicles, security applications to identify potential threats and agricultural technology to monitor crops and livestock. Its application extends to any domain requiring efficient and accurate object detection.</li>
+</ul></li>
+<li><p><strong>Community and Development</strong>:</p>
+<ul>
+<li>YOLO continues to evolve and is supported by a strong community of developers and researchers (being the YOLOv8 very strong). Open-source implementations and extensive documentation have made it accessible for customization and integration into various projects. Popular deep learning frameworks like Darknet, TensorFlow, and PyTorch support YOLO, further broadening its applicability.</li>
+</ul></li>
+<li><p><strong>Model Capabilities</strong></p>
+<p>YOLO models support multiple computer vision tasks:</p>
+<ul>
+<li><strong>Object Detection</strong>: Identifying and localizing objects with bounding boxes</li>
+<li><strong>Instance Segmentation</strong>: Pixel-level object segmentation</li>
+<li><strong>Pose Estimation</strong>: Human pose keypoint detection</li>
+<li><strong>Classification</strong>: Image classification tasks</li>
+</ul>
+<blockquote class="blockquote">
+<p><a href="https://github.com/ultralytics/ultralytics?tab=readme-ov-file">Ultralitics YOLO</a> <a href="https://docs.ultralytics.com/tasks/detect">Detect</a>, <a href="https://docs.ultralytics.com/tasks/segment">Segment,</a> and <a href="https://docs.ultralytics.com/tasks/pose">Pose</a> models pre-trained on the <a href="https://docs.ultralytics.com/datasets/detect/coco">COCO</a> dataset, and <a href="https://docs.ultralytics.com/tasks/classify">Classify</a> on the <a href="https://docs.ultralytics.com/datasets/classify/imagenet">ImageNet</a> dataset.</p>
+</blockquote>
+<p><a href="https://docs.ultralytics.com/modes/track">Track</a> mode is available for all Detect, Segment, and Pose models. The latest versions of YOLO can also perform OBB, which stands for Oriented Bounding Box, a rectangular box in computer vision that can rotate to match the orientation of an object within an image, providing a much tighter and more precise fit than traditional axis-aligned bounding boxes.</p>
+<img src="https://raw.githubusercontent.com/ultralytics/assets/main/im/banner-tasks.png" class="img-fluid" alt="Ultralytics YOLO supported tasks"></li>
+</ol>
+</section>
+</section>
+<section id="available-model-sizes" class="level3">
+<h3 class="anchored" data-anchor-id="available-model-sizes">Available Model Sizes</h3>
+<p>YOLO offers several model variants optimized for different use cases, for example. The YOLOv8:</p>
+<ul>
+<li><strong>YOLOv8n (Nano)</strong>: Smallest model, fastest inference, lowest accuracy</li>
+<li><strong>YOLOv8s (Small)</strong>: Balanced performance for edge devices</li>
+<li><strong>YOLOv8m (Medium)</strong>: Higher accuracy, moderate computational requirements</li>
+<li><strong>YOLOv8l (Large)</strong>: High accuracy, requires more computational resources</li>
+<li><strong>YOLOv8x (Extra Large)</strong>: Highest accuracy, most computational intensive</li>
+</ul>
+<blockquote class="blockquote">
+<p>For Raspberry Pi applications, YOLOv8n or YOLO11n are typically the best choice due to their optimized size and speed.</p>
+</blockquote>
+</section>
+</section>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
+<p>On our Raspi, let’s deactivate the current environment to create a new working area:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">deactivate</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents/</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> YOLO</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> YOLO</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> models</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> images</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s set up a Virtual Environment for working with the Ultralytics YOLO</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv ~/yolo <span class="at">--system-site-packages</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/yolo/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And install the Ultralytics packages for local inference on the Raspi</p>
+<ol type="1">
+<li>Update the packages list, install pip, and upgrade to the latest:</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install python3-pip <span class="at">-y</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> pip</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="2" type="1">
+<li>Install the <code>ultralytics</code> pip package with optional dependencies:</li>
+</ol>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ultralytics<span class="pp">[</span><span class="ss">export</span><span class="pp">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="3" type="1">
+<li>Reboot the device:</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="testing-the-yolo" class="level3">
+<h3 class="anchored" data-anchor-id="testing-the-yolo">Testing the YOLO</h3>
+<p>After the Raspi booting, let’s activate the <code>yolo</code> env, go to the working directory,</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/yolo/bin/activate</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Documents/YOLO</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And run inference on an image that will be downloaded from the Ultralytics website, using, for example, the YOLOV8n model (the smallest in the family) at the Terminal (CLI):</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict model=<span class="st">'yolov8n'</span> source=<span class="st">'https://ultralytics.com/images/bus.jpg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>Note that the first time we invoke a model, it will automatically be downloaded to the current directory.</p>
+</blockquote>
+<p>The inference result will appear in the terminal. In the image (bus.jpg), 4 <code>persons</code>, 1 <code>bus,</code> and 1 <code>stop signal</code> were detected:</p>
+<p><img src="images/png/yolo-infer-bus.png" class="img-fluid"></p>
+<p>Also, we got a message that <code>Results saved to runs/detect/predict</code>. Inspecting that directory, we can see a new image saved (bus.jpg). Let’s download it from the Raspi to our desktop for inspection:</p>
+<p><img src="images/png/yolo-bus.png" class="img-fluid"></p>
+<p>So, the Ultrayitics YOLO is correctly installed on our Raspberry Pi. Note that on the Raspberry Pi Zero, an issue is the high latency for this inference, which takes several seconds, even with the most compact model in the family (YOLOv8n).</p>
+<section id="testing-with-the-yolov11" class="level4">
+<h4 class="anchored" data-anchor-id="testing-with-the-yolov11">Testing with the YOLOv11</h4>
+<p>The procedure is the same as we did with version v8. As a comparison, we can see that the YOLOv11 is faster than the v8, but seems a little less precise, as it does not detect the “stop sign” as the v8.</p>
+<p><img src="./images/png/yolov8-v11.png" class="img-fluid"></p>
+</section>
+</section>
+</section>
+<section id="export-models-to-ncnn-format" class="level2">
+<h2 class="anchored" data-anchor-id="export-models-to-ncnn-format">Export Models to NCNN format</h2>
+<p>Deploying computer vision models on edge devices with limited computational power, such as the Raspberry Pi Zero, can cause latency issues. One alternative is to use a format optimized for optimal performance. This ensures that even devices with limited processing power can handle advanced computer vision tasks well.</p>
+<p>Of all the model export formats supported by Ultralytics, the <a href="https://docs.ultralytics.com/integrations/ncnn">NCNN</a> is a high-performance neural network inference computing framework optimized for mobile platforms. From the beginning of the design, NCNN was deeply considerate of deployment and use on mobile phones, and it did not have third-party dependencies. It is cross-platform and runs faster than all known open-source frameworks (such as TFLite).</p>
+<p>NCNN delivers the best inference performance when working with Raspberry Pi devices. NCNN is highly optimized for mobile embedded platforms (such as ARM architecture).</p>
+<p>Let’s move the downloaded YOLO models to the <code>./models</code> folder and the<code>bus.jpg</code> to <code>./images</code>.</p>
+<p>And convert our models and rerun the inferences:</p>
+<ol type="1">
+<li>Export the YOLO PyTorch models to NCNN format, creating: <code>yolov8n_ncnn_model</code> and <code>yolo11n_ncnn_model</code></li>
+</ol>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=./models/yolov8n.pt format=ncnn </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=./models/yolo11n.pt format=ncnn</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="2" type="1">
+<li>Run inference with the exported models:</li>
+</ol>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict task=detect model=<span class="st">'./models/yolov8n_ncnn_model'</span> source=<span class="st">'./images/bus.jpg'</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict task=detect model=<span class="st">'./models/yolo11n_ncnn_model'</span> source=<span class="st">'./images/bus.jpg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>The first inference, when the model is loaded, typically has a high latency; however, from the second inference, it is possible to note that the inference time decreases.</p>
+</blockquote>
+<p>We can now realize that neither model detects the “Stop Signal”, with YOLOv11 being the fastest. The optimized models are more rapid but also less accurate.</p>
+<p><img src="./images/png/models-ncnn.png" class="img-fluid"></p>
+</section>
+<section id="exploring-yolo-with-python" class="level2">
+<h2 class="anchored" data-anchor-id="exploring-yolo-with-python">Exploring YOLO with Python</h2>
+<p>To start, let’s call the Python Interpreter so we can explore how the YOLO model works, line by line:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, we should call the YOLO library from Ultralitics and load the model:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'./models/yolov8n_ncnn_model'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Run inference over an image (let’s use again <code>bus.jpg</code>):</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'./images/bus.jpg'</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/python-infer-bus.png" class="img-fluid"></p>
+<p>We can verify that the result is almost identical to the one we get running the inference at the terminal level (CLI), except that the bus stop was not detected with the reduced NCNN model. Note that the latency was reduced.</p>
+<p>Let’s analyze the “result” content.</p>
+<p>For example, we can see <code>result[0].boxes.data</code>, showing us the main inference result, which is a tensor with a shape of (4, 6). Each line is one of the objects detected, being the first four columns, the bounding boxes coordinates, the 5th, the confidence, and the 6th, the class (in this case, <code>0: person</code> and <code>5: bus</code>):</p>
+<p><img src="images/png/result-bus.png" class="img-fluid"></p>
+<p>We can access several inference results separately, as the inference time, and have it printed in a better format:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> <span class="bu">int</span>(result[<span class="dv">0</span>].speed[<span class="st">'inference'</span>])</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inference Time: </span><span class="sc">{</span>inference_time<span class="sc">}</span><span class="ss"> ms"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Or we can have the total number of objects detected:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Number of objects: </span><span class="sc">{</span><span class="bu">len</span> (result[<span class="dv">0</span>].boxes.cls)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/png/data-bus.png" class="img-fluid"></p>
+<p>With Python, we can create a detailed output that meets our needs (See <a href="https://docs.ultralytics.com/modes/predict/">Model Prediction with Ultralytics YOLO</a> for more details). Let’s run a Python script instead of manually entering it line by line in the interpreter, as shown below. Let’s use <code>nano</code> as our text editor. First, we should create an empty Python script named, for example, <code>yolov8_tests.py</code>:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nano yolov8_tests.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Enter the code lines:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the YOLOv8 model</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'./models/yolov8n_ncnn_model'</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Run inference</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'./images/bus.jpg'</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">False</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># print the results</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> <span class="bu">int</span>(result[<span class="dv">0</span>].speed[<span class="st">'inference'</span>])</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inference Time: </span><span class="sc">{</span>inference_time<span class="sc">}</span><span class="ss"> ms"</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Number of objects: </span><span class="sc">{</span><span class="bu">len</span> (result[<span class="dv">0</span>].boxes.cls)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/png/yolo-py-script.png" class="img-fluid"></p>
+<p>And enter with the commands: <code>[CTRL+O]</code> + <code>[ENTER]</code> +<code>[CTRL+X]</code> to save the Python script.</p>
+<p>Run the script:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> yolov8_tests.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The result is the same as running the inference at the terminal level (CLI) and with the built-in Python interpreter.</p>
+<blockquote class="blockquote">
+<p>Calling the YOLO library and loading the model for inference for the first time takes a long time, but the inferences after that will be much faster. For example, the first single inference can take several seconds, but after that, the inference time should be reduced to less than 1 second.</p>
+</blockquote>
+<section id="inference-arguments" class="level3">
+<h3 class="anchored" data-anchor-id="inference-arguments">Inference Arguments</h3>
+<p><code>model.predict()</code> accepts multiple arguments that can be passed at inference time to override defaults:</p>
+<p><strong>Inference arguments:</strong></p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Argument</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>'ultralytics/assets'</code></td>
+<td style="text-align: left;">Specifies the data source for inference. Can be an image path, video file, directory, URL, or device ID for live feeds. Supports a wide range of formats and sources, enabling flexible application across <a href="https://docs.ultralytics.com/modes/predict/#inference-sources">different types of input</a>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>conf</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.25</code></td>
+<td style="text-align: left;">Sets the minimum confidence threshold for detections. Objects detected with confidence below this threshold will be disregarded. Adjusting this value can help reduce false positives.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>iou</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.7</code></td>
+<td style="text-align: left;"><a href="https://www.ultralytics.com/glossary/intersection-over-union-iou">Intersection Over Union</a> (IoU) threshold for Non-Maximum Suppression (NMS). Lower values result in fewer detections by eliminating overlapping boxes, useful for reducing duplicates.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>imgsz</code></td>
+<td style="text-align: left;"><code>int</code> or <code>tuple</code></td>
+<td style="text-align: left;"><code>640</code></td>
+<td style="text-align: left;">Defines the image size for inference. Can be a single integer <code>640</code> for square resizing or a (height, width) tuple. Proper sizing can improve detection <a href="https://www.ultralytics.com/glossary/accuracy">accuracy</a> and processing speed.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rect</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">If enabled, minimally pads the shorter side of the image until it’s divisible by stride to improve inference speed. If disabled, pads the image to a square during inference.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>half</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Enables half-<a href="https://www.ultralytics.com/glossary/precision">precision</a> (FP16) inference, which can speed up model inference on supported GPUs with minimal impact on accuracy.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>device</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Specifies the device for inference (e.g., <code>cpu</code>, <code>cuda:0</code> or <code>0</code>). Allows users to select between CPU, a specific GPU, or other compute devices for model execution.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>batch</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Specifies the batch size for inference (only works when the source is <a href="https://docs.ultralytics.com/modes/predict/#inference-sources">a directory, video file or <code>.txt</code> file</a>). A larger batch size can provide higher throughput, shortening the total amount of time required for inference.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>max_det</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>300</code></td>
+<td style="text-align: left;">Maximum number of detections allowed per image. Limits the total number of objects the model can detect in a single inference, preventing excessive outputs in dense scenes.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>vid_stride</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Frame stride for video inputs. Allows skipping frames in videos to speed up processing at the cost of temporal resolution. A value of 1 processes every frame, higher values skip frames.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>stream_buffer</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Determines whether to queue incoming frames for video streams. If <code>False</code>, old frames get dropped to accommodate new frames (optimized for real-time applications). If <code>True</code>, queues new frames in a buffer, ensuring no frames get skipped, but will cause latency if inference FPS is lower than stream FPS.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>visualize</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Activates visualization of model features during inference, providing insights into what the model is “seeing”. Useful for debugging and model interpretation.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>augment</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Enables test-time augmentation (TTA) for predictions, potentially improving detection robustness at the cost of inference speed.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>agnostic_nms</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Enables class-agnostic Non-Maximum Suppression (NMS), which merges overlapping boxes of different classes. Useful in multi-class detection scenarios where class overlap is common.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>classes</code></td>
+<td style="text-align: left;"><code>list[int]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Filters predictions to a set of class IDs. Only detections belonging to the specified classes will be returned. Useful for focusing on relevant objects in multi-class detection tasks.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>retina_masks</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Returns high-resolution segmentation masks. The returned masks (<code>masks.data</code>) will match the original image size if enabled. If disabled, they have the image size used during inference.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>embed</code></td>
+<td style="text-align: left;"><code>list[int]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Specifies the layers from which to extract feature vectors or <a href="https://www.ultralytics.com/glossary/embeddings">embeddings</a>. Useful for downstream tasks like clustering or similarity search.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>project</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Name of the project directory where prediction outputs are saved if <code>save</code> is enabled.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>name</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Name of the prediction run. Used for creating a subdirectory within the project folder, where prediction outputs are stored if <code>save</code> is enabled.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>stream</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Enables memory-efficient processing for long videos or numerous images by returning a generator of Results objects instead of loading all frames into memory at once.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>verbose</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Controls whether to display detailed inference logs in the terminal, providing real-time feedback on the prediction process.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Visualization arguments:</strong></p>
+<table class="table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 14%">
+<col style="width: 59%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Argument</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>show</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">If <code>True</code>, displays the annotated images or videos in a window. Useful for immediate visual feedback during development or testing.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>save</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False or True</code></td>
+<td style="text-align: left;">Enables saving of the annotated images or videos to file. Useful for documentation, further analysis, or sharing results. Defaults to True when using CLI &amp; False when used in Python.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>save_frames</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">When processing videos, saves individual frames as images. Useful for extracting specific frames or for detailed frame-by-frame analysis.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>save_txt</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Saves detection results in a text file, following the format <code>[class] [x_center] [y_center] [width] [height] [confidence]</code>. Useful for integration with other analysis tools.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>save_conf</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Includes confidence scores in the saved text files. Enhances the detail available for post-processing and analysis.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>save_crop</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Saves cropped images of detections. Useful for dataset augmentation, analysis, or creating focused datasets for specific objects.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show_labels</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Displays labels for each detection in the visual output. Provides immediate understanding of detected objects.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_conf</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Displays the confidence score for each detection alongside the label. Gives insight into the model’s certainty for each detection.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show_boxes</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Draws bounding boxes around detected objects. Essential for visual identification and location of objects in images or video frames.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>line_width</code></td>
+<td style="text-align: left;"><code>None or int</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Specifies the line width of bounding boxes. If <code>None</code>, the line width is automatically adjusted based on the image size. Provides visual customization for clarity.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="exploring-other-computer-vision-applications" class="level2">
+<h2 class="anchored" data-anchor-id="exploring-other-computer-vision-applications">Exploring other Computer Vision Applications</h2>
+<p>Let’s set up Jupyter Notebook optimized for headless Raspberry Pi camera work and development:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install jupyter jupyterlab notebook</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--generate-config</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To run Jupyter Notebook, run the command (change the IP address for yours):</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--ip</span><span class="op">=</span>192.168.4.210 <span class="at">--no-browser</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>On the terminal, you can see the local URL address and its <code>Token</code> to open the notebook. Copy and paste it into the Browser.</p>
+<section id="environment-setup-and-dependencies" class="level3">
+<h3 class="anchored" data-anchor-id="environment-setup-and-dependencies">Environment Setup and Dependencies</h3>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here we have all the necessary libraries, which we installed automatically when we installed Ultralytics.</p>
+<ul>
+<li><strong>Time</strong>: Performance measurement and benchmarking</li>
+<li><strong>NumPy</strong>: Numerical computations and array operations</li>
+<li><strong>PIL (Python Imaging Library)</strong>: Image loading and manipulation</li>
+<li><strong>Ultralytics YOLO</strong>: Core YOLO functionality</li>
+<li><strong>Matplotlib</strong>: Visualization and plotting results</li>
+</ul>
+</section>
+<section id="model-configuration-and-loading" class="level3">
+<h3 class="anchored" data-anchor-id="model-configuration-and-loading">Model Configuration and Loading</h3>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model_path<span class="op">=</span> <span class="st">"./models/yolo11n.pt"</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>task <span class="op">=</span> <span class="st">"detect"</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>verbose <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(model_path, task, verbose)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>Model Selection</strong>: YOLOv11n (nano) is chosen for its balance of speed and accuracy</li>
+<li><strong>Task Specification</strong>: We will select <code>detect</code>, which in fact is the default for the model. But remember that YOLO supports multiple computer vision tasks, which will be explored later.</li>
+<li><strong>Verbose Control</strong>: output model information during model initialization</li>
+</ul>
+</section>
+<section id="performance-characteristics" class="level3">
+<h3 class="anchored" data-anchor-id="performance-characteristics">Performance Characteristics</h3>
+<p>Let’s open the previous bus image using PIL</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"./images/bus.jpg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And run an inference in the source:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model.predict(source, save<span class="op">=</span><span class="va">False</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>From the inference results info, we can see that the first time an inference is run, the latency is greater.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First inference</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="dv">0</span>: <span class="dv">640</span><span class="er">x480</span> <span class="dv">4</span> persons, <span class="dv">1</span> bus, <span class="fl">7528.3</span><span class="er">ms</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Second inference  </span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="dv">0</span>: <span class="dv">640</span><span class="er">x480</span> <span class="dv">4</span> persons, <span class="dv">1</span> bus, <span class="fl">2822.1</span><span class="er">ms</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The dramatic difference between the first inference (7.5s) and subsequent inferences (2.8s) illustrates:</p>
+<ul>
+<li><strong>Model Loading Overhead</strong>: Initial inference includes model loading time</li>
+<li><strong>Optimization Effects</strong>: Subsequent inferences benefit from cached optimizations</li>
+</ul>
+</section>
+<section id="results-object-structure" class="level3">
+<h3 class="anchored" data-anchor-id="results-object-structure">Results Object Structure</h3>
+<p>Let’s explore the YOLO’s output structure:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> results[<span class="dv">0</span>]</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># - boxes, keypoints, masks, names</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># - orig_img, orig_shape, path</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># - speed metrics</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="bounding-box-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="bounding-box-analysis">Bounding Box Analysis</h3>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>result.boxes.cls  <span class="co"># Class IDs: tensor([5., 0., 0., 0., 0.])</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>result.boxes.conf <span class="co"># Confidence scores</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>result.boxes.xyxy <span class="co"># Bounding box coordinates</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>Coordinate Systems</strong>: On <code>Result.boxes</code>, we can get different bounding box formats (xyxy, xywh, normalized):
+<ul>
+<li>xywh: Tensor with bounding box coordinates in center_x, center_y, width, height format, in pixels.</li>
+<li>xywhn: Normalized center_x, center_y, width, height, scaled to the image dimensions, values in .</li>
+<li>xyxy: Tensor of boxes as x1, y1, x2, y2 in pixels, representing the top-left and bottom-right corners.</li>
+<li>xyxyn: Normalized x1, y1, x2, y2, scaled by image width and height, values in .</li>
+</ul></li>
+</ul>
+</section>
+<section id="visualization-and-customization" class="level3">
+<h3 class="anchored" data-anchor-id="visualization-and-customization">8. <strong>Visualization and Customization</strong></h3>
+<p>The Ultralytics <code>plot()</code> can be customized to show as the detection result, for example, only the bounding boxes:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>im_bgr <span class="op">=</span> result.plot(boxes<span class="op">=</span><span class="va">True</span>, labels<span class="op">=</span><span class="va">False</span>, conf<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.fromarray(im_bgr[..., ::<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co">#plt.axis('off')  # This turns off the axis numbers</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"YOLO Result"</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/only_boxes.png" class="img-fluid"></p>
+<p><strong>Customization Options</strong>:</p>
+<p>The plot() method in Ultralytics YOLO Results object accepts several arguments to control what is visualized on the image, including boxes, masks, keypoints, confidences, labels, and more. Common Arguments for plot()</p>
+<ul>
+<li>boxes (bool): Show/hide bounding boxes. Default is True.</li>
+<li>conf (bool): Show/hide confidence scores. Default is True.</li>
+<li>labels (bool): Show/hide class labels. Default is True.</li>
+<li>masks (bool): Show/hide segmentation masks (when available, e.g.&nbsp;in segment tasks).</li>
+<li>kpt_line (bool): Draw lines connecting pose keypoints (skeleton diagram). Default is True in pose tasks.</li>
+<li>line_width (int): Set annotation line thickness.</li>
+<li>font_size (int): Set font size for text annotations.</li>
+<li>show (bool): If True, immediately display the image (interactive environments).</li>
+</ul>
+</section>
+</section>
+<section id="exploring-other-computer-vision-tasks" class="level2">
+<h2 class="anchored" data-anchor-id="exploring-other-computer-vision-tasks">Exploring Other Computer Vision Tasks</h2>
+<section id="instance-segmentation" class="level3">
+<h3 class="anchored" data-anchor-id="instance-segmentation">Instance Segmentation</h3>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>model_path<span class="op">=</span> <span class="st">"./models/yolo11n-seg.pt"</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>task <span class="op">=</span> <span class="st">"segment"</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(model_path, task, verbose)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that a specific variation of the model, for instance segmentation, will be downloaded. Now, lt’s use another image for testing:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"./images/beatles.jpg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Display the image</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(source)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co">#plt.axis('off')  # This turns off the axis numbers</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Original Image"</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/beatles.png" class="img-fluid"></p>
+<p>And run the inference:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model.predict(source, save<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> results[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Display the result:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>im_bgr <span class="op">=</span> result.plot(boxes<span class="op">=</span><span class="va">False</span>, conf<span class="op">=</span><span class="va">False</span>, masks<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.fromarray(im_bgr[..., ::<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)  <span class="co"># This turns off the axis numbers</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"YOLO Segmentation Result"</span>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/beatles_seg.png" class="img-fluid"></p>
+<section id="pose-estimation" class="level4">
+<h4 class="anchored" data-anchor-id="pose-estimation">Pose Estimation</h4>
+<p>Download the model:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>model_path<span class="op">=</span> <span class="st">"./models/yolo11n-pose.pt"</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>task <span class="op">=</span> <span class="st">"pose"</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(model_path, task, verbose)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Running the Inference on the beatles image:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"./images/beatles.jpg"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model.predict(source, save<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> results[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Showing the human pose keypoint detection and skeleton visualization.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>im_bgr <span class="op">=</span> result.plot(boxes<span class="op">=</span><span class="va">False</span>, conf<span class="op">=</span><span class="va">False</span>, kpt_line<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.fromarray(im_bgr[..., ::<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)  <span class="co"># This turns off the axis numbers</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"YOLO Pose Estimation Result"</span>)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/beatles-pose.png" class="img-fluid"></p>
+</section>
+</section>
+</section>
+<section id="training-yolo-on-a-customized-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="training-yolo-on-a-customized-dataset">Training YOLO on a Customized Dataset</h2>
+<section id="object-detection-project" class="level3">
+<h3 class="anchored" data-anchor-id="object-detection-project">Object Detection Project</h3>
+<p>We will now develop a customized object detection project from the data collected and labelled with Roboflow. The training and deployment will be done in Python using a CoLab and Ultralytics functions.</p>
+<p><img src="./images/png/yolo-train.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>We will use with YOLO, the same dataset previously used to train the SSD-MobileNet V2 and FOMO models.</p>
+</blockquote>
+<p>As a reminder, we are assuming we are in an industrial facility that must sort and count <strong>wheels</strong> and special <strong>boxes</strong>.</p>
+<p><img src="./images/png/proj_goal.png" class="img-fluid"></p>
+<p>Each image can have three classes:</p>
+<ul>
+<li><p>Background (no objects)</p></li>
+<li><p>Box</p></li>
+<li><p>Wheel</p></li>
+</ul>
+</section>
+<section id="the-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="the-dataset">The Dataset</h3>
+<p>Return to our “Boxe versus Wheel” dataset, labeled on <a href="https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset">Roboflow</a>. On the <code>Download Dataset</code>, instead of <code>Download a zip to computer</code> option done for training on Edge Impulse Studio, we will opt for <code>Show download code</code>. This option will open a pop-up window with a code snippet that should be pasted into our training notebook.</p>
+<p><img src="images/png/dataset_code.png" class="img-fluid"></p>
+<p>For training, let’s choose one model (let’s say YOLOv8) and adapt one of the publicly available examples from Ultralytics, then run it on Google Colab. Below, you can find my adaptation:</p>
+<ul>
+<li>YOLOv8 Box versus Wheel Dataset Training <a href="https://colab.research.google.com/github/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/yolov8_box_vs_wheel.ipynb">[Open In Colab]</a></li>
+</ul>
+<section id="critical-points-on-the-notebook" class="level4">
+<h4 class="anchored" data-anchor-id="critical-points-on-the-notebook">Critical points on the Notebook:</h4>
+<ol type="1">
+<li><p>Run it with GPU (the NVidia T4 is free)</p></li>
+<li><p>Install Ultralytics using PIP.</p>
+<p><img src="images/png/yolo-train-lib.png" class="img-fluid"></p></li>
+<li><p>Now, you can import the YOLO and upload your dataset to the CoLab, pasting the Download code that we get from Roboflow. Note that our dataset will be mounted under <code>/content/datasets/</code>:</p></li>
+</ol>
+<p><img src="images/png/yolo-dataset-upload.png" class="img-fluid"></p>
+<ol start="4" type="1">
+<li>It is essential to verify and change the file <code>data.yaml</code> with the correct path for the images (copy the path on each <code>images</code> folder).</li>
+</ol>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">names:</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> box</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> wheel</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="ex">nc:</span> 2</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="ex">roboflow:</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">license:</span> CC BY 4.0</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">project:</span> box-versus-wheel-auto-dataset</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">url:</span> https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset/dataset/5</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">version:</span> 5</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">workspace:</span> marcelo-rovai-riila</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="ex">test:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/test/images</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="ex">train:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/train/images</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="ex">val:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/valid/images</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="5" type="1">
+<li><p>Define the main hyperparameters that you want to change from default, for example:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">MODEL</span> = <span class="st">'yolov8n.pt'</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">IMG_SIZE</span> = 640</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="ex">EPOCHS</span> = 25 <span class="co"># For a final project, you should consider at least 100 epochs </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Run the training (using CLI):</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=train model={MODEL} data={dataset.location}/data.yaml epochs={EPOCHS} imgsz={IMG_SIZE} plots=True </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<img src="images/png/train-result.png" class="img-fluid" alt="image-20240910111319804"></li>
+</ol>
+<p>​ The model took a few minutes to be trained and has an excellent result (mAP50 of 0.995). At the end of the training, all results are saved in the folder listed, for example: <code>/runs/detect/train/</code>. There, you can find, for example, the confusion matrix.</p>
+<p><img src="images/png/matrix.png" class="img-fluid"></p>
+<ol start="7" type="1">
+<li>Note that the trained model (<code>best.pt</code>) is saved in the folder <code>/runs/detect/train/weights/</code>. Now, you should validate the trained model with the <code>valid/images</code>.</li>
+</ol>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=val model={HOME}/runs/detect/train/weights/best.pt data={dataset.location}/data.yaml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>​ The results were similar to training.</p>
+<ol start="8" type="1">
+<li>Now, we should perform inference on the images left aside for testing</li>
+</ol>
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=predict model={HOME}/runs/detect/train/weights/best.pt conf=0.25 source={dataset.location}/test/images save=True</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The inference results are saved in the folder <code>runs/detect/predict</code>. Let’s see some of them:</p>
+<p><img src="images/png/test-infer-yolo.png" class="img-fluid"></p>
+<ol start="9" type="1">
+<li><p>It is advised to export the train, validation, and test results for a Drive at Google. To do so, we should mount the drive.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">'/content/gdrive'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and copy the content of <code>/runs</code> folder to a folder that you should create in your Drive, for example:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!scp</span> <span class="at">-r</span> /content/runs <span class="st">'/content/gdrive/MyDrive/10_UNIFEI/Box_vs_Wheel_Project'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+</section>
+</section>
+<section id="inference-with-the-trained-model-using-the-raspi" class="level3">
+<h3 class="anchored" data-anchor-id="inference-with-the-trained-model-using-the-raspi">Inference with the trained model, using the Raspi</h3>
+<p>Download the trained model <code>/runs/detect/train/weights/best.pt</code> to your computer. Using the FileZilla FTP, let’s transfer the <code>best.pt</code> to the Raspi models folder (before the transfer, you may change the model name, for example, <code>box_wheel_320_yolo.pt</code>).</p>
+<p>Using the FileZilla FTP, let’s transfer a few images from the test dataset to <code>.\YOLO\images</code>:</p>
+<p>Let’s return to the YOLO folder and use the Python Interpreter:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As before, we will import the YOLO library and define our converted model to detect bees:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'./models/box_wheel_320_yolo.pt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, let’s define an image and call the inference (we will save the image result this time to external verification):</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'./images/1_box_1_wheel.jpg'</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">320</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s repeat for several images. The inference result is saved on the variable <code>result,</code> and the processed image on <code>runs/detect/predict8</code></p>
+<p><img src="images/png/infer-yolo.png" class="img-fluid"></p>
+<p>Using FileZilla FTP, we can send the inference result to our Desktop for verification:</p>
+<p><img src="images/png/yolo-infer-raspi.png" class="img-fluid"></p>
+<p>We can see that the inference result is excellent! The model was trained based on the smaller base model of the YOLOv8 family (YOLOv8n). The issue is the latency, around 1 second (or 1 FPS on the Raspi-Zero). Of course, we can reduce this latency and convert the model to TFLite or NCNN.</p>
+<blockquote class="blockquote">
+<p>The model trained with YOLO11, has similar result as the v8,</p>
+</blockquote>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This chapter has explored the YOLO model and the implementation of a custom object detector on a Raspberry Pi, demonstrating the power and potential of running advanced computer vision tasks on resource-constrained hardware. We’ve covered several vital aspects:</p>
+<ol type="1">
+<li><strong>Model Comparison</strong>: We examined different object detection models, including SSD-MobileNet, FOMO, and YOLO, comparing their performance and trade-offs on edge devices.</li>
+<li><strong>Training and Deployment</strong>: Using a custom dataset of boxes and wheels (labeled on Roboflow), we walked through the process of training models with Ultralytics and deploying them on a Raspberry Pi.</li>
+<li><strong>Optimization Techniques</strong>: To improve inference speed on edge devices, we explored various optimization methods, such as format conversion (e.g., to NCNN).</li>
+<li><strong>Performance Considerations</strong>: Throughout the lab, we discussed the balance between model accuracy and inference speed, a critical consideration for edge AI applications.</li>
+</ol>
+<p>AS discussed before, the ability to perform object detection on edge devices opens up numerous possibilities across various domains, including precision agriculture, industrial automation, quality control, smart home applications, and environmental monitoring. By processing data locally, these systems can offer reduced latency, improved privacy, and operation in environments with limited connectivity.</p>
+<p>Looking ahead, potential areas for further exploration include: - Implementing multi-model pipelines for more complex tasks - Exploring hardware acceleration options for Raspberry Pi - Integrating object detection with other sensors for more comprehensive edge AI systems - Developing edge-to-cloud solutions that leverage both local processing and cloud resources</p>
+<p>Object detection on edge devices can create intelligent, responsive systems that bring the power of AI directly into the physical world, opening up new frontiers in how we interact with and understand our environment.</p>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<ul>
+<li><p><a href="https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset">Dataset (“Box versus Wheel”)</a></p></li>
+<li><p><a href="https://colab.research.google.com/github/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/yolov8_box_vs_wheel.ipynb">YOLOv8 Box versus Wheel Dataset Training on CoLab</a></p></li>
+<li><p><a href="">Model Predictions with Ultralytics YOLO</a></p></li>
+<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/python_scripts">Python Scripts</a></p></li>
+<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">Models</a></p></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/object_detection/custom_object_detection.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Custom Object Detection Project</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="pagination-link">
+        <span class="nav-page-text">Counting objects with YOLO</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>
