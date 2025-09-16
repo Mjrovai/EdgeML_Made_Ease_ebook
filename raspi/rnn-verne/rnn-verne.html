@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Edge AI Engineering - Text Generation with RNNs</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/kd_intro/kd_intro.html" rel="next">
+<link href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" rel="prev">
+<link href="../../images/unifei-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/rnn-verne/rnn-verne.html">Text Generation with RNNs</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/cv_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Computer Vision Applications with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/rnn-verne/rnn-verne.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Text Generation with RNNs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul>
+  <li><a href="#what-are-we-actually-building" id="toc-what-are-we-actually-building" class="nav-link" data-scroll-target="#what-are-we-actually-building">What Are We Actually Building?</a></li>
+  </ul></li>
+  <li><a href="#neural-network-architectures-background" id="toc-neural-network-architectures-background" class="nav-link" data-scroll-target="#neural-network-architectures-background">Neural Network Architectures Background</a>
+  <ul>
+  <li><a href="#the-human-brain-analogy" id="toc-the-human-brain-analogy" class="nav-link" data-scroll-target="#the-human-brain-analogy">The Human Brain Analogy</a></li>
+  <li><a href="#recurrent-neural-networks-rnn" id="toc-recurrent-neural-networks-rnn" class="nav-link" data-scroll-target="#recurrent-neural-networks-rnn">Recurrent Neural Networks (RNN)</a></li>
+  <li><a href="#the-memory-problem-and-gru-solution" id="toc-the-memory-problem-and-gru-solution" class="nav-link" data-scroll-target="#the-memory-problem-and-gru-solution">The Memory Problem and GRU Solution</a></li>
+  </ul></li>
+  <li><a href="#dataset-preparation" id="toc-dataset-preparation" class="nav-link" data-scroll-target="#dataset-preparation">Dataset Preparation</a>
+  <ul>
+  <li><a href="#data-preprocessing-steps" id="toc-data-preprocessing-steps" class="nav-link" data-scroll-target="#data-preprocessing-steps">Data Preprocessing Steps</a></li>
+  </ul></li>
+  <li><a href="#tokenization-and-vocabulary" id="toc-tokenization-and-vocabulary" class="nav-link" data-scroll-target="#tokenization-and-vocabulary">Tokenization and Vocabulary</a>
+  <ul>
+  <li><a href="#character-level-tokenization" id="toc-character-level-tokenization" class="nav-link" data-scroll-target="#character-level-tokenization">Character-Level Tokenization</a></li>
+  <li><a href="#vocabulary-building-process" id="toc-vocabulary-building-process" class="nav-link" data-scroll-target="#vocabulary-building-process">Vocabulary Building Process</a></li>
+  <li><a href="#creating-the-character-dictionary" id="toc-creating-the-character-dictionary" class="nav-link" data-scroll-target="#creating-the-character-dictionary">Creating the Character Dictionary</a></li>
+  </ul></li>
+  <li><a href="#training-sequences" id="toc-training-sequences" class="nav-link" data-scroll-target="#training-sequences">Training Sequences</a>
+  <ul>
+  <li><a href="#the-sliding-window-approach" id="toc-the-sliding-window-approach" class="nav-link" data-scroll-target="#the-sliding-window-approach">The Sliding Window Approach</a></li>
+  <li><a href="#training-configuration" id="toc-training-configuration" class="nav-link" data-scroll-target="#training-configuration">Training Configuration</a>
+  <ul class="collapse">
+  <li><a href="#why-120-characters" id="toc-why-120-characters" class="nav-link" data-scroll-target="#why-120-characters">Why 120 Characters?</a></li>
+  <li><a href="#training-example" id="toc-training-example" class="nav-link" data-scroll-target="#training-example">Training Example</a></li>
+  </ul></li>
+  <li><a href="#creating-training-data" id="toc-creating-training-data" class="nav-link" data-scroll-target="#creating-training-data">Creating Training Data</a></li>
+  </ul></li>
+  <li><a href="#character-embeddings" id="toc-character-embeddings" class="nav-link" data-scroll-target="#character-embeddings">Character Embeddings</a>
+  <ul>
+  <li><a href="#from-sparse-to-dense-representation" id="toc-from-sparse-to-dense-representation" class="nav-link" data-scroll-target="#from-sparse-to-dense-representation">From Sparse to Dense Representation</a></li>
+  <li><a href="#learning-character-relationships" id="toc-learning-character-relationships" class="nav-link" data-scroll-target="#learning-character-relationships">Learning Character Relationships</a></li>
+  <li><a href="#visualization-and-understanding" id="toc-visualization-and-understanding" class="nav-link" data-scroll-target="#visualization-and-understanding">Visualization and Understanding</a></li>
+  </ul></li>
+  <li><a href="#model-architecture" id="toc-model-architecture" class="nav-link" data-scroll-target="#model-architecture">Model Architecture</a>
+  <ul>
+  <li><a href="#rnn-architecture-components" id="toc-rnn-architecture-components" class="nav-link" data-scroll-target="#rnn-architecture-components">RNN Architecture Components</a></li>
+  <li><a href="#model-summary" id="toc-model-summary" class="nav-link" data-scroll-target="#model-summary">Model Summary</a></li>
+  <li><a href="#memory-and-processing-flow" id="toc-memory-and-processing-flow" class="nav-link" data-scroll-target="#memory-and-processing-flow">Memory and Processing Flow</a></li>
+  <li><a href="#why-gru-over-basic-rnn" id="toc-why-gru-over-basic-rnn" class="nav-link" data-scroll-target="#why-gru-over-basic-rnn">Why GRU over Basic RNN?</a></li>
+  </ul></li>
+  <li><a href="#training-process-teaching-the-model-to-write" id="toc-training-process-teaching-the-model-to-write" class="nav-link" data-scroll-target="#training-process-teaching-the-model-to-write">Training Process: Teaching the Model to Write</a>
+  <ul>
+  <li><a href="#the-learning-objective" id="toc-the-learning-objective" class="nav-link" data-scroll-target="#the-learning-objective">The Learning Objective</a></li>
+  <li><a href="#hardware-and-time-requirements" id="toc-hardware-and-time-requirements" class="nav-link" data-scroll-target="#hardware-and-time-requirements">Hardware and Time Requirements</a></li>
+  <li><a href="#monitoring-progress" id="toc-monitoring-progress" class="nav-link" data-scroll-target="#monitoring-progress">Monitoring Progress</a></li>
+  <li><a href="#preventing-overfitting" id="toc-preventing-overfitting" class="nav-link" data-scroll-target="#preventing-overfitting">Preventing Overfitting</a></li>
+  <li><a href="#training-configuration-1" id="toc-training-configuration-1" class="nav-link" data-scroll-target="#training-configuration-1">Training Configuration</a></li>
+  <li><a href="#training-implementation" id="toc-training-implementation" class="nav-link" data-scroll-target="#training-implementation">Training Implementation</a></li>
+  </ul></li>
+  <li><a href="#text-generation" id="toc-text-generation" class="nav-link" data-scroll-target="#text-generation">Text Generation</a>
+  <ul>
+  <li><a href="#the-generation-process" id="toc-the-generation-process" class="nav-link" data-scroll-target="#the-generation-process">The Generation Process</a></li>
+  <li><a href="#temperature-control" id="toc-temperature-control" class="nav-link" data-scroll-target="#temperature-control">Temperature Control</a></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation">Implementation</a></li>
+  <li><a href="#generation-example-temperature-0.5" id="toc-generation-example-temperature-0.5" class="nav-link" data-scroll-target="#generation-example-temperature-0.5">Generation Example (Temperature = 0.5)</a></li>
+  <li><a href="#example-output-analysis" id="toc-example-output-analysis" class="nav-link" data-scroll-target="#example-output-analysis">Example Output Analysis</a></li>
+  </ul></li>
+  <li><a href="#challenges-and-limitations" id="toc-challenges-and-limitations" class="nav-link" data-scroll-target="#challenges-and-limitations">Challenges and Limitations</a>
+  <ul>
+  <li><a href="#context-window-constraints" id="toc-context-window-constraints" class="nav-link" data-scroll-target="#context-window-constraints">Context Window Constraints</a></li>
+  <li><a href="#character-vs.-word-level-trade-offs" id="toc-character-vs.-word-level-trade-offs" class="nav-link" data-scroll-target="#character-vs.-word-level-trade-offs">Character vs.&nbsp;Word Level Trade-offs</a></li>
+  <li><a href="#coherence-challenges" id="toc-coherence-challenges" class="nav-link" data-scroll-target="#coherence-challenges">Coherence Challenges</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#potential-improvements" id="toc-potential-improvements" class="nav-link" data-scroll-target="#potential-improvements">Potential Improvements</a></li>
+  </ul></li>
+  <li><a href="#connecting-to-modern-language-models" id="toc-connecting-to-modern-language-models" class="nav-link" data-scroll-target="#connecting-to-modern-language-models">Connecting to Modern Language Models</a>
+  <ul>
+  <li><a href="#scale-comparison" id="toc-scale-comparison" class="nav-link" data-scroll-target="#scale-comparison">Scale Comparison</a></li>
+  <li><a href="#architectural-evolution" id="toc-architectural-evolution" class="nav-link" data-scroll-target="#architectural-evolution">Architectural Evolution</a></li>
+  <li><a href="#training-efficiency" id="toc-training-efficiency" class="nav-link" data-scroll-target="#training-efficiency">Training Efficiency</a></li>
+  <li><a href="#summary-why-modern-models-perform-better" id="toc-summary-why-modern-models-perform-better" class="nav-link" data-scroll-target="#summary-why-modern-models-perform-better">Summary: Why Modern Models Perform Better?</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion:</a></li>
+  <li><a href="#resourses" id="toc-resourses" class="nav-link" data-scroll-target="#resourses">Resourses</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/rnn-verne/rnn-verne.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/rnn-verne/rnn-verne.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Text Generation with RNNs</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><strong>The Jules Verne Bot</strong></p>
+<p><img src="./images/png/verne-bot-2.png" class="img-fluid"></p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In this chapter, we will explore how to build a character-level text generation model using Recurrent Neural Networks (RNNs), specifically inspired by the works of Jules Verne.</p>
+<p>The “Jules Verne Bot” project will help to show us the fundamental concepts of sequence modeling and text generation using deep learning techniques, as a preview of how the modern LLMs work.</p>
+<p><strong>Project Overview:</strong></p>
+<ul>
+<li><strong>Goal</strong>: Create an AI model that generates text in the style of Jules Verne</li>
+<li><strong>Architecture</strong>: RNN with GRU (Gated Recurrent Unit) layers</li>
+<li><strong>Approach</strong>: Character-level text prediction</li>
+<li><strong>Framework</strong>: TensorFlow/Keras</li>
+<li><strong>Platform</strong>: Google Colab with Tesla T4 GPU</li>
+</ul>
+<section id="what-are-we-actually-building" class="level3">
+<h3 class="anchored" data-anchor-id="what-are-we-actually-building">What Are We Actually Building?</h3>
+<p>Imagine we could teach a computer to write like Jules Verne, the famous author of “Twenty Thousand Leagues Under the Sea” and “Around the World in Eighty Days.” That’s precisely what we’re doing with the Jules Verne Bot. This project creates an artificial intelligence system that learns the patterns, style, and vocabulary from Jules Verne’s novels, then generates new text that sounds like it could have come from his pen.</p>
+<p>Think of it like this: if we read enough of someone’s writing, we start to recognize their style. We notice they use certain phrases, prefer specific sentence structures, or have favorite topics. Our neural network does something similar, but with mathematical precision. It analyzes millions of characters from Verne’s works and learns to predict what character should come next in any given sequence.</p>
+</section>
+</section>
+<section id="neural-network-architectures-background" class="level2">
+<h2 class="anchored" data-anchor-id="neural-network-architectures-background">Neural Network Architectures Background</h2>
+<p>Before we dive into the technical details, let’s understand why we use neural networks for this task and why we chose the specific type we did.</p>
+<section id="the-human-brain-analogy" class="level3">
+<h3 class="anchored" data-anchor-id="the-human-brain-analogy">The Human Brain Analogy</h3>
+<p>When you read a sentence like “The submarine descended into the dark…” your brain automatically starts predicting what might come next. Maybe “depths” or “ocean” or “waters.” Your brain does this because it has learned patterns from all the text you’ve ever read. Neural networks work similarly, but they learn these patterns through mathematical calculations rather than biological processes.</p>
+</section>
+<section id="recurrent-neural-networks-rnn" class="level3">
+<h3 class="anchored" data-anchor-id="recurrent-neural-networks-rnn">Recurrent Neural Networks (RNN)</h3>
+<p>Before diving into our RNN implementation, let’s understand where RNNs fit in the neural network ecosystem:</p>
+<p><strong>Key Neural Network Architectures:</strong></p>
+<p><img src="./images/png/models.png" class="img-fluid"></p>
+<ul>
+<li><strong>MLP (Multi-Layer Perceptron)</strong>: Basic feedforward networks for general tasks, for example, vibration analysis</li>
+<li><strong>CNN (Convolutional Neural Networks)</strong>: Specialized for image processing as Image Classification tasks and spatial data</li>
+<li><strong>RNN (Recurrent Neural Networks)</strong>: Designed for sequential data like text and time series</li>
+<li><strong>GAN (Generative Adversarial Networks)</strong>: Two networks competing for realistic data generation, as images</li>
+<li><strong>Transformers (Attention Networks)</strong>: Modern architecture using attention mechanisms, as in LLMs (Large Language Models, such as GPT)</li>
+</ul>
+<p>We chose a Recurrent Neural Network (RNN) for this project because text has a crucial property: order matters tremendously. The sequence “The cat sat on the mat” means something completely different from “Mat the on sat cat the.” Regular neural networks process all inputs simultaneously, like looking at a photograph. But for text, we need a network that processes information sequentially, remembering what came before to understand what should go next.</p>
+<blockquote class="blockquote">
+<p>In text generation, we aim to predict the most probable word to follow a sentence.</p>
+</blockquote>
+<p><img src="./images/png/network-text.png" class="img-fluid"></p>
+<p>Think of reading a book. You don’t just look at all the words on a page simultaneously. You read word by word, sentence by sentence, and your understanding builds as you progress. Each new word is interpreted in the context of everything you’ve read before in that chapter. RNNs work the same way.</p>
+</section>
+<section id="the-memory-problem-and-gru-solution" class="level3">
+<h3 class="anchored" data-anchor-id="the-memory-problem-and-gru-solution">The Memory Problem and GRU Solution</h3>
+<p>Early RNNs had a significant problem: they couldn’t remember information for very long. Imagine trying to understand a story where you could only remember the last few words you read. You’d lose track of characters, plot points, and context very quickly.</p>
+<p>This is where the Gated Recurrent Unit (GRU) comes in. Think of GRU as an improved memory system with two special abilities:</p>
+<p><strong>Reset Gate</strong>: This decides when to “forget” old information. If the story switches to a new scene or character, the reset gate helps the network forget irrelevant details from the previous context.</p>
+<p><strong>Update Gate</strong>: This decides how much new information to incorporate. When encountering important plot points or character names, the update gate helps the network remember these crucial details for longer.</p>
+<p>It’s like having a smart note-taking system that automatically decides what’s worth remembering and what can be forgotten.</p>
+<p><strong>Why RNNs for Text Generation?</strong></p>
+<p><strong>Recurrent Neural Networks</strong> are designed explicitly for sequential data processing. Key characteristics:</p>
+<ul>
+<li><strong>Memory</strong>: RNNs maintain an internal state (memory) to remember previous inputs</li>
+<li><strong>Sequential Processing</strong>: Process data one element at a time, making them ideal for text</li>
+<li><strong>Variable Length Input</strong>: Can handle sequences of different lengths</li>
+<li><strong>Parameter Sharing</strong>: Same weights applied across different time steps</li>
+</ul>
+<p><strong>RNN Architecture Flow:</strong></p>
+<p><img src="./images/png/rnn.png" class="img-fluid"></p>
+<pre><code>Input Sequence: x(t-1) → x(t) → x(t+1) → ...
+Hidden State:   h(t-1) → h(t) → h(t+1) → ...
+Output:         o(t-1) → o(t) → o(t+1) → ...</code></pre>
+</section>
+</section>
+<section id="dataset-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-preparation">Dataset Preparation</h2>
+<p><img src="./images/png/books.png" class="img-fluid"></p>
+<p>Our model is trained on a curated collection of 10 classic Jules Verne novels, downloaded from public domain texts of the <a href="https://www.google.com/url?q=https%3A%2F%2Fwww.gutenberg.org%2Febooks%2Fsearch%2F%3Fquery%3Djules%2Bverne%26submit_search%3DGo%21">Gutenberg Project</a>:</p>
+<ol type="1">
+<li><strong>“A Journey to the Centre of the Earth”</strong></li>
+<li><strong>“In Search of the Castaways”</strong></li>
+<li><strong>“An Antarctic Mystery”</strong></li>
+<li><strong>“In the year 2889”</strong></li>
+<li><strong>“Around the World in Eighty Days”</strong></li>
+<li><strong>“Michael Strogoff”</strong></li>
+<li><strong>“Five Weeks in a Balloon”</strong></li>
+<li><strong>“The Mysterious Island”</strong></li>
+<li><strong>“From the Earth to the Moon”</strong></li>
+<li><strong>“Twenty Thousand Leagues under the Sea”</strong></li>
+</ol>
+<p>“A Journey to the Centre of the Earth” teaches the model about geological descriptions and underground adventures. “Twenty Thousand Leagues Under the Sea” provides vocabulary about marine life and submarine technology. “Around the World in Eighty Days” offers geographical references and travel descriptions. Each book contributes unique vocabulary and stylistic elements while maintaining Verne’s consistent voice.</p>
+<p>The complete dataset contains <strong>5,768,791 characters</strong>, with <strong>123 unique characters</strong>. To put this in perspective, that’s roughly equivalent to <strong>1,200 pages of double-spaced text.</strong> This gives our neural network plenty of material to learn from, ensuring it can capture both common patterns and unique expressions in Verne’s writing.</p>
+<section id="data-preprocessing-steps" class="level3">
+<h3 class="anchored" data-anchor-id="data-preprocessing-steps">Data Preprocessing Steps</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example preprocessing workflow</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> preprocess_text(text):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert to lowercase for consistency</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> text.lower()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove unwanted characters (optional)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Keep punctuation for realistic text generation</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Load and combine all books</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>all_text <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> book <span class="kw">in</span> book_list:</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(book, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        all_text <span class="op">+=</span> preprocess_text(f.read())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="tokenization-and-vocabulary" class="level2">
+<h2 class="anchored" data-anchor-id="tokenization-and-vocabulary">Tokenization and Vocabulary</h2>
+<section id="character-level-tokenization" class="level3">
+<h3 class="anchored" data-anchor-id="character-level-tokenization">Character-Level Tokenization</h3>
+<p>Here’s where our approach differs from how humans typically think about text. While we naturally think in words and sentences, our model processes text character by character. This means it learns that certain letters frequently follow others, that spaces separate words, and that punctuation marks signal sentence boundaries.</p>
+<p>Why choose character-level processing? Consider the word “extraordinary,” which appears frequently in Verne’s work. A word-level model would need to have seen this exact word during training to use it. But a character-level model can generate this word by learning that ‘e’ often starts words, ‘x’ can follow ‘e’, ‘t’ often follows ‘x’, and so on. This allows our model to create new words or handle misspellings gracefully.</p>
+<p>The downside is that character-level processing requires more computational steps to generate the same amount of text. Generating “Hello world” requires 11 prediction steps instead of just 2. However, for our educational purposes, this trade-off provides valuable insights into how language generation works at its most fundamental level.</p>
+<blockquote class="blockquote">
+<p>Unlike word-level tokenization, character-level tokenization treats each character as a token.</p>
+</blockquote>
+<p><strong>Advantages of Character-Level Tokenization:</strong></p>
+<ul>
+<li><strong>No Out-of-Vocabulary Issues</strong>: Every possible character sequence can be generated</li>
+<li><strong>Smaller Vocabulary</strong>: Only 123 unique characters vs thousands of words</li>
+<li><strong>Language Agnostic</strong>: Works with any language or symbol system</li>
+<li><strong>Handles Rare Words</strong>: Can generate new words character by character</li>
+</ul>
+<blockquote class="blockquote">
+<p>Please see the following site for a great general visual explanation, from Andrej Karpathy, <a href="https://www.google.com/url?q=http%3A%2F%2Fkarpathy.github.io%2F2015%2F05%2F21%2Frnn-effectiveness%2F">The Unreasonable Effectiveness of Recurrent Neural Networks</a>.</p>
+</blockquote>
+</section>
+<section id="vocabulary-building-process" class="level3">
+<h3 class="anchored" data-anchor-id="vocabulary-building-process">Vocabulary Building Process</h3>
+<p>Computers work with numbers, not letters, so we need to convert our text into a numerical representation. We start by finding every unique character in our dataset. This includes not just letters A-Z and a-z, but also numbers, punctuation marks, spaces, and even special characters that might appear in the original texts.</p>
+<p>Our Jules Verne collection contains 123 unique characters. These include obvious ones like letters and common punctuation, but also less common characters like accented letters from French names or special typography marks from the original publications.</p>
+</section>
+<section id="creating-the-character-dictionary" class="level3">
+<h3 class="anchored" data-anchor-id="creating-the-character-dictionary">Creating the Character Dictionary</h3>
+<p>We create two dictionaries: one that converts characters to numbers (encoding) and another that converts numbers back to characters (decoding). For example:</p>
+<p>‘a’ might become 47, ‘b’ becomes 48, ‘c’ becomes 49, and so on. The space character might be 1, and the period might be 72. These assignments are arbitrary but consistent throughout our project.</p>
+<p>When we want to process the phrase “The sea”, we convert it to something like [84, 72, 69, 1, 83, 69, 47]. When the model generates numbers like [84, 72, 69, 1, 87, 47, 83], we convert them back to “The was” (as an example).</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create character-to-index mapping</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">"Your complete dataset text here..."</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> <span class="bu">sorted</span>(<span class="bu">set</span>(text))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>char_to_idx <span class="op">=</span> {char: idx <span class="cf">for</span> idx, char <span class="kw">in</span> <span class="bu">enumerate</span>(vocab)}</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>idx_to_char <span class="op">=</span> {idx: char <span class="cf">for</span> idx, char <span class="kw">in</span> <span class="bu">enumerate</span>(vocab)}</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Vocabulary size: </span><span class="sc">{</span><span class="bu">len</span>(vocab)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Unique characters: </span><span class="sc">{</span>vocab<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/tokens.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>You can experiment with tokenization using OpenAI’s tokenizer tool at: https://platform.openai.com/tokenizer</p>
+</blockquote>
+</section>
+</section>
+<section id="training-sequences" class="level2">
+<h2 class="anchored" data-anchor-id="training-sequences">Training Sequences</h2>
+<section id="the-sliding-window-approach" class="level3">
+<h3 class="anchored" data-anchor-id="the-sliding-window-approach">The Sliding Window Approach</h3>
+<p>Our model learns by playing a sophisticated prediction game. We show it sequences of 120 characters and ask it to predict what the 121st character should be. Think of it like a fill-in-the-blank exercise, but instead of missing words, we’re missing the next character.</p>
+<p>For example, if our text contains “The submarine descended into the dark depths of the ocean”, we might show the model “The submarine descended into the dark depths of the ocea” and ask it to predict “n”. Then we slide our window forward by one character and show it “he submarine descended into the dark depths of the ocean” and ask it to predict the next character.</p>
+</section>
+<section id="training-configuration" class="level3">
+<h3 class="anchored" data-anchor-id="training-configuration">Training Configuration</h3>
+<ul>
+<li><strong>Sequence Length</strong>: 120 characters (approximately one paragraph)</li>
+<li><strong>Input-Output Relationship</strong>: Predict the next character given the previous characters</li>
+</ul>
+<section id="why-120-characters" class="level4">
+<h4 class="anchored" data-anchor-id="why-120-characters">Why 120 Characters?</h4>
+<p>We chose 120 characters as our context window because it represents roughly one paragraph of text. This gives the model enough context to understand local patterns (like completing words and phrases) while remaining computationally manageable. In practical terms, 120 characters might look like:</p>
+<p>“The Nautilus had been cruising in these waters for some time. Captain Nemo stood on the bridge, observing the vast exp”</p>
+<p>From this context, the model might predict “a” to complete “expanse” or “l” to form “explore”.</p>
+<blockquote class="blockquote">
+<p>The longer the context window, the better the model can maintain coherence, but the more computer memory and processing time it requires.</p>
+</blockquote>
+</section>
+<section id="training-example" class="level4">
+<h4 class="anchored" data-anchor-id="training-example">Training Example</h4>
+<p><strong>Input Sequence</strong>: “Hello my nam” <strong>Target Sequence</strong>: “ello my name”</p>
+<p>The model learns:</p>
+<ul>
+<li>Given “H”, predict “e”</li>
+<li>Given “He”, predict “l”</li>
+<li>Given “Hel”, predict “l”</li>
+<li>And so on…</li>
+</ul>
+<p>This means our dataset of 5.8 million characters becomes millions of individual training examples, each teaching the model about character sequence patterns.</p>
+</section>
+</section>
+<section id="creating-training-data" class="level3">
+<h3 class="anchored" data-anchor-id="creating-training-data">Creating Training Data</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_training_sequences(text, seq_length):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    sequences <span class="op">=</span> []</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    targets <span class="op">=</span> []</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(text) <span class="op">-</span> seq_length):</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Input sequence</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        seq <span class="op">=</span> text[i:i <span class="op">+</span> seq_length]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Target (next character)</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        target <span class="op">=</span> text[i <span class="op">+</span> <span class="dv">1</span>:i <span class="op">+</span> seq_length <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        sequences.append([char_to_idx[char] <span class="cf">for</span> char <span class="kw">in</span> seq])</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        targets.append([char_to_idx[char] <span class="cf">for</span> char <span class="kw">in</span> target])</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sequences, targets</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="character-embeddings" class="level2">
+<h2 class="anchored" data-anchor-id="character-embeddings">Character Embeddings</h2>
+<section id="from-sparse-to-dense-representation" class="level3">
+<h3 class="anchored" data-anchor-id="from-sparse-to-dense-representation">From Sparse to Dense Representation</h3>
+<p>Initially, each character is represented as a one-hot vector, which is mostly zeros with a single one indicating which character it is. For 123 characters, this means each character is represented by a vector with 123 elements, where 122 are zero and 1 is one. This is wasteful and doesn’t capture any relationships between characters.</p>
+<p>Character embeddings solve this problem by representing each character as a dense vector of real numbers. Instead of 123 mostly-zero values, each character becomes 256 meaningful numbers. These numbers are learned during training and end up encoding relationships between characters.</p>
+</section>
+<section id="learning-character-relationships" class="level3">
+<h3 class="anchored" data-anchor-id="learning-character-relationships">Learning Character Relationships</h3>
+<p>Something fascinating happens during training: characters that behave similarly end up with similar embedding vectors. Vowels tend to cluster together because they can often substitute for each other in similar contexts. Consonants that frequently appear together (like ‘th’ or ‘ch’) develop related embeddings.</p>
+<p>The model learns that uppercase and lowercase versions of the same letter are related but distinct. It discovers that digits form their own cluster since they appear in similar contexts (dates, measurements, chapter numbers). Punctuation marks develop embeddings based on their grammatical functions.</p>
+</section>
+<section id="visualization-and-understanding" class="level3">
+<h3 class="anchored" data-anchor-id="visualization-and-understanding">Visualization and Understanding</h3>
+<p>When we project these 256-dimensional embeddings down to 3D space for visualization, we can see these learned relationships. The embedding space becomes a map where distance represents similarity. Characters that can substitute for each other in many contexts end up close together, while characters with completely different roles end up far apart.</p>
+<p>This learned representation becomes the foundation for everything else the model does. The quality of these embeddings directly affects the model’s ability to generate coherent text.</p>
+<p><img src="./images/png/embedding.png" class="img-fluid"></p>
+<p>You can play with <a href="https://projector.tensorflow.org/">Word2Vec - Embedding Projector</a></p>
+</section>
+</section>
+<section id="model-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="model-architecture">Model Architecture</h2>
+<section id="rnn-architecture-components" class="level3">
+<h3 class="anchored" data-anchor-id="rnn-architecture-components">RNN Architecture Components</h3>
+<p>Our Jules Verne Bot consists of three main components, each serving a specific purpose in the text generation pipeline.</p>
+<p><strong>Embedding Layer</strong>: This is our translation layer. It takes character indices (numbers like 47, 83, 72) and converts them into dense 256-dimensional vectors that capture character relationships. Think of this as converting raw symbols into a format that captures meaning and relationships.</p>
+<p><strong>GRU Layer</strong>: This is the brain of our operation. With 1024 hidden units, this layer processes sequences and maintains memory about what it has seen. When processing the sequence “The submarine descended”, the GRU maintains a hidden state that encodes information about the submarine, the action of descending, and the overall maritime context.</p>
+<p><strong>Dense Output Layer</strong>: This is our decision-making layer. It takes the GRU’s 1024-dimensional hidden state and converts it into 123 probabilities, one for each character in our vocabulary. These probabilities represent the model’s confidence about what character should come next.</p>
+<p><img src="./images/png/model-rnn.png" class="img-fluid"></p>
+</section>
+<section id="model-summary" class="level3">
+<h3 class="anchored" data-anchor-id="model-summary">Model Summary</h3>
+<pre><code>Model: "sequential_4"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+embedding_4 (Embedding)      (1, 120, 256)            31,488    
+_________________________________________________________________
+gru_3 (GRU)                  (1, 120, 1024)           3,938,304 
+_________________________________________________________________
+dense_3 (Dense)              (1, 120, 123)            126,075   
+=================================================================
+Total params: 4,095,867 (15.62 MB)
+Trainable params: 4,095,867 (15.62 MB)
+Non-trainable params: 0 (0.00 B)</code></pre>
+<p>Our model has 4,095,867 parameters. These are the individual numbers that the model adjusts during training to improve its predictions. To put this in perspective, each parameter is like a tiny dial that affects how the model processes information.</p>
+<blockquote class="blockquote">
+<p>Training involves adjusting all 4 million dials to work together harmoniously.</p>
+</blockquote>
+<p>The GRU layer contains most of these parameters (about 3.9 million) because it needs to learn complex patterns about how characters relate to each other across different time steps. The embedding layer has about 31,000 parameters (123 characters × 256 dimensions), and the output layer has about 126,000 parameters.</p>
+</section>
+<section id="memory-and-processing-flow" class="level3">
+<h3 class="anchored" data-anchor-id="memory-and-processing-flow">Memory and Processing Flow</h3>
+<p>When processing text, information flows through the model like this:</p>
+<p>A character index enters the embedding layer and becomes a 256-dimensional vector. This vector enters the GRU, which combines it with its current memory state to produce a new 1024-dimensional hidden state. This hidden state captures everything the model “knows” at this point in the sequence.</p>
+<p>The hidden state goes to the dense layer, which produces probability scores for each of the 123 possible next characters. The character with the highest probability becomes the model’s prediction.</p>
+<p>Crucially, the GRU’s hidden state becomes its memory for the next character prediction. This creates a chain of memory that allows the model to maintain context across the entire sequence.</p>
+</section>
+<section id="why-gru-over-basic-rnn" class="level3">
+<h3 class="anchored" data-anchor-id="why-gru-over-basic-rnn">Why GRU over Basic RNN?</h3>
+<p><strong>GRU Advantages:</strong></p>
+<ul>
+<li><strong>Solves Vanishing Gradient</strong>: Better information flow through long sequences</li>
+<li><strong>Selective Memory</strong>: Can choose what to remember and forget</li>
+<li><strong>Computational Efficiency</strong>: Fewer parameters than LSTM</li>
+<li><strong>Better Performance</strong>: More stable training than basic RNNs</li>
+</ul>
+</section>
+</section>
+<section id="training-process-teaching-the-model-to-write" class="level2">
+<h2 class="anchored" data-anchor-id="training-process-teaching-the-model-to-write">Training Process: Teaching the Model to Write</h2>
+<section id="the-learning-objective" class="level3">
+<h3 class="anchored" data-anchor-id="the-learning-objective">The Learning Objective</h3>
+<p>Training a neural network means adjusting its millions of parameters so it makes better predictions. We use a loss function called sparse categorical crossentropy, which measures how far off the model’s predictions are from the correct answers.</p>
+<p>Think of it like teaching someone to play darts. Each throw (prediction) has a target (the correct next character). The loss function measures how far each dart lands from the bullseye. Training adjusts the player’s technique (the model’s parameters) to improve accuracy over time.</p>
+</section>
+<section id="hardware-and-time-requirements" class="level3">
+<h3 class="anchored" data-anchor-id="hardware-and-time-requirements">Hardware and Time Requirements</h3>
+<p>We trained our model on a <strong>Tesla T4 GPU,</strong> which can perform thousands of calculations simultaneously. This parallelization is crucial because each training step involves matrix multiplications with millions of numbers. The training took 33 minutes for 30 complete passes through the entire dataset.</p>
+<p>To understand why we need a GPU, consider that training involves calculating gradients for all 4 million parameters, potentially thousands of times per second. A regular CPU would take days or weeks to complete the same training that a GPU accomplishes in minutes.</p>
+</section>
+<section id="monitoring-progress" class="level3">
+<h3 class="anchored" data-anchor-id="monitoring-progress">Monitoring Progress</h3>
+<p>During training, we watch the loss decrease from about 1.9 to 0.9. This represents the model’s improving ability to predict the next character. Early in training, the model makes essentially random predictions. By the end, it has learned sophisticated patterns about English spelling, grammar, and Jules Verne’s writing style.</p>
+<p>The learning curve typically shows rapid improvement in the first few epochs as the model learns basic patterns like common letter combinations. Later epochs show slower but steady improvement as the model refines its understanding of more complex patterns like narrative structure and thematic elements.</p>
+<p><img src="./images/png/loss_epoch.png" class="img-fluid"></p>
+</section>
+<section id="preventing-overfitting" class="level3">
+<h3 class="anchored" data-anchor-id="preventing-overfitting">Preventing Overfitting</h3>
+<p>One challenge in training is overfitting, where the model memorizes the training data instead of learning generalizable patterns. We use techniques like monitoring validation loss and potentially stopping training early if the model stops improving on unseen text.</p>
+</section>
+<section id="training-configuration-1" class="level3">
+<h3 class="anchored" data-anchor-id="training-configuration-1">Training Configuration</h3>
+<p><strong>Hardware Setup:</strong></p>
+<ul>
+<li><strong>GPU</strong>: Tesla T4 (Google Colab)</li>
+<li><strong>GPU RAM</strong>: 15.0 GB</li>
+<li><strong>Training Time</strong>: 33 minutes for 30 epochs</li>
+</ul>
+<p><strong>Training Parameters:</strong></p>
+<ul>
+<li><strong>Loss Function</strong>: Categorical Sparse Crossentropy</li>
+<li><strong>Optimizer</strong>: Adam (adaptive learning rate)</li>
+<li><strong>Epochs</strong>: 30</li>
+<li><strong>Batch Size</strong>: 128</li>
+<li><strong>Buffer Size</strong>: 10,000 (for dataset shuffling)</li>
+</ul>
+</section>
+<section id="training-implementation" class="level3">
+<h3 class="anchored" data-anchor-id="training-implementation">Training Implementation</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model compilation</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    optimizer<span class="op">=</span><span class="st">'adam'</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    loss<span class="op">=</span><span class="st">'sparse_categorical_crossentropy'</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    metrics<span class="op">=</span>[<span class="st">'accuracy'</span>]</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Training with callbacks</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    dataset,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    epochs<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">128</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    validation_split<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    callbacks<span class="op">=</span>[</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        tf.keras.callbacks.ReduceLROnPlateau(patience<span class="op">=</span><span class="dv">3</span>),</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        tf.keras.callbacks.EarlyStopping(patience<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="text-generation" class="level2">
+<h2 class="anchored" data-anchor-id="text-generation">Text Generation</h2>
+<section id="the-generation-process" class="level3">
+<h3 class="anchored" data-anchor-id="the-generation-process">The Generation Process</h3>
+<p>Once trained, our model becomes a text generation engine. We start with a seed phrase like:</p>
+<p>“THE FLYING SUBMARINE”</p>
+<p>and ask the model to continue the story. The process works character by character:</p>
+<p>The model receives “THE FLYING SUBMARINE” and predicts the most likely next character based on everything it learned from Jules Verne’s works. Maybe it predicts a space, starting a new word. Then we feed “THE FLYING SUBMARINE” (with the space) back to the model and ask for the next character.</p>
+<p>This process continues indefinitely, with each new character becoming part of the context for predicting the next one. The model might generate “THE FLYING SUBMARINE descended into the mysterious depths…” as it draws upon patterns learned from Verne’s nautical adventures.</p>
+</section>
+<section id="temperature-control" class="level3">
+<h3 class="anchored" data-anchor-id="temperature-control">Temperature Control</h3>
+<p>Here’s where we can control the model’s creativity through a parameter called <strong>temperature</strong>. Temperature affects how the model chooses between different possible next characters.</p>
+<p>With temperature set to 0.1, the model almost always picks the most probable next character. This produces very predictable, conservative text that closely mimics the training data but might be repetitive or boring.</p>
+<p>With temperature set to 1.0, the model considers all possible next characters according to their learned probabilities. This produces more varied and creative text, but sometimes makes unusual choices that lead to interesting narrative directions.</p>
+<p>With temperature above 1.5, the model becomes quite random, often producing text that starts coherently but gradually becomes nonsensical as unlikely character combinations accumulate.</p>
+<p>In short:</p>
+<ul>
+<li><strong>Temperature = 0.5</strong>: More predictable, conservative text</li>
+<li><strong>Temperature = 1.0</strong>: More creative, diverse text</li>
+<li><strong>Temperature = 1.5</strong>: Very random, potentially nonsensical text</li>
+</ul>
+</section>
+<section id="implementation" class="level3">
+<h3 class="anchored" data-anchor-id="implementation">Implementation</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_text(model, start_string, num_generate<span class="op">=</span><span class="dv">1000</span>, temperature<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert start string to numbers</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    input_eval <span class="op">=</span> [char_to_idx[s] <span class="cf">for</span> s <span class="kw">in</span> start_string]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    input_eval <span class="op">=</span> tf.expand_dims(input_eval, <span class="dv">0</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    text_generated <span class="op">=</span> []</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    model.reset_states()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_generate):</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        predictions <span class="op">=</span> model(input_eval)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        predictions <span class="op">=</span> tf.squeeze(predictions, <span class="dv">0</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Apply temperature</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        predictions <span class="op">=</span> predictions <span class="op">/</span> temperature</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        predicted_id <span class="op">=</span> tf.random.categorical(predictions, num_samples<span class="op">=</span><span class="dv">1</span>)[<span class="op">-</span><span class="dv">1</span>,<span class="dv">0</span>].numpy()</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Add predicted character to input</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        input_eval <span class="op">=</span> tf.expand_dims([predicted_id], <span class="dv">0</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        text_generated.append(idx_to_char[predicted_id])</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> start_string <span class="op">+</span> <span class="st">''</span>.join(text_generated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="generation-example-temperature-0.5" class="level3">
+<h3 class="anchored" data-anchor-id="generation-example-temperature-0.5">Generation Example (Temperature = 0.5)</h3>
+<p><strong>Seed</strong>: “THE FLYING SUBMARINE”</p>
+<p><strong>Generated Text</strong>:</p>
+<pre><code>THE FLYING SUBMARINE
+CHAPTER 100 VENTANTILE
+
+This eBook is for the use of anyone anywhere in the United States and most 
+other parts of the earth and miserable eruptions. The solar rays should be 
+entirely under the shock of the intensity of the sea. We were all sorts. Are 
+we to prepare for our feelings?"
+
+"I can never see them a good geographer," said Mary.
+
+"Well, then, John, for I get to the Pampas, that we ought to obey the same
+time. In the country of this latitude changed my brother, and the
+_Nautilus_ floated in a sea which contained the rudder and
+lower colour visibly. The loiter was a fatalint region the two
+scientific discoverers. Several times turning toward the river, the cry
+of doors and over an inclined plains of the Angara, with a threatening
+water and disappeared in the midst of the solar rays.
+
+The weather was spread and strewn with closed bottoms which soon appeared
+that the unexpected sheets of wind was soon and linen, and the whole
+seas were again landed on the subject of the natives, and the prisoners
+were successively assuming the sides of this agreement for fifteen days
+with a threatening voice.
+...</code></pre>
+</section>
+<section id="example-output-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="example-output-analysis">Example Output Analysis</h3>
+<p>Let’s examine some generated text: “The weather was spread and strewn with closed bottoms which soon appeared that the unexpected sheets of wind was soon and linen, and the whole seas were again landed on the subject of the natives…”</p>
+<p>This excerpt shows both the model’s strengths and limitations. It successfully captures Verne’s descriptive style and maritime vocabulary (“seas,” “wind,” “natives”). The sentence structure feels appropriately Victorian and elaborate. However, the meaning becomes confused with phrases like “closed bottoms” and “sheets of wind was soon and linen.”</p>
+<p>This illustrates the fundamental challenge of character-level generation: the model learns local patterns (how words are spelled, common phrases) much better than global coherence (logical narrative flow, consistent meaning).</p>
+</section>
+</section>
+<section id="challenges-and-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="challenges-and-limitations">Challenges and Limitations</h2>
+<section id="context-window-constraints" class="level3">
+<h3 class="anchored" data-anchor-id="context-window-constraints">Context Window Constraints</h3>
+<p>Our 120-character context window creates a fundamental limitation. The model can only “see” about one paragraph of previous text when making predictions. This means it might introduce a character named Captain Smith, then 200 characters later introduce another character with the same name, having “forgotten” the first introduction.</p>
+<p>Humans writing stories maintain mental models of characters, plot lines, and world-building details across entire novels. Our model’s memory effectively resets every 120 characters, making long-term narrative consistency nearly impossible.</p>
+</section>
+<section id="character-vs.-word-level-trade-offs" class="level3">
+<h3 class="anchored" data-anchor-id="character-vs.-word-level-trade-offs">Character vs.&nbsp;Word Level Trade-offs</h3>
+<p>Character-level generation requires many more prediction steps than word-level generation. Generating the phrase “extraordinary adventure” requires 22 character predictions instead of just 2 word predictions. This makes character-level generation much slower and more computationally expensive.</p>
+<p>However, character-level generation offers unique advantages. The model can generate new words it has never seen before by combining character patterns. It can handle misspellings, made-up words, or technical terms more gracefully than word-level models that have fixed vocabularies.</p>
+</section>
+<section id="coherence-challenges" class="level3">
+<h3 class="anchored" data-anchor-id="coherence-challenges">Coherence Challenges</h3>
+<p>Perhaps the biggest limitation is maintaining semantic coherence. The model might generate grammatically correct text that makes no logical sense. It can describe “The submarine floating in the air above the mountain peaks” because it has learned that submarines float and that Verne often described mountains, but it hasn’t learned the physical constraint that submarines float in water, not air.</p>
+<p>This happens because the model learns statistical patterns without understanding meaning. It knows that certain word combinations are common without understanding why they make sense.</p>
+</section>
+<section id="summary" class="level3">
+<h3 class="anchored" data-anchor-id="summary">Summary</h3>
+<ol type="1">
+<li><strong>Limited Context Window</strong>
+<ul>
+<li><strong>Issue</strong>: Only 120 characters of context</li>
+<li><strong>Impact</strong>: Cannot maintain coherence over long passages</li>
+<li><strong>Example</strong>: May forget characters or plot points mentioned earlier</li>
+</ul></li>
+<li><strong>Character vs Word Level</strong>
+<ul>
+<li><strong>Issue</strong>: Character-level generation is slower and less efficient</li>
+<li><strong>Impact</strong>: Requires more computation for equivalent output</li>
+<li><strong>Trade-off</strong>: Better handling of rare words vs efficiency</li>
+</ul></li>
+<li><strong>Coherence Problems</strong>
+<ul>
+<li><strong>Issue</strong>: May generate grammatically correct but semantically inconsistent text</li>
+<li><strong>Cause</strong>: Limited understanding of story structure and plot consistency</li>
+</ul></li>
+<li><strong>Repetitive Patterns</strong>
+<ul>
+<li><strong>Issue</strong>: May fall into repetitive loops</li>
+<li><strong>Cause</strong>: Model overfitting to common patterns in training data</li>
+</ul></li>
+</ol>
+</section>
+<section id="potential-improvements" class="level3">
+<h3 class="anchored" data-anchor-id="potential-improvements">Potential Improvements</h3>
+<ol type="1">
+<li><strong>Longer Context Windows</strong>: Increase sequence length for better coherence</li>
+<li><strong>Hierarchical Models</strong>: Separate models for different text levels (word, sentence, paragraph)</li>
+<li><strong>Fine-tuning</strong>: Additional training on specific styles or topics</li>
+<li><strong>Beam Search</strong>: Better text generation algorithms instead of greedy sampling</li>
+</ol>
+<p>What will lead us to modern <strong>Language Models</strong> based on Transformers arquiteture .</p>
+</section>
+</section>
+<section id="connecting-to-modern-language-models" class="level2">
+<h2 class="anchored" data-anchor-id="connecting-to-modern-language-models">Connecting to Modern Language Models</h2>
+<section id="scale-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="scale-comparison">Scale Comparison</h3>
+<p>To appreciate how far language modeling has advanced, consider the scale differences between our Jules Verne Bot and modern language models:</p>
+<p>Our model has 4 million parameters and was trained on 5.8 million characters (about 10 books). GPT-3 has 175 billion parameters and was trained on 45 terabytes of text (roughly equivalent to millions of books). That’s a difference of over 40,000 times more parameters and millions of times more training data.</p>
+<p>Modern small language models (SLMs) like Phi-3-mini still dwarf our model with 3.8 billion parameters, but they represent more efficient designs that achieve impressive performance with “only” 1,000 times more parameters than our model.</p>
+<table class="table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 21%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspect</th>
+<th>Jules Verne Bot</th>
+<th>GPT-3 (2020)</th>
+<th>Phi-3-mini (2024)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Architecture</strong></td>
+<td>RNN (GRU)</td>
+<td>Transformer</td>
+<td>Transformer</td>
+</tr>
+<tr class="even">
+<td><strong>Parameters</strong></td>
+<td>4 million</td>
+<td>175 billion</td>
+<td>3.8 billion</td>
+</tr>
+<tr class="odd">
+<td><strong>Training Data</strong></td>
+<td>5.8M characters</td>
+<td>45TB text</td>
+<td>3.3T tokens</td>
+</tr>
+<tr class="even">
+<td><strong>Context Length</strong></td>
+<td>120 characters</td>
+<td>2,048 tokens</td>
+<td>128,000 tokens</td>
+</tr>
+<tr class="odd">
+<td><strong>Tokenization</strong></td>
+<td>Character-level</td>
+<td>Subword (BPE)</td>
+<td>Subword</td>
+</tr>
+<tr class="even">
+<td><strong>Training Time</strong></td>
+<td>33 minutes</td>
+<td>Months</td>
+<td>7 days</td>
+</tr>
+<tr class="odd">
+<td><strong>GPU Requirements</strong></td>
+<td>1 Tesla T4</td>
+<td>Thousands of GPUs</td>
+<td>512 H100 GPUs</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="architectural-evolution" class="level3">
+<h3 class="anchored" data-anchor-id="architectural-evolution">Architectural Evolution</h3>
+<p>The biggest advancement since RNNs is the <strong>Transformer architecture</strong>, which uses attention mechanisms instead of recurrent processing. While RNNs process text sequentially (like reading word by word), Transformers can examine all parts of a text simultaneously and learn relationships between any two words, regardless of how far apart they are.</p>
+<p>This solves the long-term memory problem that limits our RNN model. A Transformer can maintain awareness of a character introduced in a hypothetical “chapter 1” while writing “chapter 10”, something our 120-character context window makes impossible.</p>
+</section>
+<section id="training-efficiency" class="level3">
+<h3 class="anchored" data-anchor-id="training-efficiency">Training Efficiency</h3>
+<p>Modern models also benefit from more sophisticated training techniques. They’re pre-trained on massive, diverse datasets to learn general language patterns, then fine-tuned on specific tasks. They use techniques like instruction tuning, where they learn to follow human commands, and reinforcement learning from human feedback, where they learn to generate text that humans find helpful and appropriate.</p>
+</section>
+<section id="summary-why-modern-models-perform-better" class="level3">
+<h3 class="anchored" data-anchor-id="summary-why-modern-models-perform-better">Summary: Why Modern Models Perform Better?</h3>
+<ol type="1">
+<li><strong>Transformer Architecture</strong>
+<ul>
+<li><strong>Attention Mechanism</strong>: Can look at any part of the input sequence</li>
+<li><strong>Parallel Processing</strong>: Much faster training and inference</li>
+<li><strong>Better Long-range Dependencies</strong>: Maintains context over thousands of tokens</li>
+</ul></li>
+<li><strong>Scale</strong>
+<ul>
+<li><strong>More Data</strong>: Trained on vastly more diverse text</li>
+<li><strong>More Parameters</strong>: Can memorize and generalize better</li>
+<li><strong>More Compute</strong>: Allows for more sophisticated training techniques</li>
+</ul></li>
+<li><strong>Advanced Techniques</strong>
+<ul>
+<li><strong>Pre-training + Fine-tuning</strong>: Learn general language then specialize</li>
+<li><strong>Instruction Tuning</strong>: Trained to follow human instructions</li>
+<li><strong>RLHF</strong>: Reinforcement Learning from Human Feedback</li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion:</h2>
+<p>Building the Jules Verne Bot teaches us that creating artificial intelligence systems capable of generating human-like text requires careful consideration of multiple components working together. The embedding layer learns to represent characters meaningfully, the RNN layer processes sequences and maintains memory, and the output layer makes predictions based on learned patterns.</p>
+<p>The project also illustrates the fundamental trade-offs in machine learning: between model complexity and training speed, between creativity and coherence, between local accuracy and global consistency. These trade-offs appear in every AI system, from simple character-level generators to the most sophisticated language models.</p>
+<p>Most importantly, this project demonstrates that impressive AI capabilities emerge from relatively simple components combined thoughtfully. Our 4-million parameter model, while limited compared to modern systems, genuinely learns to write in Jules Verne’s style through nothing more than statistical pattern recognition and mathematical optimization.</p>
+<p>The techniques we’ve explored, sequence processing, embedding learning, and generation strategies, form the foundation for understanding any language model. Whether you encounter RNNs, Transformers, or future architectures yet to be invented, the core concepts remain consistent: learn patterns from data, encode meaning in mathematical representations, and generate new content by predicting what should come next.</p>
+<p>Understanding these fundamentals provides the foundation for working with, improving, or creating the next generation of language models that will shape how humans and computers communicate in the future.</p>
+</section>
+<section id="resourses" class="level2">
+<h2 class="anchored" data-anchor-id="resourses">Resourses</h2>
+<ul>
+<li><a href="https://www.google.com/url?q=https%3A%2F%2Fwww.gutenberg.org%2Febooks%2Fsearch%2F%3Fquery%3Djules%2Bverne%26submit_search%3DGo%21">Gutenberg Project</a></li>
+<li><a href="https://www.google.com/url?q=http%3A%2F%2Fkarpathy.github.io%2F2015%2F05%2F21%2Frnn-effectiveness%2F">The Unreasonable Effectiveness of Recurrent Neural Networks</a></li>
+<li><a href="https://projector.tensorflow.org/">Word2Vec - Embedding Projector</a></li>
+<li><a href="https://platform.openai.com/tokenizer">OpenAI’s tokenizer tool</a></li>
+<li><a href="https://colab.research.google.com/github/Mjrovai/TinyML4D/blob/main/WALC_2024/notebooks/20_JulesVerneBot_Generating_English_Texts_with_RNN.ipynb#scrollTo=VYN8pfTZrahm">Generating Text with RNNs: The Jules Verne Bot - CoLab</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Counting objects with YOLO</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/kd_intro/kd_intro.html" class="pagination-link">
+        <span class="nav-page-text">Knowledge Distillation in Practice</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>

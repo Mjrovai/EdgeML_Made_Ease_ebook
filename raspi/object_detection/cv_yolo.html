@@ -255,6 +255,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../raspi/rnn-verne/rnn-verne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text Generation with RNNs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Small Language Models (SLM)</span></a>
   </div>
@@ -352,6 +364,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#exploring-other-computer-vision-tasks" id="toc-exploring-other-computer-vision-tasks" class="nav-link" data-scroll-target="#exploring-other-computer-vision-tasks">Exploring Other Computer Vision Tasks</a>
   <ul>
+  <li><a href="#image-classification" id="toc-image-classification" class="nav-link" data-scroll-target="#image-classification">Image Classification</a></li>
   <li><a href="#instance-segmentation" id="toc-instance-segmentation" class="nav-link" data-scroll-target="#instance-segmentation">Instance Segmentation</a>
   <ul class="collapse">
   <li><a href="#pose-estimation" id="toc-pose-estimation" class="nav-link" data-scroll-target="#pose-estimation">Pose Estimation</a></li>
@@ -905,52 +918,92 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="exploring-other-computer-vision-tasks" class="level2">
 <h2 class="anchored" data-anchor-id="exploring-other-computer-vision-tasks">Exploring Other Computer Vision Tasks</h2>
-<section id="instance-segmentation" class="level3">
-<h3 class="anchored" data-anchor-id="instance-segmentation">Instance Segmentation</h3>
-<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>model_path<span class="op">=</span> <span class="st">"./models/yolo11n-seg.pt"</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>task <span class="op">=</span> <span class="st">"segment"</span></span>
+<section id="image-classification" class="level3">
+<h3 class="anchored" data-anchor-id="image-classification">Image Classification</h3>
+<p>As explored in previous chapters, the output of an image classifier is a single class label and a confidence score. Image classification is useful when we need to know only what class an image belongs to and don’t need to know where objects of that class are located or what their exact shape is.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>model_path<span class="op">=</span> <span class="st">"./models/yolo11n-cls.pt"</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>task <span class="op">=</span> <span class="st">"clasification"</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(model_path, task, verbose)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that a specific variation of the model, for image classification, will be downloaded. Now, let’s do an inference, using the same bus image:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model.predict(source, save<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> results[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The model inference will return:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">0:</span> 224x224 minibus 0.57, police_van 0.34, trolleybus 0.04, recreational_vehicle 0.01, streetcar 0.01, 3355.1ms</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Speed:</span> 5233.9ms preprocess, 3355.1ms inference, 28.2ms postprocess per image at shape <span class="er">(</span><span class="ex">1,</span> 3, 224, 224<span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can check the top5 inference results using Python:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> result.probs.top5</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>classes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And we will get:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[654,</span> 734, 874, 757, 829]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>What is related to:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">id</span> <span class="kw">in</span> classes:</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(result.names[<span class="bu">id</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">minibus</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="ex">police_van</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="ex">trolleybus</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="ex">recreational_vehicle</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="ex">streetcar</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And the top 5 probabilities:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>probs <span class="op">=</span> result.probs.top5conf.tolist()</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>probs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[0.5710113048553467,</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">0.33745330572128296,</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a> <span class="ex">0.04209813103079796,</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a> <span class="ex">0.014150412753224373,</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a> <span class="ex">0.005880324635654688]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The Top 1 result can be extract directly from the result:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.names[result.probs.top1], </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>      <span class="bu">round</span>(result.probs.top1conf.tolist(), <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">minibus</span> 0.57</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="instance-segmentation" class="level3">
+<h3 class="anchored" data-anchor-id="instance-segmentation">Instance Segmentation</h3>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>model_path<span class="op">=</span> <span class="st">"./models/yolo11n-seg.pt"</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>task <span class="op">=</span> <span class="st">"segment"</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(model_path, task, verbose)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Note that a specific variation of the model, for instance segmentation, will be downloaded. Now, lt’s use another image for testing:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"./images/beatles.jpg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"./images/beatles.jpg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Display the image</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(source)</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co">#plt.axis('off')  # This turns off the axis numbers</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Original Image"</span>)</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(source)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co">#plt.axis('off')  # This turns off the axis numbers</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Original Image"</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/beatles.png" class="img-fluid"></p>
 <p>And run the inference:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model.predict(source, save<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> results[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model.predict(source, save<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> results[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Display the result:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>im_bgr <span class="op">=</span> result.plot(boxes<span class="op">=</span><span class="va">False</span>, conf<span class="op">=</span><span class="va">False</span>, masks<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.fromarray(im_bgr[..., ::<span class="op">-</span><span class="dv">1</span>])</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)  <span class="co"># This turns off the axis numbers</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"YOLO Segmentation Result"</span>)</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>im_bgr <span class="op">=</span> result.plot(boxes<span class="op">=</span><span class="va">False</span>, conf<span class="op">=</span><span class="va">False</span>, masks<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.fromarray(im_bgr[..., ::<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)  <span class="co"># This turns off the axis numbers</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"YOLO Segmentation Result"</span>)</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/beatles_seg.png" class="img-fluid"></p>
 <section id="pose-estimation" class="level4">
 <h4 class="anchored" data-anchor-id="pose-estimation">Pose Estimation</h4>
 <p>Download the model:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>model_path<span class="op">=</span> <span class="st">"./models/yolo11n-pose.pt"</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>task <span class="op">=</span> <span class="st">"pose"</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(model_path, task, verbose)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>model_path<span class="op">=</span> <span class="st">"./models/yolo11n-pose.pt"</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>task <span class="op">=</span> <span class="st">"pose"</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(model_path, task, verbose)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Running the Inference on the beatles image:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"./images/beatles.jpg"</span>)</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model.predict(source, save<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> results[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>source <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"./images/beatles.jpg"</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model.predict(source, save<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> results[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Showing the human pose keypoint detection and skeleton visualization.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>im_bgr <span class="op">=</span> result.plot(boxes<span class="op">=</span><span class="va">False</span>, conf<span class="op">=</span><span class="va">False</span>, kpt_line<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.fromarray(im_bgr[..., ::<span class="op">-</span><span class="dv">1</span>])</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)  <span class="co"># This turns off the axis numbers</span></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"YOLO Pose Estimation Result"</span>)</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>im_bgr <span class="op">=</span> result.plot(boxes<span class="op">=</span><span class="va">False</span>, conf<span class="op">=</span><span class="va">False</span>, kpt_line<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.fromarray(im_bgr[..., ::<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)  <span class="co"># This turns off the axis numbers</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"YOLO Pose Estimation Result"</span>)</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/beatles-pose.png" class="img-fluid"></p>
 </section>
 </section>
@@ -993,26 +1046,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol start="4" type="1">
 <li>It is essential to verify and change the file <code>data.yaml</code> with the correct path for the images (copy the path on each <code>images</code> folder).</li>
 </ol>
-<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">names:</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> box</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> wheel</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="ex">nc:</span> 2</span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="ex">roboflow:</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">license:</span> CC BY 4.0</span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">project:</span> box-versus-wheel-auto-dataset</span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">url:</span> https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset/dataset/5</span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">version:</span> 5</span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">workspace:</span> marcelo-rovai-riila</span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="ex">test:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/test/images</span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="ex">train:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/train/images</span>
-<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="ex">val:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/valid/images</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="ex">names:</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> box</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-</span> wheel</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="ex">nc:</span> 2</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="ex">roboflow:</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">license:</span> CC BY 4.0</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">project:</span> box-versus-wheel-auto-dataset</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">url:</span> https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset/dataset/5</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">version:</span> 5</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">workspace:</span> marcelo-rovai-riila</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="ex">test:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/test/images</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="ex">train:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/train/images</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="ex">val:</span> /content/datasets/Box-versus-Wheel-auto-dataset-5/valid/images</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="5" type="1">
 <li><p>Define the main hyperparameters that you want to change from default, for example:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">MODEL</span> = <span class="st">'yolov8n.pt'</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">IMG_SIZE</span> = 640</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="ex">EPOCHS</span> = 25 <span class="co"># For a final project, you should consider at least 100 epochs </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="ex">MODEL</span> = <span class="st">'yolov8n.pt'</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="ex">IMG_SIZE</span> = 640</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="ex">EPOCHS</span> = 25 <span class="co"># For a final project, you should consider at least 100 epochs </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Run the training (using CLI):</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=train model={MODEL} data={dataset.location}/data.yaml epochs={EPOCHS} imgsz={IMG_SIZE} plots=True </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=train model={MODEL} data={dataset.location}/data.yaml epochs={EPOCHS} imgsz={IMG_SIZE} plots=True </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <img src="images/png/train-result.png" class="img-fluid" alt="image-20240910111319804"></li>
 </ol>
 <p>​ The model took a few minutes to be trained and has an excellent result (mAP50 of 0.995). At the end of the training, all results are saved in the folder listed, for example: <code>/runs/detect/train/</code>. There, you can find, for example, the confusion matrix.</p>
@@ -1020,20 +1073,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol start="7" type="1">
 <li>Note that the trained model (<code>best.pt</code>) is saved in the folder <code>/runs/detect/train/weights/</code>. Now, you should validate the trained model with the <code>valid/images</code>.</li>
 </ol>
-<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=val model={HOME}/runs/detect/train/weights/best.pt data={dataset.location}/data.yaml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=val model={HOME}/runs/detect/train/weights/best.pt data={dataset.location}/data.yaml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>​ The results were similar to training.</p>
 <ol start="8" type="1">
 <li>Now, we should perform inference on the images left aside for testing</li>
 </ol>
-<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=predict model={HOME}/runs/detect/train/weights/best.pt conf=0.25 source={dataset.location}/test/images save=True</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=predict model={HOME}/runs/detect/train/weights/best.pt conf=0.25 source={dataset.location}/test/images save=True</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The inference results are saved in the folder <code>runs/detect/predict</code>. Let’s see some of them:</p>
 <p><img src="images/png/test-infer-yolo.png" class="img-fluid"></p>
 <ol start="9" type="1">
 <li><p>It is advised to export the train, validation, and test results for a Drive at Google. To do so, we should mount the drive.</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">'/content/gdrive'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">'/content/gdrive'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>and copy the content of <code>/runs</code> folder to a folder that you should create in your Drive, for example:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!scp</span> <span class="at">-r</span> /content/runs <span class="st">'/content/gdrive/MyDrive/10_UNIFEI/Box_vs_Wheel_Project'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb54"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!scp</span> <span class="at">-r</span> /content/runs <span class="st">'/content/gdrive/MyDrive/10_UNIFEI/Box_vs_Wheel_Project'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ol>
 </section>
 </section>
@@ -1042,21 +1095,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Download the trained model <code>/runs/detect/train/weights/best.pt</code> to your computer. Using the FileZilla FTP, let’s transfer the <code>best.pt</code> to the Raspi models folder (before the transfer, you may change the model name, for example, <code>box_wheel_320_yolo.pt</code>).</p>
 <p>Using the FileZilla FTP, let’s transfer a few images from the test dataset to <code>.\YOLO\images</code>:</p>
 <p>Let’s return to the YOLO folder and use the Python Interpreter:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>As before, we will import the YOLO library and define our converted model to detect bees:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'./models/box_wheel_320_yolo.pt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'./models/box_wheel_320_yolo.pt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Now, let’s define an image and call the inference (we will save the image result this time to external verification):</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'./images/1_box_1_wheel.jpg'</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">320</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'./images/1_box_1_wheel.jpg'</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">320</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Let’s repeat for several images. The inference result is saved on the variable <code>result,</code> and the processed image on <code>runs/detect/predict8</code></p>
 <p><img src="images/png/infer-yolo.png" class="img-fluid"></p>
 <p>Using FileZilla FTP, we can send the inference result to our Desktop for verification:</p>
 <p><img src="images/png/yolo-infer-raspi.png" class="img-fluid"></p>
-<p>We can see that the inference result is excellent! The model was trained based on the smaller base model of the YOLOv8 family (YOLOv8n). The issue is the latency, around 1 second (or 1 FPS on the Raspi-Zero). Of course, we can reduce this latency and convert the model to TFLite or NCNN.</p>
+<p>We can see that the inference result is excellent! The model was trained based on the smaller base model of the YOLOv8 family (YOLOv8n). The issue is the latency, around 1 second (or 1 FPS on the Raspi-Zero). We can reduce this latency and convert the model to TFLite or NCNN.</p>
 <blockquote class="blockquote">
-<p>The model trained with YOLO11, has similar result as the v8,</p>
+<p>The model trained with YOLO11 has a latency of around 800 ms, similar to the result of v8 with ncnn.</p>
 </blockquote>
 </section>
 </section>
@@ -1078,7 +1131,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><p><a href="https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset">Dataset (“Box versus Wheel”)</a></p></li>
 <li><p><a href="https://colab.research.google.com/github/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/yolov8_box_vs_wheel.ipynb">YOLOv8 Box versus Wheel Dataset Training on CoLab</a></p></li>
-<li><p><a href="">Model Predictions with Ultralytics YOLO</a></p></li>
+<li><p><a href="https://colab.research.google.com/github/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/yolo11_box_vs_wheel.ipynb">YOLO11 Box versus Wheel Dataset Training on CoLab</a></p></li>
+<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/YOLO_Model_Prediction_with_Ultralytics.ipynb">Model Predictions with Ultralytics YOLO</a></p></li>
 <li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/python_scripts">Python Scripts</a></p></li>
 <li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">Models</a></p></li>
 </ul>
