@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Edge AI Engineering - Audio and Vision AI Pipeline</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/physical_comp/RPi_Physical_Computing.html" rel="next">
+<link href="../../raspi/vlm/vlm.html" rel="prev">
+<link href="../../images/unifei-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/audio_pipeline/audio_pipeline.html">Audio and Vision AI Pipeline</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/cv_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Computer Vision Applications with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/rnn-verne/rnn-verne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text Generation with RNNs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/llm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/audio_pipeline/audio_pipeline.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Audio and Vision AI Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-audio-to-audio-ai-pipeline-architecture" id="toc-the-audio-to-audio-ai-pipeline-architecture" class="nav-link" data-scroll-target="#the-audio-to-audio-ai-pipeline-architecture">The Audio to Audio AI Pipeline Architecture</a>
+  <ul>
+  <li><a href="#understanding-multimodal-ai-systems" id="toc-understanding-multimodal-ai-systems" class="nav-link" data-scroll-target="#understanding-multimodal-ai-systems">Understanding Multimodal AI Systems</a></li>
+  <li><a href="#system-architecture-overview" id="toc-system-architecture-overview" class="nav-link" data-scroll-target="#system-architecture-overview">System Architecture Overview</a></li>
+  <li><a href="#edge-ai-considerations" id="toc-edge-ai-considerations" class="nav-link" data-scroll-target="#edge-ai-considerations">Edge AI Considerations</a></li>
+  </ul></li>
+  <li><a href="#hardware-setup-and-audio-capture" id="toc-hardware-setup-and-audio-capture" class="nav-link" data-scroll-target="#hardware-setup-and-audio-capture">Hardware Setup and Audio Capture</a>
+  <ul>
+  <li><a href="#audio-hardware-detection" id="toc-audio-hardware-detection" class="nav-link" data-scroll-target="#audio-hardware-detection">Audio Hardware Detection</a></li>
+  <li><a href="#testing-basic-audio-functionality" id="toc-testing-basic-audio-functionality" class="nav-link" data-scroll-target="#testing-basic-audio-functionality">Testing Basic Audio Functionality</a></li>
+  <li><a href="#python-audio-integration" id="toc-python-audio-integration" class="nav-link" data-scroll-target="#python-audio-integration">Python Audio Integration</a></li>
+  <li><a href="#test-audio-python-script" id="toc-test-audio-python-script" class="nav-link" data-scroll-target="#test-audio-python-script">Test Audio Python Script</a></li>
+  </ul></li>
+  <li><a href="#speech-recognition-sst-with-moonshine" id="toc-speech-recognition-sst-with-moonshine" class="nav-link" data-scroll-target="#speech-recognition-sst-with-moonshine">Speech Recognition (SST) with Moonshine</a>
+  <ul>
+  <li><a href="#why-moonshine-for-edge-deployment" id="toc-why-moonshine-for-edge-deployment" class="nav-link" data-scroll-target="#why-moonshine-for-edge-deployment">Why Moonshine for Edge Deployment</a></li>
+  <li><a href="#model-selection-strategy" id="toc-model-selection-strategy" class="nav-link" data-scroll-target="#model-selection-strategy">Model Selection Strategy</a></li>
+  <li><a href="#implementation-and-preprocessing" id="toc-implementation-and-preprocessing" class="nav-link" data-scroll-target="#implementation-and-preprocessing">Implementation and Preprocessing</a></li>
+  </ul></li>
+  <li><a href="#slm-integration-and-response-generation" id="toc-slm-integration-and-response-generation" class="nav-link" data-scroll-target="#slm-integration-and-response-generation">SLM Integration and Response Generation</a>
+  <ul>
+  <li><a href="#connecting-stt-output-to-slms" id="toc-connecting-stt-output-to-slms" class="nav-link" data-scroll-target="#connecting-stt-output-to-slms">Connecting STT Output to SLMs</a></li>
+  <li><a href="#optimizing-prompts-for-voice-interaction" id="toc-optimizing-prompts-for-voice-interaction" class="nav-link" data-scroll-target="#optimizing-prompts-for-voice-interaction">Optimizing Prompts for Voice Interaction</a></li>
+  </ul></li>
+  <li><a href="#text-to-speech-tts-with-piper" id="toc-text-to-speech-tts-with-piper" class="nav-link" data-scroll-target="#text-to-speech-tts-with-piper">Text-to-Speech (TTS) with PIPER</a>
+  <ul>
+  <li><a href="#voice-model-selection-and-installation" id="toc-voice-model-selection-and-installation" class="nav-link" data-scroll-target="#voice-model-selection-and-installation">Voice Model Selection and Installation</a></li>
+  <li><a href="#handling-long-text-and-special-cases" id="toc-handling-long-text-and-special-cases" class="nav-link" data-scroll-target="#handling-long-text-and-special-cases">Handling Long Text and Special Cases</a></li>
+  </ul></li>
+  <li><a href="#pipeline-integration-and-optimization" id="toc-pipeline-integration-and-optimization" class="nav-link" data-scroll-target="#pipeline-integration-and-optimization">Pipeline Integration and Optimization</a>
+  <ul>
+  <li><a href="#building-the-complete-system" id="toc-building-the-complete-system" class="nav-link" data-scroll-target="#building-the-complete-system">Building the Complete System</a></li>
+  <li><a href="#performance-optimization-strategies" id="toc-performance-optimization-strategies" class="nav-link" data-scroll-target="#performance-optimization-strategies">Performance Optimization Strategies</a></li>
+  <li><a href="#memory-management-considerations" id="toc-memory-management-considerations" class="nav-link" data-scroll-target="#memory-management-considerations">Memory Management Considerations</a></li>
+  <li><a href="#designing-resilient-systems" id="toc-designing-resilient-systems" class="nav-link" data-scroll-target="#designing-resilient-systems">Designing Resilient Systems</a></li>
+  <li><a href="#debugging-complex-pipelines" id="toc-debugging-complex-pipelines" class="nav-link" data-scroll-target="#debugging-complex-pipelines">Debugging Complex Pipelines</a></li>
+  <li><a href="#the-full-python-script" id="toc-the-full-python-script" class="nav-link" data-scroll-target="#the-full-python-script">The full Python Script</a></li>
+  </ul></li>
+  <li><a href="#the-image-to-audio-ai-pipeline-architecture" id="toc-the-image-to-audio-ai-pipeline-architecture" class="nav-link" data-scroll-target="#the-image-to-audio-ai-pipeline-architecture">The Image to Audio AI Pipeline Architecture</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/audio_pipeline/audio_pipeline.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/audio_pipeline/audio_pipeline.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Audio and Vision AI Pipeline</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><strong>Building Voice and Vision Interactive Edge AI Systems</strong></p>
+<p><img src="./images/png/ini.png" class="img-fluid"></p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In this chapter, we extend our SLM and SVL capabilities by creating a complete audio processing pipeline that transforms voice or image input into intelligent vocal responses. We will learn to integrate Speech-to-Text (STT), Small Language (or Visual) Models, and Text-to-Speech (TTS) technologies to build conversational AI systems that run entirely on Raspberry Pi hardware.</p>
+<p>This chapter bridges the gap between our existing computer vision knowledge and multimodal AI applications, demonstrating how different AI components work together in real-world edge deployments.</p>
+</section>
+<section id="the-audio-to-audio-ai-pipeline-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="the-audio-to-audio-ai-pipeline-architecture">The Audio to Audio AI Pipeline Architecture</h2>
+<p><img src="./images/png/pipe.png" class="img-fluid"></p>
+<p>We will understand how to architect and implement multimodal AI systems by building a complete voice interaction pipeline. The goal is to gain practical experience with audio processing on edge devices while learning to efficiently integrate multiple AI models within resource constraints. Additionally, you will develop troubleshooting skills for complex AI pipelines and understand the engineering trade-offs involved in edge audio processing.</p>
+<section id="understanding-multimodal-ai-systems" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-multimodal-ai-systems">Understanding Multimodal AI Systems</h3>
+<p>When we built computer vision systems earlier in the course, we processed visual data to extract meaningful information. Audio AI systems follow a similar principle but work with temporal audio signals instead of static images. The key insight is that speech processing requires multiple specialized models working together, rather than a single end-to-end system.</p>
+<blockquote class="blockquote">
+<p>Modern small models, such as <a href="https://ai.google.dev/gemma/docs/capabilities/audio">Gemma 3n</a>, can process audio directly and its prompt. Today (September 2025), Gemma 3n can transcribe text from audio files using Hugging Face Transformers, but it is not available with Ollama</p>
+</blockquote>
+<p>Consider how humans process spoken language. We simultaneously parse the acoustic signal, understand the linguistic content, reason about the meaning, and formulate responses. Our AI pipeline mimics this process by breaking it into distinct, manageable components.</p>
+</section>
+<section id="system-architecture-overview" class="level3">
+<h3 class="anchored" data-anchor-id="system-architecture-overview">System Architecture Overview</h3>
+<p>Our comprehensive audio AI pipeline comprises four main components, connected in sequence.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">[Microphone]</span> → [STT Model] → <span class="pp">[</span><span class="ss">SLM</span><span class="pp">]</span> → [TTS Model] → <span class="pp">[</span><span class="ss">Speaker</span><span class="pp">]</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   <span class="ex">Audio</span>        Text        Text      Audio</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Audio captured by the microphone is processed through a Speech-to-Text model, which converts sound waves into text transcriptions. This text becomes input for our Small Language Model, which generates intelligent responses. Finally, a Text-to-Speech system converts the written response back into spoken audio.</p>
+<p>Each component has specific requirements and limitations. The STT model must handle various accents and noise conditions. The SLM needs sufficient context to generate coherent responses. The TTS system must produce speech that sounds natural. Understanding these individual requirements helps us optimize the overall system performance.</p>
+</section>
+<section id="edge-ai-considerations" class="level3">
+<h3 class="anchored" data-anchor-id="edge-ai-considerations">Edge AI Considerations</h3>
+<p>Running this pipeline on a Raspberry Pi presents unique challenges compared to cloud-based solutions. We must carefully manage memory usage, processing time, and model sizes. The benefit is complete local processing with no internet dependency and enhanced privacy protection.</p>
+<p>The choice of models becomes critical. We select <a href="https://github.com/moonshine-ai/moonshine/tree/main">Moonshine</a> for STT because it’s specifically optimized for edge devices. We utilize small language models, such as <code>llama3.2:3b</code>, for reasonable performance on limited hardware. For TTS, we choose <a href="https://github.com/OHF-Voice/piper1-gpl">PIPER</a> for its balance between quality and computational efficiency.</p>
+</section>
+</section>
+<section id="hardware-setup-and-audio-capture" class="level2">
+<h2 class="anchored" data-anchor-id="hardware-setup-and-audio-capture">Hardware Setup and Audio Capture</h2>
+<section id="audio-hardware-detection" class="level3">
+<h3 class="anchored" data-anchor-id="audio-hardware-detection">Audio Hardware Detection</h3>
+<p>Begin by identifying the audio capabilities of our system. The Raspberry Pi can work with various audio input and output devices, but proper configuration is essential for reliable operation.</p>
+<p>Use the command <code>arecord -l</code> to list available recording devices. You should see output showing your microphone’s card and device numbers. For USB microphones, this typically appears as something like <code>card 2: Microphone [USB Condenser Microphone], device 0: USB Audio [USB Audio]</code>. The critical information is the <strong>card number</strong> and device number, which you’ll reference as <code>hw:2,0</code> in the code.</p>
+<p><img src="./images/png/mic.png" class="img-fluid"></p>
+<p><img src="./images/png/arecord.png" class="img-fluid"></p>
+</section>
+<section id="testing-basic-audio-functionality" class="level3">
+<h3 class="anchored" data-anchor-id="testing-basic-audio-functionality">Testing Basic Audio Functionality</h3>
+<p>Before writing Python code, we should verify that our audio setup works correctly at the system level. Let’s record a short test file using:</p>
+<p><code>arecord --device="plughw:2,0" --format=S16_LE --rate=16000 -c2 myaudio.wav</code></p>
+<p>Play back the recording with <code>aplay myaudio.wav</code> to confirm that both capture and playback work correctly (use <code>[CTRL]+[C]</code> to stop the recording or add a duration in seconds to the command line).</p>
+<p><img src="./images/png/audio-test.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>The <code>.WAV</code> file can be played on another device (such as a computer) or on the Raspberry Pi, as a speaker can be connected via USB or Bluetooth.</p>
+</blockquote>
+</section>
+<section id="python-audio-integration" class="level3">
+<h3 class="anchored" data-anchor-id="python-audio-integration">Python Audio Integration</h3>
+<p>Now, we should install the necessary audio processing dependencies.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/ollama/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The PyAudio library requires system-level audio libraries; therefore, install them using <code>sudo apt-get</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install libasound-dev libportaudio2 libportaudiocpp0 portaudio19-dev</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install python3-pyaudio</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>libasound-dev</code> covers ALSA development headers needed for audio libraries on Pi</li>
+<li><code>python3-pyaudio</code> provides a prebuilt PyAudio package for most use cases</li>
+</ul>
+<p>Let’s create a working directory: <code>Documents/OLLAMA/SST</code> and verify the USB device index, with the below script (<code>verify_usb_index.py</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyaudio</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> pyaudio.PyAudio()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ii <span class="kw">in</span> <span class="bu">range</span>(p.get_device_count()):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(ii, p.get_device_info_by_index(ii).get(<span class="st">'name'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As a result, we should get:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">0</span> USB Condenser Microphone: Audio <span class="er">(</span><span class="ex">hw:2,0</span><span class="kw">)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">1</span> pulse</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">2</span> default</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>What confirms that the index is 2 (<code>hw:2,0</code>)</p>
+<blockquote class="blockquote">
+<p>A lot of messages should appear. They are mostly ALSA and JACK warnings about missing or undefined virtual/surround sound devices—they are common on Raspberry Pi systems with minimal or headless sound configs and typically do not impact basic USB microphone capture. If our USB Microphone appears as a recording device (as it does: “hw:2,0”), we can safely ignore most of these unless audio capture fails.</p>
+</blockquote>
+<p>To clean the output, we can use:</p>
+<p><code>python verify_usb_index.py 2&gt;/dev/null</code></p>
+<p><img src="./images/png/messages-out.png" class="img-fluid"></p>
+</section>
+<section id="test-audio-python-script" class="level3">
+<h3 class="anchored" data-anchor-id="test-audio-python-script">Test Audio Python Script</h3>
+<p>This script (<code>test_audio_capture.py</code>) records 10 seconds of mono audio at 16 kHz to <code>output.wav</code> using the USB microphone.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyaudio</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> wave</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>FORMAT <span class="op">=</span> pyaudio.paInt16</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>CHANNELS <span class="op">=</span> <span class="dv">1</span>    </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>RATE <span class="op">=</span> <span class="dv">16000</span>    <span class="co"># 16 kHz</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>CHUNK <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>RECORD_SECONDS <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>DEVICE_INDEX <span class="op">=</span> <span class="dv">2</span>   <span class="co"># replace this with your detected USB mic's index</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>WAVE_OUTPUT_FILENAME <span class="op">=</span> <span class="st">"output.wav"</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>audio <span class="op">=</span> pyaudio.PyAudio()</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>stream <span class="op">=</span> audio.<span class="bu">open</span>(<span class="bu">format</span><span class="op">=</span>FORMAT, channels<span class="op">=</span>CHANNELS,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>                    rate<span class="op">=</span>RATE, <span class="bu">input</span><span class="op">=</span><span class="va">True</span>, input_device_index<span class="op">=</span>DEVICE_INDEX,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>                    frames_per_buffer<span class="op">=</span>CHUNK)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Recording..."</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> []</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">int</span>(RATE <span class="op">/</span> CHUNK <span class="op">*</span> RECORD_SECONDS)):</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> stream.read(CHUNK, exception_on_overflow<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    frames.append(data)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Finished recording."</span>)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>stream.stop_stream()</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>stream.close()</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>audio.terminate()</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>wf <span class="op">=</span> wave.<span class="bu">open</span>(WAVE_OUTPUT_FILENAME, <span class="st">'wb'</span>)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>wf.setnchannels(CHANNELS)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>wf.setsampwidth(audio.get_sample_size(FORMAT))</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>wf.setframerate(RATE)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>wf.writeframes(<span class="st">b''</span>.join(frames))</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>wf.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Understanding the audio configuration parameters helps prevent common problems. We use 16-bit PCM format (<code>pyaudio.paInt16</code>) because it provides good quality while remaining computationally efficient. The 16kHz sampling rate balances audio quality with processing requirements - most speech recognition models expect this rate.</p>
+<p>The buffer size (<code>CHUNK = 1024</code>) affects latency and reliability. Smaller buffers reduce latency but may cause audio dropouts on busy systems. Larger buffers increase latency but provide more stable recording.</p>
+<p>Let’s Playback to verify if we get it correctly:</p>
+<p><img src="./images/png/rec_test.png" class="img-fluid"></p>
+<audio controls="">
+<source src="output.wav" type="audio/wav">
+<p>Your browser does not support the audio element. </p>
+</audio></section>
+</section>
+<section id="speech-recognition-sst-with-moonshine" class="level2">
+<h2 class="anchored" data-anchor-id="speech-recognition-sst-with-moonshine">Speech Recognition (SST) with Moonshine</h2>
+<section id="why-moonshine-for-edge-deployment" class="level3">
+<h3 class="anchored" data-anchor-id="why-moonshine-for-edge-deployment">Why Moonshine for Edge Deployment</h3>
+<p>Traditional speech recognition systems, such as OpenAI’s Whisper, while highly accurate, require substantial computational resources. <a href="https://github.com/moonshine-ai/moonshine/tree/main">Moonshine</a> is specifically designed for edge devices, using optimized model architectures and quantization techniques to achieve good performance on resource-constrained hardware.</p>
+<p>The ONNX (Open Neural Network Exchange) version of Moonshine provides additional optimization benefits. ONNX Runtime includes hardware-specific optimizations that can significantly improve inference speed on ARM processors, such as those found in Raspberry Pi devices.</p>
+</section>
+<section id="model-selection-strategy" class="level3">
+<h3 class="anchored" data-anchor-id="model-selection-strategy">Model Selection Strategy</h3>
+<p>Moonshine offers different model sizes with clear trade-offs between accuracy and computational requirements. The “tiny” model processes audio quickly but may struggle with difficult audio conditions. The “base” model provides better accuracy but requires more processing time and memory.</p>
+<p>For initial development, we should start with the tiny model to ensure that the pipeline works correctly. Once the complete system is functional, we can experiment with larger models to find the optimal balance for our specific use case and hardware capabilities.</p>
+</section>
+<section id="implementation-and-preprocessing" class="level3">
+<h3 class="anchored" data-anchor-id="implementation-and-preprocessing">Implementation and Preprocessing</h3>
+<p>Install Moonshine with</p>
+<pre><code>pip install useful-moonshine-onnx@git+https://github.com/moonshine
+ai/moonshine.git#subdirectory=moonshine-onnx`</code></pre>
+<p>This specific installation method ensures compatibility with the ONNX runtime optimizations.</p>
+<p>Let’s run the test script below (<code>transcription_test.py</code>):</p>
+<pre><code>import moonshine_onnx
+text = moonshine_onnx.transcribe('output.wav', 'moonshine/tiny')
+print(text[0])</code></pre>
+<p>As a result, we will get the corresponding text, which was recorded before:</p>
+<p><img src="./images/png/moonshine_test.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>Empty or incorrect transcriptions are common issues in speech recognition systems. These failures can result from background noise, insufficient volume, unclear speech, or mismatches in audio format. Implementing robust error handling prevents these issues from crashing your entire pipeline.</p>
+</blockquote>
+</section>
+</section>
+<section id="slm-integration-and-response-generation" class="level2">
+<h2 class="anchored" data-anchor-id="slm-integration-and-response-generation">SLM Integration and Response Generation</h2>
+<section id="connecting-stt-output-to-slms" class="level3">
+<h3 class="anchored" data-anchor-id="connecting-stt-output-to-slms">Connecting STT Output to SLMs</h3>
+<p>The text output from your speech recognition system becomes input for your Small Language Model. However, the characteristics of spoken language differ significantly from written text, especially when filtered through speech recognition systems.</p>
+<p>Spoken language tends to be more informal, may contain false starts and repetitions, and might include transcription errors. Our SLM integration should account for these characteristics. On a final implementation, we should consider preprocessing the STT output to clean up obvious transcription errors or providing context to the SLM about the voice interaction nature of the input.</p>
+</section>
+<section id="optimizing-prompts-for-voice-interaction" class="level3">
+<h3 class="anchored" data-anchor-id="optimizing-prompts-for-voice-interaction">Optimizing Prompts for Voice Interaction</h3>
+<p>Voice-based interactions have different expectations than text-based chats. Responses should be concise since users must listen to the entire output. Avoid complex formatting or long lists that work well in text but become cumbersome when spoken aloud.</p>
+<p>We should design our system prompts to encourage responses appropriate for voice interaction. For example, “Provide a brief, conversational response suitable for speaking aloud” can help guide the SLM toward more appropriate output formatting.</p>
+<p>Unlike single-query text interactions, voice conversations often involve multiple exchanges. Implementing conversation context memory significantly enhances the user experience. However, context management on edge devices requires careful consideration of memory usage.</p>
+<p>Consider implementing a sliding window approach, where you maintain the last few exchanges in memory but discard older context to prevent memory exhaustion, balancing context length with available system resources.</p>
+<p>Let’s create a function to handle this. For test, run <code>slm_test.py</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_voice_response(user_input, model<span class="op">=</span><span class="st">"llama3.2:3b"</span>):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Generate a response optimized for voice interaction</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>     <span class="co"># Context-setting prompt that guides the model's behavior</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    system_context <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="st">        You are a helpful AI assistant designed for voice interactions. </span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="st">        Your responses will be converted to speech and spoken aloud to the user.</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="st">    </span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="st">      Guidelines for your responses:</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="st">      - Keep responses conversational and concise (ideally under 50 words)</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="st">      - Avoid complex formatting, lists, or visual elements</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="st">      - Speak naturally, as if having a friendly conversation</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="st">      - If the user's input seems unclear, ask for clarification politely</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="st">      - Provide direct answers rather than lengthy explanations unless specifically </span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="st">        requested</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="st">    """</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Combine system context with user input</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    full_prompt <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>system_context<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">User said: </span><span class="sc">{</span>user_input<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">Response:"</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> ollama.generate(</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        model<span class="op">=</span>model,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        prompt<span class="op">=</span>full_prompt</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response[<span class="st">'response'</span>]</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Answering the user question: </span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>user_input <span class="op">=</span> <span class="st">"What is the capital of Malawi?"</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> generate_voice_response(user_input)</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/slm-answer.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="text-to-speech-tts-with-piper" class="level2">
+<h2 class="anchored" data-anchor-id="text-to-speech-tts-with-piper">Text-to-Speech (TTS) with PIPER</h2>
+<p>Text-to-speech systems face different challenges than speech recognition systems. While STT must handle various input conditions, TTS must generate consistent, natural-sounding output across diverse text inputs. The quality of TTS has a significant impact on the user experience in voice interaction systems.</p>
+<p><a href="https://github.com/OHF-Voice/piper1-gpl">PIPER</a> provides an excellent balance between voice quality and computational efficiency for edge deployments. Unlike cloud-based TTS services, PIPER runs entirely locally, ensuring privacy and eliminating network dependencies.</p>
+<section id="voice-model-selection-and-installation" class="level3">
+<h3 class="anchored" data-anchor-id="voice-model-selection-and-installation">Voice Model Selection and Installation</h3>
+<p>PIPER offers various voice models with different characteristics. The “low”, “medium”, and “high” quality designations primarily refer to model size and computational requirements rather than dramatic quality differences. For most applications, the low-quality models provide acceptable voice output while running efficiently on Raspberry Pi hardware.</p>
+<p>Install PIPER with <code>pip install piper-tts</code>, create a voices directory:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install piper-tts</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> voices</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Download voice models from the Hugging Face repository. Each voice model requires both the model file (.onnx) and a configuration file (.json). The configuration file contains model-specific parameters essential for generating proper audio.</p>
+<p>We should download both files for our chosen voice; for example, the English female “lessac” voice provides clear, natural speech suitable for most applications.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-O</span> voices/en_US-lessac-low.onnx   https://huggingface.co/rhasspy/piper-</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">voices/resolve/v1.0.0/en/en_US/lessac/low/en_US-lessac-low.onnx</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-O</span> voices/en_US-lessac-low.onnx.json   https://huggingface.co/rhasspy/piper-</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="ex">voices/resolve/v1.0.0/en/en_US/lessac/low/en_US-lessac-low.onnx.json</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s run the code below (<code>tts_test.py</code>) for testing:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> text_to_speech_piper(text, output_file<span class="op">=</span><span class="st">"piper_output.wav"</span>):</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Convert text to speech using PIPER and save to WAV file</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">        text (str): Text to convert to speech</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">        output_file (str): Output WAV file path</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Path to your voice model</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    model_path <span class="op">=</span> <span class="st">"voices/en_US-lessac-low.onnx"</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if model exists</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> os.path.exists(model_path):</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error: Model file not found at </span><span class="sc">{</span>model_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Run PIPER command</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        process <span class="op">=</span> subprocess.Popen(</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>            [<span class="st">'piper'</span>, <span class="st">'--model'</span>, model_path, <span class="st">'--output_file'</span>, output_file],</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            stdin<span class="op">=</span>subprocess.PIPE,</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>            stdout<span class="op">=</span>subprocess.PIPE,</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>            stderr<span class="op">=</span>subprocess.PIPE,</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>            text<span class="op">=</span><span class="va">True</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Send text to PIPER</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>        stdout, stderr <span class="op">=</span> process.communicate(<span class="bu">input</span><span class="op">=</span>text)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> process.returncode <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Speech generated successfully: </span><span class="sc">{</span>output_file<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Error: </span><span class="sc">{</span>stderr<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error running PIPER: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="co"># converting text to sound:</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>txt <span class="op">=</span> <span class="st">"Lilongwe is the capital of Malawi. Would you like to know more about </span><span class="ch">\</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a><span class="st">       Lilongwe or Malawi in general?"</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> text_to_speech_piper(txt):</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"You can now play the file with: aplay piper_output.wav"</span>)</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Failed to generate speech"</span>)       </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Runing the script, a <code>piper_output.wav</code> file will be generated, which is the text converted into speech.</p>
+<audio controls="">
+<source src="piper_output.wav" type="audio/wav">
+<p>Your browser does not support the audio element. </p>
+<p>To listen to the sound, we can run: <code>aplay piper_output.wav</code>.</p>
+<p><img src="./images/png/piper_test.png" class="img-fluid"></p>
+</audio></section>
+<section id="handling-long-text-and-special-cases" class="level3">
+<h3 class="anchored" data-anchor-id="handling-long-text-and-special-cases">Handling Long Text and Special Cases</h3>
+<p>TTS systems may struggle with very long input text or special characters. Implement text preprocessing to handle these cases gracefully. Break long responses into shorter segments, handle abbreviations and numbers appropriately, and filter out problematic characters that might cause TTS failures.</p>
+<p>Consider implementing text chunking for responses longer than a reasonable speaking length. This prevents both TTS processing issues and user fatigue from overly long audio responses.</p>
+</section>
+</section>
+<section id="pipeline-integration-and-optimization" class="level2">
+<h2 class="anchored" data-anchor-id="pipeline-integration-and-optimization">Pipeline Integration and Optimization</h2>
+<section id="building-the-complete-system" class="level3">
+<h3 class="anchored" data-anchor-id="building-the-complete-system">Building the Complete System</h3>
+<p>Integrating all components requires careful attention to error handling and resource management. Each stage of the pipeline can fail independently, and robust systems must handle these failures gracefully rather than crashing.</p>
+<p>Design our integration with modularity in mind. Test each component independently before combining them. This approach simplifies debugging and allows you to optimize individual components separately.</p>
+<p>We should also implement proper logging throughout our pipeline. When complex systems fail, detailed logs help identify whether the issue occurs in audio capture, speech recognition, language model processing, text-to-speech conversion, or audio playback.</p>
+</section>
+<section id="performance-optimization-strategies" class="level3">
+<h3 class="anchored" data-anchor-id="performance-optimization-strategies">Performance Optimization Strategies</h3>
+<p>Measure the timing of each pipeline component to identify bottlenecks. Typically, the SLM inference takes the longest time, followed by TTS generation. Understanding these timing characteristics helps prioritize optimization efforts.</p>
+<p>Consider implementing concurrent processing where possible. For example, you might begin TTS processing for the first part of an extended response while the SLM is still generating the remainder. However, be cautious about memory usage when implementing parallel processing on resource-constrained devices.</p>
+</section>
+<section id="memory-management-considerations" class="level3">
+<h3 class="anchored" data-anchor-id="memory-management-considerations">Memory Management Considerations</h3>
+<p>Edge devices have limited RAM, and loading multiple large models simultaneously can cause memory pressure. Implement strategies to manage memory efficiently, such as loading models only when needed or using model swapping for infrequently used components.</p>
+<p>Monitor system memory usage during operation and implement safeguards to prevent memory exhaustion. Consider implementing graceful degradation where your system switches to smaller, more efficient models if memory becomes constrained.</p>
+</section>
+<section id="designing-resilient-systems" class="level3">
+<h3 class="anchored" data-anchor-id="designing-resilient-systems">Designing Resilient Systems</h3>
+<p>Production-quality voice interaction systems must handle various failure modes gracefully. Network interruptions, hardware disconnections, model loading failures, and unexpected input conditions should not cause your system to crash.</p>
+<p>Implement comprehensive error handling at each pipeline stage. When speech recognition produces empty output, provide the user with meaningful feedback rather than processing empty strings. When TTS fails, consider falling back to text display or simplified audio feedback.</p>
+<p>Design user feedback mechanisms that work within your voice interaction paradigm. Audio beeps, LED indicators, or simple voice messages can communicate system status without requiring visual displays.</p>
+</section>
+<section id="debugging-complex-pipelines" class="level3">
+<h3 class="anchored" data-anchor-id="debugging-complex-pipelines">Debugging Complex Pipelines</h3>
+<p>Multi-stage systems present unique debugging challenges. When the overall system fails, identifying the specific failure point requires systematic testing approaches.</p>
+<p>Implement test modes that allow you to inject known inputs at each pipeline stage. This capability enables you to isolate problems to specific components rather than repeatedly testing the entire system.</p>
+<p>Create diagnostic outputs that help understand system behavior. For example, displaying transcription confidence scores, SLM response times, or TTS processing status helps identify performance issues or quality problems.</p>
+</section>
+<section id="the-full-python-script" class="level3">
+<h3 class="anchored" data-anchor-id="the-full-python-script">The full Python Script</h3>
+<p>Considering the previous points, let’s assemble all the essential components that work together: audio capture, transcription, language model processing, and text-to-speech. We should combine these into a complete voice pipeline that flows naturally from one step to the next.</p>
+<p>The key insight here is that each of our developed scripts represents a stage in what’s called an “audio processing pipeline”. Let’s walk through how we can connect these pieces.</p>
+<p><strong>Understanding the Pipeline Architecture</strong></p>
+<p>The pipeline follows a logical sequence: the voice becomes audio data, that audio is converted into text, the text is processed into an AI response, the response is converted into speech audio, and finally, that speech audio is transformed into sound that we can hear.</p>
+<p>We should have a <code>run_voice_pipeline()</code> function in addition to the previous ones that acts as a coordinator, ensuring each step completes successfully before proceeding to the next. If any step fails, the entire pipeline stops gracefully rather than trying to continue with missing data.</p>
+<p><strong>Key Integration Points</strong></p>
+<p>We should connect the scripts by ensuring the output of each function becomes the input for the following function. For example, <code>record_audio()</code> creates “user_input.wav”, which <code>transcribe_audio()</code> reads to produce text, which <code>generate_response()</code> processes to develop an AI response, and so on.</p>
+<p>The error handling at each step ensures that if our microphone isn’t working, or if the AI model is busy, or if the voice model files are missing, we get clear feedback about what went wrong rather than mysterious crashes.</p>
+<p><strong>Optimizations for Raspberry Pi</strong></p>
+<p>The Raspberry Pi has limited resources compared to a desktop computer, so we should include several optimizations. The <code>cleanup_temp_files()</code> function prevents our storage from filling up with temporary audio files. The audio configuration uses 16kHz sampling (which matches Moonshine’s expectations) rather than CD-quality 44kHz, reducing processing overhead.</p>
+<p>The continuous assistant mode includes a manual trigger (pressing Enter) rather than <strong>voice activation</strong> detection, which saves CPU cycles that would otherwise be spent constantly monitoring audio input.</p>
+<blockquote class="blockquote">
+<p>On a final product, we could include, for example, a KWS (Keyword Spotting) function, based on a TinyML device, where only when a trigger word is spoken, the <code>record_audio()</code> function starts to work.</p>
+</blockquote>
+<p><strong>Understanding Voice Activity Detection</strong></p>
+<p>One of the main improvements from the single scripts stacked and tested separately is what audio engineers call “voice activity detection” (VAD). When we speak to someone face-to-face, we don’t announce, “I’m going to talk for exactly 10 seconds now.” Instead, we say our thoughts, pause naturally, and the listener intuitively knows when you’ve finished.</p>
+<p>Our new <code>record_audio_with_silence_detection()</code> function mimics this natural process by continuously analyzing the audio signal’s amplitude—essentially measuring how “loud” each tiny slice of audio is. When the amplitude stays below a threshold for 2 seconds, for example, the system intelligently concludes that we have finished speaking.</p>
+<p><strong>The Technical Magic Behind Silence Detection</strong></p>
+<p>The recording process now works like a sophisticated audio surveillance system. Every fraction of a second, it captures a small chunk of audio data (determined by your CHUNK size of 1024 samples) and immediately analyzes it. Using Python’s struct module, it converts the raw byte data into numerical values representing sound pressure levels.</p>
+<p>The crucial calculation happens in this line: <code>volume = max(chunk_data) / 32768.0</code>. This finds the loudest moment in that tiny audio slice and normalizes it to a scale from 0 to 1, where 0 represents complete silence and 1 represents the maximum possible volume your microphone can capture.</p>
+<p><strong>Calibrating the Sensitivity</strong></p>
+<p>The <code>silence_threshold=0.01</code> parameter is our sensitivity control knob: <strong>too sensitive</strong> (closer to 0.00) and it might stop recording when you pause to think; <strong>not sensitive enough</strong> (closer to 0.1) and it might keep recording through long periods of quiet background noise.</p>
+<p>For a typical indoor Raspberry Pi setup, 0.01 strikes a good balance. It’s sensitive enough to detect when we have stopped talking, but robust enough to ignore minor background sounds, such as air conditioning or distant traffic.</p>
+<blockquote class="blockquote">
+<p>We should experiment with this value based on the specific environment.</p>
+</blockquote>
+<p><strong>Testing and Deployment Strategy</strong></p>
+<p>Download the complete script from GitHub: <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Audio_AI_Pipeline/voice_ai_pipeline.py">voice_ai_pipeline.py</a></p>
+<p>We can start by testing individual components using <code>detect_audio_devices()</code> first to confirm our USB microphone is still at index 2. Then, we can run <code>run_voice_pipeline()</code> with a simple question to verify the complete flow works.</p>
+<p>Once we are confident in single interactions, we can use <code>continuous_voice_assistant()</code> for extended conversations. This mode lets us have back-and-forth exchanges with your AI assistant, making it feel more like a natural conversation partner.</p>
+<blockquote class="blockquote">
+<p>If you want to experiment with different SLM models, we need to change the model parameter in <code>generate_response()</code>.</p>
+</blockquote>
+<p><img src="./images/png/result-pipeline.png" class="img-fluid"></p>
+<p>The test with sound can be followed in the video: </p><div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/zgLMYdMWFjg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div><p></p>
+</section>
+</section>
+<section id="the-image-to-audio-ai-pipeline-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="the-image-to-audio-ai-pipeline-architecture">The Image to Audio AI Pipeline Architecture</h2>
+<p>Voice interaction systems have significant potential for educational applications and accessibility improvements by designing interfaces that adapt to different user needs and capabilities. By integrating small visual models, such as Moondream, with existing TTS pipelines, we can create multimodal assistants that describe images for people with visual impairments, converting visual content into detailed spoken descriptions of scenes, objects, and spatial relationships.</p>
+<p><img src="./images/png/visual-sound.png" class="img-fluid"></p>
+<p>Let’s apply what we have explored in previous chapters, along with what we learn in this one, to create a simple code that converts an image captured by a camera into its corresponding spoken caption by the speaker.</p>
+<p>The code is straightforward and is intended solely to test the solution’s potential.</p>
+<ol type="1">
+<li><p>The <code>capture_image(IMG_PATH)</code> function captures a photo and saves it to the specified path (IMG_PATH).</p></li>
+<li><p>The <code>caption = image_description(IMG_PATH, MODEL)</code> function will describe the image using <code>MoonDream</code>, a powerful yet compact visual language model (VLM). The description in a text format will be saved in the variable <code>caption</code>.</p></li>
+<li><p>The <code>text_to_speech_piper(caption)</code> function will create a .WAV file from the <code>caption</code>.</p></li>
+<li><p>And finally, the <code>play_audio()</code> function will play the .WAV file generated by PIPER.</p></li>
+</ol>
+<p>Here is the complete Python script (<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Audio_AI_Pipeline/img_caption_speech.py">img_caption_speech.py</a>):</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> picamera2 <span class="im">import</span> Picamera2</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> capture_image(img_path):</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize camera</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    picam2 <span class="op">=</span> Picamera2()</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    picam2.start()</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Wait for camera to warm up</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">2</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Capture image</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    picam2.capture_file(img_path)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">==&gt; Image captured: "</span><span class="op">+</span>img_path)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Stop camera</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    picam2.stop()</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    picam2.close()</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> image_description(img_path, model):</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"</span><span class="ch">\n</span><span class="st">==&gt; WAIT, SVL Model working ..."</span>)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(img_path, <span class="st">'rb'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> ollama.chat(</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>            model<span class="op">=</span>model,</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>            messages<span class="op">=</span>[</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>              {</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>                <span class="st">'role'</span>: <span class="st">'user'</span>,</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>                <span class="st">'content'</span>: <span class="st">'''return the description of the image'''</span>,</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>                <span class="st">'images'</span>: [<span class="bu">file</span>.read()],</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>              },</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>            ],</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>            options <span class="op">=</span> {</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>              <span class="st">'temperature'</span>: <span class="dv">0</span>,</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>              }</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response[<span class="st">'message'</span>][<span class="st">'content'</span>]</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> text_to_speech_piper(text, output_file<span class="op">=</span><span class="st">"assistant_response.wav"</span>):</span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Path to your voice model</span></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>    model_path <span class="op">=</span> <span class="st">"voices/en_US-lessac-low.onnx"</span></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if model exists</span></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> os.path.exists(model_path):</span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error: Model file not found at </span><span class="sc">{</span>model_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Run PIPER command</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>        process <span class="op">=</span> subprocess.Popen(</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>            [<span class="st">'piper'</span>, <span class="st">'--model'</span>, model_path, <span class="st">'--output_file'</span>, output_file],</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>            stdin<span class="op">=</span>subprocess.PIPE,</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>            stdout<span class="op">=</span>subprocess.PIPE,</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>            stderr<span class="op">=</span>subprocess.PIPE,</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>            text<span class="op">=</span><span class="va">True</span></span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Send text to PIPER</span></span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>        stdout, stderr <span class="op">=</span> process.communicate(<span class="bu">input</span><span class="op">=</span>text)</span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> process.returncode <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Speech generated successfully: </span><span class="sc">{</span>output_file<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Error: </span><span class="sc">{</span>stderr<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error running PIPER: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> play_audio(filename<span class="op">=</span><span class="st">"assistant_response.wav"</span>):</span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use aplay to play the audio file</span></span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> subprocess.run([<span class="st">'aplay'</span>, filename], </span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a>                              capture_output<span class="op">=</span><span class="va">True</span>, </span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a>                              text<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> result.returncode <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Audio playback completed"</span>)</span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Playback error: </span><span class="sc">{</span>result<span class="sc">.</span>stderr<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Error playing audio: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-94"><a href="#cb13-94" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb13-95"><a href="#cb13-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-96"><a href="#cb13-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-97"><a href="#cb13-97" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage and testing functions</span></span>
+<span id="cb13-98"><a href="#cb13-98" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb13-99"><a href="#cb13-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-100"><a href="#cb13-100" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">============= Image to Speech AI Pipeline Ready ==========="</span>)</span>
+<span id="cb13-101"><a href="#cb13-101" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Press [Enter] to capture an image and voice caption it ..."</span>)</span>
+<span id="cb13-102"><a href="#cb13-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-103"><a href="#cb13-103" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 1: Wait for user to initiate recording</span></span>
+<span id="cb13-104"><a href="#cb13-104" aria-hidden="true" tabindex="-1"></a>    <span class="bu">input</span>(<span class="st">"Press Enter to start ..."</span>)</span>
+<span id="cb13-105"><a href="#cb13-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-106"><a href="#cb13-106" aria-hidden="true" tabindex="-1"></a>    IMG_PATH <span class="op">=</span> <span class="st">"/home/mjrovai/Documents/OLLAMA/SST/capt_image.jpg"</span></span>
+<span id="cb13-107"><a href="#cb13-107" aria-hidden="true" tabindex="-1"></a>    MODEL <span class="op">=</span> <span class="st">"moondream:latest"</span></span>
+<span id="cb13-108"><a href="#cb13-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-109"><a href="#cb13-109" aria-hidden="true" tabindex="-1"></a>    capture_image(IMG_PATH)</span>
+<span id="cb13-110"><a href="#cb13-110" aria-hidden="true" tabindex="-1"></a>    caption <span class="op">=</span> image_description(IMG_PATH, MODEL)</span>
+<span id="cb13-111"><a href="#cb13-111" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"</span><span class="ch">\n</span><span class="st">==&gt; AI Response:"</span>, caption)</span>
+<span id="cb13-112"><a href="#cb13-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-113"><a href="#cb13-113" aria-hidden="true" tabindex="-1"></a>    text_to_speech_piper(caption)</span>
+<span id="cb13-114"><a href="#cb13-114" aria-hidden="true" tabindex="-1"></a>    play_audio()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And here we can see (and listen) to the result:</p>
+<p><img src="./images/png/infer-img-sound.png" class="img-fluid"></p>
+<audio controls="">
+<source src="assistant_response.wav" type="audio/wav">
+<p>Your browser does not support the audio element. </p>
+</audio></section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This chapter introduced us to multimodal AI system development through an audio and vision processing pipeline. We learned to integrate speech recognition, language models, and speech synthesis into a cohesive system that runs efficiently on edge hardware.</p>
+<p>We explored how to architect systems with multiple AI components, handle complex error conditions, and optimize performance within resource constraints.</p>
+<p>These skills are essential for the advanced topics in upcoming chapters, including RAG systems, agent architectures, and the integration of physical computing. The system thinking approach used here will be essential for future AI engineering work.</p>
+<p>We should consider how the voice interaction capabilities we built might enhance other AI systems. Many applications benefit from voice interfaces, and the foundation established here can be adapted and extended for various use cases. We can, for example, transform our audio pipeline into a smart home assistant by integrating physical computing elements. Voice commands can trigger LED indicators, read sensor values, or control actuators connected to our Raspberry Pi GPIO pins. Voice queries about environmental conditions can trigger sensor readings, while voice commands can control connected devices.</p>
+<p>This chapter extends our SLM and VLM work by adding input and/or output modalities beyond text and images. The same language models we used previously now process voice-derived input and generate responses for speech synthesis.</p>
+<p>Consider how RAG systems from later chapters might integrate with voice interactions. Voice queries could trigger document retrieval, with synthesized responses incorporating retrieved information.</p>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/Audio_AI_Pipeline">Python Scripts</a></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/vlm/vlm.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Vision-Language Models at the Edge</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="pagination-link">
+        <span class="nav-page-text">Physical Computing with Raspberry Pi</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>

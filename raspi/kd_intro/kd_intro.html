@@ -279,6 +279,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../raspi/audio_pipeline/audio_pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Audio and Vision AI Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
   </div>
@@ -515,31 +521,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Our teacher model has substantial capacity with multiple convolutional layers, batch normalization, and dropout for regularization:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_teacher_model():</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> models.Sequential([</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">64</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>, input_shape<span class="op">=</span>(<span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>)),</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        layers.BatchNormalization(),</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">64</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>),</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">64</span>, <span class="dv">3</span>, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                      activation<span class="op">=</span><span class="st">'relu'</span>, </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                      padding<span class="op">=</span><span class="st">'same'</span>, </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                      input_shape<span class="op">=</span>(<span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>)),</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        layers.BatchNormalization(),</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">128</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">64</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        layers.BatchNormalization(),</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">128</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>),</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">128</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>),</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        layers.BatchNormalization(),</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">256</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">128</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        layers.BatchNormalization(),</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        layers.GlobalAveragePooling2D(),</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        layers.Dense(<span class="dv">256</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        layers.BatchNormalization(),</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        layers.Dropout(<span class="fl">0.5</span>),</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        layers.Dense(<span class="dv">128</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">256</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>),</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        layers.BatchNormalization(),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        layers.GlobalAveragePooling2D(),</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        layers.Dense(<span class="dv">256</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        layers.BatchNormalization(),</span>
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        layers.Dropout(<span class="fl">0.5</span>),</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">'softmax'</span>)</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        layers.Dense(<span class="dv">128</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        layers.BatchNormalization(),</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        layers.Dropout(<span class="fl">0.5</span>),</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">'softmax'</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/teacher_summary.png" class="img-fluid"></p>
 <blockquote class="blockquote">
 <p>This architecture achieved <strong>99.44 % accuracy</strong> on MNIST.</p>
@@ -550,15 +559,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Our student model is intentionally much simpler, with fewer layers and significantly fewer parameters:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_student_model():</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> models.Sequential([</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">16</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>, input_shape<span class="op">=</span>(<span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>)),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">32</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        layers.Flatten(),</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        layers.Dense(<span class="dv">64</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">'softmax'</span>)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">16</span>, <span class="dv">3</span>, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                      activation<span class="op">=</span><span class="st">'relu'</span>, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                      padding<span class="op">=</span><span class="st">'same'</span>, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                      input_shape<span class="op">=</span>(<span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>)),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        layers.Conv2D(<span class="dv">32</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">'relu'</span>, padding<span class="op">=</span><span class="st">'same'</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        layers.Flatten(),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        layers.Dense(<span class="dv">64</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">'softmax'</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/student_summary.png" class="img-fluid"></p>
 <blockquote class="blockquote">
 <p>The student model has fewer parameters than the teacher (105K versus 658K), or 6.2 times smaller.</p>
