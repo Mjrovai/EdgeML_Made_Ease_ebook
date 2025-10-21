@@ -370,8 +370,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#retrieval-augmented-generation-rag" id="toc-retrieval-augmented-generation-rag" class="nav-link" data-scroll-target="#retrieval-augmented-generation-rag">Retrieval-Augmented Generation (RAG)</a>
   <ul>
   <li><a href="#understanding-rag" id="toc-understanding-rag" class="nav-link" data-scroll-target="#understanding-rag">Understanding RAG</a></li>
-  <li><a href="#implementing-a-basic-rag-system" id="toc-implementing-a-basic-rag-system" class="nav-link" data-scroll-target="#implementing-a-basic-rag-system">Implementing a Basic RAG System</a></li>
-  <li><a href="#key-components-of-our-edge-rag-system" id="toc-key-components-of-our-edge-rag-system" class="nav-link" data-scroll-target="#key-components-of-our-edge-rag-system">Key Components of Our Edge RAG System</a></li>
+  <li><a href="#implementing-a-naive-rag-system" id="toc-implementing-a-naive-rag-system" class="nav-link" data-scroll-target="#implementing-a-naive-rag-system">Implementing a Naive RAG System</a></li>
+  <li><a href="#instalation" id="toc-instalation" class="nav-link" data-scroll-target="#instalation">Instalation</a></li>
+  <li><a href="#key-components-of-the-naive-rag-system" id="toc-key-components-of-the-naive-rag-system" class="nav-link" data-scroll-target="#key-components-of-the-naive-rag-system">Key Components of the Naive RAG System</a></li>
   <li><a href="#advantages-of-rag-for-edge-ai" id="toc-advantages-of-rag-for-edge-ai" class="nav-link" data-scroll-target="#advantages-of-rag-for-edge-ai">Advantages of RAG for Edge AI</a></li>
   <li><a href="#optimizing-rag-for-edge-devices" id="toc-optimizing-rag-for-edge-devices" class="nav-link" data-scroll-target="#optimizing-rag-for-edge-devices">Optimizing RAG for Edge Devices</a></li>
   <li><a href="#application-enhanced-weather-station-with-rag" id="toc-application-enhanced-weather-station-with-rag" class="nav-link" data-scroll-target="#application-enhanced-weather-station-with-rag">Application: Enhanced Weather Station with RAG</a></li>
@@ -948,54 +949,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Once the user enters a country name, the model will return the name of its capital city (as a string) and the latitude and longitude of such city (in float). Using those coordinates, the app used a simple Python library (<a href="https://pypi.org/project/haversine/">haversine</a>) to calculate the distance between those 2 points.</p>
 <p>The critical library used was <a href="https://docs.pydantic.dev/latest/">Pydantic</a> (and instructor), a robust data validation and settings management library engineered by Python to enhance the robustness and reliability of our codebase. In short, <em>Pydantic</em> helps ensure that the model’s response will always be consistent.</p>
 <p>Function calling can improve an agent’s reliability by ensuring structured outputs and clear tool selection logic. Here’s a generic template about how we can implement it :</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel, Field</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Optional, List</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> instructor</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> haversine <span class="im">import</span> haversine</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel, Field</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ollama <span class="im">import</span> chat</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ToolCall(BaseModel):</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    tool_name: <span class="bu">str</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Name of the tool to call"</span>)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    parameters: <span class="bu">dict</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Parameters for the tool"</span>)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    reasoning: <span class="bu">str</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Reasoning for using this tool"</span>)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AgentResponse(BaseModel):</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    needs_tool: <span class="bu">bool</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Whether a tool is needed"</span>)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    tool_calls: Optional[List[ToolCall]] <span class="op">=</span> Field(<span class="va">None</span>, </span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                                 description<span class="op">=</span><span class="st">"Tools to call"</span>)</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    direct_response: Optional[<span class="bu">str</span>] <span class="op">=</span> Field(<span class="va">None</span>, </span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                                           description<span class="op">=</span><span class="st">"Direct response if no </span><span class="ch">\</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="st">                                           tool needed"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>MODEL <span class="op">=</span> <span class="st">'llama3.2:3B'</span>   <span class="co"># The name of the model to be used</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>mylat <span class="op">=</span> <span class="op">-</span><span class="fl">33.33</span>          <span class="co"># Latitude of Santiago de Chile</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>mylon <span class="op">=</span> <span class="op">-</span><span class="fl">70.51</span>          <span class="co"># Longitude of Santiago de Chile</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CityCoord(BaseModel):</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    city: <span class="bu">str</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Name of the city"</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    lat: <span class="bu">float</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Decimal Latitude of the city"</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    lon: <span class="bu">float</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Decimal Longitude of the city"</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calc_dist(country, model<span class="op">=</span>MODEL):</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    start_time <span class="op">=</span> time.perf_counter()  <span class="co"># Start timing</span></span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the client with structured output</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> instructor.patch(</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    OpenAI(</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        base_url<span class="op">=</span><span class="st">"http://localhost:11434/v1"</span>,</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        api_key<span class="op">=</span><span class="st">"ollama"</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span>instructor.Mode.JSON,</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> structured_think(query, available_tools, model):</span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    tool_descriptions <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([<span class="ss">f"- </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>desc<span class="sc">}</span><span class="ss">"</span> </span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>                                 <span class="cf">for</span> name, desc <span class="kw">in</span> available_tools.items()])</span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""</span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="ss">    Available tools:</span></span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>tool_descriptions<span class="sc">}</span></span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="ss">    User query: </span><span class="sc">{</span>query<span class="sc">}</span></span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="ss">    Determine if any tools are needed to answer this query accurately.</span></span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> client.chat.completions.create(</span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>        model<span class="op">=</span>model,</span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>        messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: prompt}],</span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>        response_model<span class="op">=</span>AgentResponse,</span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>        max_retries<span class="op">=</span><span class="dv">3</span></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ask Ollama for structured data</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> chat(</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        model<span class="op">=</span>model,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        messages<span class="op">=</span>[{</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>            <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content"</span>: <span class="ss">f"Return the capital city of </span><span class="sc">{</span>country<span class="sc">}</span><span class="ss">, </span><span class="ch">\</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="ss">             with its decimal latitude and longitude."</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>        }],</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>        <span class="bu">format</span><span class="op">=</span>CityCoord.model_json_schema(),  <span class="co"># Structured JSON format</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>        options<span class="op">=</span>{<span class="st">"temperature"</span>: <span class="dv">0</span>}</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    resp <span class="op">=</span> CityCoord.model_validate_json(response.message.content)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    distance <span class="op">=</span> haversine((mylat, mylon), (resp.lat, resp.lon), unit<span class="op">=</span><span class="st">'km'</span>)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    end_time <span class="op">=</span> time.perf_counter()  <span class="co"># End timing</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    elapsed_time <span class="op">=</span> end_time <span class="op">-</span> start_time  <span class="co"># Calculate elapsed time</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Santiago de Chile is about </span><span class="sc">{</span><span class="bu">int</span>(<span class="bu">round</span>(distance, <span class="op">-</span><span class="dv">1</span>))<span class="sc">:,}</span><span class="ss"> </span><span class="ch">\</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="ss">kilometers away from </span><span class="sc">{</span>resp<span class="sc">.</span>city<span class="sc">}</span><span class="ss">."</span>) </span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"[INFO] ==&gt; </span><span class="sc">{</span>MODEL<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>elapsed_time<span class="sc">:.1f}</span><span class="ss"> seconds"</span>)</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Test</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>calc_dist(<span class="st">'france'</span>)</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>calc_dist(<span class="st">'colombia'</span>)</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>calc_dist(<span class="st">'united states'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/answer-pydantic.png" class="img-fluid"></p>
 </section>
 <section id="response-validation" class="level3">
 <h3 class="anchored" data-anchor-id="response-validation">2. Response Validation</h3>
@@ -1064,18 +1064,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Generation</strong>: The SLM generates a response using both the query and the retrieved context.</li>
 </ol>
 </section>
-<section id="implementing-a-basic-rag-system" class="level3">
-<h3 class="anchored" data-anchor-id="implementing-a-basic-rag-system">Implementing a Basic RAG System</h3>
+<section id="implementing-a-naive-rag-system" class="level3">
+<h3 class="anchored" data-anchor-id="implementing-a-naive-rag-system">Implementing a Naive RAG System</h3>
 <p>We will develop two crucial components (scripts) of an RAG system:</p>
 <ol type="1">
-<li>Creating the Vector Database (<code>10-Create-Persistent-Vector-Database.py</code>). This script builds a knowledge base by:
+<li>Creating the Vector Database (<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Advancing_EdgeAI/10-Create-Persistent-Vector-Database.py">10-Create-Persistent-Vector-Database.py</a>). This script builds a knowledge base by:
 <ul>
 <li>Loading documents from PDFs and URLs</li>
 <li>Splitting them into manageable chunks</li>
 <li>Creating embeddings for each chunk</li>
 <li>Storing these embeddings in a vector database (Chroma)</li>
 </ul></li>
-<li>Querying the Database (<code>20-Query-the-Persistent-RAG-Database.py</code>). This script:
+<li>Querying the Database (<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Advancing_EdgeAI/20-Query-the-Persistent-RAG-Database.py">20-Query-the-Persistent-RAG-Database.py</a>). This script:
 <ul>
 <li>Loads the saved vector database</li>
 <li>Accepts user queries</li>
@@ -1084,59 +1084,87 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Generates a response using the SLM</li>
 </ul></li>
 </ol>
+<p><img src="./images/png/image-20251020161023783.png" class="img-fluid"></p>
+</section>
+<section id="instalation" class="level3">
+<h3 class="anchored" data-anchor-id="instalation">Instalation</h3>
+<p>Once inside an environment, install the required libraries:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> <span class="st">'langchain-chroma'</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> langchain</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> langchain-community</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> langchain-ollama</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> langchain-text-splitter</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> langchain-community pypdf</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install tiktoken</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> langsmith</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Let’s examine how these components work together to implement a RAG system on edge devices.</p>
 </section>
-<section id="key-components-of-our-edge-rag-system" class="level3">
-<h3 class="anchored" data-anchor-id="key-components-of-our-edge-rag-system">Key Components of Our Edge RAG System</h3>
+<section id="key-components-of-the-naive-rag-system" class="level3">
+<h3 class="anchored" data-anchor-id="key-components-of-the-naive-rag-system">Key Components of the Naive RAG System</h3>
 <ol type="1">
 <li><strong>Document Processing</strong></li>
 </ol>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_vectorstore():</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load documents from PDFs and URLs</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    docs_list <span class="op">=</span> []</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># [Document loading code]</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Split documents into chunks</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    text_splitter <span class="op">=</span> RecursiveCharacterTextSplitter.from_tiktoken_encoder(</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        chunk_size<span class="op">=</span><span class="dv">300</span>, chunk_overlap<span class="op">=</span><span class="dv">30</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    doc_splits <span class="op">=</span> text_splitter.split_documents(docs_list)</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create embeddings and store in vector database</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    embedding_function <span class="op">=</span> OllamaEmbeddings(model<span class="op">=</span><span class="st">"nomic-embed-text"</span>)</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    vectorstore <span class="op">=</span> Chroma.from_documents(</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        documents<span class="op">=</span>doc_splits,</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        collection_name<span class="op">=</span><span class="st">"rag-edgeai-eng-chroma"</span>,</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        embedding<span class="op">=</span>embedding_function,</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        persist_directory<span class="op">=</span>PERSIST_DIRECTORY</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Persist to disk</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    vectorstore.persist()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This function processes our documents, creating a searchable knowledge base. Notice we’re using <code>OllamaEmbeddings</code>with the <code>nomic-embed-text</code> model, which can run efficiently on edge devices like the Raspberry Pi.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_vectorstore():</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load documents from PDFs and URLs</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    docs_list <span class="op">=</span> []</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># [Document loading code]</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Split documents into chunks</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    text_splitter <span class="op">=</span> RecursiveCharacterTextSplitter.from_tiktoken_encoder(</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        chunk_size<span class="op">=</span><span class="dv">300</span>, chunk_overlap<span class="op">=</span><span class="dv">30</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    doc_splits <span class="op">=</span> text_splitter.split_documents(docs_list)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create embeddings and store in vector database</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    embedding_function <span class="op">=</span> OllamaEmbeddings(model<span class="op">=</span><span class="st">"nomic-embed-text"</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    vectorstore <span class="op">=</span> Chroma.from_documents(</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        documents<span class="op">=</span>doc_splits,</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        collection_name<span class="op">=</span><span class="st">"rag-edgeai-eng-chroma"</span>,</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        embedding<span class="op">=</span>embedding_function,</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        persist_directory<span class="op">=</span>PERSIST_DIRECTORY</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Persist to disk</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    vectorstore.persist()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This function processes our documents (chunk size of <code>300</code> with an overlap of <code>30</code>), creating a searchable knowledge base. Notice we’re using <code>OllamaEmbeddings</code> with the <code>nomic-embed-text</code> model, which can run efficiently on edge devices like the Raspberry Pi.</p>
 <ol type="1">
 <li><strong>Query Processing and Retrieval</strong></li>
 </ol>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> answer_question(question, retriever):</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Retrieve relevant documents</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    docs <span class="op">=</span> retriever.invoke(question)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    docs_content <span class="op">=</span> <span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>.join(doc.page_content <span class="cf">for</span> doc <span class="kw">in</span> docs)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate answer using RAG prompt</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    rag_prompt <span class="op">=</span> hub.pull(<span class="st">"rlm/rag-prompt"</span>)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    rag_chain <span class="op">=</span> rag_prompt <span class="op">|</span> llm <span class="op">|</span> StrOutputParser()</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate the answer</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    answer <span class="op">=</span> rag_chain.invoke({<span class="st">"context"</span>: docs_content, <span class="st">"question"</span>: question})</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> answer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> answer_question(question, retriever):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Generate an answer using the RAG system"""</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    start_time <span class="op">=</span> time.time()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Question: </span><span class="sc">{</span>question<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Retrieving documents..."</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    docs <span class="op">=</span> retriever.invoke(question)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    docs_content <span class="op">=</span> <span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>.join(doc.page_content <span class="cf">for</span> doc <span class="kw">in</span> docs)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Retrieved </span><span class="sc">{</span><span class="bu">len</span>(docs)<span class="sc">}</span><span class="ss"> document chunks"</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Generating answer..."</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Using new LangSmith client and pull_prompt</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    client <span class="op">=</span> Client()</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    rag_prompt <span class="op">=</span> client.pull_prompt(<span class="st">"rlm/rag-prompt"</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Compose the RAG chain</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(rag_prompt, <span class="bu">str</span>):</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        rag_prompt <span class="op">=</span> ChatPromptTemplate.from_template(rag_prompt)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    rag_chain <span class="op">=</span> rag_prompt <span class="op">|</span> llm <span class="op">|</span> StrOutputParser()</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    answer <span class="op">=</span> rag_chain.invoke({<span class="st">"context"</span>: docs_content, <span class="st">"question"</span>: question})</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    end_time <span class="op">=</span> time.time()</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    latency <span class="op">=</span> end_time <span class="op">-</span> start_time</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Response latency: </span><span class="sc">{</span>latency<span class="sc">:.2f}</span><span class="ss"> seconds using model: </span><span class="sc">{</span>local_llm<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> answer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This function retrieves relevant documents based on the query and combines them with a specialized RAG prompt to generate a response. The RAG prompt is particularly important as it tells the model how to use the context documents to answer the question.</p>
 <ol type="1">
 <li><strong>SLM Integration</strong></li>
 </ol>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the LLM</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>local_llm <span class="op">=</span> <span class="st">"llama3.2:3b"</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>llm <span class="op">=</span> ChatOllama(model<span class="op">=</span>local_llm, temperature<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the LLM</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>local_llm <span class="op">=</span> <span class="st">"llama3.2:3b"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>llm <span class="op">=</span> ChatOllama(model<span class="op">=</span>local_llm, temperature<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We’re using Ollama to run the SLM locally on our edge device, in this case using the 3B parameter version of Llama 3.2.</p>
 </section>
 <section id="advantages-of-rag-for-edge-ai" class="level3">
@@ -1160,102 +1188,102 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Persistent Storage</strong>: As shown in our examples, using persistent storage prevents recomputing embeddings every time that the RAG system is initiated.</li>
 <li><strong>Query Optimization</strong>: Implement query preprocessing to improve retrieval accuracy while reducing computational load.</li>
 </ol>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> optimize_query(query):</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Optimize the query for better retrieval results"""</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove filler words, focus on key terms</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    stop_words <span class="op">=</span> {<span class="st">"and"</span>, <span class="st">"or"</span>, <span class="st">"the"</span>, <span class="st">"a"</span>, <span class="st">"an"</span>, <span class="st">"in"</span>, <span class="st">"on"</span>, <span class="st">"at"</span>, <span class="st">"to"</span>, </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"for"</span>, <span class="st">"with"</span>}</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    terms <span class="op">=</span> [term <span class="cf">for</span> term <span class="kw">in</span> query.lower().split() <span class="cf">if</span> term <span class="kw">not</span> <span class="kw">in</span> stop_words]</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">" "</span>.join(terms)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> optimize_query(query):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Optimize the query for better retrieval results"""</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove filler words, focus on key terms</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    stop_words <span class="op">=</span> {<span class="st">"and"</span>, <span class="st">"or"</span>, <span class="st">"the"</span>, <span class="st">"a"</span>, <span class="st">"an"</span>, <span class="st">"in"</span>, <span class="st">"on"</span>, <span class="st">"at"</span>, <span class="st">"to"</span>, </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"for"</span>, <span class="st">"with"</span>}</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    terms <span class="op">=</span> [term <span class="cf">for</span> term <span class="kw">in</span> query.lower().split() <span class="cf">if</span> term <span class="kw">not</span> <span class="kw">in</span> stop_words]</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">" "</span>.join(terms)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="application-enhanced-weather-station-with-rag" class="level3">
 <h3 class="anchored" data-anchor-id="application-enhanced-weather-station-with-rag">Application: Enhanced Weather Station with RAG</h3>
 <p>Building on our advanced weather station (see the chapter “Experimenting with SLMs for IoT Control”), we can, for example, integrate RAG to provide more contextual responses about weather conditions and historical patterns:</p>
 <p><img src="./images/png/image-20250319153645241.png" class="img-fluid"></p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> weather_station_with_rag(retriever, model<span class="op">=</span><span class="st">"llama3.2:3b"</span>):</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get current sensor readings</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    temp_dht, humidity, temp_bmp, pressure, button_state <span class="op">=</span> collect_data()</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Formulate a query for the RAG system based on current readings</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    query <span class="op">=</span> <span class="ss">f"Analysis of temperature </span><span class="sc">{</span>temp_dht<span class="sc">}</span><span class="ss">°C, humidity </span><span class="sc">{</span>humidity<span class="sc">}</span><span class="ss">%, </span><span class="ch">\</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="ss">    and pressure </span><span class="sc">{</span>pressure<span class="sc">}</span><span class="ss">hPa"</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Retrieve relevant context</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    docs <span class="op">=</span> retriever.invoke(query)</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    context <span class="op">=</span> <span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>.join(doc.page_content <span class="cf">for</span> doc <span class="kw">in</span> docs)</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a prompt that combines current readings with retrieved context</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="ss">    Current Weather Station Data:</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Temperature (DHT22): </span><span class="sc">{</span>temp_dht<span class="sc">:.1f}</span><span class="ss">°C</span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Humidity: </span><span class="sc">{</span>humidity<span class="sc">:.1f}</span><span class="ss">%</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Pressure: </span><span class="sc">{</span>pressure<span class="sc">:.2f}</span><span class="ss">hPa</span></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    Reference Information:</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>context<span class="sc">}</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    Based on current readings and the reference information, provide:</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    1. An analysis of current weather conditions</span></span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    2. What these conditions typically indicate</span></span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    3. Recommendations for any actions needed</span></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate response using SLM</span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    llm <span class="op">=</span> ChatOllama(model<span class="op">=</span>model, temperature<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> llm.invoke(prompt)</span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response.content</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> weather_station_with_rag(retriever, model<span class="op">=</span><span class="st">"llama3.2:3b"</span>):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get current sensor readings</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    temp_dht, humidity, temp_bmp, pressure, button_state <span class="op">=</span> collect_data()</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Formulate a query for the RAG system based on current readings</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    query <span class="op">=</span> <span class="ss">f"Analysis of temperature </span><span class="sc">{</span>temp_dht<span class="sc">}</span><span class="ss">°C, humidity </span><span class="sc">{</span>humidity<span class="sc">}</span><span class="ss">%, </span><span class="ch">\</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ss">    and pressure </span><span class="sc">{</span>pressure<span class="sc">}</span><span class="ss">hPa"</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Retrieve relevant context</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    docs <span class="op">=</span> retriever.invoke(query)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    context <span class="op">=</span> <span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>.join(doc.page_content <span class="cf">for</span> doc <span class="kw">in</span> docs)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a prompt that combines current readings with retrieved context</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="ss">    Current Weather Station Data:</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Temperature (DHT22): </span><span class="sc">{</span>temp_dht<span class="sc">:.1f}</span><span class="ss">°C</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Humidity: </span><span class="sc">{</span>humidity<span class="sc">:.1f}</span><span class="ss">%</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="ss">    - Pressure: </span><span class="sc">{</span>pressure<span class="sc">:.2f}</span><span class="ss">hPa</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    Reference Information:</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>context<span class="sc">}</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    Based on current readings and the reference information, provide:</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    1. An analysis of current weather conditions</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    2. What these conditions typically indicate</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    3. Recommendations for any actions needed</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate response using SLM</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    llm <span class="op">=</span> ChatOllama(model<span class="op">=</span>model, temperature<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> llm.invoke(prompt)</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response.content</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This function enhances our weather station by providing context-aware responses incorporating current sensor readings and relevant information from our knowledge base. This is only an example. To use it, we should have “Weather Reference Data,” which we do not currently have. Instead, let’s create a general RAG system specializing in Edge AI Engineering.</p>
 </section>
 <section id="using-the-rag-system-for-edge-ai-engineering" class="level3">
 <h3 class="anchored" data-anchor-id="using-the-rag-system-for-edge-ai-engineering">Using the RAG System for Edge AI Engineering</h3>
 <p>For our RAG system, we will create a database with all chapters alheady written for the <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/"><em>EdgeAI Engineering</em> book</a> (chapters as URLs) and a PDF <a href="https://www.wevolver.com/article/2025-edge-ai-technology-report">Wevolver 2025 Edge AI Technology Report</a>.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF documents to include</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>pdf_paths <span class="op">=</span> [<span class="st">"./data/2025_Edge_AI_Technology_Report.pdf"</span>]</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define URLs for document sources</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>urls <span class="op">=</span> [</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi</span><span class="ch">\</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="st">    /object_detection/object_detection.html"</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/image_classification</span><span class="ch">\</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="st">    /image_classification.html"</span>,</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/setup/setup.html"</span>,</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/counting_objects_yolo</span><span class="ch">\</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="st">    /counting_objects_yolo.html"</span>,</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/llm/llm.html"</span>,</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/vlm/vlm.html"</span>,</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/physical_comp</span><span class="ch">\</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="st">    /RPi_Physical_Computing.html"</span>,</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/iot/slm_iot.html"</span>,</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF documents to include</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>pdf_paths <span class="op">=</span> [<span class="st">"./data/2025_Edge_AI_Technology_Report.pdf"</span>]</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define URLs for document sources</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>urls <span class="op">=</span> [</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi</span><span class="ch">\</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="st">    /object_detection/object_detection.html"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/image_classification</span><span class="ch">\</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="st">    /image_classification.html"</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/setup/setup.html"</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/counting_objects_yolo</span><span class="ch">\</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="st">    /counting_objects_yolo.html"</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/llm/llm.html"</span>,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/vlm/vlm.html"</span>,</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/physical_comp</span><span class="ch">\</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="st">    /RPi_Physical_Computing.html"</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/iot/slm_iot.html"</span>,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Using the RAG system is straightforward. First, ensure you’ve created the vector database:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run once to create the database</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>python <span class="dv">10</span><span class="op">-</span>Create<span class="op">-</span>Persistent<span class="op">-</span>Vector<span class="op">-</span>Database.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run once to create the database</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>python <span class="dv">10</span><span class="op">-</span>Create<span class="op">-</span>Persistent<span class="op">-</span>Vector<span class="op">-</span>Database.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/image-20250319154030732.png" class="img-fluid"></p>
 <p>Then, interact with the system through queries:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start the interactive query interface</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>python <span class="dv">20</span><span class="op">-</span>Query<span class="op">-</span>the<span class="op">-</span>Persistent<span class="op">-</span>RAG<span class="op">-</span>Database.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start the interactive query interface</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>python <span class="dv">20</span><span class="op">-</span>Query<span class="op">-</span>the<span class="op">-</span>Persistent<span class="op">-</span>RAG<span class="op">-</span>Database.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Example interactions:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> question: What is edge AI<span class="pp">?</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> answer...</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Question:</span> what is EdgeAI<span class="pp">?</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Retrieving</span> documents...</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Retrieved</span> 4 document chunks</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> answer...</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Response</span> latency: 165.72 seconds using model: llama3.2:3b</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="ex">ANSWER:</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="ex">==================================================</span></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="ex">EdgeAI</span> refers to the application of artificial intelligence <span class="er">(</span><span class="ex">AI</span><span class="kw">)</span> <span class="ex">at</span> the edge </span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="ex">of</span> a network, typically in real-time applications such as IoT sensors, industrial </span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="ex">robots,</span> and smart cameras. The Edge AI ecosystem includes edge devices, edge </span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="ex">servers,</span> and cloud platforms that work together to enable low-latency AI </span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="ex">inferencing</span> and processing of data on-site without relying on continuous cloud connectivity. Edge AI technologies aim to solve the world<span class="st">'s biggest challenges </span></span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="st">in AI by leveraging energy-efficient, affordable, and scalable solutions for machine</span></span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="st">learning and advanced edge computing.</span></span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="st">==================================================</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Your</span> question: What is edge AI<span class="pp">?</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> answer...</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Question:</span> what is EdgeAI<span class="pp">?</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Retrieving</span> documents...</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Retrieved</span> 4 document chunks</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Generating</span> answer...</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Response</span> latency: 165.72 seconds using model: llama3.2:3b</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="ex">ANSWER:</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="ex">==================================================</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="ex">EdgeAI</span> refers to the application of artificial intelligence <span class="er">(</span><span class="ex">AI</span><span class="kw">)</span> <span class="ex">at</span> the edge </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="ex">of</span> a network, typically in real-time applications such as IoT sensors, industrial </span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="ex">robots,</span> and smart cameras. The Edge AI ecosystem includes edge devices, edge </span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="ex">servers,</span> and cloud platforms that work together to enable low-latency AI </span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="ex">inferencing</span> and processing of data on-site without relying on continuous cloud connectivity. Edge AI technologies aim to solve the world<span class="st">'s biggest challenges </span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="st">in AI by leveraging energy-efficient, affordable, and scalable solutions for machine</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="st">learning and advanced edge computing.</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="st">==================================================</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/image-20250319160337591.png" class="img-fluid"></p>
 <p>Those responses demonstrate how RAG enhances the SLM’s response with specific information from our knowledge base about Edge AI applications on Raspberry Pi. One issue that should be addressed is the latency.</p>
 <p>To reduce latency, we can use for embedding, the <code>all-minilm</code> model which is much smaller (23M parameters vs.&nbsp;137M for <code>nomic-embed-text</code>) and creates 384-dimensional embeddings instead of 768, significantly reducing computation time.</p>
@@ -1287,63 +1315,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Response Time</strong>: How does chunk size affect latency?</li>
 </ol>
 <p>We can create a simple benchmarking function to have one embedding model defined test the best chunk size:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> benchmark_chunk_sizes(document_list, </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                          query_list, </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                          sizes<span class="op">=</span>[(<span class="dv">100</span>, <span class="dv">50</span>), (<span class="dv">300</span>, <span class="dv">30</span>), (<span class="dv">500</span>, <span class="dv">50</span>), (<span class="dv">1000</span>, <span class="dv">100</span>)]):</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Test different chunk sizes and measure performance"""</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> {}</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> chunk_size, overlap <span class="kw">in</span> sizes:</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Testing chunk_size=</span><span class="sc">{</span>chunk_size<span class="sc">}</span><span class="ss">, overlap=</span><span class="sc">{</span>overlap<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create splitter with current settings</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        text_splitter <span class="op">=</span> RecursiveCharacterTextSplitter.from_tiktoken_encoder(</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>            chunk_size<span class="op">=</span>chunk_size, chunk_overlap<span class="op">=</span>overlap</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Split documents</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        start_time <span class="op">=</span> time.time()</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>        doc_splits <span class="op">=</span> text_splitter.split_documents(document_list)</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>        split_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create embeddings and store</span></span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>        embedding_function <span class="op">=</span> OllamaEmbeddings(model<span class="op">=</span><span class="st">"nomic-embed-text"</span>)</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>        temp_db_path <span class="op">=</span> <span class="ss">f"temp_db_</span><span class="sc">{</span>chunk_size<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>overlap<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>        start_time <span class="op">=</span> time.time()</span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>        vectorstore <span class="op">=</span> Chroma.from_documents(</span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>            documents<span class="op">=</span>doc_splits,</span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>            collection_name<span class="op">=</span><span class="st">"benchmark"</span>,</span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>            embedding<span class="op">=</span>embedding_function,</span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>            persist_directory<span class="op">=</span>temp_db_path</span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>        db_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create retriever</span></span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>        retriever <span class="op">=</span> vectorstore.as_retriever(k<span class="op">=</span><span class="dv">3</span>)</span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Test queries</span></span>
-<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>        query_times <span class="op">=</span> []</span>
-<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> query <span class="kw">in</span> query_list:</span>
-<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>            start_time <span class="op">=</span> time.time()</span>
-<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>            docs <span class="op">=</span> retriever.invoke(query)</span>
-<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>            query_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
-<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>            query_times.append(query_time)</span>
-<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Store results</span></span>
-<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>        results[(chunk_size, overlap)] <span class="op">=</span> {</span>
-<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>            <span class="st">"num_chunks"</span>: <span class="bu">len</span>(doc_splits),</span>
-<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>            <span class="st">"splitting_time"</span>: split_time,</span>
-<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>            <span class="st">"db_creation_time"</span>: db_time,</span>
-<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>            <span class="st">"avg_query_time"</span>: <span class="bu">sum</span>(query_times) <span class="op">/</span> <span class="bu">len</span>(query_times),</span>
-<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>            <span class="st">"max_query_time"</span>: <span class="bu">max</span>(query_times),</span>
-<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>            <span class="st">"min_query_time"</span>: <span class="bu">min</span>(query_times)</span>
-<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Clean up temporary DB</span></span>
-<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a>        shutil.rmtree(temp_db_path)</span>
-<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> benchmark_chunk_sizes(document_list, </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                          query_list, </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                          sizes<span class="op">=</span>[(<span class="dv">100</span>, <span class="dv">50</span>), (<span class="dv">300</span>, <span class="dv">30</span>), (<span class="dv">500</span>, <span class="dv">50</span>), (<span class="dv">1000</span>, <span class="dv">100</span>)]):</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Test different chunk sizes and measure performance"""</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> {}</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> chunk_size, overlap <span class="kw">in</span> sizes:</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Testing chunk_size=</span><span class="sc">{</span>chunk_size<span class="sc">}</span><span class="ss">, overlap=</span><span class="sc">{</span>overlap<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create splitter with current settings</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        text_splitter <span class="op">=</span> RecursiveCharacterTextSplitter.from_tiktoken_encoder(</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>            chunk_size<span class="op">=</span>chunk_size, chunk_overlap<span class="op">=</span>overlap</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Split documents</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>        start_time <span class="op">=</span> time.time()</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        doc_splits <span class="op">=</span> text_splitter.split_documents(document_list)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        split_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create embeddings and store</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        embedding_function <span class="op">=</span> OllamaEmbeddings(model<span class="op">=</span><span class="st">"nomic-embed-text"</span>)</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        temp_db_path <span class="op">=</span> <span class="ss">f"temp_db_</span><span class="sc">{</span>chunk_size<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>overlap<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>        start_time <span class="op">=</span> time.time()</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>        vectorstore <span class="op">=</span> Chroma.from_documents(</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>            documents<span class="op">=</span>doc_splits,</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>            collection_name<span class="op">=</span><span class="st">"benchmark"</span>,</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>            embedding<span class="op">=</span>embedding_function,</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>            persist_directory<span class="op">=</span>temp_db_path</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>        db_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create retriever</span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>        retriever <span class="op">=</span> vectorstore.as_retriever(k<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Test queries</span></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>        query_times <span class="op">=</span> []</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> query <span class="kw">in</span> query_list:</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>            start_time <span class="op">=</span> time.time()</span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>            docs <span class="op">=</span> retriever.invoke(query)</span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>            query_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>            query_times.append(query_time)</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Store results</span></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>        results[(chunk_size, overlap)] <span class="op">=</span> {</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>            <span class="st">"num_chunks"</span>: <span class="bu">len</span>(doc_splits),</span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>            <span class="st">"splitting_time"</span>: split_time,</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>            <span class="st">"db_creation_time"</span>: db_time,</span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>            <span class="st">"avg_query_time"</span>: <span class="bu">sum</span>(query_times) <span class="op">/</span> <span class="bu">len</span>(query_times),</span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>            <span class="st">"max_query_time"</span>: <span class="bu">max</span>(query_times),</span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>            <span class="st">"min_query_time"</span>: <span class="bu">min</span>(query_times)</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Clean up temporary DB</span></span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>        shutil.rmtree(temp_db_path)</span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Regarding the query side, some optimations can also reduce the latency at the edge. Let’s modify the previous script, with:</p>
 <ol type="1">
 <li><strong>Direct Ollama API Calls</strong>: Bypasses the LangChain abstraction layer for embedding and LLM generation to reduce overhead.</li>
@@ -1441,78 +1469,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="important-code-sections">Important Code Sections</h3>
 <section id="query-routing" class="level4">
 <h4 class="anchored" data-anchor-id="query-routing">Query Routing</h4>
-<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> route_query(query: <span class="bu">str</span>) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, Any]:</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Determine if the query is a calculation, otherwise use RAG"""</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> VERBOSE:</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Routing query: </span><span class="sc">{</span>query<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check for calculation keywords</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    calc_terms <span class="op">=</span> [<span class="st">"+"</span>, <span class="st">"add"</span>, <span class="st">"plus"</span>, <span class="st">"sum"</span>, <span class="st">"-"</span>, <span class="st">"subtract"</span>, <span class="st">"minus"</span>, </span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"difference"</span>, <span class="st">"*"</span>, <span class="st">"×"</span>, <span class="st">"multiply"</span>, <span class="st">"times"</span>, <span class="st">"product"</span>, </span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"/"</span>, <span class="st">"÷"</span>, <span class="st">"divide"</span>,</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"division"</span>, <span class="st">"quotient"</span>]</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simple rule-based detection for calculations</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    is_calc <span class="op">=</span> <span class="bu">any</span>(term <span class="kw">in</span> query.lower() <span class="cf">for</span> term <span class="kw">in</span> calc_terms) <span class="kw">and</span> <span class="op">\</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    re.search(<span class="vs">r'\d+'</span>, query)</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> is_calc:</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use smaller, faster model for operation and number extraction</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># ...extraction logic here...</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> route_info</span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For everything else, use RAG</span></span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"type"</span>: <span class="st">"rag"</span>, <span class="st">"reasoning"</span>: <span class="st">"Non-calculation query, using RAG"</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> route_query(query: <span class="bu">str</span>) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, Any]:</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Determine if the query is a calculation, otherwise use RAG"""</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> VERBOSE:</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Routing query: </span><span class="sc">{</span>query<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check for calculation keywords</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    calc_terms <span class="op">=</span> [<span class="st">"+"</span>, <span class="st">"add"</span>, <span class="st">"plus"</span>, <span class="st">"sum"</span>, <span class="st">"-"</span>, <span class="st">"subtract"</span>, <span class="st">"minus"</span>, </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"difference"</span>, <span class="st">"*"</span>, <span class="st">"×"</span>, <span class="st">"multiply"</span>, <span class="st">"times"</span>, <span class="st">"product"</span>, </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"/"</span>, <span class="st">"÷"</span>, <span class="st">"divide"</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"division"</span>, <span class="st">"quotient"</span>]</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simple rule-based detection for calculations</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    is_calc <span class="op">=</span> <span class="bu">any</span>(term <span class="kw">in</span> query.lower() <span class="cf">for</span> term <span class="kw">in</span> calc_terms) <span class="kw">and</span> <span class="op">\</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    re.search(<span class="vs">r'\d+'</span>, query)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> is_calc:</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use smaller, faster model for operation and number extraction</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># ...extraction logic here...</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> route_info</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For everything else, use RAG</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"type"</span>: <span class="st">"rag"</span>, <span class="st">"reasoning"</span>: <span class="st">"Non-calculation query, using RAG"</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="enhanced-rag-with-feedback-loop" class="level4">
 <h4 class="anchored" data-anchor-id="enhanced-rag-with-feedback-loop">Enhanced RAG with Feedback Loop</h4>
-<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First RAG attempt with standard prompt</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>answer <span class="op">=</span> get_answer_with_rag(query, documents, llm)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>processing_type <span class="op">=</span> <span class="st">"rag_standard"</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Validate the response quality</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>validation <span class="op">=</span> validate_response(llm, query, answer)</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>validation_score <span class="op">=</span> validation.get(<span class="st">"score"</span>, <span class="dv">5</span>)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># If validation score is low, try again with enhanced prompt</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> validation_score <span class="op">&lt;</span> <span class="dv">7</span>:</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> VERBOSE:</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"First RAG attempt validation score: </span><span class="sc">{</span>validation_score<span class="sc">}</span><span class="ss">/10. </span><span class="ch">\</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="ss">        Trying enhanced prompt."</span>)</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Second RAG attempt with enhanced prompt</span></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    enhanced_context <span class="op">=</span> <span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>.join(documents)</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    enhanced_prompt <span class="op">=</span> <span class="ss">f"""</span></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="ss">    I need a more detailed and accurate answer to the following question:</span></span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>query<span class="sc">}</span></span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    The previous answer wasn't satisfactory. Let me provide you with </span><span class="ch">\</span></span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    relevant information:</span></span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>enhanced_context<span class="sc">}</span></span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    Based strictly on this information, provide a comprehensive answer.</span></span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="ss">    Focus specifically on addressing the user's question with precise </span><span class="ch">\</span></span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="ss">    information from the provided context.</span></span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="ss">    If the information doesn't fully answer the question, clearly state </span><span class="ch">\</span></span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="ss">    what you can determine</span></span>
-<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="ss">    from the available information and what remains unknown.</span></span>
-<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
-<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ... process enhanced response ...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First RAG attempt with standard prompt</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>answer <span class="op">=</span> get_answer_with_rag(query, documents, llm)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>processing_type <span class="op">=</span> <span class="st">"rag_standard"</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Validate the response quality</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>validation <span class="op">=</span> validate_response(llm, query, answer)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>validation_score <span class="op">=</span> validation.get(<span class="st">"score"</span>, <span class="dv">5</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># If validation score is low, try again with enhanced prompt</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> validation_score <span class="op">&lt;</span> <span class="dv">7</span>:</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> VERBOSE:</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"First RAG attempt validation score: </span><span class="sc">{</span>validation_score<span class="sc">}</span><span class="ss">/10. </span><span class="ch">\</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="ss">        Trying enhanced prompt."</span>)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Second RAG attempt with enhanced prompt</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    enhanced_context <span class="op">=</span> <span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>.join(documents)</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    enhanced_prompt <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="ss">    I need a more detailed and accurate answer to the following question:</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>query<span class="sc">}</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    The previous answer wasn't satisfactory. Let me provide you with </span><span class="ch">\</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    relevant information:</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>enhanced_context<span class="sc">}</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    Based strictly on this information, provide a comprehensive answer.</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="ss">    Focus specifically on addressing the user's question with precise </span><span class="ch">\</span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="ss">    information from the provided context.</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="ss">    If the information doesn't fully answer the question, clearly state </span><span class="ch">\</span></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a><span class="ss">    what you can determine</span></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="ss">    from the available information and what remains unknown.</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ... process enhanced response ...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="knowledge-gap-handling" class="level4">
 <h4 class="anchored" data-anchor-id="knowledge-gap-handling">Knowledge Gap Handling</h4>
-<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If still low quality after enhancement, add a note</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> improved_score <span class="op">&lt;</span> <span class="dv">6</span>:</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    processing_type <span class="op">=</span> <span class="st">"rag_insufficient_info"</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    information_gap_note <span class="op">=</span> (</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"</span><span class="ch">\n\n</span><span class="st">Note: The information in my knowledge base may be incomplete on this"</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"topic. I've provided the best answer based on available information, but"</span> </span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"there might be gaps or additional details that would provide a more "</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"complete answer."</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    answer <span class="op">=</span> answer <span class="op">+</span> information_gap_note</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># If still low quality after enhancement, add a note</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> improved_score <span class="op">&lt;</span> <span class="dv">6</span>:</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    processing_type <span class="op">=</span> <span class="st">"rag_insufficient_info"</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    information_gap_note <span class="op">=</span> (</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"</span><span class="ch">\n\n</span><span class="st">Note: The information in my knowledge base may be incomplete on this"</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"topic. I've provided the best answer based on available information, but"</span> </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"there might be gaps or additional details that would provide a more "</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"complete answer."</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    answer <span class="op">=</span> answer <span class="op">+</span> information_gap_note</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 <section id="detailed-workflow-diagram" class="level3">
@@ -1547,31 +1575,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Fine-tuning can adapt models to specific domains or tasks, improving performance for targeted applications.</p>
 <section id="preparing-for-fine-tuning" class="level3">
 <h3 class="anchored" data-anchor-id="preparing-for-fine-tuning">Preparing for Fine-Tuning</h3>
-<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example dataset for fine-tuning a weather response model</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>training_data <span class="op">=</span> [</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"input"</span>: <span class="st">"What's the weather in London?"</span>, </span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>     <span class="st">"output"</span>: <span class="st">"I need to check London's current weather. Please use the </span><span class="ch">\</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="st">     weather tool."</span>},</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"input"</span>: <span class="st">"Is it going to rain tomorrow in Paris?"</span>, </span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>     <span class="st">"output"</span>: <span class="st">"To answer about tomorrow's weather in Paris, </span><span class="ch">\</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="st">     I need to use the weather tool."</span>},</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"input"</span>: <span class="st">"Will it be sunny this weekend in Tokyo?"</span>, </span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>     <span class="st">"output"</span>: <span class="st">"To predict Tokyo's weekend weather, </span><span class="ch">\</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="st">     I should use the weather tool."</span>}</span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Format data for fine-tuning</span></span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>formatted_data <span class="op">=</span> []</span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item <span class="kw">in</span> training_data:</span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    formatted_data.append({</span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"prompt"</span>: item[<span class="st">"input"</span>],</span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"response"</span>: item[<span class="st">"output"</span>]</span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Save formatted data to a file</span></span>
-<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
-<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"weather_finetune_data.json"</span>, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
-<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>    json.dump(formatted_data, f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example dataset for fine-tuning a weather response model</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>training_data <span class="op">=</span> [</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"input"</span>: <span class="st">"What's the weather in London?"</span>, </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>     <span class="st">"output"</span>: <span class="st">"I need to check London's current weather. Please use the </span><span class="ch">\</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="st">     weather tool."</span>},</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"input"</span>: <span class="st">"Is it going to rain tomorrow in Paris?"</span>, </span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>     <span class="st">"output"</span>: <span class="st">"To answer about tomorrow's weather in Paris, </span><span class="ch">\</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="st">     I need to use the weather tool."</span>},</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"input"</span>: <span class="st">"Will it be sunny this weekend in Tokyo?"</span>, </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>     <span class="st">"output"</span>: <span class="st">"To predict Tokyo's weekend weather, </span><span class="ch">\</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="st">     I should use the weather tool."</span>}</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Format data for fine-tuning</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>formatted_data <span class="op">=</span> []</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item <span class="kw">in</span> training_data:</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    formatted_data.append({</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"prompt"</span>: item[<span class="st">"input"</span>],</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"response"</span>: item[<span class="st">"output"</span>]</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Save formatted data to a file</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"weather_finetune_data.json"</span>, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>    json.dump(formatted_data, f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="setting-up-a-fine-tuning-process" class="level3">
 <h3 class="anchored" data-anchor-id="setting-up-a-fine-tuning-process">Setting Up a Fine-Tuning Process</h3>
@@ -1579,43 +1607,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>This is a conceptual example - actual implementation depends on the framework</p>
 </blockquote>
-<div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prepare_for_finetuning(data_path, output_path):</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">      Prepare a model for fine-tuning </span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">      (run this on a more powerful machine)</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is a conceptual example </span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Fine-tuning model using data from </span><span class="sc">{</span>data_path<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Fine-tuned model will be saved to </span><span class="sc">{</span>output_path<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The process would typically involve:</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Loading the base model</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Loading and preprocessing the training data</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Setting up training parameters (learning rate, epochs, etc.)</span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 4. Running the fine-tuning process</span></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 5. Evaluating the fine-tuned model</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 6. Saving and optimizing for edge deployment</span></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For Ollama, we would create a custom model definition (Modelfile)</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    modelfile <span class="op">=</span> <span class="ss">f"""</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    FROM llama3.2:1b</span></span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    # Fine-tuning settings would go here</span></span>
-<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    PARAMETER temperature 0.7</span></span>
-<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    PARAMETER top_p 0.9</span></span>
-<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    PARAMETER top_k 40</span></span>
-<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    # Custom system prompt for the specific domain</span></span>
-<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a><span class="ss">    SYSTEM You are a specialized assistant for weather-related questions.</span></span>
-<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
-<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(output_path, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
-<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>        f.write(modelfile)</span>
-<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Model preparation complete. Next steps:"</span>)</span>
-<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"1. Run fine-tuning on a powerful machine"</span>)</span>
-<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"2. Optimize the resulting model for edge deployment"</span>)</span>
-<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"3. Deploy to your Raspberry Pi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prepare_for_finetuning(data_path, output_path):</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">      Prepare a model for fine-tuning </span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">      (run this on a more powerful machine)</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is a conceptual example </span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Fine-tuning model using data from </span><span class="sc">{</span>data_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Fine-tuned model will be saved to </span><span class="sc">{</span>output_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The process would typically involve:</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Loading the base model</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Loading and preprocessing the training data</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Setting up training parameters (learning rate, epochs, etc.)</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 4. Running the fine-tuning process</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 5. Evaluating the fine-tuned model</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 6. Saving and optimizing for edge deployment</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For Ollama, we would create a custom model definition (Modelfile)</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    modelfile <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a><span class="ss">    FROM llama3.2:1b</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="ss">    # Fine-tuning settings would go here</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a><span class="ss">    PARAMETER temperature 0.7</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a><span class="ss">    PARAMETER top_p 0.9</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a><span class="ss">    PARAMETER top_k 40</span></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a><span class="ss">    # Custom system prompt for the specific domain</span></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a><span class="ss">    SYSTEM You are a specialized assistant for weather-related questions.</span></span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(output_path, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>        f.write(modelfile)</span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Model preparation complete. Next steps:"</span>)</span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"1. Run fine-tuning on a powerful machine"</span>)</span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"2. Optimize the resulting model for edge deployment"</span>)</span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"3. Deploy to your Raspberry Pi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="real-implementation-supervised-fine-tuning-sft" class="level3">
 <h3 class="anchored" data-anchor-id="real-implementation-supervised-fine-tuning-sft">Real implementation: Supervised Fine-Tuning (SFT)</h3>
@@ -1633,20 +1661,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Download the finetuned GGUF model</p></li>
 <li><p>Create a Modelfile in the home directory:</p></li>
 </ol>
-<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> Modelfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> Modelfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="3" type="1">
 <li>In the Modelfile, specify the path to the GGUF file:</li>
 </ol>
-<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">FROM</span> ~/Downloads/your-model-name.gguf</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="ex">PARAMETER</span> temperature 1.0</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="ex">PARAMETER</span> top_p 0.95</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="ex">PARAMETER</span> top_k 64</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">FROM</span> ~/Downloads/your-model-name.gguf</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">PARAMETER</span> temperature 1.0</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="ex">PARAMETER</span> top_p 0.95</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="ex">PARAMETER</span> top_k 64</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="4" type="1">
 <li><p>Save the Modelfile and exit the editor.</p></li>
 <li><p>Create the loadable model in Ollama:</p></li>
 </ol>
-<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> create your-model-name <span class="at">-f</span> Modelfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> create your-model-name <span class="at">-f</span> Modelfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
 <p>The model name here can be anything.</p>
 </blockquote>
