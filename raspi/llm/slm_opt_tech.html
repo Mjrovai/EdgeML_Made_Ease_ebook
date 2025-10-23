@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Edge AI Engineering - SLM: Basic Optimization Techniques</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/vlm/vlm.html" rel="next">
+<link href="../../raspi/llm/slm_intro.html" rel="prev">
+<link href="../../images/unifei-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/llm/slm_opt_tech.html">SLM: Basic Optimization Techniques</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/cv_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Computer Vision Applications with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/rnn-verne/rnn-verne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text Generation with RNNs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_opt_tech.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">SLM: Basic Optimization Techniques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/audio_pipeline/audio_pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Audio and Vision AI Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#function-calling-introduction" id="toc-function-calling-introduction" class="nav-link" data-scroll-target="#function-calling-introduction">Function Calling Introduction</a>
+  <ul>
+  <li><a href="#but-what-exactly-is-function-calling" id="toc-but-what-exactly-is-function-calling" class="nav-link" data-scroll-target="#but-what-exactly-is-function-calling">But what exactly is “function calling”?</a></li>
+  <li><a href="#using-the-slm-for-calculations" id="toc-using-the-slm-for-calculations" class="nav-link" data-scroll-target="#using-the-slm-for-calculations">Using the SLM for calculations</a>
+  <ul class="collapse">
+  <li><a href="#why-llms-fail-at-math" id="toc-why-llms-fail-at-math" class="nav-link" data-scroll-target="#why-llms-fail-at-math">Why LLMs Fail at Math</a></li>
+  </ul></li>
+  <li><a href="#the-solution-function-calling-tool-use" id="toc-the-solution-function-calling-tool-use" class="nav-link" data-scroll-target="#the-solution-function-calling-tool-use">The Solution: Function Calling / Tool Use</a>
+  <ul class="collapse">
+  <li><a href="#why-even-temperature0-doesnt-help" id="toc-why-even-temperature0-doesnt-help" class="nav-link" data-scroll-target="#why-even-temperature0-doesnt-help">Why Even Temperature=0 Doesn’t Help</a></li>
+  <li><a href="#llmslm-math-performance-by-problem-type" id="toc-llmslm-math-performance-by-problem-type" class="nav-link" data-scroll-target="#llmslm-math-performance-by-problem-type">LLM/SLM Math Performance by Problem Type</a></li>
+  </ul></li>
+  <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a></li>
+  </ul></li>
+  <li><a href="#function-calling-solution-for-calculations" id="toc-function-calling-solution-for-calculations" class="nav-link" data-scroll-target="#function-calling-solution-for-calculations">Function Calling Solution for Calculations</a>
+  <ul>
+  <li><a href="#define-the-tool-function-schema" id="toc-define-the-tool-function-schema" class="nav-link" data-scroll-target="#define-the-tool-function-schema">Define the Tool (Function Schema)</a></li>
+  <li><a href="#implement-the-function" id="toc-implement-the-function" class="nav-link" data-scroll-target="#implement-the-function">Implement the Function</a></li>
+  </ul></li>
+  <li><a href="#project-calculating-distances" id="toc-project-calculating-distances" class="nav-link" data-scroll-target="#project-calculating-distances">Project: Calculating Distances</a>
+  <ul>
+  <li><a href="#running-with-other-models" id="toc-running-with-other-models" class="nav-link" data-scroll-target="#running-with-other-models">Running with other models</a></li>
+  <li><a href="#adding-images" id="toc-adding-images" class="nav-link" data-scroll-target="#adding-images">Adding images</a></li>
+  </ul></li>
+  <li><a href="#retrievel-augmentation-generation-rag" id="toc-retrievel-augmentation-generation-rag" class="nav-link" data-scroll-target="#retrievel-augmentation-generation-rag">Retrievel Augmentation Generation (RAG)</a>
+  <ul>
+  <li><a href="#a-simple-rag-project" id="toc-a-simple-rag-project" class="nav-link" data-scroll-target="#a-simple-rag-project">A simple RAG project</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/llm/slm_opt_tech.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/llm/slm_opt_tech.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">SLM: Basic Optimization Techniques</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/jpeg/opt_slm_cover.jpg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption"><em>DALL·E prompt - I am writing a tutorial using Raspberry Pi. I am talking about Optimization Techniques, such as Function Calling and RAG, using Ollama and SLMs. I want a landscape-format image for the tutorial cover (without title). Should be a cartoon styled in 5Os</em></figcaption>
+</figure>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Large Language Models (LLMs) have revolutionized natural language processing, but their deployment and optimization come with unique challenges. One significant issue is the tendency for LLMs (and more, the SLMs) to generate plausible-sounding but factually incorrect information, a phenomenon known as <strong>hallucination</strong>. This occurs when models produce content that appears coherent but lacks grounding in truth or real-world facts.</p>
+<p>Other challenges include the immense computational resources required for training and running these models, the difficulty in maintaining up-to-date knowledge within the model, and the need for domain-specific adaptations. Privacy concerns also arise when handling sensitive data during training or inference. Additionally, ensuring consistent performance across diverse tasks and maintaining ethical use of these powerful tools present ongoing challenges. Addressing these issues is crucial for the effective and responsible deployment of LLMs in real-world applications.</p>
+<p>The fundamental and more common techniques for enhancing LLM (and SLM) performance and efficiency are Function (or Tool) Calling, Prompt engineering, Fine-tuning, and Retrieval-Augmented Generation (RAG).</p>
+<ul>
+<li><strong>Function (Tool) calling</strong> allows models to perform actions beyond generating text. By integrating with external functions or APIs, SLMs can access real-time data, automate tasks, and perform precise calculations—addressing the reliability issues that arise from the model’s limitations in mathematical operations.</li>
+<li><strong>Prompt engineering</strong> is at the forefront of LLM optimization. By carefully crafting input prompts, we can guide models to produce more accurate and relevant outputs. This technique involves structuring queries that leverage the model’s pre-trained knowledge and capabilities, often incorporating examples or specific instructions to shape the desired response.</li>
+<li><strong>Retrieval-Augmented Generation (RAG)</strong> represents a powerful approach that’s ideal for resource-constrained edge devices. This method combines the knowledge embedded in pre-trained models with the ability to access external, up-to-date information without requiring fine-tuning. By retrieving relevant data from a local knowledge base, RAG significantly enhances accuracy and reduces hallucinations—all without the computational overhead of model retraining.</li>
+<li><strong>Fine-tuning</strong>, while more resource-intensive, offers a way to specialize LLMs for specific domains or tasks. This process involves further training the model on carefully curated datasets, allowing it to adapt its vast general knowledge to particular applications. Fine-tuning can lead to substantial performance improvements, especially in specialized fields or for unique use cases.</li>
+</ul>
+<p>In this chapter, we’ll start focusing on two techniques that are particularly well-suited for edge devices like the Raspberry Pi: <strong>Function Calling</strong> and <strong>RAG</strong>.</p>
+<blockquote class="blockquote">
+<p>We will learn more in detail about optimization techniques for SLMs, in the chapter: <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/advancing_adgeai/adv_edgeai.html">Advancing EdgeAI: Beyond Basic SLMs</a></p>
+</blockquote>
+</section>
+<section id="function-calling-introduction" class="level2">
+<h2 class="anchored" data-anchor-id="function-calling-introduction">Function Calling Introduction</h2>
+<p>So far, we can see that, with the model’s (“response”) answer to a variable, we can efficiently work with it and integrate it into real-world projects. However, a big problem is that the model can respond differently to the same prompt. Let’s say, as in the last examples, that we want the model’s response to be only the name of a given country’s capital and its coordinates, nothing more, even with very verbose models such as the Microsoft Phi. We can use the <code>Ollama function's calling</code> to guarantee the same answers, which is perfectly compatible with the OpenAI API.</p>
+<section id="but-what-exactly-is-function-calling" class="level3">
+<h3 class="anchored" data-anchor-id="but-what-exactly-is-function-calling">But what exactly is “function calling”?</h3>
+<p>In modern artificial intelligence, function calling with Large Language Models (LLMs) allows these models to perform actions beyond generating text. By integrating with external functions or APIs, LLMs can access real-time data, automate tasks, and interact with various systems.</p>
+<p>For instance, instead of merely responding to a weather query, an LLM can call a weather API to fetch the current conditions and provide accurate, up-to-date information. This capability enhances the relevance and accuracy of the model’s responses, making it a powerful tool for driving workflows and automating processes, thereby transforming it into an active participant in real-world applications.</p>
+<p>For more details about Function Calling, please see this video made by <a href="https://www.youtube.com/@MervinPraison">Marvin Prison</a>:</p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/eHfMCtlsb1o" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p>And on this link: <a href="https://huggingface.co/docs/hugs/en/guides/function-calling">HuggingFace Function Calling</a></p>
+</section>
+<section id="using-the-slm-for-calculations" class="level3">
+<h3 class="anchored" data-anchor-id="using-the-slm-for-calculations">Using the SLM for calculations</h3>
+<p>Let’s do a simple calculation in Python:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">123456</span><span class="op">*</span><span class="dv">123456</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The result would be: <code>15,241,383,936</code>. No issues on it, but let’s ask a SLM to do the same simple task:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> ollama.chat(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">'llama3.2:3B'</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"content"</span>: <span class="st">"What is 123456 multiplied by 123456? Only give me the answer"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    }],</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    options<span class="op">=</span>{<span class="st">"temperature"</span>: <span class="dv">0</span>}</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Examining the response: <code>response.message.content</code>, we would get: <code>51,131,441,376</code>, what is completely wrong!</p>
+<p>This is a <strong>fundamental limitation of LLMs</strong> - they’re not calculators. Here’s why the answer is wrong:</p>
+<section id="why-llms-fail-at-math" class="level4">
+<h4 class="anchored" data-anchor-id="why-llms-fail-at-math">Why LLMs Fail at Math</h4>
+<section id="llms-predict-text-they-dont-calculate" class="level5">
+<h5 class="anchored" data-anchor-id="llms-predict-text-they-dont-calculate">1. LLMs Predict Text, They Don’t Calculate</h5>
+<ul>
+<li>LLMs work by predicting the next most likely token based on patterns in training data</li>
+<li>They don’t perform actual arithmetic operations</li>
+<li>They’re essentially “guessing” what a plausible answer looks like</li>
+</ul>
+</section>
+<section id="tokenization-issues" class="level5">
+<h5 class="anchored" data-anchor-id="tokenization-issues">2. Tokenization Issues</h5>
+<p>Numbers are broken into tokens in ways that don’t align with mathematical operations:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="st">"123456"</span> might tokenize as: [<span class="st">"123"</span>, <span class="st">"456"</span>] or [<span class="st">"12"</span>, <span class="st">"34"</span>, <span class="st">"56"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This makes it nearly impossible for the model to “see” the actual numbers properly for computation.</p>
+</section>
+<section id="pattern-matching-vs.-computation" class="level5">
+<h5 class="anchored" data-anchor-id="pattern-matching-vs.-computation">3. Pattern Matching vs.&nbsp;Computation</h5>
+<ul>
+<li>The model has seen similar multiplication problems in training</li>
+<li>It tries to recall patterns rather than compute</li>
+<li>For simple problems (2×3), it might seem to work because it memorizes common facts</li>
+<li>For larger numbers (123456×123456), it has no memorized pattern to fall back on</li>
+</ul>
+</section>
+<section id="the-correct-answer" class="level5">
+<h5 class="anchored" data-anchor-id="the-correct-answer">4. The Correct Answer</h5>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dv">123456</span> × <span class="dv">123456</span> <span class="op">=</span> <span class="dv">15</span>,<span class="dv">241</span>,<span class="dv">383</span>,<span class="dv">936</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The LLM will likely give something that “looks” like a big number but is mathematically incorrect.</p>
+</section>
+</section>
+</section>
+<section id="the-solution-function-calling-tool-use" class="level3">
+<h3 class="anchored" data-anchor-id="the-solution-function-calling-tool-use">The Solution: Function Calling / Tool Use</h3>
+<p>The pattern is:</p>
+<ol type="1">
+<li><strong>Use the LLM for understanding intent</strong> (classification)</li>
+<li><strong>Use Python for actual computation</strong> (the <code>multiply()</code> function)</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> multiply(a, b):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Actual computation - always correct"""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> a <span class="op">*</span> b</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"The product of </span><span class="sc">{</span>a<span class="sc">}</span><span class="ss"> and </span><span class="sc">{</span>b<span class="sc">}</span><span class="ss"> is </span><span class="sc">{</span>result<span class="sc">}</span><span class="ss">."</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="why-even-temperature0-doesnt-help" class="level4">
+<h4 class="anchored" data-anchor-id="why-even-temperature0-doesnt-help">Why Even Temperature=0 Doesn’t Help</h4>
+<p>Setting <code>temperature=0</code> makes the output <strong>deterministic</strong> (same input → same output), but it doesn’t make it <strong>correct</strong>. The model will confidently give the same wrong answer every time.</p>
+</section>
+<section id="llmslm-math-performance-by-problem-type" class="level4">
+<h4 class="anchored" data-anchor-id="llmslm-math-performance-by-problem-type">LLM/SLM Math Performance by Problem Type</h4>
+<table class="table">
+<colgroup>
+<col style="width: 39%">
+<col style="width: 17%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Problem Type</th>
+<th>LLM Accuracy</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2 + 2</td>
+<td>~99%</td>
+<td>Memorized in training</td>
+</tr>
+<tr class="even">
+<td>47 + 89</td>
+<td>~70%</td>
+<td>Some pattern recognition</td>
+</tr>
+<tr class="odd">
+<td>123 × 456</td>
+<td>~30%</td>
+<td>Struggles with multi-digit</td>
+</tr>
+<tr class="even">
+<td>123456 × 123456</td>
+<td>~0%</td>
+<td>No chance without computation</td>
+</tr>
+<tr class="odd">
+<td>Calculate 15% tip on $47.83</td>
+<td>~40%</td>
+<td>Multi-step reasoning fails</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="best-practices" class="level3">
+<h3 class="anchored" data-anchor-id="best-practices">Best Practices</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ❌ DON'T: Ask LLM/SLM to calculate directly</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> ollama.chat(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">'llama3.2:3b'</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is 123456 * 123456?"</span>}]</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ DO: Use LLM to understand, Python to compute</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>classification <span class="op">=</span> ask_ollama_for_classification(<span class="st">"What is 123456 * 123456?"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> classification[<span class="st">"type"</span>] <span class="op">==</span> <span class="st">"multiplication"</span>:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> multiply(<span class="dv">123456</span>, <span class="dv">123456</span>)  <span class="co"># Python does the math</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p><strong>Bottom line:</strong> Use LLMs for natural language understanding and intent classification, but delegate actual computations to proper tools/functions. This is the core principle behind <strong>tool use</strong> and <strong>function calling</strong> in modern LLM applications!</p>
+</blockquote>
+</section>
+</section>
+<section id="function-calling-solution-for-calculations" class="level2">
+<h2 class="anchored" data-anchor-id="function-calling-solution-for-calculations">Function Calling Solution for Calculations</h2>
+<section id="define-the-tool-function-schema" class="level3">
+<h3 class="anchored" data-anchor-id="define-the-tool-function-schema">Define the Tool (Function Schema)</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>multiply_tool <span class="op">=</span> {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"type"</span>: <span class="st">"function"</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"function"</span>: {</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"name"</span>: <span class="st">"multiply_numbers"</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"description"</span>: <span class="st">"Multiply two numbers together"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"parameters"</span>: {</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"type"</span>: <span class="st">"object"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"required"</span>: [<span class="st">"a"</span>, <span class="st">"b"</span>],</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"properties"</span>: {</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                <span class="st">"a"</span>: {<span class="st">"type"</span>: <span class="st">"number"</span>, <span class="st">"description"</span>: <span class="st">"First number"</span>},</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                <span class="st">"b"</span>: {<span class="st">"type"</span>: <span class="st">"number"</span>, <span class="st">"description"</span>: <span class="st">"Second number"</span>}</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="implement-the-function" class="level3">
+<h3 class="anchored" data-anchor-id="implement-the-function">Implement the Function</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> multiply_numbers(a, b):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert to int or float as needed</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> <span class="bu">float</span>(a)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> <span class="bu">float</span>(b)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"result"</span>: a <span class="op">*</span> b}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, let’s create a function to handle the user query and calling for the tool when needed.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> answer_query(QUERY):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> ollama.chat(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'llama3.2:3B'</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: QUERY}],</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        tools<span class="op">=</span>[multiply_tool]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if the model wants to call the tool</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> response.message.tool_calls:</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> tool <span class="kw">in</span> response.message.tool_calls:</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> tool.function.name <span class="op">==</span> <span class="st">"multiply_numbers"</span>:</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Ensure arguments are passed as numbers</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>                result <span class="op">=</span> multiply_numbers(<span class="op">**</span>tool.function.arguments)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"Result: </span><span class="sc">{</span>result[<span class="st">'result'</span>]<span class="sc">:,</span><span class="fl">.2</span><span class="er">f</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"It is not a Multiplication"</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>Note the line <code>tools=[multiply_tool]</code>, now as a part of the ollama’s calling.</p>
+</blockquote>
+<p>And run the function, we will get the correct answer.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>answer_query(<span class="st">"What is 123456 multiplied by 123456?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>Result: 15,241,383,936.00</code></pre>
+<p>Great! And now, can I use the same code to answer general questions? Let’s test it:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>answer_query(<span class="st">"What is the capital of Brazil?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>Result: 1,000,000.00</code></pre>
+<p>The result is wrong. So, the above approach works fine for using the tool, but to answer it correctly (even without a tool), we should implement an “agentic approach”, which is a subject for later (See the Chapter: <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/advancing_adgeai/adv_edgeai.html">Advancing EdgeAI: Beyond Basic SLMs</a>)</p>
+</section>
+</section>
+<section id="project-calculating-distances" class="level2">
+<h2 class="anchored" data-anchor-id="project-calculating-distances">Project: Calculating Distances</h2>
+<p>Suppose we want an SLM to return the distance in km from the capital city of the country specified by the user to the user’s current location. We can see that the first is not so simple: it is not always enough to enter only the country’s name; the SLM can also give us a different (and incorrect) answer every time.</p>
+<p><img src="./images/png/cli-fuc-cal.png" class="img-fluid"></p>
+<p>OK, for trying to mitigate it, let’s create an <em>app</em> where the user enters a country’s name and gets, as an output, the distance in km from the capital city of such a country and the app’s location (for simplicity, we will use Santiago, Chile, as the app location).</p>
+<p><img src="images/png/block-fc-proj.png" class="img-fluid"></p>
+<p>Once the user enters a country name, the model should return the capital city’s name (as a string) and its latitude and longitude (as floats). Using those coordinates, we can use a simple Python library (<a href="https://pypi.org/project/haversine/">haversine</a>) to compute the great‑circle distance between the two latitude/longitude points.</p>
+<p>The idea of this project is to demonstrate a combination of language model interaction (IA) and geospatial calculations using the Haversine formula (traditional computing).</p>
+<p>First, let us install the <em>Haversine</em> library:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install haversine</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, we should create a Python script designed to interact with our model (LLM) to determine the coordinates of a country’s capital city and calculate the distance from Santiago de Chile to that capital.</p>
+<p>Let’s go over the code:</p>
+<p><strong>Importing Libraries</strong></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> haversine <span class="im">import</span> haversine</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ollama <span class="im">import</span> chat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Basic Variables and Model</strong></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>MODEL <span class="op">=</span> <span class="st">'llama3.2:3B'</span>     <span class="co"># The name of the model to be used</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>mylat <span class="op">=</span> <span class="op">-</span><span class="fl">33.33</span>              <span class="co"># Latitude of Santiago de Chile</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>mylon <span class="op">=</span> <span class="op">-</span><span class="fl">70.51</span>              <span class="co"># Longitude of Santiago de Chile</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>MODEL</strong>: Specifies the model being used, which is, in this example, the Lhama3.2.</li>
+<li><strong>mylat</strong> <strong>and</strong> <strong>mylon</strong>: Coordinates of Santiago de Chile, used as the starting point for the distance calculation.</li>
+</ul>
+<p><strong>Defining a Python Function That Acts as a Tool</strong></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calc_distance(lat, lon, city):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Compute distance and print a descriptive message."""</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    distance <span class="op">=</span> haversine((mylat, mylon), (lat, lon), unit<span class="op">=</span><span class="st">"km"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    msg <span class="op">=</span> <span class="ss">f"</span><span class="ch">\n</span><span class="ss">Santiago de Chile is about </span><span class="sc">{</span><span class="bu">int</span>(<span class="bu">round</span>(distance, <span class="op">-</span><span class="dv">1</span>))<span class="sc">:,}</span><span class="ss"> I am running a </span><span class="ch">\</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="ss">few minutes late; my previous meeting is running over.kilometers away from </span><span class="sc">{</span>city<span class="sc">}</span><span class="ss">."</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"city"</span>: city, <span class="st">"distance_km"</span>: <span class="bu">int</span>(<span class="bu">round</span>(distance, <span class="op">-</span><span class="dv">1</span>)), <span class="st">"message"</span>: msg}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This is the real Python function that Ollama will be allowed to call. It performs the following steps: • Takes latitude, longitude, and city name as input arguments. • Uses the <code>haversine</code> library to calculate the distance from Santiago to the target city. • Returns a JSON‑like dictionary containing the computed distance and a human‑readable text summary.</p>
+<blockquote class="blockquote">
+<p>In Ollama’s terminology, this is a tool — a callable external function that the LLM may invoke automatically</p>
+</blockquote>
+<p><strong>Declaring the tool descriptor (schema)</strong></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>tools <span class="op">=</span> [</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"type"</span>: <span class="st">"function"</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"function"</span>: {</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">"name"</span>: <span class="st">"calc_distance"</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">"description"</span>: <span class="st">"Calculates the distance from Santiago, Chile to a </span><span class="ch">\</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="st">given city's coordinates."</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"parameters"</span>: {</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                <span class="st">"type"</span>: <span class="st">"object"</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>                <span class="st">"properties"</span>: {</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"lat"</span>: {<span class="st">"type"</span>: <span class="st">"number"</span>, <span class="st">"description"</span>: <span class="st">"Latitude of the city"</span>},</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"lon"</span>: {<span class="st">"type"</span>: <span class="st">"number"</span>, <span class="st">"description"</span>: <span class="st">"Longitude of the city"</span>},</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"city"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>, <span class="st">"description"</span>: <span class="st">"Name of the city"</span>}</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>                },</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                <span class="st">"required"</span>: [<span class="st">"lat"</span>, <span class="st">"lon"</span>, <span class="st">"city"</span>]</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This JSON object describes the metadata and input schema of the tool so that the LLM knows: • Name: which function to call. • Description: what purpose it serves. • Parameters: input argument types and their descriptions. This schema mirrors the OpenAI function‑calling format and is fully supported in Ollama ≥ 0.4 .</p>
+<blockquote class="blockquote">
+<p>Defining tools this way allows Ollama to validate arguments before sending a call request back.</p>
+</blockquote>
+<p><strong>Asking the Model to Use the Tool</strong></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> chat(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>MODEL,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"content"</span>: <span class="ss">f"Find the decimal latitude and longitude of the capital of </span><span class="ch">\</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="ss">I am running a few minutes late; my previous meeting is running over. running a few\ </span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="er">minutes late; my previous meeting is running over.</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>      {country},<span class="st">"</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="er">                   " then use the calc_distance tool to determine how far it is from \</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>Santiago de Chile.<span class="st">"</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="er">    }</span>],</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    tools<span class="op">=</span>tools</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><p>The <code>chat()</code> function is called with the chosen model, a message, and the <code>tools</code> list.</p></li>
+<li><p>The prompt instructs the model first to identify the capital and its coordinates, and then invoke the tool (<code>calc_distance</code>) with those values.</p></li>
+<li><p>Ollama returns a structured response that may include a <code>tool_calls</code> section, indicating which tool to execute.</p></li>
+</ul>
+<p><strong>Executing the Model’s Tool Call</strong></p>
+<p>For example, if <code>country  = "Colombia"</code>, the model will will return as the result:</p>
+<p><img src="./images/png/result.png" class="img-fluid"></p>
+<p>Where the <code>arguments</code> are the expected response in JSON format.</p>
+<p>To get and display the result to the user, we should iterate over all <code>tool_calls</code>, extract the JSON arguments (lat, lon, city), and execute the local Python function using them. To finish it, we should print a human‑readable <code>message</code> (e.g., “Santiago de Chile is about X  kilometers away from ”CITY”).</p>
+<p>So, let’s first get the name of the city and the coordinates with:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> call <span class="kw">in</span> response.message.tool_calls:</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    raw_args <span class="op">=</span> call[<span class="st">"function"</span>][<span class="st">"arguments"</span>]</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>city <span class="op">=</span> raw_args[<span class="st">'city'</span>] </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>lat <span class="op">=</span> <span class="bu">float</span>(raw_args[<span class="st">'lat'</span>])</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>lon <span class="op">=</span> <span class="bu">float</span>(raw_args[<span class="st">'lon'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, we can calculate and print the distance, using <code>haversine()</code>:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>distance <span class="op">=</span> haversine((mylat, mylon), (lat, lon), unit<span class="op">=</span><span class="st">'km'</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Santiago de Chile is about </span><span class="sc">{</span><span class="bu">int</span>(<span class="bu">round</span>(distance, <span class="op">-</span><span class="dv">1</span>))<span class="sc">:,}</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="er">      kilometers away from {city}.")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this case:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Santiago</span> de Chile is about 4,240 kilometers away from Bogota.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>NOTE: Sometimes the model returns parameter names that differ from what your function expects. Specifically, Ollama occasionally returns argument objects like:</p>
+<p><code>{"lat1": -33.33, "lon1": -70.51, "lat2": 48.8566, "lon2": 2.3522, "city": "Paris"}</code></p>
+<p>Instead of the schema-defined keys (<code>lat</code>, <code>lon</code>, <code>city</code>).</p>
+<p>This happens because some LLMs (such as Llama 3.2 and Qwen 3) attempt to be “helpful” by naming coordinates explicitly—<code>lat1</code>/<code>lon1</code> for origin and <code>lat2</code>/<code>lon2</code> for destination—even when the schema only defines <code>lat</code>/<code>lon</code>.</p>
+<p>To handle this, optionally a mapping-correction step can be added after decoding the tocall arguments.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">hasattr</span>(response.message, <span class="st">"tool_calls"</span>) <span class="kw">and</span> response.message.tool_calls:</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> call <span class="kw">in</span> response.message.tool_calls:</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> call[<span class="st">"function"</span>][<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"calc_distance"</span>:</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>            raw_args <span class="op">=</span> call[<span class="st">"function"</span>][<span class="st">"arguments"</span>]</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Decode JSON if necessary</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>            args <span class="op">=</span> json.loads(raw_args) <span class="cf">if</span> <span class="bu">isinstance</span>(raw_args, <span class="bu">str</span>) <span class="cf">else</span> raw_args</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Normalize key names</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="st">"lat1"</span> <span class="kw">in</span> args <span class="kw">or</span> <span class="st">"lat2"</span> <span class="kw">in</span> args:</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>                args[<span class="st">"lat"</span>] <span class="op">=</span> args.get(<span class="st">"lat2"</span>) <span class="kw">or</span> args.get(<span class="st">"lat1"</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>                args[<span class="st">"lon"</span>] <span class="op">=</span> args.get(<span class="st">"lon2"</span>) <span class="kw">or</span> args.get(<span class="st">"lon1"</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="st">"latitude"</span> <span class="kw">in</span> args:</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>                args[<span class="st">"lat"</span>] <span class="op">=</span> args[<span class="st">"latitude"</span>]</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="st">"longitude"</span> <span class="kw">in</span> args:</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>                args[<span class="st">"lon"</span>] <span class="op">=</span> args[<span class="st">"longitude"</span>]</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>            args <span class="op">=</span> {k: v <span class="cf">for</span> k, v <span class="kw">in</span> args.items() <span class="cf">if</span> k <span class="kw">in</span> (<span class="st">"lat"</span>, <span class="st">"lon"</span>, <span class="st">"city"</span>)}</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Convert numbers</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>            args[<span class="st">"lat"</span>] <span class="op">=</span> <span class="bu">float</span>(args[<span class="st">"lat"</span>])</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>            args[<span class="st">"lon"</span>] <span class="op">=</span> <span class="bu">float</span>(args[<span class="st">"lon"</span>])</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>            result <span class="op">=</span> calc_distance(<span class="op">**</span>args)</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(result[<span class="st">"message"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Timing and Diagnostic Output</strong></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>elapsed <span class="op">=</span> time.perf_counter() <span class="op">-</span> start</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"[INFO] ==&gt; Model </span><span class="sc">{</span>MODEL<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>elapsed<span class="sc">:.1f}</span><span class="ss"> s"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This records how long the operation took from prompt submission to tool execution, useful for benchmarking response performance.</p>
+<p><strong>Example Usage</strong></p>
+<p>If we enter different countries, for example, France, Colombia, and the United States, We can note that we always receive the same structured information:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ask_and_measure</span><span class="er">(</span><span class="st">"France"</span><span class="kw">)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ask_and_measure</span><span class="er">(</span><span class="st">"Colombia"</span><span class="kw">)</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ask_and_measure</span><span class="er">(</span><span class="st">"United States"</span><span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you run the code as a script, the result will be printed on the terminal:</p>
+<p><img src="./images/png/script-fc.png" class="img-fluid"></p>
+<p>And the calculations are pretty good!</p>
+<p><img src="images/png/calc_real.png" class="img-fluid"></p>
+<p>The complete script can be found at: <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/func_call_dist_calc.py">func_call_dist_calc.py</a> and on the <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/10-Ollama_Function_Calling.ipynb">10-Ollama_Function_Calling notebook</a>.</p>
+<section id="running-with-other-models" class="level3">
+<h3 class="anchored" data-anchor-id="running-with-other-models">Running with other models</h3>
+<p>The models that will run with the described approach are the ones that can handle <code>tools</code>. For example, Gemma 3 and 3n will not work.</p>
+<p>An alternative is to use the Pydantic library to serialize the schema using <code>model_json_schema()</code>. Using the Pydantic library, models as Gemma can also be used, as explored in the:</p>
+<p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/20-Ollama_Function_Calling_Pydantic.ipynb">20-Ollama_Function_Calling_Pydantic notebook</a></p>
+</section>
+<section id="adding-images" class="level3">
+<h3 class="anchored" data-anchor-id="adding-images">Adding images</h3>
+<p>Now it is time to wrap up everything so far! Let’s modify the script using Pydantic so that instead of entering the country name (as a text), the user enters an image, and the application (based on SLM) returns the city in the image and its geographic location. With that data, we can calculate the distance as before.</p>
+<p><img src="./images/jpeg/slm-example.jpg" class="img-fluid"></p>
+<p>For simplicity, we will implement this new code in two steps. First, the LLM will analyze the image and create a description (text). This text will be passed on to another instance, where the model will extract the information needed to pass along.</p>
+<p><img src="images/png/block-2.png" class="img-fluid"></p>
+<p>We will start importing the libraries</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> haversine <span class="im">import</span> haversine</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ollama <span class="im">import</span> chat</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel, Field</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can see the image if you run the code on the Jupyter Notebook. For that, we also need to import:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>Those libraries are unnecessary if we run the code as a script.</p>
+</blockquote>
+<p>Now, we define the model and the local coordinates:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>MODEL <span class="op">=</span> <span class="st">'gemma3:4b'</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>mylat <span class="op">=</span> <span class="op">-</span><span class="fl">33.33</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>mylon <span class="op">=</span> <span class="op">-</span><span class="fl">70.51</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can download a new image, for example, Machu Picchu from Wikipedia. On the Notebook we can see it:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the image</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">"image_test_3.jpg"</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the image</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co">#plt.title("Image")</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/jpeg/image_test_3.jpg" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>Now, let’s define a function that will receive the image and will <code>return the decimal latitude and decimal longitude of the city in the image, its name, and what country it is located</code></p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> image_description(img_path):</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(img_path, <span class="st">'rb'</span>) <span class="im">as</span> <span class="bu">file</span>:</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> chat(</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>            model<span class="op">=</span>MODEL,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>            messages<span class="op">=</span>[</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>              {</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>                <span class="st">'role'</span>: <span class="st">'user'</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>                <span class="st">'content'</span>: <span class="st">'''return the decimal latitude and decimal longitude </span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="st">                              of the city in the image, its name, and </span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="st">                              what country it is located'''</span>,</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>                <span class="st">'images'</span>: [<span class="bu">file</span>.read()],</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>              },</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>            ],</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>            options <span class="op">=</span> {</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>              <span class="st">'temperature'</span>: <span class="dv">0</span>,</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>              }</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">#print(response['message']['content'])</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response[<span class="st">'message'</span>][<span class="st">'content'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>We can print the entire response for debug purposes. In this case, we can get something as:</p>
+<p><code>'{\n  "city": "Machu Picchu",\n  "country": "Peru",\n  "lat": -13.1631,\n  "lon": -72.5450\n}\n'</code></p>
+</blockquote>
+<p>Let’s define a Pydantic model (CityCoord) that describes the expected structure of the SLM’s response. It expects four fields: country, city (city name), lat (latitude), and lon (longitude).</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CityCoord(BaseModel):</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    city: <span class="bu">str</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Name of the city in the image"</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    country: <span class="bu">str</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Name of the country where the city in the\ image is located"</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    lat: <span class="bu">float</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Decimal Latitude of the city in the image"</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    lon: <span class="bu">float</span> <span class="op">=</span> Field(..., description<span class="op">=</span><span class="st">"Decimal Longitude of the city in the image"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The image description generated for the function will be passed as a prompt for the model again.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> chat(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>MODEL,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"content"</span>: image_description <span class="co"># image_description from previous model's run</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    }],</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">format</span><span class="op">=</span>CityCoord.model_json_schema(),  <span class="co"># Structured JSON format</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    options<span class="op">=</span>{<span class="st">"temperature"</span>: <span class="dv">0</span>}</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now we can get the required data using:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>resp <span class="op">=</span> CityCoord.model_validate_json(response.message.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And so, we can calculate and print the distance, using <code>haversine()</code>:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>distance <span class="op">=</span> haversine((mylat, mylon), (resp.lat, resp.lon), unit<span class="op">=</span><span class="st">'km'</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">The image shows </span><span class="sc">{</span>resp<span class="sc">.</span>city<span class="sc">}</span><span class="ss">, with lat:</span><span class="sc">{</span><span class="bu">round</span>(resp.lat, <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> and </span><span class="ch">\</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="ss">long: </span><span class="sc">{</span><span class="bu">round</span>(resp.lon, <span class="dv">2</span>)<span class="sc">}</span><span class="ss">, located in </span><span class="sc">{</span>resp<span class="sc">.</span>country<span class="sc">}</span><span class="ss"> and </span><span class="ch">\</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="ss">about </span><span class="sc">{</span><span class="bu">int</span>(<span class="bu">round</span>(distance, <span class="op">-</span><span class="dv">1</span>))<span class="sc">:,}</span><span class="ss"> kilometers away from Santiago, Chile.</span><span class="ch">\n</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And we will get:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">The</span> image shows Machu Picchu, with lat:-13.16 and long: <span class="at">-72.55,</span> located in Peru and about 2,250 kilometers away from Santiago, Chile.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In the <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/30-Function_Calling_with_images.ipynb">30-Function_Calling_with_images</a> notebook, you can find experiments with multiple images.</p>
+<p>Let’s now download the script <code>calc_distance_image.py</code> from the <a href="">GitHub</a> and run it on the terminal with the command:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> calc_distance_image.py /home/mjrovai/Documents/OLLAMA/image_test_3.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Enter with the Machu Picchu image full patch as an argument. We will get the same previous result.</p>
+<p><img src="images/png/app-machu-picchu.png" class="img-fluid"></p>
+<p>Let’s change the model for the <code>gemma3:4b</code>:</p>
+<p><img src="./images/png/machu-pichu-gemma.png" class="img-fluid"></p>
+<p>The app is working fine with both models, with the Gemma being faster.</p>
+<p><em>How</em> about Paris?</p>
+<p><img src="images/png/paris-app.png" class="img-fluid"></p>
+<p><img src="./images/png/app-paris-gemma.png" class="img-fluid"></p>
+<p>Of course, there are many ways to optimize the code used here. Still, the idea is to explore the considerable potential of <em>function calling</em> with SLMs at the edge, allowing those models to integrate with external functions or APIs. Going beyond text generation, SLMs can access real-time data, automate tasks, and interact with various systems.</p>
+</section>
+</section>
+<section id="retrievel-augmentation-generation-rag" class="level2">
+<h2 class="anchored" data-anchor-id="retrievel-augmentation-generation-rag">Retrievel Augmentation Generation (RAG)</h2>
+<p>In a basic interaction between a user and a language model, the user asks a question, which is sent to the model as a prompt. The model generates a response based solely on its pre-trained knowledge.</p>
+<p><img src="./images/png/prompt-simple.png" class="img-fluid"></p>
+<p>In a RAG process, there’s an additional step between the user’s question and the model’s response. The user’s question triggers a retrieval process from a knowledge base.</p>
+<p><img src="images/png/rag-1.png" class="img-fluid"></p>
+<section id="a-simple-rag-project" class="level3">
+<h3 class="anchored" data-anchor-id="a-simple-rag-project">A simple RAG project</h3>
+<p>Here are the steps to implement a basic Retrieval Augmented Generation (RAG):</p>
+<ul>
+<li><p><strong>Determine the type of documents you’ll be using:</strong> The best types are documents from which we can get clean and unobscured text. PDFs can be problematic because they are designed for printing, not for extracting sensible text. To work with PDFs, we should get the source document or use tools to handle it.</p></li>
+<li><p><strong>Chunk the text:</strong> We can’t store the text as one long stream because of context size limitations and the potential for confusion. Chunking involves splitting the text into smaller pieces. Chunk text has many ways, such as character count, tokens, words, paragraphs, or sections. It is also possible to overlap chunks.</p></li>
+<li><p><strong>Create embeddings:</strong> Embeddings are numerical representations of text that capture semantic meaning. We create embeddings by passing each chunk of text through a particular embedding model. The model outputs a vector, the length of which depends on the embedding model used. We should pull one (or more) <a href="https://ollama.com/blog/embedding-models">embedding models</a> from Ollama, to perform this task. Here are some examples of embedding models available at Ollama.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Parameter Size</th>
+<th>Embedding Size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>mxbai-embed-large</td>
+<td>334M</td>
+<td>1024</td>
+</tr>
+<tr class="even">
+<td>nomic-embed-text</td>
+<td>137M</td>
+<td>768</td>
+</tr>
+<tr class="odd">
+<td>all-minilm</td>
+<td>23M</td>
+<td>384</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>Generally, larger embedding sizes capture more nuanced information about the input. Still, they also require more computational resources to process, and a higher number of parameters should increase the latency (but also the quality of the response).</p>
+</blockquote></li>
+<li><p><strong>Store the chunks and embeddings in a vector database:</strong> We will need a way to efficiently find the most relevant chunks of text for a given prompt, which is where a vector database comes in. We will use <a href="https://www.trychroma.com/">Chromadb</a>, an AI-native open-source vector database, which simplifies building RAGs by creating knowledge, facts, and skills pluggable for LLMs. Both the embedding and the source text for each chunk are stored.</p></li>
+<li><p><strong>Build the prompt:</strong> When we have a question, we create an embedding and query the vector database for the most similar chunks. Then, we select the top few results and include their text in the prompt.</p></li>
+</ul>
+<p>The goal of RAG is to provide the model with the most relevant information from our documents, allowing it to generate more accurate and informative responses. So, let’s implement a simple example of an SLM incorporating a particular set of facts about bees (“Bee Facts”).</p>
+<p>Inside the <code>ollama</code> env, enter the command in the terminal for Chromadb instalation:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ollama chromadb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s pull an intermediary embedding model, <code>nomic-embed-text</code></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> pull nomic-embed-text</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And create a working directory:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>cd Documents<span class="op">/</span>OLLAMA<span class="op">/</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>mkdir RAG<span class="op">-</span>simple<span class="op">-</span>bee</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>cd RAG<span class="op">-</span>simple<span class="op">-</span>bee<span class="op">/</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s create a new Jupyter notebook, <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/40-RAG-simple-bee.ipynb">40-RAG-simple-bee</a> for some exploration:</p>
+<p>Import the needed libraries:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> chromadb</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And define aor models:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>EMB_MODEL <span class="op">=</span> <span class="st">"nomic-embed-text"</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>MODEL <span class="op">=</span> <span class="st">'llama3.2:3B'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Initially, a knowledge base about bee facts should be created. This involves collecting relevant documents and converting them into vector embeddings. These embeddings are then stored in a vector database, allowing for efficient similarity searches later. Enter with the “document,” a base of “bee facts” as a list:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>documents <span class="op">=</span> [</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Bee-keeping, also known as apiculture, involves the maintenance of bee </span><span class="ch">\</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="st">    colonies, typically in hives, by humans."</span>,</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The most commonly kept species of bees is the European honey bee (Apis </span><span class="ch">\</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="st">    mellifera)."</span>,</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"There are another 20,000 different bee species in the world."</span>,  </span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Brazil alone has more than 300 different bee species, and the </span><span class="ch">\</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="st">    vast majority, unlike western honey bees, don’t sting."</span>, </span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Reports written in 1577 by Hans Staden, mention three native bees </span><span class="ch">\</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="st">    used by indigenous people in Brazil."</span>,</span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The indigenous people in Brazil used bees for medicine and food purposes"</span>,</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"From Hans Staden report: probable species: mandaçaia (Melipona </span><span class="ch">\</span></span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a><span class="st">    quadrifasciata), mandaguari (Scaptotrigona postica) and jataí-amarela </span><span class="ch">\</span></span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a><span class="st">    (Tetragonisca angustula)."</span></span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>We do not need to “chunk” the document here because we will use each element of the list as a chunk.</p>
+</blockquote>
+<p>Now, we will create our vector embedding database <code>bee_facts</code> and store the document in it:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> chromadb.Client()</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>collection <span class="op">=</span> client.create_collection(name<span class="op">=</span><span class="st">"bee_facts"</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># store each document in a vector embedding database</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, d <span class="kw">in</span> <span class="bu">enumerate</span>(documents):</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  response <span class="op">=</span> ollama.embeddings(model<span class="op">=</span>EMB_MODEL, prompt<span class="op">=</span>d)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  embedding <span class="op">=</span> response[<span class="st">"embedding"</span>]</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  collection.add(</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>    ids<span class="op">=</span>[<span class="bu">str</span>(i)],</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>    embeddings<span class="op">=</span>[embedding],</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>    documents<span class="op">=</span>[d]</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now that we have our “Knowledge Base” created, we can start making queries, retrieving data from it:</p>
+<p><img src="images/png/rag-2-2.png" class="img-fluid"></p>
+<p><strong>User Query:</strong> The process begins when a user asks a question, such as “How many bees are in a colony? Who lays eggs, and how much? How about common pests and diseases?”</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> <span class="st">"How many bees are in a colony? Who lays eggs and how much? How about</span><span class="ch">\</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="st">          common pests and diseases?"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Query Embedding:</strong> The user’s question is converted into a vector embedding using <strong>the same embedding model</strong> used for the knowledge base.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> ollama.embeddings(</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  prompt<span class="op">=</span>prompt,</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  model<span class="op">=</span>EMB_MODEL</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Relevant Document Retrieval:</strong> The system searches the knowledge base using the query embedding to find the most relevant documents (in this case, the 5 more probable). This is done using a similarity search, which compares the query embedding to the document embeddings in the database.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> collection.query(</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  query_embeddings<span class="op">=</span>[response[<span class="st">"embedding"</span>]],</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  n_results<span class="op">=</span><span class="dv">5</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> results[<span class="st">'documents'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Prompt Augmentation:</strong> The retrieved relevant information is combined with the original user query to create an augmented prompt. This prompt now contains the user’s question and pertinent facts from the knowledge base.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>prompt<span class="op">=</span><span class="ss">f"Using this data: </span><span class="sc">{</span>data<span class="sc">}</span><span class="ss">. Respond to this prompt: </span><span class="sc">{</span>prompt<span class="sc">}</span><span class="ss">"</span>,</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Answer Generation:</strong> The augmented prompt is then fed into a language model, in this case, the <code>llama3.2:3b</code> model. The model uses this enriched context to generate a comprehensive answer. Parameters like temperature, top_k, and top_p are set to control the randomness and quality of the generated response.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> ollama.generate(</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  model<span class="op">=</span>MODEL,</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  prompt<span class="op">=</span><span class="ss">f"Using this data: </span><span class="sc">{</span>data<span class="sc">}</span><span class="ss">. Respond to this prompt: </span><span class="sc">{</span>prompt<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  options<span class="op">=</span>{</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"temperature"</span>: <span class="fl">0.0</span>,</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"top_k"</span>:<span class="dv">10</span>,</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"top_p"</span>:<span class="fl">0.5</span>                          }</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Response Delivery:</strong> Finally, the system returns the generated answer to the user.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(output[<span class="st">'response'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Based</span> on the provided data, here are the answers to your questions:</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="ex">1.</span> How many bees are in a colony<span class="pp">?</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="ex">A</span> typical bee colony can contain between 20,000 and 80,000 bees.</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="ex">2.</span> Who lays eggs and how much<span class="pp">?</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="ex">The</span> queen bee lays up to 2,000 eggs per day during peak seasons.</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="ex">3.</span> What about common pests and diseases<span class="pp">?</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Common</span> pests and diseases that affect bees include varroa mites, hive beetles,</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="ex">and</span> foulbrood.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s create a function to help answer new questions:</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rag_bees(prompt, n_results<span class="op">=</span><span class="dv">5</span>, temp<span class="op">=</span><span class="fl">0.0</span>, top_k<span class="op">=</span><span class="dv">10</span>, top_p<span class="op">=</span><span class="fl">0.5</span>):</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    start_time <span class="op">=</span> time.perf_counter()  <span class="co"># Start timing</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># generate an embedding for the prompt and retrieve the data </span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> ollama.embeddings(</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>      prompt<span class="op">=</span>prompt,</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>      model<span class="op">=</span>EMB_MODEL</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> collection.query(</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>      query_embeddings<span class="op">=</span>[response[<span class="st">"embedding"</span>]],</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>      n_results<span class="op">=</span>n_results</span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> results[<span class="st">'documents'</span>]</span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># generate a response combining the prompt and data retrieved</span></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> ollama.generate(</span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>      model<span class="op">=</span>MODEL,</span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>      prompt<span class="op">=</span><span class="ss">f"Using this data: </span><span class="sc">{</span>data<span class="sc">}</span><span class="ss">. Respond to this prompt: </span><span class="sc">{</span>prompt<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>      options<span class="op">=</span>{</span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"temperature"</span>: temp,</span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">"top_k"</span>: top_k,</span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">"top_p"</span>: top_p                          }</span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(output[<span class="st">'response'</span>])</span>
+<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a>    end_time <span class="op">=</span> time.perf_counter()  <span class="co"># End timing</span></span>
+<span id="cb51-29"><a href="#cb51-29" aria-hidden="true" tabindex="-1"></a>    elapsed_time <span class="op">=</span> <span class="bu">round</span>((end_time <span class="op">-</span> start_time), <span class="dv">1</span>)  <span class="co"># Calculate elapsed time</span></span>
+<span id="cb51-30"><a href="#cb51-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb51-31"><a href="#cb51-31" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">[INFO] ==&gt; The code for model: </span><span class="sc">{</span>MODEL<span class="sc">}</span><span class="ss">, took </span><span class="sc">{</span>elapsed_time<span class="sc">}</span><span class="ss">s </span><span class="ch">\</span></span>
+<span id="cb51-32"><a href="#cb51-32" aria-hidden="true" tabindex="-1"></a><span class="ss">to generate the answer.</span><span class="ch">\n</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can now create queries and call the function:</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> <span class="st">"Are bees in Brazil?"</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>rag_bees(prompt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Yes,</span> bees are found in Brazil. According to the data, Brazil has more than 300</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="ex">different</span> bee species, and indigenous people in Brazil used bees for medicine and</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="ex">food</span> purposes. Additionally, reports from 1577 mention three native bees used by</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="ex">indigenous</span> people in Brazil.</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a> <span class="ex">[INFO]</span> ==<span class="op">&gt;</span> The code for model: llama3.2:3b, took 22.7s to generate the answer.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>By the way, if the model used supports multiple languages, we can use it (for example, Portuguese), even if the dataset was created in English:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> <span class="st">"Existem abelhas no Brazil?"</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>rag_bees(prompt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Sim,</span> existem abelhas no Brasil! De acordo com o relato de Hans Staden, há três </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="ex">espécies</span> de abelhas nativas do Brasil que foram mencionadas: mandaçaia <span class="er">(</span><span class="ex">Melipona</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="ex">quadrifasciata</span><span class="kw">)</span><span class="ex">,</span> mandaguari <span class="er">(</span><span class="ex">Scaptotrigona</span> postica<span class="kw">)</span> <span class="ex">e</span> jataí-amarela <span class="er">(</span><span class="ex">Tetragonisca</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="ex">angustula</span><span class="kw">)</span><span class="bu">.</span> Além disso, o Brasil é conhecido por ter mais de 300 espécies </span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="ex">diferentes</span> de abelhas, a maioria das quais não é agressiva e não põe veneno.</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a> <span class="ex">[INFO]</span> ==<span class="op">&gt;</span> The code for model: llama3.2:3b, took 54.6s to generate the answer.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>In the Chapter <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/advancing_adgeai/adv_edgeai.html">Advancing EdgeAI: Beyond Basic SLMs</a>, we will learn how to implement a <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/advancing_adgeai/adv_edgeai.html#implementing-a-naive-rag-system">Naive RAG System</a></p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Throughout this chapter, we’ve explored two fundamental optimization techniques that significantly enhance the capabilities of Small Language Models (SLMs) running on edge devices like the Raspberry Pi: <strong>Function Calling</strong> and <strong>Retrieval-Augmented Generation (RAG)</strong>.</p>
+<p>We began by addressing a critical limitation of language models—their inability to perform accurate calculations. By implementing function calling, we demonstrated how to transform SLMs from text generators into actionable agents that can interact with external tools and APIs. Whether extracting structured data like geographic coordinates, fetching real-time weather information, or performing precise mathematical operations, function calling bridges the gap between natural language understanding and deterministic computation. The key principle remains:</p>
+<blockquote class="blockquote">
+<p>Use SLMs for intent classification and understanding, while delegating specific tasks to specialized functions that guarantee accuracy.</p>
+</blockquote>
+<p>The RAG implementation showcased an elegant solution to another fundamental challenge—the static nature of model knowledge and the tendency toward hallucinations. By integrating ChromaDB with vector embeddings, we created a system that augments the model’s responses with relevant, factual information retrieved from a knowledge base. This approach not only grounds the model’s answers in verifiable data but also enables the system to stay current without the resource-intensive process of retraining or fine-tuning.</p>
+<p>These techniques are particularly valuable for edge AI applications where computational resources are limited, and offline operation is often required. Function calling ensures reliability and precision, while RAG provides flexibility and accuracy without demanding continuous internet connectivity once the knowledge base is established.</p>
+<p>As we move forward with our edge AI projects, remember that the power of SLMs lies not just in their standalone capabilities but in how effectively we orchestrate them with complementary tools and techniques. The patterns demonstrated here—structured tool use and knowledge augmentation—form the foundation for building robust, production-ready AI applications on resource-constrained devices.</p>
+<p>In the chapter <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/advancing_adgeai/adv_edgeai.html">Advancing EdgeAI: Beyond Basic SLMs</a>, we’ll go deeper into these concepts and explore more advanced implementations.</p>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<ul>
+<li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/10-Ollama_Function_Calling.ipynb">10-Ollama_Function_Calling notebook</a></li>
+<li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/20-Ollama_Function_Calling_Pydantic.ipynb">20-Ollama_Function_Calling_Pydantic</a></li>
+<li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/30-Function_Calling_with_images.ipynb">30-Function_Calling_with_images notebook</a></li>
+<li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/40-RAG-simple-bee.ipynb">40-RAG-simple-bee notebook</a></li>
+<li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/calc_distance_image.py">calc_distance_image python script</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/llm/slm_intro.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Small Language Models (SLM)</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/vlm/vlm.html" class="pagination-link">
+        <span class="nav-page-text">Vision-Language Models at the Edge</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>
