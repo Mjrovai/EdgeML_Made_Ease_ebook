@@ -348,19 +348,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#from-sensors-to-smart-analysis-with-small-language-models" id="toc-from-sensors-to-smart-analysis-with-small-language-models" class="nav-link active" data-scroll-target="#from-sensors-to-smart-analysis-with-small-language-models">From Sensors to Smart Analysis with Small Language Models</a></li>
   <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
-  <li><a href="#install-the-raspi-operating-system" id="toc-install-the-raspi-operating-system" class="nav-link" data-scroll-target="#install-the-raspi-operating-system">Install the Raspi Operating System</a>
-  <ul>
-  <li><a href="#interacting-with-the-raspi-via-ssh" id="toc-interacting-with-the-raspi-via-ssh" class="nav-link" data-scroll-target="#interacting-with-the-raspi-via-ssh">Interacting with the Raspi via SSH</a></li>
-  </ul></li>
   <li><a href="#accessing-the-gpios" id="toc-accessing-the-gpios" class="nav-link" data-scroll-target="#accessing-the-gpios">Accessing the GPIOs</a>
   <ul>
-  <li><a href="#pin-numbering" id="toc-pin-numbering" class="nav-link" data-scroll-target="#pin-numbering">Pin Numbering</a></li>
-  <li><a href="#hello-world-blinking-an-led" id="toc-hello-world-blinking-an-led" class="nav-link" data-scroll-target="#hello-world-blinking-an-led">“Hello World”: Blinking an LED</a></li>
+  <li><a href="#pin-numbering-systems" id="toc-pin-numbering-systems" class="nav-link" data-scroll-target="#pin-numbering-systems">Pin Numbering Systems</a></li>
+  <li><a href="#safety-first" id="toc-safety-first" class="nav-link" data-scroll-target="#safety-first">Safety First</a></li>
+  <li><a href="#gpio-zero-library" id="toc-gpio-zero-library" class="nav-link" data-scroll-target="#gpio-zero-library">GPIO Zero Library</a></li>
+  </ul></li>
+  <li><a href="#hello-world-blinking-an-led" id="toc-hello-world-blinking-an-led" class="nav-link" data-scroll-target="#hello-world-blinking-an-led">“Hello World”: Blinking an LED</a>
+  <ul>
+  <li><a href="#understanding-the-led-circuit" id="toc-understanding-the-led-circuit" class="nav-link" data-scroll-target="#understanding-the-led-circuit">Understanding the LED Circuit</a></li>
+  <li><a href="#testing-with-gpio-zero" id="toc-testing-with-gpio-zero" class="nav-link" data-scroll-target="#testing-with-gpio-zero">Testing with GPIO Zero</a></li>
   <li><a href="#installing-all-leds-the-actuators" id="toc-installing-all-leds-the-actuators" class="nav-link" data-scroll-target="#installing-all-leds-the-actuators">Installing all LEDs (the “actuators”)</a></li>
   </ul></li>
   <li><a href="#sensors-installation-and-setup" id="toc-sensors-installation-and-setup" class="nav-link" data-scroll-target="#sensors-installation-and-setup">Sensors Installation and setup</a>
   <ul>
-  <li><a href="#button" id="toc-button" class="nav-link" data-scroll-target="#button">Button</a></li>
+  <li><a href="#button" id="toc-button" class="nav-link" data-scroll-target="#button">Button</a>
+  <ul class="collapse">
+  <li><a href="#understanding-pull-up-and-pull-down-resistors" id="toc-understanding-pull-up-and-pull-down-resistors" class="nav-link" data-scroll-target="#understanding-pull-up-and-pull-down-resistors">Understanding Pull-Up and Pull-Down Resistors</a></li>
+  </ul></li>
   <li><a href="#installing-adafruit-circuitpython" id="toc-installing-adafruit-circuitpython" class="nav-link" data-scroll-target="#installing-adafruit-circuitpython">Installing Adafruit CircuitPython</a></li>
   <li><a href="#dht22---temperature-humidity-sensor" id="toc-dht22---temperature-humidity-sensor" class="nav-link" data-scroll-target="#dht22---temperature-humidity-sensor">DHT22 - Temperature &amp; Humidity Sensor</a></li>
   <li><a href="#installing-the-bmp280-barometric-pressure-altitude-sensor" id="toc-installing-the-bmp280-barometric-pressure-altitude-sensor" class="nav-link" data-scroll-target="#installing-the-bmp280-barometric-pressure-altitude-sensor">Installing the BMP280: Barometric Pressure &amp; Altitude Sensor</a></li>
@@ -368,13 +373,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#playing-with-sensors-and-actuators" id="toc-playing-with-sensors-and-actuators" class="nav-link" data-scroll-target="#playing-with-sensors-and-actuators">Playing with Sensors and Actuators</a>
   <ul>
-  <li><a href="#installing-jupyter-notebook" id="toc-installing-jupyter-notebook" class="nav-link" data-scroll-target="#installing-jupyter-notebook">Installing Jupyter Notebook</a></li>
   <li><a href="#testing-the-notebook-setup" id="toc-testing-the-notebook-setup" class="nav-link" data-scroll-target="#testing-the-notebook-setup">Testing the Notebook setup</a></li>
   <li><a href="#initialization" id="toc-initialization" class="nav-link" data-scroll-target="#initialization">Initialization</a></li>
   <li><a href="#gpio-input-and-output" id="toc-gpio-input-and-output" class="nav-link" data-scroll-target="#gpio-input-and-output">GPIO Input and Output</a></li>
   <li><a href="#getting-and-displaying-sensor-data" id="toc-getting-and-displaying-sensor-data" class="nav-link" data-scroll-target="#getting-and-displaying-sensor-data">Getting and displaying Sensor Data</a></li>
   </ul></li>
   <li><a href="#widgets" id="toc-widgets" class="nav-link" data-scroll-target="#widgets">Widgets</a></li>
+  <li><a href="#advanced-gpio-zero-features" id="toc-advanced-gpio-zero-features" class="nav-link" data-scroll-target="#advanced-gpio-zero-features">Advanced GPIO Zero Features</a>
+  <ul>
+  <li><a href="#pwm-led-brightness-control" id="toc-pwm-led-brightness-control" class="nav-link" data-scroll-target="#pwm-led-brightness-control">PWM LED Brightness Control</a></li>
+  <li><a href="#composite-devices" id="toc-composite-devices" class="nav-link" data-scroll-target="#composite-devices">Composite Devices</a></li>
+  <li><a href="#other-useful-gpio-zero-devices" id="toc-other-useful-gpio-zero-devices" class="nav-link" data-scroll-target="#other-useful-gpio-zero-devices">Other Useful GPIO Zero Devices</a></li>
+  </ul></li>
   <li><a href="#interacting-an-slm-with-the-physical-world" id="toc-interacting-an-slm-with-the-physical-world" class="nav-link" data-scroll-target="#interacting-an-slm-with-the-physical-world">Interacting an SLM with the Physical world</a></li>
   <li><a href="#other-models" id="toc-other-models" class="nav-link" data-scroll-target="#other-models">Other Models</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
@@ -417,12 +427,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="from-sensors-to-smart-analysis-with-small-language-models" class="level3">
 <h3 class="anchored" data-anchor-id="from-sensors-to-smart-analysis-with-small-language-models">From Sensors to Smart Analysis with Small Language Models</h3>
-<p><img src="./images/jpeg/raspi-notebook_2.jpeg" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/ini-physical.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
 </section>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>Physical computing creates interactive systems that sense and respond to the analog world. While this field has traditionally focused on direct sensor readings and programmed responses, we’re entering an exciting new era where Large Language Models (LLMs) can add sophisticated decision-making and natural language interaction to physical computing projects.</p>
-<p>In the <em>Small Language Models (SLM)</em> chapter, we learned how it is possible to run an LLM (or, more precisely, an SLM) in a Single Board Computer (SBC) like the Raspberry Pi. This tutorial will guide us through setting up a Raspberry Pi for physical computing, with an eye toward future AI integration. We’ll cover:</p>
+<p>In the <em>Small Language Models (SLM)</em> chapter, we learned how to run an LLM (or, more precisely, an SLM) on a Single Board Computer (SBC) such as the Raspberry Pi. In this chapter, we will go through the process of setting up a Raspberry Pi for physical computing, with an eye toward future AI integration. We’ll cover:</p>
 <ul>
 <li>Setting up the Raspberry Pi for physical computing</li>
 <li>Working with essential sensors and actuators</li>
@@ -430,9 +444,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Establishing a foundation for integrating LLMs with physical devices</li>
 <li>Creating interactive systems that can respond to both sensor data and natural language commands</li>
 </ul>
-<p>We will also use a Jupyter notebook (programmed in Python) to interact with sensors and actuators—an important and necessary first step toward the goal of integrating the Raspi with an SLM. The combination of Raspberry Pi’s versatility and the power of SLMs opens up exciting possibilities for creating more intelligent and responsive physical computing systems.</p>
+<p>We will also use a Jupyter notebook (programmed in Python) to interact with sensors and actuators—an important and necessary first step toward the goal of integrating the Raspi with an SLM.</p>
+<p>The combination of Raspberry Pi’s versatility and the power of SLMs opens up exciting possibilities for creating more intelligent and responsive physical computing systems.</p>
 <p>The diagram below gives us an overview of the project:</p>
-<p><img src="./images/png/image-20250208114709046.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/image-20250208114709046.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
 </section>
 <section id="prerequisites" class="level2">
 <h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
@@ -446,111 +465,141 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Resistor 220 or 330 ohm (3x)</li>
 </ul>
 </section>
-<section id="install-the-raspi-operating-system" class="level2">
-<h2 class="anchored" data-anchor-id="install-the-raspi-operating-system">Install the Raspi Operating System</h2>
-<p>As described in <em>Setup</em>, we will need an operating system to use the Raspberry Pi. By default, Raspberry Pis check for an operating system on any SD card inserted in the slot, so we should install an operating system using <a href="https://www.raspberrypi.com/software/">Raspberry Pi Imager.</a></p>
-<p>Raspberry Pi Imager is a tool for downloading and writing images on macOS, Windows, and Linux. It includes many popular operating system images for Raspberry Pi. We will also use the Imager to preconfigure credentials and remote access settings.</p>
-<p>After downloading the Imager and installing it on your computer, use a new and empty SD card. Select the device (<strong>RASPBERRY PI Zero, 4 or 5)</strong>, the Operating System <strong>(RASPBERRY PI OS 32 or 64-BIT)</strong>, and your Storage Device:</p>
-<p><img src="https://hackster.imgix.net/uploads/attachments/1722882/raspberry_pi_rE1XVGvFpf.png?auto=compress%2Cformat&amp;w=740&amp;h=555&amp;fit=max" class="img-fluid"></p>
-<p>We should also define the options, such as the hostname, username, password, LAN configuration (on GENERAL TAB), and, more importantly, SSH Enable on the SERVICES tab.</p>
-<blockquote class="blockquote">
-<p>Using the Secure Shell (SSH) protocol, you can access the terminal of a Raspberry Pi remotely from another computer on the same network.</p>
-</blockquote>
-<p><img src="https://hackster.imgix.net/uploads/attachments/1722887/image_0cHsddeCyJ.png?auto=compress%2Cformat&amp;w=740&amp;h=555&amp;fit=max" class="img-fluid"></p>
-<p>After burning the OS to the SD card, install it in the Raspi5’s SD slot and plug in the 5V power source.</p>
-<section id="interacting-with-the-raspi-via-ssh" class="level3">
-<h3 class="anchored" data-anchor-id="interacting-with-the-raspi-via-ssh">Interacting with the Raspi via SSH</h3>
-<p>The easiest way to interact with the Raspi is via SSH (“Headless”). We can use a Terminal (MAC/Linux) or <a href="https://www.putty.org/">PuTTy (</a>Windows).</p>
-<p>On terminal type <code>&lt;username&gt;@&lt;hostname&gt;.local</code>, for example:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> mjrovai@rpi-5.local</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<blockquote class="blockquote">
-<p>You should replace mjrovai with your <em>username</em> and rpi-5 with the <em>hostname</em> chosen during set-u</p>
-</blockquote>
-<p><img src="https://hackster.imgix.net/uploads/attachments/1722908/pasted_graphic_4_fpbrPHJgSh.png?auto=compress%2Cformat&amp;w=740&amp;h=555&amp;fit=max" class="img-fluid"></p>
-<p>When you see the prompt:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mjrovai@rpi-5:~</span> $</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>It means that you are interacting remotely with your Raspi.</p>
-<blockquote class="blockquote">
-<p>Note: <code>ssh &lt;username&gt;@&lt;hostname&gt;.local</code> sometimes does not work. In those cases, try: <code>ssh &lt;username&gt;@&lt;ip address&gt;</code></p>
-</blockquote>
-<p>It is a good practice to update the system regularly. For that, you should run:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><em>Pip</em> is a tool for installing external Python modules on a Raspberry Pi. However, it has not been enabled in recent OS versions. To allow it, you should run the command (only once):</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> rm /usr/lib/python3.11/EXTERNALLY-MANAGED</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><strong>To shut down the Rpi-Zero via terminal:</strong></p>
-<p>Do not simply pull the power cord when you want to turn off your Raspberry Pi. The Raspi may still be writing data to the SD card, in which case, merely powering down may result in data loss or, even worse, a corrupted SD card.</p>
-<p>For safety shut down, use the command line:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> shutdown <span class="at">-h</span> now</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<blockquote class="blockquote">
-<p>To avoid possible data loss and SD card corruption, wait a few seconds after shutting down for the Raspberry Pi’s LED to stop blinking and go dark before removing the power. Once the LED goes out, it’s safe to power down.</p>
-</blockquote>
-</section>
-</section>
 <section id="accessing-the-gpios" class="level2">
 <h2 class="anchored" data-anchor-id="accessing-the-gpios">Accessing the GPIOs</h2>
-<p>A simple way to reach the GPIO pins on a Raspberry Pi is from the <a href="https://gpiozero.readthedocs.io/en/latest/">GPIO Zero Library</a>. With a few lines of code in Python, we can control actuators, read sensors, etc. It was created by Ben Nuttall of the Raspberry Pi Foundation, Dave Jones, and other contributors (<a href="https://github.com/gpiozero/gpiozero">GitHub</a>).</p>
+<p>The Raspberry Pi’s GPIO (General Purpose Input/Output) pins allow us to connect electronic components and control them with Python code. This opens up endless possibilities for creating interactive projects, home automation systems, robotics, and more.</p>
+<p>This chapter covers the modern <strong>GPIO Zero library</strong> for interactions with buttons and LEDs.</p>
+<p><strong>⚠️ IMPORTANT: RPi.GPIO does NOT support Raspberry Pi 5!</strong></p>
 <blockquote class="blockquote">
-<p>GPIO Zero is installed by default in the Raspberry Pi OS.</p>
+<p>With the Raspberry Pi 5, we must use GPIO Zero or the newer lgpio library. RPi.GPIO only works on Pi models 1-4, the Pi Zero, Pi Zero 2, and the Pi Zero 2W.</p>
 </blockquote>
-<section id="pin-numbering" class="level3">
-<h3 class="anchored" data-anchor-id="pin-numbering">Pin Numbering</h3>
+<p>The Raspberry Pi has 40 pins on its header, but not all of them are GPIO pins. Some provide power (3.3V and 5V), others are ground pins, and the rest are programmable GPIO pins.</p>
+<section id="pin-numbering-systems" class="level3">
+<h3 class="anchored" data-anchor-id="pin-numbering-systems">Pin Numbering Systems</h3>
+<p>There are two ways to reference GPIO pins:</p>
+<ul>
+<li><p><strong>BCM (Broadcom):</strong> Uses the GPIO number (e.g., GPIO17, GPIO27)</p></li>
+<li><p><strong>BOARD:</strong> Uses the physical pin number on the header (e.g., Pin 11, Pin 13)</p></li>
+</ul>
+<blockquote class="blockquote">
+<p>In this chapter, we’ll use BCM numbering as it’s more commonly used in Python programming.</p>
+</blockquote>
 <p><img src="./images/png/image-20250205112310226.png" class="img-fluid"></p>
-<p>It is essential to mention that the GPIO Zero Library uses Broadcom (BCM) pin numbering for the GPIO pins, as opposed to physical (board) numbering. Any pin marked “GPIO” in the following diagrams can be used as a PIN. For example, if an LED were attached to “GPIO13,” you would specify the PIN as 18 rather than 33 (the physical one).</p>
 </section>
-<section id="hello-world-blinking-an-led" class="level3">
-<h3 class="anchored" data-anchor-id="hello-world-blinking-an-led">“Hello World”: Blinking an LED</h3>
+<section id="safety-first" class="level3">
+<h3 class="anchored" data-anchor-id="safety-first">Safety First</h3>
+<p><strong>Before connecting any components, please read these important safety guidelines:</strong></p>
+<ul>
+<li><p><strong>Never connect 5V directly to GPIO pins</strong> - GPIO pins are 3.3V tolerant only</p></li>
+<li><p><strong>Always use current-limiting resistors with LEDs</strong> - Without them, you risk damaging the LED or GPIO pin</p></li>
+<li><p><strong>Double-check your connections</strong> before powering on</p></li>
+<li><p><strong>Disconnect power</strong> when making circuit changes</p></li>
+<li><p><strong>Respect polarity</strong> - LEDs for example, have positive (long leg) and negative (short leg) sides</p></li>
+</ul>
+</section>
+<section id="gpio-zero-library" class="level3">
+<h3 class="anchored" data-anchor-id="gpio-zero-library">GPIO Zero Library</h3>
+<p>A modern, high-level library that makes GPIO programming much simpler and more intuitive. It uses object-oriented programming and includes built-in features like automatic pin cleanup, device abstraction, and event detection.</p>
+<blockquote class="blockquote">
+<p>It is essential to note that the <a href="https://gpiozero.readthedocs.io/en/latest/">GPIO Zero Library</a> uses Broadcom (BCM) pin numbering for GPIO pins, rather than physical (board) numbering. Any pin marked “GPIO” in the previous diagram can be used as a PIN. For example, if an LED were attached to <code>GPIO13</code>, we would specify the PIN as <code>13</code> rather than 33 (the physical one).</p>
+</blockquote>
+<p>It was created by Ben Nuttall of the Raspberry Pi Foundation, Dave Jones, and other contributors (<a href="https://github.com/gpiozero/gpiozero">GitHub</a>).</p>
+<p><strong>Advantages of GPIO Zero:</strong></p>
+<ul>
+<li><p>Simpler, more readable code</p></li>
+<li><p>Object-oriented approach (LED, Button, etc.)</p></li>
+<li><p>Built-in device patterns and behaviors</p></li>
+<li><p>Automatic cleanup on program exit</p></li>
+<li><p>Better for beginners and rapid prototyping</p></li>
+<li><p>Includes composite devices (robots, traffic lights, etc.)</p></li>
+</ul>
+<p><strong>Installation:</strong></p>
+<ul>
+<li>GPIO Zero comes pre-installed on Raspberry Pi OS!</li>
+</ul>
+</section>
+</section>
+<section id="hello-world-blinking-an-led" class="level2">
+<h2 class="anchored" data-anchor-id="hello-world-blinking-an-led">“Hello World”: Blinking an LED</h2>
+<p>Let’s start with the classic ‘Hello World’ of physical computing - making an LED blink!</p>
 <p>To connect our RPi to the world, let’s first connect:</p>
 <ul>
 <li>Physical Pin 6 (GND) to GND Breadboard Power Grid (Blue -), using a black jumper</li>
 <li>Physical Pin 1 (3.3V) to +VCC Breadboard Power Grid (Red +), using a red jumper</li>
 </ul>
-<p>Now, let’s connect an LED (red) using the physical pin 13 (GPIO13) connected to the LED cathode (longer LED leg). Connect the LED anode to the breadboard GND using a 330 ohms resistor to reduce the current drained from the Raspi, as shown below:</p>
+<p>Now, let’s connect an LED (red) using the physical pin 33 (GPIO13) connected to the LED cathode (longer LED leg). Connect the LED anode to the breadboard GND using a 220 ohms resistor to reduce the current drawn from the Raspberry Pi, as shown below:</p>
 <p><img src="./images/png/image-20250205110908649.png" class="img-fluid"></p>
-<p>Once the HW is connected, let’s create a Python script to turn on the LED:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>led <span class="op">=</span> LED(<span class="dv">13</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>led.on()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="understanding-the-led-circuit" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-the-led-circuit">Understanding the LED Circuit</h3>
+<p>An LED (Light-Emitting Diode) requires current to flow through it to produce light. However, without a resistor, too much current can flow, damaging the LED or your Raspberry Pi. We use a resistor to limit the current to a safe level.</p>
+<p><strong>Why 220Ω or 330Ω Resistors?</strong></p>
+<p>These values limit the current to approximately 10-15mA, which is safe for most standard LEDs and GPIO pins. The exact value isn’t critical—anything from 220 Ω to 1 kΩ will work fine.</p>
+</section>
+<section id="testing-with-gpio-zero" class="level3">
+<h3 class="anchored" data-anchor-id="testing-with-gpio-zero">Testing with GPIO Zero</h3>
+<p>We can use the built-in Python interpreter to test the LED. In the terminal, enter <code>python</code>, and once in the interpreter, enter with the commands below:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> from <span class="ex">gpiozero</span> import LED</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> led <span class="ex">=</span> LED<span class="er">(</span><span class="ex">13</span><span class="kw">)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> led.on<span class="kw">()</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> led.off</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/hello-world-terminal.png" class="img-fluid"> <img src="./images/png/hello-world-img.png" class="img-fluid" style="width:80.0%" data-fig-align="center"></p>
+<p>On the Raspberry, start at home and go to <code>Documents</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Create a directory to save the scripts and install the libraries. Move to there:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> GPIO</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> GPIO</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We can use any text editor (such as <code>Nano</code>) to create and run the script. Save the file, for example, as <code>led_test.py</code>, and then execute it using the terminal:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> led_test.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>As we can see, it is elementary to code using the GPIO Zero Library.</p>
-<p>Now, let’s blink the LED (the actual “Hello world”) when talking about physical computing. To do that, we must also import another library, which is <code>time</code>. We need it to define how long the LED will be ON and OFF. In our case below, the LED will blink at a 1-second time.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> sleep</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>led <span class="op">=</span> LED(<span class="dv">18</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    led.on()</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    sleep(<span class="dv">1</span>)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    led.off()</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    sleep(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> led_test.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, let’s blink the LED (the actual “Hello world”) when talking about physical computing. To do that, we must also import another library: <code>time</code>. We need it to define how long the LED will be ON and OFF. In the case below, the LED will blink every 1 second.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> sleep</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>led <span class="op">=</span> LED(<span class="dv">13</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    led.on()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    sleep(<span class="dv">1</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    led.off()</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    sleep(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can use any text editor (such as <code>Nano</code>) to create and run the script. Save the file, for example, as <code>blink.py</code>, and then execute it using the terminal:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> blink.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Alternatively, we can reduce the blink code as below:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> signal <span class="im">import</span> pause</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>red <span class="op">=</span> LED(<span class="dv">17</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>red.blink()</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>pause()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> signal <span class="im">import</span> pause</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>led <span class="op">=</span> LED(<span class="dv">13</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>led.blink() <span class="co"># 1 second by default</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># led.blink(on_time=0.5, off_time=0.5) # Fast blink</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>pause()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="installing-all-leds-the-actuators" class="level3">
 <h3 class="anchored" data-anchor-id="installing-all-leds-the-actuators">Installing all LEDs (the “actuators”)</h3>
-<p>The LEDs can be used as “actuators”; depending on the condition of a code running on our Pi, we can command one of the LEDs to fire! We will install two more LEDs besides the red one already installed. Follow the diagram and install the yellow (on GPIO 19 ) and the green (on GPIO 26).</p>
+<p>The LEDs can be used as “actuators”; depending on the condition of a code running on our Pi, we can command one of the LEDs to fire! We will install two more LEDs, in addition to the red one already installed. Follow the diagram and install the yellow (on GPIO 19 ) and the green (on GPIO 26).</p>
 <p><img src="./images/png/image-20250205115538963.png" class="img-fluid"></p>
 <p>For testing we can run a similar code as the used with the single red led, changing the pin accordantly, for example.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>ledRed <span class="op">=</span> LED(<span class="dv">13</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>ledYlw <span class="op">=</span> LED(<span class="dv">19</span>)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>ledGrn <span class="op">=</span> LED(<span class="dv">26</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>ledRed.off()</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>ledYlw.off()</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>ledGrn.off()</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>ledRed.on()</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>ledYlw.on()</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>ledGrn.on()</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>ledRed.off()</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>ledYlw.off()</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>ledGrn.off()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> sleep</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ledRed <span class="op">=</span> LED(<span class="dv">13</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>ledYlw <span class="op">=</span> LED(<span class="dv">19</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>ledGrn <span class="op">=</span> LED(<span class="dv">26</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>ledRed.off()</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>ledYlw.off()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>ledGrn.off()</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>ledRed.on()</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>ledYlw.on()</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>ledGrn.on()</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>sleep(<span class="dv">5</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>ledRed.off()</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>ledYlw.off()</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>ledGrn.off()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/act-test.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
 <blockquote class="blockquote">
 <p>Remember that instead of LEDs, we could have relays, motors, etc.</p>
 </blockquote>
@@ -567,70 +616,122 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="button" class="level3">
 <h3 class="anchored" data-anchor-id="button">Button</h3>
-<p>The simple way to read an external command is by using a push-button, and the GPIO Zero Library provides an easy way to include it in our project. We do not need to think about Pull-up or Pull-down resistors, etc. In terms of HW, the only thing to do is to connect one leg of our push-button to any one of RPi GPIOs and the other one to GND as shown in the diagram:</p>
+<p>Now, let’s learn how to read input from a button. This allows your Raspberry Pi to respond to physical interactions!</p>
+<section id="understanding-pull-up-and-pull-down-resistors" class="level4">
+<h4 class="anchored" data-anchor-id="understanding-pull-up-and-pull-down-resistors">Understanding Pull-Up and Pull-Down Resistors</h4>
+<p>When a button is not pressed, the GPIO pin is ‘floating’ - it’s not connected to anything and can read random values. We use pull-up or pull-down resistors to set the pin’s default state.</p>
+<ul>
+<li><p><strong>Pull-Down:</strong> Default state is LOW (0V), becomes HIGH when button pressed</p></li>
+<li><p><strong>Pull-Up:</strong> Default state is HIGH (3.3V), becomes LOW when button pressed</p></li>
+</ul>
+<blockquote class="blockquote">
+<p>The Raspberry Pi has internal pull-up and pull-down resistors!</p>
+</blockquote>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/pull-up-down.jpg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">img</figcaption>
+</figure>
+</div>
+<p>The simplest way to run an external command is with a push button, and the GPIO Zero Library makes it easy to include in the project. We do not need to think about Pull-up or Pull-down resistors, etc. In terms of HW, the only thing to do is to connect one leg of our push-button to any one of the Raspi GPIOs and the other one to GND, as shown in the diagram:</p>
 <p><img src="./images/png/image-20250205121612737.png" class="img-fluid"></p>
 <ul>
 <li>Push-Button leg1 to GPIO 20</li>
 <li>Push-Button leg2 to GND</li>
 </ul>
 <p>A simple code for reading the button can be:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> Button</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>button <span class="op">=</span> Button(<span class="dv">20</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>: </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> button.is_pressed: </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Button is pressed"</span>) </span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Button is not pressed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> Button</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>button <span class="op">=</span> Button(<span class="dv">20</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>: </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> button.is_pressed: </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Button is pressed"</span>) </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Button is not pressed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/button-raspi.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>On a Raspberry Pi Zero 2W, for example, we could use the <code>RPi.GPIO</code>, whose code is:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> RPi.GPIO <span class="im">as</span> GPIO</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>GPIO.setmode(GPIO.BCM)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>GPIO.setwarnings(<span class="va">False</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>BUTTON_PIN <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up with internal pull-up</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>GPIO.setup(BUTTON_PIN, GPIO.IN, pull_up_down<span class="op">=</span>GPIO.PUD_UP)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> GPIO.<span class="bu">input</span>(BUTTON_PIN) <span class="op">==</span> GPIO.LOW:</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'Button pressed!'</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'Button not pressed'</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="fl">0.1</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    GPIO.cleanup()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
 </section>
 <section id="installing-adafruit-circuitpython" class="level3">
 <h3 class="anchored" data-anchor-id="installing-adafruit-circuitpython">Installing Adafruit CircuitPython</h3>
-<p>The GPIO Zero library is an excellent hardware interfacing library for Raspberry Pi. It’s great for digital in/out, analog inputs, servos, basic sensors, etc. However, it doesn’t cover SPI/I2C sensors or drivers, and by using CircuitPython via <strong>adafruit_blinka</strong>, we can unlock all of the drivers and example code developed by Adafruit!</p>
+<p>The GPIO Zero library is an excellent hardware interfacing library for Raspberry Pi. It’s great for digital in/out, analog inputs, servos, basic sensors, etc. However, it doesn’t cover SPI/I2C sensors or drivers. By using CircuitPython via <a href="https://github.com/adafruit/Adafruit_Blinka">adafruit_blinka</a>, we can take advantage of all of the drivers and example code developed by Adafruit!</p>
 <blockquote class="blockquote">
-<p>Note that we will keep using GPIO Zero for pins, buttons and LEDs.</p>
+<p>Note that we will keep using GPIO Zero for pins, buttons, and LEDs.</p>
 </blockquote>
 <p><strong>Enable Interfaces</strong></p>
 <p>Run these commands to enable the various interfaces such as I2C and SPI:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config nonint do_i2c 0</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config nonint do_spi 0</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config nonint do_serial_hw 0</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config nonint disable_raspi_config_at_boot 0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><strong>Install Blinka and Dependencies</strong></p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> i2c-tools libgpiod-dev python-libgpiod</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> adafruit-blinka</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config nonint do_i2c 0</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config nonint do_spi 0</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config nonint do_serial_hw 0</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config nonint disable_raspi_config_at_boot 0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Install required dependencies</strong></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> python3-libgpiod i2c-tools libgpiod-dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Install Blinka</strong></p>
+<p>Let’s enter the Ollama environment, alheady created to install Blinka:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/ollama/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Install the library</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install adafruit-blinka</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Check I2C and SPI</strong></p>
 <p>The script will automatically enable I2C and SPI. You can run the following command to verify:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /dev/i2c<span class="pp">*</span> /dev/spi<span class="pp">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="./images/png/image-20250205125249530.png" class="img-fluid"></p>
-<p><strong>Blinka Test</strong></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /dev/i2c<span class="pp">*</span> /dev/spi<span class="pp">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/i2c_test.png" class="img-fluid"></p>
+<p><strong>Verify Blinka Version</strong></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip show adafruit-blinka</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/blinka_test.png" class="img-fluid"></p>
+<p><strong>Blinka Installation Test</strong></p>
 <p>Create a new file called <strong>blinka_test.py</strong> with <strong>nano</strong> or your favorite text editor and put the following in:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> board</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> digitalio</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> busio</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Hello, blinka!"</span>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Try to create a Digital input</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>pin <span class="op">=</span> digitalio.DigitalInOut(board.D4)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Digital IO ok!"</span>)</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Try to create an I2C device</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>i2c <span class="op">=</span> busio.I2C(board.SCL, board.SDA)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"I2C ok!"</span>)</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Try to create an SPI device</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>spi <span class="op">=</span> busio.SPI(board.SCLK, board.MOSI, board.MISO)</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"SPI ok!"</span>)</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"done!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> board</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> digitalio</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> busio</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Hello, blinka!"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Try to create a Digital input</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>pin <span class="op">=</span> digitalio.DigitalInOut(board.D4)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Digital IO ok!"</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Try to create an I2C device</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>i2c <span class="op">=</span> busio.I2C(board.SCL, board.SDA)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"I2C ok!"</span>)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Try to create an SPI device</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>spi <span class="op">=</span> busio.SPI(board.SCLK, board.MOSI, board.MISO)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"SPI ok!"</span>)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"done!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Save it and run it at the command line:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> blinka_test.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="./images/png/image-20250205125919364.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> blinka_test.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/blinka_test_inst.png" class="img-fluid"></p>
 </section>
 <section id="dht22---temperature-humidity-sensor" class="level3">
 <h3 class="anchored" data-anchor-id="dht22---temperature-humidity-sensor">DHT22 - Temperature &amp; Humidity Sensor</h3>
 <p>The first sensor to be installed will be the DHT22 for capturing air temperature and relative humidity data.</p>
 <p><strong>Overview</strong></p>
-<p>The low-cost DHT temperature and humidity sensors are elementary and slow but great for logging basic data. They consist of a capacitive humidity sensor and a thermistor. A bare chip inside performs the analog-to-digital conversion and spits out a digital signal with the temperature and humidity. The digital signal is relatively easy to read using any microcontroller.</p>
+<p>The low-cost DHT temperature and humidity sensors are elementary and slow, but great for logging basic data. They consist of a capacitive humidity sensor and a thermistor. A bare chip inside performs the analog-to-digital conversion and outputs a digital signal containing the temperature and humidity. The digital signal is relatively easy to read using any microcontroller.</p>
 <p>DHT22 Main characteristics:</p>
 <ul>
 <li><p>Suitable for 0-100% humidity readings with 2-5% accuracy</p></li>
@@ -652,14 +753,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>Do not forget to Install the 4K7 ohm resistor between the VCC and Data pins.</p>
 </blockquote>
-<p><img src="./images/png/image-20250205150437944.png" class="img-fluid"></p>
+<p><img src="./images/png/dht_friz.png" class="img-fluid"></p>
 <p>Once the sensor is connected, we must install its library on our Raspberry Pi. First, we should install the Adafruit CircuitPython library, which we have already done, and the <a href="https://github.com/adafruit/Adafruit_CircuitPython_DHT">Adafruit_CircuitPython_DHT</a>.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install adafruit-circuitpython-dht</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>On your Raspberry, starting at <code>home</code>, go to <code>Documents</code>.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Create a directory to install the library and move to there:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> sensors</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> sensors</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install adafruit-circuitpython-dht</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Create a new Python script as below and name it, for example, <code>dht_test.py</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> board</span>
@@ -677,18 +773,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>                temperature_f, temperature_c, humidity</span>
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>            )</span>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">RuntimeError</span> <span class="im">as</span> error:</span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Errors happen fairly often, DHT's are hard to read, </span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># just keep going</span></span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(error.args[<span class="dv">0</span>])</span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="fl">2.0</span>)</span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> error:</span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>        dhtDevice.exit()</span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> error</span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="./images/png/image-20250205145256270.png" class="img-fluid"></p>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="fl">2.0</span>)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">RuntimeError</span> <span class="im">as</span> error:</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Errors happen fairly often, DHT's are hard to read, </span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># just keep going</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(error.args[<span class="dv">0</span>])</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="fl">2.0</span>)</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> error:</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>        dhtDevice.exit()</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Placing a finger on the sensor, we can see that both temperature and humidity begin to rise.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/dht_test-finger.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p><img src="./images/png/dht_test.png" class="img-fluid"></p>
 </section>
 <section id="installing-the-bmp280-barometric-pressure-altitude-sensor" class="level3">
 <h3 class="anchored" data-anchor-id="installing-the-bmp280-barometric-pressure-altitude-sensor">Installing the BMP280: Barometric Pressure &amp; Altitude Sensor</h3>
@@ -766,7 +868,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>SCL ==&gt; GPIO 3</li>
 <li>SDA ==&gt; GPIO 2</li>
 </ul>
-<p><img src="./images/png/image-20250206190232812.png" class="img-fluid"></p>
+<p><img src="./images/png/setup-complete-friz.png" class="img-fluid"></p>
 <p><strong>Enabling I2C Interface</strong></p>
 <p>Go to RPi Configuration and confirm that the I2C interface is enabled. If not, enable it.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config nonint do_i2c 0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -775,8 +877,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The first thing to do is to check if the Raspi sees your BMP280. Try the following in a terminal:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> i2cdetect <span class="at">-y</span> 1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We should confirm that the BMP280 is on channel <code>77</code> (default) or <code>76</code>.</p>
-<p><img src="./images/png/image-20250206184820957.png" class="img-fluid"></p>
-<p>In my case, the bus address is 0x76, so we should define it during the library installation.</p>
+<p><img src="./images/png/i2c-channel.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>In my case, the bus address is 0x76, so we should define it in the code.</p>
+</blockquote>
 <p><strong>Installing the BMP 280 Library:</strong></p>
 <p>Once the sensor is connected, we must install its library on our Raspi. For that, we should install the <a href="https://github.com/adafruit/Adafruit_CircuitPython_BMP280">Adafruit_CircuitPython_BMP280</a>.</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install adafruit-circuitpython-bmp280</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -798,11 +902,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Execute the script:</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> bmp280Test.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The Terminal shows the result.</p>
-<p><img src="./images/png/image-20250206191155304.png" class="img-fluid"></p>
+<p><img src="./images/png/bmp_test.png" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p>Note that that pressure is presented in hPa. See the next section to understand this unit better.</p>
+<p>Note that pressure is presented in hPa. See the next section to better understand this unit.</p>
 </blockquote>
-<p><img src="./images/png/image-20250207115428738.png" class="img-fluid"></p>
+<p>Below is the complete setup for our SLM tests.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/full-setup.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
 </section>
 <section id="measuring-weather-and-altitude-with-bmp280" class="level3">
 <h3 class="anchored" data-anchor-id="measuring-weather-and-altitude-with-bmp280">Measuring Weather and Altitude With BMP280</h3>
@@ -867,31 +976,13 @@ R = Universal Gas Constant</code></pre>
 </section>
 <section id="playing-with-sensors-and-actuators" class="level2">
 <h2 class="anchored" data-anchor-id="playing-with-sensors-and-actuators">Playing with Sensors and Actuators</h2>
-<section id="installing-jupyter-notebook" class="level3">
-<h3 class="anchored" data-anchor-id="installing-jupyter-notebook">Installing Jupyter Notebook</h3>
-<p>We all know that <a href="http://jupyter.org/">Jupyter Notebook</a> is a fantastic tool—or, better yet, an open-source web application that allows you to create and share documents containing live code, equations, visualizations, and narrative text. Jupyter Notebook is used mainly in Data Science, cleaning and transforming data, numerical simulation, statistical modeling, data visualization, machine learning, and much more!</p>
-<blockquote class="blockquote">
-<p>How about using Jupyter Notebooks to control Raspberry Pi GPIOs?</p>
-</blockquote>
-<p>In this section, we will learn how to install Jupyter Notebook on a Raspberry Pi. Then, we will read sensors and act on actuators directly on the Pi.</p>
-<p>To install Jupyter on your Raspberry (that will run with Python 3), open Terminal and enter the following commands:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install jupyter</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--generate-config</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Edit the config file:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> ~/.jupyter/jupyter_notebook_config.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Add/modify these lines:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">c.NotebookApp.ip</span> = <span class="st">'0.0.0.0'</span>        <span class="co"># Listen on all interfaces</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="ex">c.NotebookApp.open_browser</span> = False  <span class="co"># Disable browser auto-launch</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="ex">c.NotebookApp.port</span> = 8888           <span class="co"># Default port (change if needed)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Now, on the <strong>Raspi terminal</strong>, start the Jupyter notebook server with the command:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--no-browser</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this section, using the Jupyter Notebook, we will read sensors and act on actuators directly on the Pi.</p>
+<p>On the terminal, start the Jupyter notebook server with the command (change the IP address with the one for your Raspi):</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--ip</span><span class="op">=</span>192.168.4.209 <span class="at">--no-browser</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/image-20250205180332275.png" class="img-fluid"></p>
 <blockquote class="blockquote">
 <p>You will need the Token; you can copy it from the terminal as shown above.</p>
 </blockquote>
-<p>On your Desktop, set up SSH tunneling:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-N</span> <span class="at">-L</span> 8888:localhost:8888 username@raspberry_pi_ip</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The Jupyter Notebook will be running as a server on:</p>
 <pre><code>http:localhost:8888</code></pre>
 <blockquote class="blockquote">
@@ -902,7 +993,6 @@ R = Universal Gas Constant</code></pre>
 <p>When you start your Pi and want to use Jupyter Notebook, type the “Jupyter Notebook” command on your terminal and keep it running. This is very important! If you need to use the terminal for another task, such as running a program, open a new Terminal window.</p>
 </blockquote>
 <p>To stop the server and close the “kernels” (the Jupyter notebooks), press [Ctrl] + [C].</p>
-</section>
 <section id="testing-the-notebook-setup" class="level3">
 <h3 class="anchored" data-anchor-id="testing-the-notebook-setup">Testing the Notebook setup</h3>
 <p>Let’s create a new notebook (Kernel: Python 3). Open dht_test.py, copy the code, and paste it into the notebook. That’s it. We can see the temperature and humidity values appearing on the cell. To interrupt the execution, go to the <code>[stop]</code> button at the top menu.</p>
@@ -912,118 +1002,122 @@ R = Universal Gas Constant</code></pre>
 <section id="initialization" class="level3">
 <h3 class="anchored" data-anchor-id="initialization">Initialization</h3>
 <p><strong>Import libraries, instantiate and initialize sensors/actuators</strong></p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># time library </span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Adafruit DHT library (Temperature/Humidity)</span></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> board</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> adafruit_dht</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>DHT22Sensor <span class="op">=</span> adafruit_dht.DHT22(board.D16)</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co"># BMP library (Pressure/Temperature)</span></span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> adafruit_bmp280</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>i2c <span class="op">=</span> board.I2C()</span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>bmp280Sensor <span class="op">=</span> adafruit_bmp280.Adafruit_BMP280_I2C(i2c, address <span class="op">=</span> <span class="bn">0x76</span>)</span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>bmp280Sensor.sea_level_pressure <span class="op">=</span> <span class="fl">1013.25</span></span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="co"># LEDs</span></span>
-<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED</span>
-<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>ledRed <span class="op">=</span> LED(<span class="dv">13</span>)</span>
-<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>ledYlw <span class="op">=</span> LED(<span class="dv">19</span>)</span>
-<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>ledGrn <span class="op">=</span> LED(<span class="dv">26</span>)</span>
-<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>ledRed.off()</span>
-<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>ledYlw.off()</span>
-<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>ledGrn.off()</span>
-<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Push-Button</span></span>
-<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> Button</span>
-<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a>button <span class="op">=</span> Button(<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># time library </span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Adafruit DHT library (Temperature/Humidity)</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> board</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> adafruit_dht</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>DHT22Sensor <span class="op">=</span> adafruit_dht.DHT22(board.D16)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co"># BMP library (Pressure/Temperature)</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> adafruit_bmp280</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>i2c <span class="op">=</span> board.I2C()</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>bmp280Sensor <span class="op">=</span> adafruit_bmp280.Adafruit_BMP280_I2C(i2c, address <span class="op">=</span> <span class="bn">0x76</span>)</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>bmp280Sensor.sea_level_pressure <span class="op">=</span> <span class="fl">1013.25</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="co"># LEDs</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>ledRed <span class="op">=</span> LED(<span class="dv">13</span>)</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>ledYlw <span class="op">=</span> LED(<span class="dv">19</span>)</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>ledGrn <span class="op">=</span> LED(<span class="dv">26</span>)</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>ledRed.off()</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>ledYlw.off()</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>ledGrn.off()</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Push-Button</span></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> Button</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>button <span class="op">=</span> Button(<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="gpio-input-and-output" class="level3">
 <h3 class="anchored" data-anchor-id="gpio-input-and-output">GPIO Input and Output</h3>
 <p>Create a function to get GPIO status:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get GPIO status data </span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> getGpioStatus():</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> timeString</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> buttonSts</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> ledRedSts</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> ledYlwSts</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> ledGrnSts</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get time of reading</span></span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    now <span class="op">=</span> datetime.datetime.now()</span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    timeString <span class="op">=</span> now.strftime(<span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st"> %H:%M"</span>)</span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Read GPIO Status</span></span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>    buttonSts <span class="op">=</span> button.is_pressed</span>
-<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>    ledRedSts <span class="op">=</span> ledRed.is_lit</span>
-<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>    ledYlwSts <span class="op">=</span> ledYlw.is_lit</span>
-<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>    ledGrnSts <span class="op">=</span> ledGrn.is_lit </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get GPIO status data </span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> getGpioStatus():</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> timeString</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> buttonSts</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> ledRedSts</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> ledYlwSts</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> ledGrnSts</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get time of reading</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    now <span class="op">=</span> datetime.datetime.now()</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    timeString <span class="op">=</span> now.strftime(<span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st"> %H:%M"</span>)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Read GPIO Status</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    buttonSts <span class="op">=</span> button.is_pressed</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>    ledRedSts <span class="op">=</span> ledRed.is_lit</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    ledYlwSts <span class="op">=</span> ledYlw.is_lit</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    ledGrnSts <span class="op">=</span> ledGrn.is_lit </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And another to print the status:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print GPIO status data </span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> PrintGpioStatus():</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Local Station Time: "</span>, timeString)</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Led Red Status:     "</span>, ledRedSts)</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Led Yellow Status:  "</span>, ledYlwSts)</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Led Green Status:   "</span>, ledGrnSts)</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Push-Button Status: "</span>, buttonSts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print GPIO status data </span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> PrintGpioStatus():</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Local Station Time: "</span>, timeString)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Led Red Status:     "</span>, ledRedSts)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Led Yellow Status:  "</span>, ledYlwSts)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Led Green Status:   "</span>, ledGrnSts)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Push-Button Status: "</span>, buttonSts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Now, we can, for example, turn on the LEDs:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>ledRed.on()</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>ledYlw.on()</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>ledGrn.on()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="./images/png/image-20250207113127805.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ledRed.on()</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>ledYlw.on()</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>ledGrn.on()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/image-20250207113127805.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
 <p>And see their status:</p>
 <p><img src="./images/png/image-20250207112921184.png" class="img-fluid"></p>
 <p>If you press the push-button, its status will also be shown:</p>
 <p><img src="./images/png/image-20250207125032472.png" class="img-fluid"></p>
 <p>And turning off the LEDS:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>ledRed.off()</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>ledYlw.off()</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>ledGrn.off()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>ledRed.off()</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>ledYlw.off()</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>ledGrn.off()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/image-20250207125303756.png" class="img-fluid"></p>
 <p>We can create a function to simplify turning LEDs on and off:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Acting on GPIOs and printing Status</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> controlLeds(r, y, g):</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (r):</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>        ledRed.on()</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>        ledRed.off()        </span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (y):</span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>        ledYlw.on()</span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>        ledYlw.off() </span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (g):</span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>        ledGrn.on()</span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>        ledGrn.off() </span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>    getGpioStatus()</span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>    PrintGpioStatus()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Acting on GPIOs and printing Status</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> controlLeds(r, y, g):</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (r):</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>        ledRed.on()</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>        ledRed.off()        </span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (y):</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>        ledYlw.on()</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>        ledYlw.off() </span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (g):</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>        ledGrn.on()</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>        ledGrn.off() </span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>    getGpioStatus()</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>    PrintGpioStatus()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>For example, turning on the Yellow LED:</p>
 <p><img src="./images/png/image-20250207122702297.png" class="img-fluid"></p>
 </section>
 <section id="getting-and-displaying-sensor-data" class="level3">
 <h3 class="anchored" data-anchor-id="getting-and-displaying-sensor-data">Getting and displaying Sensor Data</h3>
 <p>First, we should create a function to read the BMP280 and calculate the pressure value at sea level, once the sensor only gives us the absolute pressure based on the actual altitude:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read data from BMP280</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> bmp280GetData(real_altitude):</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> bmp280Sensor.temperature</span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    pres <span class="op">=</span> bmp280Sensor.pressure</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    alt <span class="op">=</span>  bmp280Sensor.altitude</span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    presSeaLevel <span class="op">=</span> pres <span class="op">/</span> <span class="bu">pow</span>(<span class="fl">1.0</span> <span class="op">-</span> real_altitude<span class="op">/</span><span class="fl">44330.0</span>, <span class="fl">5.255</span>) </span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> <span class="bu">round</span> (temp, <span class="dv">1</span>)</span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    pres <span class="op">=</span> <span class="bu">round</span> (pres, <span class="dv">2</span>) <span class="co"># absolute pressure in mbar</span></span>
-<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>    alt <span class="op">=</span> <span class="bu">round</span> (alt)</span>
-<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>    presSeaLevel <span class="op">=</span> <span class="bu">round</span> (presSeaLevel, <span class="dv">2</span>) <span class="co"># absolute pressure in mbar</span></span>
-<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> temp, pres, alt, presSeaLevel</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read data from BMP280</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> bmp280GetData(real_altitude):</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> bmp280Sensor.temperature</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    pres <span class="op">=</span> bmp280Sensor.pressure</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    alt <span class="op">=</span>  bmp280Sensor.altitude</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    presSeaLevel <span class="op">=</span> pres <span class="op">/</span> <span class="bu">pow</span>(<span class="fl">1.0</span> <span class="op">-</span> real_altitude<span class="op">/</span><span class="fl">44330.0</span>, <span class="fl">5.255</span>) </span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> <span class="bu">round</span> (temp, <span class="dv">1</span>)</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    pres <span class="op">=</span> <span class="bu">round</span> (pres, <span class="dv">2</span>) <span class="co"># absolute pressure in mbar</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    alt <span class="op">=</span> <span class="bu">round</span> (alt)</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    presSeaLevel <span class="op">=</span> <span class="bu">round</span> (presSeaLevel, <span class="dv">2</span>) <span class="co"># absolute pressure in mbar</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> temp, pres, alt, presSeaLevel</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Entering the BMP280 real altitude where it is located, run the code:</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>bmp280GetData(<span class="dv">960</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>bmp280GetData(<span class="dv">960</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>As a result, we will get <code>(26.9, 906.73, 927, 1017.29)</code>which means:</p>
 <ul>
 <li>Temperature of 26.9 oC</li>
@@ -1032,47 +1126,56 @@ R = Universal Gas Constant</code></pre>
 <li>Sea Level converted Pressure: 1,017.29 hPa</li>
 </ul>
 <p>Now, we will generate a unique function to get the BMP280 and the DHT data, including a timestamp:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get data (from local sensors)</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> getSensorData(altReal<span class="op">=</span><span class="dv">0</span>):</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> timeString</span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> humExt</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> tempLab</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> tempExt</span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> presSL</span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> altLab</span>
-<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> presAbs</span>
-<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> buttonSts</span>
-<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get time of reading</span></span>
-<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>    now <span class="op">=</span> datetime.datetime.now()</span>
-<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>    timeString <span class="op">=</span> now.strftime(<span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st"> %H:%M"</span>)</span>
-<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>    tempLab, presAbs, altLab, presSL <span class="op">=</span> bmp280GetData(altReal) </span>
-<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>    tempDHT <span class="op">=</span>  DHT22Sensor.temperature</span>
-<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>    humDHT <span class="op">=</span>  DHT22Sensor.humidity</span>
-<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> humDHT <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> tempDHT <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a>        tempExt <span class="op">=</span> <span class="bu">round</span> (tempDHT)</span>
-<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a>        humExt <span class="op">=</span> <span class="bu">round</span> (humDHT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get data (from local sensors)</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> getSensorData(altReal<span class="op">=</span><span class="dv">0</span>):</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> timeString</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> humExt</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> tempLab</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> tempExt</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> presSL</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> altLab</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> presAbs</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> buttonSts</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get time of reading</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    now <span class="op">=</span> datetime.datetime.now()</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    timeString <span class="op">=</span> now.strftime(<span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st"> %H:%M"</span>)</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>    tempLab, presAbs, altLab, presSL <span class="op">=</span> bmp280GetData(altReal) </span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>    tempDHT <span class="op">=</span>  DHT22Sensor.temperature</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>    humDHT <span class="op">=</span>  DHT22Sensor.humidity</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> humDHT <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> tempDHT <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>        tempExt <span class="op">=</span> <span class="bu">round</span> (tempDHT)</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>        humExt <span class="op">=</span> <span class="bu">round</span> (humDHT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And another function to print the values:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display important data on-screen</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> printData():</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Local Station Time:             "</span>, timeString)</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"External Air Temperature (DHT): "</span>, tempExt, <span class="st">"oC"</span>)</span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"External Air Humidity    (DHT): "</span>, humExt, <span class="st">"%"</span>)</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Station Air Temperature  (BMP): "</span>, tempLab, <span class="st">"oC"</span>)</span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Sea Level Air Pressure:         "</span>, presSL, <span class="st">"mBar"</span>)</span>
-<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Absolute Station Air Pressure:  "</span>, presAbs, <span class="st">"mBar"</span>)</span>
-<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Station Measured Altitude:      "</span>, altLab, <span class="st">"m"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display important data on-screen</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> printData():</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Local Station Time:             "</span>, timeString)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"External Air Temperature (DHT): "</span>, tempExt, <span class="st">"oC"</span>)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"External Air Humidity    (DHT): "</span>, humExt, <span class="st">"%"</span>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Station Air Temperature  (BMP): "</span>, tempLab, <span class="st">"oC"</span>)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Sea Level Air Pressure:         "</span>, presSL, <span class="st">"mBar"</span>)</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Absolute Station Air Pressure:  "</span>, presAbs, <span class="st">"mBar"</span>)</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (<span class="st">"Station Measured Altitude:      "</span>, altLab, <span class="st">"m"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Runing them:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>real_altitude <span class="op">=</span> <span class="dv">960</span> <span class="co"># real altitude of where the BMP280 is installed</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>getSensorData(real_altitude)</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>printData()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>real_altitude <span class="op">=</span> <span class="dv">960</span> <span class="co"># real altitude of where the BMP280 is installed</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>getSensorData(real_altitude)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>printData()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Results:</p>
 <p><img src="./images/png/image-20250207115159431.png" class="img-fluid"></p>
-<blockquote class="blockquote">
 <p>Using Python, we can command the actuators (LEDs) and read the sensors and GIPOs status at this stage. This is important, for example, to generate a data log to be read by an SLM in the future.</p>
+<blockquote class="blockquote">
+<p>The notebook can be found on Github: <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/PHYSICAL_COMPUTING/Notebooks/Monitoring_Actuating_GPIOs.ipynb">Monitoring_Actuating_GPIOs.ipynb</a></p>
+</blockquote>
+<p><strong>⚠️ IMPORTANT: The Notebook Kernel should end after using to liberate GPIOs</strong></p>
+<blockquote class="blockquote">
+<p>The problem is that <strong>Jupyter Notebook is still holding onto the GPIO pins</strong> even after our code finishes running. When we try to run it from the terminal, those pins are already claimed by the Jupyter process. So, before running a code that deals with GPIO in the terminal, In Jupyter:</p>
+<ul>
+<li><p>Click <strong>Kernel → Restart Kernel</strong></p></li>
+<li><p>Or: Click <strong>Kernel → Shutdown Kernel</strong></p></li>
+</ul>
 </blockquote>
 </section>
 </section>
@@ -1083,193 +1186,247 @@ R = Universal Gas Constant</code></pre>
 <p>In this lab, for example, we will use a slide bar to control the state of actuators in real time, such as by turning on or off the LEDs. Widgets are great for adding more dynamic behavior to Jupyter Notebooks.</p>
 <p><strong>Installation</strong></p>
 <p>To use Widgets, we must install the Ipywidgets library using the commands:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ipywidgets</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ipywidgets</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>After installation, we should call the library:</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># widget library</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ipywidgets <span class="im">import</span> interactive</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ipywidgets <span class="im">as</span> widgetsfrom </span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>IPython.display <span class="im">import</span> display</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># widget library</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ipywidgets <span class="im">import</span> interactive</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ipywidgets <span class="im">as</span> widgetsfrom </span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>IPython.display <span class="im">import</span> display</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And running the below line, we can control the LEDs in real-time:</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> interactive(controlLeds, r<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>), y<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>), g<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>display(f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> interactive(controlLeds, r<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>), y<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>), g<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>display(f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/image-20250207130114732.png" class="img-fluid"></p>
 <blockquote class="blockquote">
 <p>This interactive widget is very easy to implement and very powerful. You can learn more about Interactive on this link: <a href="http://ipywidgets.readthedocs.io/en/latest/examples/Using%20Interact.html">Interactive Widget.</a></p>
 </blockquote>
 </section>
+<section id="advanced-gpio-zero-features" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-gpio-zero-features">Advanced GPIO Zero Features</h2>
+<p>GPIO Zero includes many advanced features that make complex projects much easier to build.</p>
+<section id="pwm-led-brightness-control" class="level3">
+<h3 class="anchored" data-anchor-id="pwm-led-brightness-control">PWM LED Brightness Control</h3>
+<p>Use PWMLED to control LED brightness:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> PWMLED</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> sleep</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>led <span class="op">=</span> PWMLED(<span class="dv">13</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Fade in and out</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    led.pulse() <span class="co"># Smooth fade in and out</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  sleep(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="composite-devices" class="level3">
+<h3 class="anchored" data-anchor-id="composite-devices">Composite Devices</h3>
+<p>Create a traffic light system with one object:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> TrafficLights</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> sleep</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>lights <span class="op">=</span> TrafficLights(red<span class="op">=</span><span class="dv">13</span>, amber<span class="op">=</span><span class="dv">19</span>, green<span class="op">=</span><span class="dv">26</span>)</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  lights.red.on()</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  sleep(<span class="dv">2</span>)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  lights.amber.on()</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  sleep(<span class="dv">1</span>)</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  lights.red.off()</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  lights.amber.off()</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>  lights.green.on()</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>  sleep(<span class="dv">3</span>)</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>  lights.green.off()</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>  lights.amber.on()</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>  sleep(<span class="dv">1</span>)</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>  lights.amber.off()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="other-useful-gpio-zero-devices" class="level3">
+<h3 class="anchored" data-anchor-id="other-useful-gpio-zero-devices">Other Useful GPIO Zero Devices</h3>
+<ul>
+<li><p><strong>Buzzer:</strong> <code>from gpiozero import Buzzer</code></p></li>
+<li><p><strong>Motor:</strong> <code>from gpiozero import Motor</code></p></li>
+<li><p><strong>Servo:</strong> <code>from gpiozero import Servo</code></p></li>
+<li><p><strong>DistanceSensor:</strong> <code>from gpiozero import DistanceSensor</code></p></li>
+<li><p><strong>MotionSensor:</strong> <code>from gpiozero import MotionSensor</code></p></li>
+<li><p><strong>Robot:</strong> <code>from gpiozero import Robot</code></p></li>
+</ul>
+</section>
+</section>
 <section id="interacting-an-slm-with-the-physical-world" class="level2">
 <h2 class="anchored" data-anchor-id="interacting-an-slm-with-the-physical-world">Interacting an SLM with the Physical world</h2>
 <p>This section demonstrates in a simple way how to integrate a Small Language Model (SLM) with the sensors and LEDs we have set up. The diagram below shows how data flows from sensors through processing and AI analysis to control the actuators and ultimately provide user feedback.</p>
-<p><img src="./images/png/image-20250208110523765.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/image-20250208110523765.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
 <p>We will use the Transformers library from Hugging Face for model loading and inference. This library provides the architecture for working with pre-trained language models, helping interact with the model, processing input prompts, and obtaining outputs.</p>
 <p><strong>Installation</strong></p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install transformers torch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install transformers torch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Let’s create a simple SLM test in the Jupyter Notebook that checks if the model loads and measures inference time. The model used here is the <code>TinyLLama 1.1B</code>. We will ask a straightforward question:</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co">"The weather today is"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">"The weather today is"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>As a result, besides the SLM answer, we will also measure the latency.</p>
 <p>Run this script:</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if CUDA is available (it won't be on our case, Raspberry Pi)</span></span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> <span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span></span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Using device: </span><span class="sc">{</span>device<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the model and measure loading time</span></span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> time.time()</span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>model<span class="op">=</span><span class="st">'TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T'</span></span>
-<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>generator <span class="op">=</span> pipeline(<span class="st">'text-generation'</span>, </span>
-<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>                    model<span class="op">=</span>model,</span>
-<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>                    device<span class="op">=</span>device)</span>
-<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>load_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
-<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Model loading time: </span><span class="sc">{</span>load_time<span class="sc">:.2f}</span><span class="ss"> seconds"</span>)</span>
-<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Test prompt</span></span>
-<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>test_prompt <span class="op">=</span> <span class="st">"The weather today is"</span></span>
-<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Measure inference time</span></span>
-<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> time.time()</span>
-<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> generator(test_prompt, </span>
-<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>                    max_length<span class="op">=</span><span class="dv">50</span>,</span>
-<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>                    num_return_sequences<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>                    temperature<span class="op">=</span><span class="fl">0.7</span>)</span>
-<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
-<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Test prompt: </span><span class="sc">{</span>test_prompt<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Generated response: </span><span class="sc">{</span>response[<span class="dv">0</span>][<span class="st">'generated_text'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inference time: </span><span class="sc">{</span>inference_time<span class="sc">:.2f}</span><span class="ss"> seconds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if CUDA is available (it won't be on our case, Raspberry Pi)</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> <span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Using device: </span><span class="sc">{</span>device<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the model and measure loading time</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> time.time()</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>model<span class="op">=</span><span class="st">'TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T'</span></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>generator <span class="op">=</span> pipeline(<span class="st">'text-generation'</span>, </span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>                    model<span class="op">=</span>model,</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>                    device<span class="op">=</span>device)</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>load_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Model loading time: </span><span class="sc">{</span>load_time<span class="sc">:.2f}</span><span class="ss"> seconds"</span>)</span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Test prompt</span></span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>test_prompt <span class="op">=</span> <span class="st">"The weather today is"</span></span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Measure inference time</span></span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> time.time()</span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> generator(test_prompt, </span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a>                    max_length<span class="op">=</span><span class="dv">50</span>,</span>
+<span id="cb48-26"><a href="#cb48-26" aria-hidden="true" tabindex="-1"></a>                    num_return_sequences<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb48-27"><a href="#cb48-27" aria-hidden="true" tabindex="-1"></a>                    temperature<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb48-28"><a href="#cb48-28" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> time.time() <span class="op">-</span> start_time</span>
+<span id="cb48-29"><a href="#cb48-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-30"><a href="#cb48-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Test prompt: </span><span class="sc">{</span>test_prompt<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb48-31"><a href="#cb48-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Generated response: </span><span class="sc">{</span>response[<span class="dv">0</span>][<span class="st">'generated_text'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb48-32"><a href="#cb48-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inference time: </span><span class="sc">{</span>inference_time<span class="sc">:.2f}</span><span class="ss"> seconds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>As we can see, the SLM works, but the latency is very high (+3 minutes). It is OK because this particular test is on a Raspberry Pi 4. With a Raspberry Pi 5, the result would be better.:</p>
 <p><img src="./images/png/image-20250208095316201.png" class="img-fluid"></p>
 <p>The Raspi uses around 1GB of memory (model + process) and all four cores to process the answer. The model alone needs around 800MB.</p>
 <p><img src="./images/png/image-20250207150741529.png" class="img-fluid"></p>
 <p>Now, let us create a code showing a basic interaction pattern where the SLM can respond to sensor data and interact with the LEDs.</p>
 <p><strong>Install the Libraries:</strong></p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> board</span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> adafruit_dht</span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> adafruit_bmp280</span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED, Button</span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> board</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> adafruit_dht</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> adafruit_bmp280</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gpiozero <span class="im">import</span> LED, Button</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Initialize sensors</strong></p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>DHT22Sensor <span class="op">=</span> adafruit_dht.DHT22(board.D16)</span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>i2c <span class="op">=</span> board.I2C()</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>bmp280Sensor <span class="op">=</span> adafruit_bmp280.Adafruit_BMP280_I2C(i2c, address<span class="op">=</span><span class="bn">0x76</span>)</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>bmp280Sensor.sea_level_pressure <span class="op">=</span> <span class="fl">1013.25</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>DHT22Sensor <span class="op">=</span> adafruit_dht.DHT22(board.D16)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>i2c <span class="op">=</span> board.I2C()</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>bmp280Sensor <span class="op">=</span> adafruit_bmp280.Adafruit_BMP280_I2C(i2c, address<span class="op">=</span><span class="bn">0x76</span>)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>bmp280Sensor.sea_level_pressure <span class="op">=</span> <span class="fl">1013.25</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Initialize LEDs and Button</strong></p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>ledRed <span class="op">=</span> LED(<span class="dv">13</span>)</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>ledYlw <span class="op">=</span> LED(<span class="dv">19</span>)</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>ledGrn <span class="op">=</span> LED(<span class="dv">26</span>)</span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>button <span class="op">=</span> Button(<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>ledRed <span class="op">=</span> LED(<span class="dv">13</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>ledYlw <span class="op">=</span> LED(<span class="dv">19</span>)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>ledGrn <span class="op">=</span> LED(<span class="dv">26</span>)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>button <span class="op">=</span> Button(<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Initialize the SLM pipeline</strong></p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We're using a small model suitable for Raspberry Pi</span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>model<span class="op">=</span><span class="st">'TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T'</span></span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>generator <span class="op">=</span> pipeline(<span class="st">'text-generation'</span>, </span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>                    model<span class="op">=</span>model,</span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>                    device<span class="op">=</span><span class="st">'cpu'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We're using a small model suitable for Raspberry Pi</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>model<span class="op">=</span><span class="st">'TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T'</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>generator <span class="op">=</span> pipeline(<span class="st">'text-generation'</span>, </span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>                    model<span class="op">=</span>model,</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>                    device<span class="op">=</span><span class="st">'cpu'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Support Functions</strong></p>
 <p>Now, let’s create support functions for readings from all sensors and control the LEDs:</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_sensor_data():</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Get current readings from all sensors"""</span></span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>        temp_dht <span class="op">=</span> DHT22Sensor.temperature</span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>        humidity <span class="op">=</span> DHT22Sensor.humidity</span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>        temp_bmp <span class="op">=</span> bmp280Sensor.temperature</span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>        pressure <span class="op">=</span> bmp280Sensor.pressure</span>
-<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {</span>
-<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">'temperature_dht'</span>: <span class="bu">round</span>(temp_dht, <span class="dv">1</span>) <span class="cf">if</span> temp_dht <span class="cf">else</span> <span class="va">None</span>,</span>
-<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">'humidity'</span>: <span class="bu">round</span>(humidity, <span class="dv">1</span>) <span class="cf">if</span> humidity <span class="cf">else</span> <span class="va">None</span>,</span>
-<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">'temperature_bmp'</span>: <span class="bu">round</span>(temp_bmp, <span class="dv">1</span>),</span>
-<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">'pressure'</span>: <span class="bu">round</span>(pressure, <span class="dv">1</span>)</span>
-<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">RuntimeError</span>:</span>
-<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> control_leds(red<span class="op">=</span><span class="va">False</span>, yellow<span class="op">=</span><span class="va">False</span>, green<span class="op">=</span><span class="va">False</span>):</span>
-<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Control LED states"""</span></span>
-<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a>    ledRed.value <span class="op">=</span> red</span>
-<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a>    ledYlw.value <span class="op">=</span> yellow</span>
-<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a>    ledGrn.value <span class="op">=</span> green</span>
-<span id="cb55-24"><a href="#cb55-24" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb55-25"><a href="#cb55-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-26"><a href="#cb55-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_conditions(sensor_data):</span>
-<span id="cb55-27"><a href="#cb55-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Process sensor data and control LEDs based on conditions"""</span></span>
-<span id="cb55-28"><a href="#cb55-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> sensor_data:</span>
-<span id="cb55-29"><a href="#cb55-29" aria-hidden="true" tabindex="-1"></a>        control_leds(red<span class="op">=</span><span class="va">True</span>)  <span class="co"># Error condition</span></span>
-<span id="cb55-30"><a href="#cb55-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
-<span id="cb55-31"><a href="#cb55-31" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb55-32"><a href="#cb55-32" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> sensor_data[<span class="st">'temperature_dht'</span>]</span>
-<span id="cb55-33"><a href="#cb55-33" aria-hidden="true" tabindex="-1"></a>    humidity <span class="op">=</span> sensor_data[<span class="st">'humidity'</span>]</span>
-<span id="cb55-34"><a href="#cb55-34" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb55-35"><a href="#cb55-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Example conditions for LED control</span></span>
-<span id="cb55-36"><a href="#cb55-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> temp <span class="op">&gt;</span> <span class="dv">30</span>:  <span class="co"># Hot</span></span>
-<span id="cb55-37"><a href="#cb55-37" aria-hidden="true" tabindex="-1"></a>        control_leds(red<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb55-38"><a href="#cb55-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> humidity <span class="op">&gt;</span> <span class="dv">70</span>:  <span class="co"># Humid</span></span>
-<span id="cb55-39"><a href="#cb55-39" aria-hidden="true" tabindex="-1"></a>        control_leds(yellow<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb55-40"><a href="#cb55-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:  <span class="co"># Normal conditions</span></span>
-<span id="cb55-41"><a href="#cb55-41" aria-hidden="true" tabindex="-1"></a>        control_leds(green<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_sensor_data():</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Get current readings from all sensors"""</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>        temp_dht <span class="op">=</span> DHT22Sensor.temperature</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>        humidity <span class="op">=</span> DHT22Sensor.humidity</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>        temp_bmp <span class="op">=</span> bmp280Sensor.temperature</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>        pressure <span class="op">=</span> bmp280Sensor.pressure</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">'temperature_dht'</span>: <span class="bu">round</span>(temp_dht, <span class="dv">1</span>) <span class="cf">if</span> temp_dht <span class="cf">else</span> <span class="va">None</span>,</span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">'humidity'</span>: <span class="bu">round</span>(humidity, <span class="dv">1</span>) <span class="cf">if</span> humidity <span class="cf">else</span> <span class="va">None</span>,</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">'temperature_bmp'</span>: <span class="bu">round</span>(temp_bmp, <span class="dv">1</span>),</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">'pressure'</span>: <span class="bu">round</span>(pressure, <span class="dv">1</span>)</span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">RuntimeError</span>:</span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> control_leds(red<span class="op">=</span><span class="va">False</span>, yellow<span class="op">=</span><span class="va">False</span>, green<span class="op">=</span><span class="va">False</span>):</span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Control LED states"""</span></span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>    ledRed.value <span class="op">=</span> red</span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a>    ledYlw.value <span class="op">=</span> yellow</span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>    ledGrn.value <span class="op">=</span> green</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_conditions(sensor_data):</span>
+<span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Process sensor data and control LEDs based on conditions"""</span></span>
+<span id="cb53-28"><a href="#cb53-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> sensor_data:</span>
+<span id="cb53-29"><a href="#cb53-29" aria-hidden="true" tabindex="-1"></a>        control_leds(red<span class="op">=</span><span class="va">True</span>)  <span class="co"># Error condition</span></span>
+<span id="cb53-30"><a href="#cb53-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb53-31"><a href="#cb53-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb53-32"><a href="#cb53-32" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> sensor_data[<span class="st">'temperature_dht'</span>]</span>
+<span id="cb53-33"><a href="#cb53-33" aria-hidden="true" tabindex="-1"></a>    humidity <span class="op">=</span> sensor_data[<span class="st">'humidity'</span>]</span>
+<span id="cb53-34"><a href="#cb53-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb53-35"><a href="#cb53-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Example conditions for LED control</span></span>
+<span id="cb53-36"><a href="#cb53-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> temp <span class="op">&gt;</span> <span class="dv">30</span>:  <span class="co"># Hot</span></span>
+<span id="cb53-37"><a href="#cb53-37" aria-hidden="true" tabindex="-1"></a>        control_leds(red<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb53-38"><a href="#cb53-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> humidity <span class="op">&gt;</span> <span class="dv">70</span>:  <span class="co"># Humid</span></span>
+<span id="cb53-39"><a href="#cb53-39" aria-hidden="true" tabindex="-1"></a>        control_leds(yellow<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb53-40"><a href="#cb53-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:  <span class="co"># Normal conditions</span></span>
+<span id="cb53-41"><a href="#cb53-41" aria-hidden="true" tabindex="-1"></a>        control_leds(green<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Generating an SLM’s response</strong></p>
 <p>So far, the LEDs reaction is only based on logic, but let’s also use the SLM to “analyse” the sensors condition, generating a response based on that:</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_response(sensor_data):</span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Generate response based on sensor data using SLM"""</span></span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> sensor_data:</span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"Unable to read sensor data"</span></span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""Based on these sensor readings:</span></span>
-<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="ss">    Temperature: </span><span class="sc">{</span>sensor_data[<span class="st">'temperature_dht'</span>]<span class="sc">}</span><span class="ss">°C</span></span>
-<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="ss">    Humidity: </span><span class="sc">{</span>sensor_data[<span class="st">'humidity'</span>]<span class="sc">}</span><span class="ss">%</span></span>
-<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a><span class="ss">    Pressure: </span><span class="sc">{</span>sensor_data[<span class="st">'pressure'</span>]<span class="sc">}</span><span class="ss"> hPa</span></span>
-<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
-<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a><span class="ss">    Provide a brief status and recommendation in 2 sentences.</span></span>
-<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
-<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate response from SLM</span></span>
-<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> generator(prompt, </span>
-<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a>                       max_length<span class="op">=</span><span class="dv">100</span>,</span>
-<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a>                       num_return_sequences<span class="op">=</span><span class="dv">1</span>,</span>
-<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a>                       temperature<span class="op">=</span><span class="fl">0.7</span>)[<span class="dv">0</span>][<span class="st">'generated_text'</span>]</span>
-<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_response(sensor_data):</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Generate response based on sensor data using SLM"""</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> sensor_data:</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"Unable to read sensor data"</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""Based on these sensor readings:</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="ss">    Temperature: </span><span class="sc">{</span>sensor_data[<span class="st">'temperature_dht'</span>]<span class="sc">}</span><span class="ss">°C</span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="ss">    Humidity: </span><span class="sc">{</span>sensor_data[<span class="st">'humidity'</span>]<span class="sc">}</span><span class="ss">%</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="ss">    Pressure: </span><span class="sc">{</span>sensor_data[<span class="st">'pressure'</span>]<span class="sc">}</span><span class="ss"> hPa</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="ss">    Provide a brief status and recommendation in 2 sentences.</span></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate response from SLM</span></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> generator(prompt, </span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>                       max_length<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>                       num_return_sequences<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>                       temperature<span class="op">=</span><span class="fl">0.7</span>)[<span class="dv">0</span>][<span class="st">'generated_text'</span>]</span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Main Function</strong></p>
 <p>And now, let’s create a <code>main()</code> function to wait for the user to, for example, press a button and, capture the data generated by the sensors, delivering some observation or recommendation from the SLM:</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main_loop():</span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Main program loop"""</span></span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Starting Physical Computing with SLM Integration..."</span>)</span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Press the button to get a reading and SLM response."</span>)</span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> button.is_pressed:</span>
-<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Get sensor readings</span></span>
-<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>                sensor_data <span class="op">=</span> get_sensor_data()</span>
-<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Process conditions and control LEDs</span></span>
-<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>                process_conditions(sensor_data)</span>
-<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> sensor_data:</span>
-<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># Get SLM response</span></span>
-<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a>                    response <span class="op">=</span> generate_response(sensor_data)</span>
-<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a>                    </span>
-<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># Print current status</span></span>
-<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Current Readings:"</span>)</span>
-<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f"Temperature: </span><span class="sc">{</span>sensor_data[<span class="st">'temperature_dht'</span>]<span class="sc">}</span><span class="ss">°C"</span>)</span>
-<span id="cb57-22"><a href="#cb57-22" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f"Humidity: </span><span class="sc">{</span>sensor_data[<span class="st">'humidity'</span>]<span class="sc">}</span><span class="ss">%"</span>)</span>
-<span id="cb57-23"><a href="#cb57-23" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f"Pressure: </span><span class="sc">{</span>sensor_data[<span class="st">'pressure'</span>]<span class="sc">}</span><span class="ss"> hPa"</span>)</span>
-<span id="cb57-24"><a href="#cb57-24" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">SLM Response:"</span>)</span>
-<span id="cb57-25"><a href="#cb57-25" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(response)</span>
-<span id="cb57-26"><a href="#cb57-26" aria-hidden="true" tabindex="-1"></a>                    </span>
-<span id="cb57-27"><a href="#cb57-27" aria-hidden="true" tabindex="-1"></a>                time.sleep(<span class="dv">2</span>)  <span class="co"># Debounce and allow time to read</span></span>
-<span id="cb57-28"><a href="#cb57-28" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb57-29"><a href="#cb57-29" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="fl">0.1</span>)  <span class="co"># Reduce CPU usage</span></span>
-<span id="cb57-30"><a href="#cb57-30" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb57-31"><a href="#cb57-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
-<span id="cb57-32"><a href="#cb57-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Shutting down..."</span>)</span>
-<span id="cb57-33"><a href="#cb57-33" aria-hidden="true" tabindex="-1"></a>        control_leds(<span class="va">False</span>, <span class="va">False</span>, <span class="va">False</span>)  <span class="co"># Turn off all LEDs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main_loop():</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Main program loop"""</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Starting Physical Computing with SLM Integration..."</span>)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Press the button to get a reading and SLM response."</span>)</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> button.is_pressed:</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Get sensor readings</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>                sensor_data <span class="op">=</span> get_sensor_data()</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Process conditions and control LEDs</span></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>                process_conditions(sensor_data)</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> sensor_data:</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># Get SLM response</span></span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>                    response <span class="op">=</span> generate_response(sensor_data)</span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>                    </span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># Print current status</span></span>
+<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Current Readings:"</span>)</span>
+<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f"Temperature: </span><span class="sc">{</span>sensor_data[<span class="st">'temperature_dht'</span>]<span class="sc">}</span><span class="ss">°C"</span>)</span>
+<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f"Humidity: </span><span class="sc">{</span>sensor_data[<span class="st">'humidity'</span>]<span class="sc">}</span><span class="ss">%"</span>)</span>
+<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f"Pressure: </span><span class="sc">{</span>sensor_data[<span class="st">'pressure'</span>]<span class="sc">}</span><span class="ss"> hPa"</span>)</span>
+<span id="cb55-24"><a href="#cb55-24" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">SLM Response:"</span>)</span>
+<span id="cb55-25"><a href="#cb55-25" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(response)</span>
+<span id="cb55-26"><a href="#cb55-26" aria-hidden="true" tabindex="-1"></a>                    </span>
+<span id="cb55-27"><a href="#cb55-27" aria-hidden="true" tabindex="-1"></a>                time.sleep(<span class="dv">2</span>)  <span class="co"># Debounce and allow time to read</span></span>
+<span id="cb55-28"><a href="#cb55-28" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb55-29"><a href="#cb55-29" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="fl">0.1</span>)  <span class="co"># Reduce CPU usage</span></span>
+<span id="cb55-30"><a href="#cb55-30" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb55-31"><a href="#cb55-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
+<span id="cb55-32"><a href="#cb55-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Shutting down..."</span>)</span>
+<span id="cb55-33"><a href="#cb55-33" aria-hidden="true" tabindex="-1"></a>        control_leds(<span class="va">False</span>, <span class="va">False</span>, <span class="va">False</span>)  <span class="co"># Turn off all LEDs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Test Result</strong></p>
 <p>The sensors are read after the user presses the button to trigger a reading, and LEDs are controlled based on conditions. Sensor data is formatted into a prompt for the SLM to generate a response analyzing the current conditions. The results are displayed in the terminal, and the LED indicators are shown.</p>
 <ul>
@@ -1342,10 +1499,10 @@ R = Universal Gas Constant</code></pre>
 </section>
 <section id="final-thoughts" class="level3">
 <h3 class="anchored" data-anchor-id="final-thoughts">Final Thoughts</h3>
-<p>This tutorial demonstrates that integrating physical computing with AI is feasible and practical on accessible hardware like the Raspberry Pi. Combining sensors, actuators, and AI creates a powerful platform for developing intelligent environmental monitoring and control systems.</p>
+<p>This chapter demonstrates that integrating physical computing with AI is feasible and practical on readily accessible hardware such as the Raspberry Pi. Combining sensors, actuators, and AI creates a powerful platform for developing intelligent environmental monitoring and control systems.</p>
 <p>While the current implementation focuses on environmental monitoring, the principles and techniques can be adapted to various applications. The modular nature of hardware and software components allows for customization and expansion based on specific needs.</p>
-<p>Integrating Small Language Models in physical computing opens new possibilities for creating more intuitive and intelligent IoT devices. As edge AI capabilities evolve, projects like this will become increasingly important in developing the next generation of smart devices and systems.</p>
-<p>Remember that this is just the beginning. Our foundation can be extended in countless ways to create more sophisticated and capable systems. The key is building upon these basics while balancing functionality, reliability, and resource usage.</p>
+<p>Integrating small language models into physical computing opens new possibilities for creating more intuitive and intelligent IoT devices. As edge AI capabilities evolve, projects like this will become increasingly important in developing the next generation of smart devices and systems.</p>
+<p>Remember that this is just the beginning. Our foundation can be extended in countless ways to create more sophisticated and capable systems. The key is to build on these basics while balancing functionality, reliability, and resource usage.</p>
 </section>
 </section>
 <section id="resources" class="level2">
