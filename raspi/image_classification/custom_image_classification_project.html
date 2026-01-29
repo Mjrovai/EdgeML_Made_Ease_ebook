@@ -251,6 +251,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
  <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
@@ -416,7 +428,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="sec-image-classification-image-classification-project-d575" class="level2">
 <h2 class="anchored" data-anchor-id="sec-image-classification-image-classification-project-d575">Image Classification Project</h2>
 <p>In this chapter, we will develop a complete Image Classification project using the Edge Impulse Studio. As we did with the MobiliNet V2, the trained and converted TFLite model will be used for inference using a Python script.</p>
-<p>Here a typical ML workflow that we will use in our project:</p>
+<p>Here is a typical ML workflow that we will use in our project:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./images/png/pipeline-sensecraft.png" class="img-fluid figure-img" style="width:85.0%"></p>
@@ -432,7 +444,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Once we have defined our Machine Learning project goal, the next and most crucial step is collecting the dataset. We can use a phone for the image capture, but we will use the Raspi here. Let’s set up a simple web server on our Raspberry Pi to view the <code>QVGA (320 x 240)</code> captured images in a browser.</p>
 <ol type="1">
 <li><p>First, let’s install Flask, a lightweight web framework for Python:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install flask</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install flask</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Go to the working folder (<code>IMG_CLASS</code>) and create a new Python script combining image capture with a web server. We’ll call it <code>get_img_data.py</code>:</p></li>
 </ol>
 <div class="scroll-code-block">
@@ -636,7 +648,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol start="3" type="1">
 <li>Run this script:</li>
 </ol>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    <span class="ex">python3</span> get_img_data.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    <span class="ex">python</span> get_img_data.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="4" type="1">
 <li><p>Access the web interface:</p>
 <ul>
@@ -898,13 +910,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>Change the IP address for yours</p>
 </blockquote>
-<p>Open a new notebook and enter with the code below:</p>
+<p>Open a new <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/IMG_CLASS/notebooks/30_Image_Classification_edge_impulse.ipynb">notebook</a> and enter with the code below:</p>
 <p>Import the needed libraries:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tflite_runtime.interpreter <span class="im">as</span> tflite</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ai_edge_litert.interpreter <span class="im">import</span> Interpreter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Define the paths and labels:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">"./images/robot.jpg"</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/ei-raspi-img-class-int8-quantized-</span><span class="ch">\</span></span>
@@ -914,8 +926,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Note that the models trained on the Edge Impulse Studio will output values with index 0, 1, 2, etc., where the actual labels will follow an alphabetic order.</p>
 </blockquote>
 <p>Load the model, allocate the tensors, and get the input and output tensor details:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the TFLite model</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the LiteRT model</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> Interpreter(model_path<span class="op">=</span>model_path)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>interpreter.allocate_tensors()</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Get input and output tensors</span></span>
@@ -989,8 +1001,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    plt.imshow(img)</span>
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">'off'</span>)</span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load the TFLite model</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load the LiteRT model</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    interpreter <span class="op">=</span> Interpreter(model_path<span class="op">=</span>model_path)</span>
 <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    interpreter.allocate_tensors()</span>
 <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get input and output tensors</span></span>
@@ -1061,7 +1073,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p> <img src="images/png/infer-int8-160.png" class="img-fluid"></p>
 <p>Let’s download a smaller model, such as the one trained for the <a href="https://studio.edgeimpulse.com/public/353482/live">Nicla Vision Lab</a> (int8 quantized model, 96x96, alpha = 0.1), as a test. We can use the same function:</p>
 <p> <img src="images/png/infer-int8-96.png" class="img-fluid"></p>
-<p>The model lost some accuracy, but it is still OK once our model does not look for many details. Regarding latency, we are around <strong>ten times faster</strong> on the Raspi-Zero.</p>
+<p>The model lost some accuracy, but it is still OK once our model does not look for many details. Regarding latency, we are aboutt <strong>ten times faster</strong> on the Raspi-Zero.</p>
+<blockquote class="blockquote">
+<p>With the Raspberry Pi 5, the latencies are respectively 8 ms and 0.8 ms</p>
+</blockquote>
 </section>
 </section>
 <section id="sec-image-classification-live-image-classification-f123" class="level2">
@@ -1077,7 +1092,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tflite_runtime.interpreter <span class="im">as</span> tflite</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ai_edge_litert.interpreter <span class="im">import</span> Interpreter</span>
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> queue <span class="im">import</span> Queue</span>
 <span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> Flask(<span class="va">__name__</span>)</span>
@@ -1127,7 +1142,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_model():</span>
 <span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> interpreter</span>
 <span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> interpreter <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a>        interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
+<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a>        interpreter <span class="op">=</span> Interpreter(model_path<span class="op">=</span>model_path)</span>
 <span id="cb19-60"><a href="#cb19-60" aria-hidden="true" tabindex="-1"></a>        interpreter.allocate_tensors()</span>
 <span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> interpreter</span>
 <span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a></span>
@@ -1293,7 +1308,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-222"><a href="#cb19-222" aria-hidden="true" tabindex="-1"></a>    app.run(host<span class="op">=</span><span class="st">'0.0.0.0'</span>, port<span class="op">=</span><span class="dv">5000</span>, threaded<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>On the terminal, run:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> img_class_live_infer.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> img_class_live_infer.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And access the web interface:</p>
 <ul>
 <li>On the Raspberry Pi itself (if you have a GUI): Open a web browser and go to <code>http://localhost:5000</code></li>
@@ -1301,15 +1316,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>Here are some screenshots of the app running on an external desktop</p>
 <p> <img src="images/png/app-inference.png" class="img-fluid"></p>
-<p>Here, you can see the app running on the YouTube:</p>
-<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/o1QsQrpCMw4" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p>Here, you can see the app running on <a href="www.youtube.com">YouTube</a>.</p>
 <p>The code creates a web application for real-time image classification using a Raspberry Pi, its camera module, and a TensorFlow Lite model. The application uses Flask to serve a web interface where is possible to view the camera feed and see live classification results.</p>
 <section id="sec-image-classification-key-components-a5d4" class="level4">
 <h4 class="anchored" data-anchor-id="sec-image-classification-key-components-a5d4">Key Components:</h4>
 <ol type="1">
 <li><strong>Flask Web Application</strong>: Serves the user interface and handles requests.</li>
 <li><strong>PiCamera2</strong>: Captures images from the Raspberry Pi camera module.</li>
-<li><strong>TensorFlow Lite</strong>: Runs the image classification model.</li>
+<li><strong>LiteRT</strong>: Runs the image classification model.</li>
 <li><strong>Threading</strong>: Manages concurrent operations for smooth performance.</li>
 </ol>
 </section>

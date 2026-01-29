@@ -63,7 +63,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../raspi/rnn-verne/rnn-verne.html" rel="next">
+<link href="../../raspi/executorch/executorch.html" rel="next">
 <link href="../../raspi/object_detection/cv_yolo.html" rel="prev">
 <link href="../../images/unifei-logo.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
@@ -249,6 +249,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
  <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
@@ -409,7 +421,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="dataset" class="level3">
 <h3 class="anchored" data-anchor-id="dataset">Dataset</h3>
 <p>The dataset collection is the most critical phase of the project and should take several weeks or months. For this tutorial, we will use a public dataset: “Sledevic, Tomyslav (2023), “[Labeled dataset for bee detection and direction estimation on beehive landing boards,” Mendeley Data, V5, doi: 10.17632/8gb9r2yhfc.5”</p>
-<p>The original dataset has 6,762 images (1920 x 1080), and around 8% of them (518) have no bees (only background). This is very important with Object Detection, where we should keep around 10% of the dataset with only background (without any objects to be detected).</p>
+<p>The original dataset contains 6,762 images (1920 x 1080), and around 8% (518) of them have no bees (only background). This is very important in Object Detection, where we should keep around 10% of the dataset with only background (no objects to be detected).</p>
 <p>The images contain from zero to up to 61 bees:</p>
 <p><img src="images/bee_distr.jpeg" class="img-fluid"></p>
 <p>We downloaded the dataset (images and annotations) and uploaded it to <a href="https://roboflow.com/">Roboflow</a>. There, you should create a free account and start a new project, for example, (“Bees_on_Hive_landing_boards”):</p>
@@ -524,14 +536,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="images/inf_img_15_bees.png" class="img-fluid"></p>
 <p>let’s go over the other images, analyzing the number of objects (bees) found:</p>
 <p><img src="images/multiple_infer.png" class="img-fluid"></p>
-<p>Depending on the confidence, we can have some false positives or negatives. But in general, with a model trained based on the smaller base model of the YOLOv8 family (YOLOv8n) and also converted to NCNN, the result is pretty good, running on an Edge device such as the Rasp-Zero. Also, note that the inference latency is around 730ms.</p>
-<p>For example, by running the inference on <code>Maurilio-bee.jpeg</code>, we can find <code>40 bees</code>. During the test phase on Colab, 41 bees were found (we only missed one here.)</p>
+<p>Depending on the confidence level, we may see some false positives or negatives. But in general, with a model trained on a smaller base model in the YOLOv8 family (YOLOv8n) and converted to NCNN, the results are pretty good, running on an Edge device such as the Rasp-Zero. Also, note that the inference latency is around 730ms.</p>
+<p>For example, by running the inference on <code>Maurilio-bee.jpeg</code>, we can find <code>40 bees</code>. During the test phase on Colab, 41 bees were found (we only missed one here).</p>
 <p><img src="images/maurilio-bee-rasp.png" class="img-fluid"></p>
 </section>
 <section id="considerations-about-the-post-processing" class="level2">
 <h2 class="anchored" data-anchor-id="considerations-about-the-post-processing">Considerations about the Post-Processing</h2>
-<p>Our final project should be very simple in terms of code. We will use the camera to capture an image every 10 seconds. As we did in the previous section, the captured image should be the input for the trained and converted model. We should get the number of bees for each image and save it in a database (for example, timestamp: number of bees).</p>
-<p>We can do it with a single Python script or use a Linux system timer, like <code>cron</code>, to periodically capture images every 10 seconds and have a separate Python script to process these images as they are saved. This method can be particularly efficient in managing system resources and can be more robust against potential delays in image processing.</p>
+<p>Our final project should be very simple in terms of code. We will use the camera to capture an image every 10 seconds. As we did in the previous section, the captured image should serve as the input to the trained and converted model. We should count the bees in each image and store the counts in a database (e.g., timestamp: number of bees).</p>
+<p>We can do it with a single Python script, or use a Linux system timer, such as <code>cron</code>, to periodically capture images every 10 seconds, and have a separate Python script process them as they are saved. This method can be particularly efficient at managing system resources and is more robust against potential delays in image processing.</p>
 <section id="setting-up-the-image-capture-with-cron" class="level4">
 <h4 class="anchored" data-anchor-id="setting-up-the-image-capture-with-cron">Setting Up the Image Capture with <code>cron</code></h4>
 <p>First, we should set up a <code>cron</code> job to use the <code>rpicam-jpeg</code> command to capture an image every 10 seconds.</p>
@@ -539,11 +551,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><strong>Edit the <code>crontab</code></strong>:</p>
 <ul>
 <li>Open the terminal and type <code>crontab -e</code> to edit the cron jobs.</li>
-<li><code>cron</code> normally doesn’t support sub-minute intervals directly, so we should use a workaround like a loop or watch for file changes.</li>
+<li><code>cron</code> normally doesn’t support sub-minute intervals directly, so we should use a workaround, such as a loop or a file watcher.</li>
 </ul></li>
 <li><p><strong>Create a Bash Script (<code>capture.sh</code>)</strong>:</p>
 <ul>
-<li><strong>Image Capture</strong>: This bash script captures images every 10 seconds using <code>rpicam-jpeg</code>, a command that is part of the <code>raspijpeg</code> tool. This command lets us control the camera and capture JPEG images directly from the command line. This is especially useful because we are looking for a lightweight and straightforward method to capture images without the need for additional libraries like <code>Picamera</code> or external software. The script also saves the captured image with a timestamp.</li>
+<li><strong>Image Capture</strong>: This bash script captures images every 10 seconds using <code>rpicam-jpeg</code>, a command in the <code>raspijpeg</code> tool. This command lets us control the camera and capture JPEG images directly from the command line. This is especially useful because we are looking for a lightweight, straightforward method to capture images without requiring additional libraries like <code>Picamera</code> or external software. The script also saves the captured image with a timestamp.</li>
 </ul>
 <div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Script to capture an image every 10 seconds</span></span>
@@ -634,7 +646,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
 <span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a>    main()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The python script must be executable, for that:</p>
+<p>The Python script must be executable, for that:</p>
 <ol type="1">
 <li><p><strong>Save the script</strong>: For example, as <code>process_images.py</code>.</p></li>
 <li><p><strong>Change file permissions</strong> to make it executable:</p>
@@ -647,7 +659,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>or</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">screen</span> <span class="at">-S</span> bee_monitor</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./process_images.py</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that we are capturing images with their own timestamp and then log a separate timestamp for when the inference results are saved to the database. This approach can be beneficial for the following reasons:</p>
+<p>Note that we capture images with their own timestamps and log a separate timestamp when the inference results are saved to the database. This approach can be beneficial for the following reasons:</p>
 <ol type="1">
 <li><strong>Accuracy in Data Logging</strong>:
 <ul>
@@ -656,7 +668,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 <li><strong>Performance Monitoring</strong>:
 <ul>
-<li>Having separate timestamps allows us to monitor the performance and efficiency of your image processing pipeline. We can measure the delay between image capture and result logging, which helps optimize the system for real-time processing needs.</li>
+<li>Separate timestamps enable us to monitor the performance and efficiency of your image processing pipeline. We can measure the delay between image capture and result logging, which helps optimize the system for real-time processing needs.</li>
 </ul></li>
 <li><strong>Troubleshooting and Audit</strong>:
 <ul>
@@ -694,9 +706,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>In this tutorial, we have thoroughly explored integrating the YOLOv8 model with a Raspberry Pi Zero 2W to address the practical and pressing task of counting (or better, “estimating”) bees at a beehive entrance. Our project underscores the robust capability of embedding advanced machine learning technologies within compact edge computing devices, highlighting their potential impact on environmental monitoring and ecological studies.</p>
-<p>This tutorial provides a step-by-step guide to the practical deployment of the YOLOv8 model. We demonstrate a tangible example of a real-world application by optimizing it for edge computing in terms of efficiency and processing speed (using NCNN format). This not only serves as a functional solution but also as an instructional tool for similar projects.</p>
-<p>The technical insights and methodologies shared in this tutorial are the basis for the complete work to be developed at our university in the future. We envision further development, such as integrating additional environmental sensing capabilities and refining the model’s accuracy and processing efficiency. Implementing alternative energy solutions like the proposed solar power setup will expand the project’s sustainability and applicability in remote or underserved locations.</p>
+<p>In this tutorial, we have thoroughly explored integrating the YOLOv8 model with a Raspberry Pi Zero 2W to address the practical, pressing task of counting (or, better, “estimating”) bees at a beehive entrance. Our project underscores the robust capability of embedding advanced machine learning technologies within compact edge computing devices, highlighting their potential impact on environmental monitoring and ecological studies.</p>
+<p>This tutorial provides a step-by-step guide to deploying the YOLOv8 model in practice. We demonstrate a tangible real-world application by optimizing it for edge computing, improving efficiency and processing speed (using the NCNN format). This not only serves as a functional solution but also as an instructional tool for similar projects.</p>
+<p>The technical insights and methodologies shared in this tutorial are the basis for the complete work to be developed at our university in the future. We envision further development, such as integrating additional environmental sensing capabilities and refining the model’s accuracy and processing efficiency. Implementing alternative energy solutions, such as the proposed solar power setup, will enhance the project’s sustainability and applicability in remote or underserved locations.</p>
 </section>
 <section id="resources" class="level2">
 <h2 class="anchored" data-anchor-id="resources">Resources</h2>
@@ -962,8 +974,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../raspi/rnn-verne/rnn-verne.html" class="pagination-link">
-        <span class="nav-page-text">Text Generation with RNNs</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../raspi/executorch/executorch.html" class="pagination-link">
+        <span class="nav-page-text">Image Classification with EXECUTORCH</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -249,6 +249,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
  <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
@@ -423,45 +435,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>On the Raspberry Pi itself (if you have a GUI): Open a web browser and go to <code>http://localhost:5000</code></li>
 <li>From another device on the same network: Open a web browser and go to <code>http://&lt;raspberry_pi_ip&gt;:5000</code> (Replace <code>&lt;raspberry_pi_ip&gt;</code> with your Raspberry Pi’s IP address). For example: <code>http://192.168.4.210:5000/</code></li>
 </ul>
-<p><img src="images/png/app.png" class="img-fluid">The Python script creates a web-based interface for capturing and organizing image datasets using a Raspberry Pi and its camera. It’s handy for machine learning projects that require labeled image data or not, as in our case here.</p>
+<p><img src="images/png/app.png" class="img-fluid">The Python script creates a web-based interface for capturing and organizing image datasets using a Raspberry Pi and its camera. It’s handy for machine learning projects that require labeled image data, or not, as in our case here.</p>
 <p>Access the web interface from a browser, enter a generic label for the images you want to capture, and press <code>Start Capture</code>.</p>
 <p><img src="images/png/cap-img.png" class="img-fluid"></p>
 <blockquote class="blockquote">
 <p>Note that the images to be captured will have multiple labels that should be defined later.</p>
 </blockquote>
-<p>Use the live preview to position the camera and click <code>Capture Image</code> to save images under the current label (in this case, <code>box-wheel</code>.</p>
+<p>Use the live preview to position the camera, then click Capture Image to save the images under the current label (in this case, box-wheel).</p>
 <p><img src="./images/png/img_cap-1.png" class="img-fluid"></p>
 <p>When we have enough images, we can press <code>Stop Capture</code>. The captured images are saved in the folder dataset/box-wheel:</p>
 <p><img src="images/png/dataset.png" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p>Get around 60 images. Try to capture different angles, backgrounds, and light conditions. Filezilla can transfer the created raw dataset to your main computer.</p>
+<p>Get around 60 images. Try to capture different angles, backgrounds, and light conditions. FileZilla can transfer the raw dataset you created to your main computer.</p>
 </blockquote>
 </section>
 <section id="labeling-data" class="level3">
 <h3 class="anchored" data-anchor-id="labeling-data">Labeling Data</h3>
-<p>The next step in an Object Detect project is to create a labeled dataset. We should label the raw dataset images, creating bounding boxes around each picture’s objects (box and wheel). We can use labeling tools like <a href="https://pypi.org/project/labelImg/">LabelImg,</a> <a href="https://www.cvat.ai/">CVAT,</a> <a href="https://roboflow.com/annotate">Roboflow,</a> or even the <a href="https://edgeimpulse.com/">Edge Impulse Studio.</a> Once we have explored the Edge Impulse tool in other labs, let’s use Roboflow here.</p>
+<p>The next step in an Object Detect project is to create a labeled dataset. We should label the raw dataset images, creating bounding boxes around each picture’s objects (box and wheel). We can use labeling tools such as <a href="https://pypi.org/project/labelImg/">LabelImg,</a> <a href="https://www.cvat.ai/">CVAT,</a> <a href="https://roboflow.com/annotate">Roboflow,</a> or even the <a href="https://edgeimpulse.com/">Edge Impulse Studio.</a> Once we have explored the Edge Impulse tool in other labs, let’s use <strong>Roboflow</strong> here.</p>
 <blockquote class="blockquote">
-<p>We are using Roboflow (free version) here for two main reasons. 1) We can have auto-labeler, and 2) The annotated dataset is available in several formats and can be used both on Edge Impulse Studio (we will use it for MobileNet V2 and FOMO train) and on CoLab (YOLOv8 train), for example. Having the annotated dataset on Edge Impulse (Free account), it is not possible to use it for training on other platforms.</p>
+<p>We are using Roboflow (free version) here for two main reasons. 1) We can have an auto-labeler, and 2) The annotated dataset is available in several formats and can be used both on Edge Impulse Studio (we will use it for MobileNet V2 and FOMO train) and on CoLab (YOLOv8 or YOLOv11 train), for example. An annotated dataset created on Edge Impulse (Free account) cannot be used for training on other platforms.</p>
 </blockquote>
 <p>We should upload the raw dataset to <a href="https://roboflow.com/">Roboflow.</a> Create a free account there and start a new project, for example, (“box-versus-wheel”).</p>
 <p><img src="./images/png/create-project-rf.png" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p>We will not enter in deep details about the Roboflow process once many tutorials are available.</p>
+<p>We will not go into great detail about the Roboflow process, as many tutorials are already available.</p>
 </blockquote>
 <section id="annotate" class="level4">
 <h4 class="anchored" data-anchor-id="annotate">Annotate</h4>
-<p>Once the project is created and the dataset is uploaded, you can use the “Auto-Label” tool to make the annotations or do it manually.</p>
+<p>Once the project is created and the dataset is uploaded, you can use the “Auto-Label” tool to generate annotations, or do it manually.</p>
 <p><img src="images/png/annotation.png" class="img-fluid"></p>
-<p>The Label Assist tool can be handy to help on the labbeling process.</p>
+<p>The Label Assist tool can be handy for the labeling process.</p>
 <p><img src="./images/png/label-assist.png" class="img-fluid"></p>
 <p>Note that you should also upload images with only a background, which should be saved w/o any annotations using the <code>Null Tool</code> option.</p>
 <p><img src="./images/png/null-tool.png" class="img-fluid"></p>
-<p>Once all images are annotated, you should split them into training, validation, and testing.</p>
+<p>Once all images are annotated, split them into training, validation, and test sets.</p>
 <p><img src="images/png/dataset_rf.png" class="img-fluid"></p>
 </section>
 <section id="data-pre-processing" class="level4">
 <h4 class="anchored" data-anchor-id="data-pre-processing">Data Pre-Processing</h4>
-<p>The last step with the dataset is preprocessing to generate a final version for training. Let’s resize all images to 320x320 and generate augmented versions of each image (augmentation) to create new training examples from which our model can learn.</p>
+<p>The last step in the dataset is preprocessing to generate a final training version. Let’s resize all images to 320x320 and generate augmented versions of each image (augmentation) to create new training examples from which our model can learn.</p>
 <p>For augmentation, we will rotate the images (+/-15<sup>o</sup>), crop, and vary the brightness and exposure.</p>
 <p><img src="images/png/pre-proc.png" class="img-fluid"></p>
 <p>At the end of the process, we will have 153 images.</p>
@@ -472,8 +484,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="images/png/dataset-struct.png" class="img-fluid"></p>
 <p>There are 3 separate folders, one for each split (<code>train</code>/<code>test</code>/<code>valid</code>). For each of them, there are 2 subfolders, <code>images</code>, and <code>labels</code>. The pictures are stored as <strong>image_id.jpg</strong> and <strong>images_id.txt</strong>, where “image_id” is unique for every picture.</p>
 <p>The labels file format will be <code>class_id</code> <code>bounding box coordinates</code>, where in our case, class_id will be <code>0</code> for <code>box</code> and <code>1</code> for <code>wheel</code>. The numerical id (o, 1, 2…) will follow the alphabetical order of the class name.</p>
-<p>The <code>data.yaml</code> file has info about the dataset as the classes’ names (<code>names: ['box', 'wheel']</code>) following the YOLO format.</p>
-<p>And that’s it! We are ready to start training using the Edge Impulse Studio (as we will do in the following step), Ultralytics (as we will when discussing YOLO), or even training from scratch on CoLab (as we did with the Cifar-10 dataset on the Image Classification lab).</p>
+<p>The <code>data.yaml</code> file contains information about the dataset, such as the classes’ names (<code>names: ['box', 'wheel']</code>) following the YOLO format.</p>
+<p>And that’s it! We are ready to start training using Edge Impulse Studio (as we will in the next step), Ultralytics (as we will when discussing YOLO), or even training from scratch on CoLab (as we did with the Cifar-10 dataset in the Image Classification lab).</p>
 <blockquote class="blockquote">
 <p>The pre-processed dataset can be found at the <a href="https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset">Roboflow site</a>, or here: <a href="https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset"> <img src="https://app.roboflow.com/images/download-dataset-badge.svg"> </a></p>
 </blockquote>
@@ -486,11 +498,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>Here, you can clone the project developed for this hands-on lab: <a href="https://studio.edgeimpulse.com/public/515477/live">Raspi - Object Detection</a>.</p>
 </blockquote>
-<p>On the Project <code>Dashboard</code> tab, go down and on <strong>Project info,</strong> and for Labeling method select <code>Bounding boxes (object detection)</code></p>
+<p>On the Project <code>Dashboard</code> tab, go down to <strong>Project info,</strong> and for Labeling method select <code>Bounding boxes (object detection)</code></p>
 <section id="uploading-the-annotated-data" class="level3">
 <h3 class="anchored" data-anchor-id="uploading-the-annotated-data">Uploading the annotated data</h3>
-<p>On Studio, go to the <code>Data acquisition</code> tab, and on the <code>UPLOAD DATA</code> section, upload from your computer the raw dataset.</p>
-<p>We can use the option <code>Select a folder</code>, choosing, for example, the folder <code>train</code> in your computer, which contains two sub-folders, <code>images</code>, and <code>labels</code>. Select the <code>Image label format</code>, “YOLO TXT”, upload into the caegory <code>Training</code>, and press <code>Upload data</code>.</p>
+<p>In Studio, go to the <code>Data acquisition</code> tab, and in the <code>UPLOAD DATA</code> section, upload the raw dataset from your computer.</p>
+<p>We can use the <code>Select a folder</code> option, choosing, for example, the <code>train</code> folder on your computer, which contains two sub-folders: <code>images</code> and <code>labels</code>. Select the <code>Image label format</code>, “YOLO TXT”, upload it into the category <code>Training</code>, and press <code>Upload data</code>.</p>
 <p><img src="images/png/upload-data.png" class="img-fluid"></p>
 <p>Repeat the process for the test data (upload both folders, test, and validation). At the end of the upload process, you should end with the annotated dataset of 153 images split in the train/test (84%/16%).</p>
 <blockquote class="blockquote">
@@ -516,19 +528,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="preprocessing-all-dataset">Preprocessing all dataset</h3>
 <p>In the section <code>Image</code>, select <strong>Color depth</strong> as <code>RGB</code>, and press <code>Save parameters</code>.</p>
 <p><img src="images/png/ei-image-pre.png" class="img-fluid"></p>
-<p>The Studio moves automatically to the next section, <code>Generate features</code>, where all samples will be pre-processed, resulting in 480 objects: 207 boxes and 273 wheels.</p>
+<p>The Studio automatically moves to the next section, Generate features, where all samples will be preprocessed, resulting in 480 objects: 207 boxes and 273 wheels.</p>
 <p><img src="images/png/ei-features.png" class="img-fluid"></p>
-<p>The feature explorer shows that all samples evidence a good separation after the feature generation.</p>
+<p>The feature explorer shows that all samples exhibit a good separation after the feature generation.</p>
 </section>
 <section id="model-design-training-and-test" class="level3">
 <h3 class="anchored" data-anchor-id="model-design-training-and-test">Model Design, Training, and Test</h3>
-<p>For training, we should select a pre-trained model. Let’s use the <strong>MobileNetV2 SSD FPN-Lite (320x320 only)</strong> .</p>
+<p>For training, we should select a pre-trained model. Let’s use the <strong>MobileNetV2 SSD FPN-Lite (320x320 only)</strong>.</p>
 <ul>
 <li><p><strong>Base Network</strong> (MobileNetV2)</p></li>
 <li><p><strong>Detection Network</strong> (Single Shot Detector or SSD)</p></li>
 <li><p><strong>Feature Extractor</strong> (FPN-Lite)</p></li>
 </ul>
-<p>It is a pre-trained object detection model designed to locate up to 10 objects within an image, outputting a bounding box for each object detected. The model is approximately 3.7 MB in size. It supports an RGB input at 320x320px.</p>
+<p>It is a pre-trained object detection model that locates up to 10 objects in an image and outputs a bounding box for each. The model is approximately 3.7 MB. It supports an RGB input at 320x320px.</p>
 <p><img src="./images/png/model-ssd-mobilenetv2.png" class="img-fluid"></p>
 <p>Regarding the training hyper-parameters, the model will be trained with:</p>
 <ul>
@@ -538,14 +550,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>For validation during training, 20% of the dataset (<em>validation_dataset</em>) will be spared.</p>
 <p><img src="images/png/ei-train-result.png" class="img-fluid"></p>
-<p>As a result, the model ends with an overall precision score (based on COCO mAP) of 88.8%, higher than the result when using the test data (83.3%).</p>
+<p>As a result, the model achieves an overall precision score (based on COCO mAP) of 88.8%, higher than the score on the test data (83.3%).</p>
 </section>
 <section id="deploying-the-model" class="level3">
 <h3 class="anchored" data-anchor-id="deploying-the-model">Deploying the model</h3>
 <p>We have two ways to deploy our model:</p>
 <ul>
-<li><strong>TFLite model</strong>, which lets deploy the trained model as <code>.tflite</code> for the Raspi to run it using Python.</li>
-<li><strong>Linux (AARCH64)</strong>, a binary for Linux (AARCH64), implements the Edge Impulse Linux protocol, which lets us run our models on any Linux-based development board, with SDKs for Python, for example. See the documentation for more information and <a href="https://docs.edgeimpulse.com/docs/edge-impulse-for-linux">setup instructions</a>.</li>
+<li><strong>TFLite model</strong>, which lets deploy the trained model as <code>.tflite</code> for the Raspberry Pi to run it using Python.</li>
+<li><strong>Linux (AARCH64)</strong>, a binary for Linux (AARCH64), implements the Edge Impulse Linux protocol, which lets us run our models on any Linux-based development board, with SDKs such as Python. See the documentation for more information and <a href="https://docs.edgeimpulse.com/docs/edge-impulse-for-linux">setup instructions</a>.</li>
 </ul>
 <p>Let’s deploy the <strong>TFLite model</strong>. On the <code>Dashboard</code> tab, go to Transfer learning model (int8 quantized) and click on the download icon:</p>
 <p><img src="images/png/ei-deploy-int8.png" class="img-fluid"></p>
@@ -554,14 +566,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="inference-and-post-processing" class="level3">
 <h3 class="anchored" data-anchor-id="inference-and-post-processing">Inference and Post-Processing</h3>
-<p>The inference can be made as discussed in the <em>Pre-Trained Object Detection Models Overview</em>. Let’s start a new <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/EI-SSD-MobileNetV2.ipynb">notebook</a> to follow all the steps to detect cubes and wheels on an image.</p>
+<p>The inference can be made as discussed in the <em>Pre-Trained Object Detection Models Overview</em>. Let’s start a new <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/EI-SSD-MobileNetV2.ipynb">notebook</a> to follow all the steps to detect cubes and wheels in an image.</p>
 <p>Import the needed libraries:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> patches</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tflite_runtime.interpreter <span class="im">as</span> tflite</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ai_edge_litert.interpreter <span class="im">import</span> Interpreter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Define the model path and labels:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/ei-raspi-object-detection-SSD-MobileNetv2-320x0320-</span><span class="ch">\</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="st">int8.lite"</span></span>
@@ -570,8 +582,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Remember that the model will output the class ID as values (0 and 1), following an alphabetic order regarding the class names.</p>
 </blockquote>
 <p>Load the model, allocate the tensors, and get the input and output tensor details:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the TFLite model</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a LiteRT Interpreter</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> Interpreter(model_path<span class="op">=</span>model_path)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>interpreter.allocate_tensors()</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Get input and output tensors</span></span>
@@ -816,14 +828,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="inference-and-post-processing-1" class="level3">
 <h3 class="anchored" data-anchor-id="inference-and-post-processing-1">Inference and Post-Processing</h3>
-<p>The inference will be made using the <a href="https://docs.edgeimpulse.com/docs/tools/edge-impulse-for-linux/linux-python-sdk">Linux Python SDK</a>. This library lets us run machine learning models and collect sensor data on <a href="https://docs.edgeimpulse.com/docs/tools/edge-impulse-for-linux">Linux</a> machines using Python. The SDK is open source and hosted on GitHub: <a href="https://github.com/edgeimpulse/linux-sdk-python">edgeimpulse/linux-sdk-python</a>.</p>
+<p>The inference will be made using the <a href="https://docs.edgeimpulse.com/docs/tools/edge-impulse-for-linux/linux-python-sdk">Linux Python SDK</a>. This library lets us run machine learning models and collect sensor data on <a href="https://docs.edgeimpulse.com/docs/tools/edge-impulse-for-linux">Linux</a> machines using Python. The SDK is open source and available on GitHub at <a href="https://github.com/edgeimpulse/linux-sdk-python">edgeimpulse/linux-sdk-python</a>.</p>
 <p>Let’s set up a Virtual Environment for working with the Linux Python SDK</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv ~/eilinux</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/eilinux/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And Install the all the libraries needed:</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install libatlas-base-dev libportaudio0 libportaudio2</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get installlibportaudiocpp0 portaudio19-dev</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install libportaudiocpp0 portaudio19-dev</span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install edge_impulse_linux <span class="at">-i</span> https://pypi.python.org/simple</span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install Pillow matplotlib pyaudio opencv-contrib-python</span>
@@ -922,21 +934,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <p>This chapter has explored the implementation of a custom object detector on edge devices, such as the Raspberry Pi, demonstrating the power and potential of running advanced computer vision tasks on resource-constrained hardware. We’ve covered several vital aspects:</p>
 <ol type="1">
-<li><strong>Model Comparison</strong>: We examined different object detection models, as SSD-MobileNet and FOMO, comparing their performance and trade-offs on edge devices.</li>
+<li><strong>Model Comparison</strong>: We examined object detection models, including SSD-MobileNet and FOMO, and compared their performance and trade-offs on edge devices.</li>
 <li><strong>Training and Deployment</strong>: Using a custom dataset of boxes and wheels (labeled on Roboflow), we walked through the process of training models with Edge Impulse Studio and Ultralytics and deploying them on a Raspberry Pi.</li>
-<li><strong>Optimization Techniques</strong>: To improve inference speed on edge devices, we explored various optimization methods, such as model quantization (TFLite int8).</li>
+<li><strong>Optimization Techniques</strong>: To improve inference speed on edge devices, we explored various optimization methods, such as model quantization (int8).</li>
 <li><strong>Performance Considerations</strong>: Throughout the lab, we discussed the balance between model accuracy and inference speed, a critical consideration for edge AI applications.</li>
 </ol>
-<p>As discussed before, the ability to perform object detection on edge devices opens up numerous possibilities across various domains, including precision agriculture, industrial automation, quality control, smart home applications, and environmental monitoring. By processing data locally, these systems can offer reduced latency, improved privacy, and operation in environments with limited connectivity.</p>
+<p>As discussed earlier, the ability to perform object detection on edge devices opens up numerous possibilities across domains, such as precision agriculture, industrial automation, quality control, smart home applications, and environmental monitoring. By processing data locally, these systems can offer reduced latency, improved privacy, and operation in environments with limited connectivity.</p>
 <p>Looking ahead, potential areas for further exploration include: - Implementing multi-model pipelines for more complex tasks - Exploring hardware acceleration options for Raspberry Pi - Integrating object detection with other sensors for more comprehensive edge AI systems - Developing edge-to-cloud solutions that leverage both local processing and cloud resources</p>
 <p>Object detection on edge devices can create intelligent, responsive systems that bring the power of AI directly into the physical world, opening up new frontiers in how we interact with and understand our environment.</p>
 </section>
 <section id="resources" class="level2">
 <h2 class="anchored" data-anchor-id="resources">Resources</h2>
 <ul>
-<li><p><a href="https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset">Dataset (“Box versus Wheel”)</a></p></li>
-<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/EI-Linux-FOMO.ipynb">FOMO - EI Linux Notebook on a Raspi</a></p></li>
+<li><p><a href="https://universe.roboflow.com/marcelo-rovai-riila/box-versus-wheel-auto-dataset">Roboflow Annotated Dataset (“Box versus Wheel”)</a></p></li>
 <li><p><a href="https://studio.edgeimpulse.com/public/515477/live">Edge Impulse Project - SSD MobileNet and FOMO</a></p></li>
+<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks">Notebooksi</a></p></li>
 <li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/python_scripts">Python Scripts</a></p></li>
 <li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">Models</a></p></li>
 </ul>

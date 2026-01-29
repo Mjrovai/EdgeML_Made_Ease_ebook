@@ -249,6 +249,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
  <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
@@ -353,7 +365,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#setting-up-the-environment" id="toc-setting-up-the-environment" class="nav-link" data-scroll-target="#setting-up-the-environment">Setting Up the Environment</a>
   <ul>
   <li><a href="#updating-the-raspberry-pi" id="toc-updating-the-raspberry-pi" class="nav-link" data-scroll-target="#updating-the-raspberry-pi">Updating the Raspberry Pi</a></li>
-  <li><a href="#installing-required-sytem-level-libraries" id="toc-installing-required-sytem-level-libraries" class="nav-link" data-scroll-target="#installing-required-sytem-level-libraries">Installing Required Sytem Level Libraries</a></li>
+  <li><a href="#installing-required-system-level-libraries" id="toc-installing-required-system-level-libraries" class="nav-link" data-scroll-target="#installing-required-system-level-libraries">Installing Required System Level Libraries</a></li>
   <li><a href="#setting-up-a-virtual-environment" id="toc-setting-up-a-virtual-environment" class="nav-link" data-scroll-target="#setting-up-a-virtual-environment">Setting up a Virtual Environment</a></li>
   <li><a href="#install-python-packages-inside-virtual-environment" id="toc-install-python-packages-inside-virtual-environment" class="nav-link" data-scroll-target="#install-python-packages-inside-virtual-environment">Install Python Packages (inside Virtual Environment)</a>
   <ul class="collapse">
@@ -361,7 +373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#setting-up-jupyter-notebook" id="toc-setting-up-jupyter-notebook" class="nav-link" data-scroll-target="#setting-up-jupyter-notebook">Setting up Jupyter Notebook</a></li>
   </ul></li>
-  <li><a href="#installing-tensorflow-lite" id="toc-installing-tensorflow-lite" class="nav-link" data-scroll-target="#installing-tensorflow-lite">Installing TensorFlow Lite</a>
+  <li><a href="#installing-litert" id="toc-installing-litert" class="nav-link" data-scroll-target="#installing-litert">Installing LiteRT</a>
   <ul>
   <li><a href="#creating-a-working-directory" id="toc-creating-a-working-directory" class="nav-link" data-scroll-target="#creating-a-working-directory">Creating a working directory:</a></li>
   <li><a href="#verifying-the-setup" id="toc-verifying-the-setup" class="nav-link" data-scroll-target="#verifying-the-setup">Verifying the Setup</a></li>
@@ -405,8 +417,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Image classification is a fundamental task in computer vision that involves categorizing an image into one of several predefined classes. It’s a cornerstone of artificial intelligence, enabling machines to interpret and understand visual information in a way that mimics human perception.</p>
-<p>Image classification refers to assigning a label or category to an entire image based on its visual content. This task is crucial in computer vision and has numerous applications across various industries. Image classification’s importance lies in its ability to automate visual understanding tasks that would otherwise require human intervention.</p>
+<p>Image classification is a fundamental task in computer vision that involves categorizing an image into one of several predefined classes. It’s a cornerstone of artificial intelligence, enabling machines to interpret and understand visual information in ways that mimic human perception.</p>
+<p>Image classification is the assignment of a label or category to an entire image based on its visual content. This task is crucial in computer vision and has numerous applications across various industries. Image classification’s importance lies in its ability to automate visual understanding tasks that would otherwise require human intervention.</p>
 <section id="applications-in-real-world-scenarios" class="level3">
 <h3 class="anchored" data-anchor-id="applications-in-real-world-scenarios">Applications in Real-World Scenarios</h3>
 <p>Image classification has found its way into numerous real-world applications, revolutionizing various sectors:</p>
@@ -427,12 +439,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Offline Functionality: Classification can be performed without an internet connection, making it suitable for remote or connectivity-challenged environments.</p></li>
 <li><p>Privacy and Security: Sensitive image data remains on the local device, addressing data privacy concerns and compliance requirements.</p></li>
 <li><p>Cost-Effectiveness: Eliminates the need for expensive cloud computing resources, especially for continuous or high-volume classification tasks.</p></li>
-<li><p>Scalability: Enables distributed computing architectures where multiple devices can work independently or in a network.</p></li>
+<li><p>Scalability: Enables distributed computing architectures in which multiple devices can operate independently or in a network.</p></li>
 <li><p>Energy Efficiency: Optimized models on dedicated hardware can be more energy-efficient than cloud-based solutions, which is crucial for battery-powered or remote applications.</p></li>
 <li><p>Customization: Deploying specialized or frequently updated models tailored to specific use cases is more manageable.</p></li>
 </ol>
-<p>We can create more responsive, secure, and efficient computer vision solutions by leveraging the power of edge devices like Raspberry Pi for image classification. This approach opens up new possibilities for integrating intelligent visual processing into various applications and environments.</p>
-<p>In the following sections, we’ll explore how to implement and optimize image classification on the Raspberry Pi, harnessing these advantages to create powerful and efficient computer vision systems.</p>
+<p>We can create more responsive, secure, and efficient computer vision solutions by leveraging the power of edge devices such as the Raspberry Pi for image classification. This approach opens new possibilities for integrating intelligent visual processing across diverse applications and environments.</p>
+<p>In the following sections, we’ll explore how to implement and optimize image classification on the Raspberry Pi, leveraging these advantages to build powerful, efficient computer vision systems.</p>
 </section>
 </section>
 <section id="setting-up-the-environment" class="level2">
@@ -444,12 +456,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot <span class="co"># Reboot to ensure all updates take effect</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="installing-required-sytem-level-libraries" class="level3">
-<h3 class="anchored" data-anchor-id="installing-required-sytem-level-libraries">Installing Required Sytem Level Libraries</h3>
+<section id="installing-required-system-level-libraries" class="level3">
+<h3 class="anchored" data-anchor-id="installing-required-system-level-libraries">Installing Required System Level Libraries</h3>
 <p>Install Python tools and camera libraries</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> python3-pip python3-venv python3-picamera2</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> libcamera-dev libcamera-tools libcamera-apps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><a href="https://github.com/raspberrypi/picamera2">Picamera2</a>, a Python library for interacting with Raspberry Pi’s camera, is based on the <em>libcamera</em> camera stack, and the Raspberry Pi Foundation maintains it. The Picamera2 library is supported on all Raspberry Pi models, from the Pi Zero to the Pi 5.</p>
+<p>Picamera2](https://github.com/raspberrypi/picamera2), a Python library for interacting with Raspberry Pi’s camera, is based on the <em>libcamera</em> camera stack, and the Raspberry Pi Foundation maintains it. The Picamera2 library is supported on all Raspberry Pi models, from the Pi Zero to the Pi 5.</p>
 <p><strong>Testing picamera2 Instalation</strong></p>
 <p><img src="./images/png/picamera2-test.png" class="img-fluid"></p>
 </section>
@@ -473,10 +485,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Verify installation</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> list <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">"(numpy|pillow|opencv|picamera)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/verify_insta.png" class="img-fluid"></p>
-<p>The proven Numpy version should be <code>1.24.2</code>. If you have another version installed, first uninstall it.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> uninstall numpy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Install <code>version 1.24.2</code>, which is compatible with the tflite_runtime and picamera.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a> <span class="ex">pip3</span> install numpy==1.24.2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="system-vs-pip-package-installation-rule" class="level4">
 <h4 class="anchored" data-anchor-id="system-vs-pip-package-installation-rule">System vs pip Package Installation Rule</h4>
 <p><strong>Use <code>sudo apt install</code> (outside of venv) for:</strong></p>
@@ -494,104 +502,103 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <blockquote class="blockquote">
 <p><strong>Rule of thumb:</strong> Use <code>sudo apt install</code> only for system dependencies and hardware interfaces. Use <code>pip install</code> (without sudo) inside an activated virtual environment for everything else. Inside the vent, PIP or PIP3 are the same.</p>
-<p>The virtual environment will automatically see both the system packages and the pip-installed packages thanks to the <code>--system-site-packages</code> flag.</p>
+<p>The virtual environment will automatically include both system packages and pip-installed packages thanks to the <code>--system-site-packages</code> flag.</p>
 </blockquote>
 </section>
 </section>
 <section id="setting-up-jupyter-notebook" class="level3">
 <h3 class="anchored" data-anchor-id="setting-up-jupyter-notebook">Setting up Jupyter Notebook</h3>
 <p>Let’s set up Jupyter Notebook optimized for headless Raspberry Pi camera work and development:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install jupyter jupyterlab notebook</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--generate-config</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install jupyter jupyterlab notebook</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--generate-config</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>To run Jupyter Notebook, run the command (change the IP address for yours):</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--ip</span><span class="op">=</span>192.168.4.210 <span class="at">--no-browser</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--ip</span><span class="op">=</span>192.168.4.210 <span class="at">--no-browser</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>On the terminal, you can see the local URL address to open the notebook:</p>
 <p><img src="images/png/notebook_token.png" class="img-fluid"></p>
 <p>You can access it from another device by entering the Raspberry Pi’s IP address and the provided token in a web browser (you can copy the token from the terminal).</p>
 <p><img src="images/png/image-20240823145059675.png" class="img-fluid"></p>
 <p>Define the working directory in the Raspi and create a new Python 3 notebook. For example:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Python</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Python</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
 <p>It is possible to create folders directly in the Jupyter Notebook</p>
 </blockquote>
 <p>Create a new Notebook and test the code below:</p>
 <p>Import Libraries</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> picamera2 <span class="im">import</span> Picamera2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> picamera2 <span class="im">import</span> Picamera2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Load an image from the internet, for example (note that it is possible to run a command line from the Notebook, using <code>!</code> before the command:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>wget https:<span class="op">//</span>upload.wikimedia.org<span class="op">/</span>wikipedia<span class="op">/</span>commons<span class="op">/</span><span class="dv">3</span><span class="op">/</span><span class="dv">3</span><span class="er">a</span><span class="op">/</span>Cat03.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>wget https:<span class="op">//</span>upload.wikimedia.org<span class="op">/</span>wikipedia<span class="op">/</span>commons<span class="op">/</span><span class="dv">3</span><span class="op">/</span><span class="dv">3</span><span class="er">a</span><span class="op">/</span>Cat03.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>An image (<code>Cat03.jpg</code> will be downloaded to the current directory.</p>
 <p>Load and show the image:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">"Cat03.jpg"</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the image</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Original Image"</span>)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">"Cat03.jpg"</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the image</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Original Image"</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We can see the image displayed on the Notebook:</p>
 <p><img src="./images/png/cat.png" class="img-fluid"></p>
 <p>Now, let’s use the camera to capture a local image:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> picamera2 <span class="im">import</span> Picamera2</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize camera</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>picam2 <span class="op">=</span> Picamera2()</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>picam2.start()</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Wait for camera to warm up</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>time.sleep(<span class="dv">2</span>)</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Capture image</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>picam2.capture_file(<span class="st">"class3_test.jpg"</span>)</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Image captured: class3_test.jpg"</span>)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Stop camera</span></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>picam2.stop()</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>picam2.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> picamera2 <span class="im">import</span> Picamera2</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize camera</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>picam2 <span class="op">=</span> Picamera2()</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>picam2.start()</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Wait for camera to warm up</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>time.sleep(<span class="dv">2</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Capture image</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>picam2.capture_file(<span class="st">"class3_test.jpg"</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Image captured: class3_test.jpg"</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Stop camera</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>picam2.stop()</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>picam2.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And use a similar code as before to show it (adapting the <code>img_path</code> and <code>title</code>):</p>
 <p><img src="./images/png/local_image_camera.png" class="img-fluid"></p>
 </section>
 </section>
-<section id="installing-tensorflow-lite" class="level2">
-<h2 class="anchored" data-anchor-id="installing-tensorflow-lite">Installing TensorFlow Lite</h2>
-<p>We are interested in performing <strong>inference</strong>, which refers to executing a TensorFlow Lite model on a device to make predictions based on input data. To perform an inference with a TensorFlow Lite model, we must run it through an <strong>interpreter</strong>. The TensorFlow Lite interpreter is designed to be lean and fast. The interpreter uses a static graph ordering and a custom (less-dynamic) memory allocator to ensure minimal load, initialization, and execution latency.</p>
-<p>We’ll use the <a href="https://ai.google.dev/edge/litert/microcontrollers/python">TensorFlow Lite runtime</a> for Raspberry Pi, a simplified library for running machine learning models on mobile and embedded devices, without including all TensorFlow packages.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install tflite-runtime</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="installing-litert" class="level2">
+<h2 class="anchored" data-anchor-id="installing-litert">Installing LiteRT</h2>
+<p>We are interested in inference, which involves running trained models on a device to make predictions from input data. To perform an inference with a model, we must run it through an <strong>interpreter</strong>. For that, we will use <a href="https://github.com/google-ai-edge/LiteRT">LiteRT</a>, Google’s on-device framework for high-performance ML &amp; GenAI deployment on edge platforms, via efficient conversion, runtime, and optimization.</p>
 <blockquote class="blockquote">
-<p>The wheel installed: <code>tflite_runtime-2.14.0-cp311-cp311-manylinux_2_34_aarch64.whl</code></p>
+<p>LiteRT continues TensorFlow Lite’s legacy as the trusted, high-performance runtime for on-device AI.</p>
 </blockquote>
-<p>Reboot the system:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Verify instalation:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> list <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">"(tflite-runtime)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>We should see as a response: <code>tflite-runtime      2.14.0</code>.</p>
+<p>LiteRT features advanced GPU/NPU acceleration, delivers superior ML &amp; GenAI performance, making on-device ML inference easier than ever.</p>
+<p>For installation on the Raspi, let’s use the command:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ai-edge-litert</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Verifying the instalation:</p>
+<pre><code>pip show ai-edge-litert</code></pre>
+<p><img src="./images/png/litert_instal.png" class="img-fluid"></p>
 <section id="creating-a-working-directory" class="level3">
 <h3 class="anchored" data-anchor-id="creating-a-working-directory">Creating a working directory:</h3>
 <p>If you are working on the Raspi-Zero with the minimum OS (No Desktop), you do not have a user-pre-defined directory tree (you can check it with <code>ls</code>. So, let’s create one:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Documents</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents/</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> TFLITE</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> TFLITE/</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> IMG_CLASS</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> IMG_CLASS</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> models</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> models</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Documents</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents/</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> TFLITE</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> TFLITE/</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> IMG_CLASS</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> IMG_CLASS</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> models</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> models</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
 <p>On the Raspi-5, the <code>/Documents</code> should be there.</p>
 </blockquote>
 <p><strong>Get a pre-trained Image Classification model</strong>:</p>
 <p>An appropriate pre-trained model is crucial for successful image classification on resource-constrained devices like the Raspberry Pi. <strong>MobileNet</strong> is designed for mobile and embedded vision applications with a good balance between accuracy and speed. Versions: MobileNetV1, MobileNetV2, MobileNetV3. Let’s download the V2:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://storage.googleapis.com/download.tensorflow.org/models/tflite_11_05_08/mobilenet_v2_1.0_224_quant.tgz</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> xzf mobilenet_v2_1.0_224_quant.tgz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://storage.googleapis.com/download.tensorflow.org/models/tflite_11_05_08/mobilenet_v2_1.0_224_quant.tgz</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> xzf mobilenet_v2_1.0_224_quant.tgz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Get its <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/IMG_CLASS/models/labels.txt">labels</a>:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://raw.githubusercontent.com/Mjrovai/EdgeML-with-Raspberry-Pi/refs/heads/main/IMG_CLASS/models/labels.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://raw.githubusercontent.com/Mjrovai/EdgeML-with-Raspberry-Pi/refs/heads/main/IMG_CLASS/models/labels.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>In the end, you should have the models in its directory:</p>
 <p><img src="./images/png/models_dir.png" class="img-fluid"></p>
 <blockquote class="blockquote">
@@ -600,224 +607,236 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="verifying-the-setup" class="level3">
 <h3 class="anchored" data-anchor-id="verifying-the-setup">Verifying the Setup</h3>
-<p>Let’s test our setup by running a simple Python script:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tflite_runtime.interpreter <span class="im">as</span> tflite</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NumPy:"</span>, np.__version__)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pillow:"</span>, Image.__version__)</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Try to create a TFLite Interpreter</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/mobilenet_v2_1.0_224_quant.tflite"</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>interpreter.allocate_tensors()</span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"TFLite Interpreter created successfully!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s test our setup by running a simple Python script on <code>TFLITE/IMG_CLASS</code> folder:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ai_edge_litert.interpreter <span class="im">as</span> Interpreter</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"NumPy:"</span>, np.__version__)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pillow:"</span>, Image.__version__)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Try to create a LiteRT Interpreter</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/mobilenet_v2_1.0_224_quant.tflite"</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> Interpreter(model_path<span class="op">=</span>model_path)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>interpreter.allocate_tensors()</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"LiteRT Interpreter created successfully!"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We can create the Python script using nano on the terminal, saving it with <code>CTRL+0</code> + <code>ENTER</code> + <code>CTRL+X</code></p>
-<p><img src="images/png/nano.png" class="img-fluid"></p>
+<p><img src="./images/png/nano.png" class="img-fluid"></p>
 <p>And run it with the command:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> setup_test.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><img src="images/png/test_result.png" class="img-fluid"></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> setup_test.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/test_result.png" class="img-fluid"></p>
 <p>Or you can run it directly on the <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/IMG_CLASS/notebooks/setup_test.ipynb">Notebook</a>:</p>
-<p><img src="images/png/notebook_test.png" class="img-fluid"></p>
+<p><img src="./images/png/notebook_test.png" class="img-fluid"></p>
 </section>
 </section>
 <section id="making-inferences-with-mobilenet-v2" class="level2">
 <h2 class="anchored" data-anchor-id="making-inferences-with-mobilenet-v2">Making inferences with Mobilenet V2</h2>
-<p>In the last section, we set up the environment, including downloading a popular pre-trained model, Mobilenet V2, trained on ImageNet’s 224x224 images (1.2 million) for 1,001 classes (1,000 object categories plus 1 background). The model was converted to a compact 3.5MB TensorFlow Lite format, making it suitable for the limited storage and memory of a Raspberry Pi.</p>
+<p>In the last section, we set up the environment, including downloading a popular pre-trained model, Mobilenet V2, trained on ImageNet’s 224x224 images (1.2 million) for 1,001 classes (1,000 object categories plus 1 background). The model was converted to a compact 3.5MB tflite format, making it suitable for the limited storage and memory of a Raspberry Pi.</p>
 <p><img src="images/png/mobilinet_zero.png" class="img-fluid"></p>
 <p>In the <code>IMG_CLASS</code> working directory, let’s start a new <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/IMG_CLASS/notebooks/10_Image_Classification.ipynb">notebook</a> to follow all the steps to classify one image:</p>
 <p>Import the needed libraries:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tflite_runtime.interpreter <span class="im">as</span> tflite</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ai_edge_litert.interpreter <span class="im">import</span> Interpreter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Load the TFLite model and allocate tensors:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/mobilenet_v2_1.0_224_quant.tflite"</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>interpreter.allocate_tensors()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/mobilenet_v2_1.0_224_quant.tflite"</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> Interpreter(model_path<span class="op">=</span>model_path)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>interpreter.allocate_tensors()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">INFO:</span> Created TensorFlow Lite XNNPACK delegate for CPU.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</blockquote>
+<p>The message means LiteRTsuccessfully enabled an optimized CPU backend (XNNPACK) for our model, which is good and expected.</p>
+<p><strong>What XNNPACK is</strong></p>
+<ul>
+<li>XNNPACK is a library of highly optimized operators (conv, FC, etc.) for running neural networks on CPUs, especially ARM and x86.</li>
+<li>LiteRT can “delegate” supported ops to XNNPACK so they run using these faster kernels instead of the default reference CPU implementation.</li>
+</ul>
+<p>So, it means the interpreter has attached the XNNPACK delegate and will run all compatible parts of the graph on the CPU using it.</p>
+<ul>
+<li>On devices like the Raspberry Pi, this usually results in lower inference latency at the cost of slightly longer delivery time and a bit more RAM for packed weights.</li>
+<li>We are currently using CPU acceleration, not GPU, which is the standard/optimal path for many TFLite/LiteRT models on Pi-class hardware.</li>
+</ul>
 <p>Get input and output tensors.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>input_details <span class="op">=</span> interpreter.get_input_details()</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>output_details <span class="op">=</span> interpreter.get_output_details()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><strong>Input details</strong> will give us information about how the model should be fed with an image. The shape of (1, 224, 224, 3) informs us that an image with dimensions (224x224x3) should be input one by one (Batch Dimension: 1).</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>input_details <span class="op">=</span> interpreter.get_input_details()</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>output_details <span class="op">=</span> interpreter.get_output_details()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Input details</strong> provide information on how the model should be fed an image. The shape of (1, 224, 224, 3) informs us that an image with dimensions (224x224x3) should be input one by one (Batch Dimension: 1).</p>
 <p><img src="images/png/input_details.png" class="img-fluid"></p>
-<p>The <strong>output details</strong> show that the inference will result in an array of 1,001 integer values. Those values result from the image classification, where each value is the probability of that specific label being related to the image.</p>
+<p>The <strong>output details</strong> indicate that the inference will produce an array of 1,001 integer values. Those values result from image classification, where each value is the probability that the corresponding label is associated with the image.</p>
 <p><img src="images/png/output_details.png" class="img-fluid"></p>
-<p>Let’s also inspect the dtype of input details of the model</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>input_dtype <span class="op">=</span> input_details[<span class="dv">0</span>][<span class="st">'dtype'</span>]</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>input_dtype</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s also inspect the dtype of the input details of the model</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>input_dtype <span class="op">=</span> input_details[<span class="dv">0</span>][<span class="st">'dtype'</span>]</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>input_dtype</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre><code>dtype('uint8')</code></pre>
-<p>This shows that the input image should be raw pixels (0 - 255).</p>
+<p>This shows that the input image should be represented as raw pixels (0-255).</p>
 <p>Let’s get a test image. We can either transfer it from our computer or download one for testing, as we did before. Let’s first create a folder under our working directory:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> images</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> images</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> images</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> images</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Let’s load and display the image:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load he image</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">"./images/Cat03.jpg"</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the image</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Original Image"</span>)</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the image</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">"./images/Cat03.jpg"</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the image</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Original Image"</span>)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/cat_original.png" class="img-fluid"></p>
-<p>We can see the image size running the command:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>width, height <span class="op">=</span> img.size</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>That shows us that the image is an RGB image with a width of 1600 and a height of 1600 pixels. To use our model, we should reshape it to (224, 224, 3) and add a batch dimension of 1, as defined in the input details: (1, 224, 224, 3). The inference result, as shown in the output details, will be an array of size 1001, as shown below:</p>
+<p>We can see the image size by running the command:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>width, height <span class="op">=</span> img.size</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>That shows that the image is an RGB image with a width and height of 1600 pixels each. To use our model, we should reshape it to (224, 224, 3) and add a batch dimension of 1, as defined in the input details: (1, 224, 224, 3). The inference result, as shown in the output details, will be an array of size 1001, as shown below:</p>
 <p><img src="images/png/process_img.png" class="img-fluid"></p>
 <p>So, let’s reshape the image, add the batch dimension, and see the result:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> img.resize((input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">1</span>], input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">2</span>]))</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>input_data <span class="op">=</span> np.expand_dims(img, axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>input_data.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> img.resize((input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">1</span>], input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">2</span>]))</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>input_data <span class="op">=</span> np.expand_dims(img, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>input_data.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The input_data shape is as expected: (1, 224, 224, 3)</p>
 <p>Let’s confirm the dtype of the input data:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>input_data.dtype</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>input_data.dtype</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><code>dtype('uint8')</code></p>
 <p>The input data dtype is ‘uint8’, which is compatible with the dtype expected for the model.</p>
 <p>Using the input_data, let’s run the interpreter and get the predictions (output):</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>interpreter.set_tensor(input_details[<span class="dv">0</span>][<span class="st">'index'</span>], input_data)</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>interpreter.invoke()</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">0</span>][<span class="st">'index'</span>])[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>interpreter.set_tensor(input_details[<span class="dv">0</span>][<span class="st">'index'</span>], input_data)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>interpreter.invoke()</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">0</span>][<span class="st">'index'</span>])[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The prediction is an array with 1001 elements. Let’s get the Top-5 indices where their elements have high values:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>top_k_results <span class="op">=</span> <span class="dv">5</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>top_k_indices <span class="op">=</span> np.argsort(predictions)[::<span class="op">-</span><span class="dv">1</span>][:top_k_results]</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>top_k_indices </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>top_k_results <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>top_k_indices <span class="op">=</span> np.argsort(predictions)[::<span class="op">-</span><span class="dv">1</span>][:top_k_results]</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>top_k_indices </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The top_k_indices is an array with 5 elements: <code>array([283, 286, 282])</code></p>
-<p>So, 283, 286, 282, 288, and 479 are the image’s most probable classes. Having the index, we must find to what class it appoints (such as car, cat, or dog). The text file downloaded with the model has a label associated with each index from 0 to 1,000. Let’s use a function to load the .txt file as a list:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_labels(filename):</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(filename, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [line.strip() <span class="cf">for</span> line <span class="kw">in</span> f.readlines()]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>So, 283, 286, 282, 288, and 479 are the image’s most probable classes. Having the index, we must find to which class it belongs (such as car, cat, or dog). The text file downloaded with the model includes a label for each index from 0 to 1,000. Let’s use a function to load the .txt file as a list:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_labels(filename):</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(filename, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [line.strip() <span class="cf">for</span> line <span class="kw">in</span> f.readlines()]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And get the list, printing the labels associated with the indexes:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>labels_path <span class="op">=</span> <span class="st">"./models/labels.txt"</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> load_labels(labels_path)</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels[<span class="dv">286</span>])</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels[<span class="dv">283</span>])</span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels[<span class="dv">282</span>])</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels[<span class="dv">288</span>])</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels[<span class="dv">479</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>labels_path <span class="op">=</span> <span class="st">"./models/labels.txt"</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> load_labels(labels_path)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels[<span class="dv">286</span>])</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels[<span class="dv">283</span>])</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels[<span class="dv">282</span>])</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels[<span class="dv">288</span>])</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(labels[<span class="dv">479</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>As a result, we have:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Egyptian</span> cat</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tiger</span> cat</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="ex">tabby</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lynx</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="ex">carton</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Egyptian</span> cat</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tiger</span> cat</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="ex">tabby</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lynx</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="ex">carton</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>At least four of the top indices are related to felines. The <strong>prediction</strong> content is the probability associated with each one of the labels. As we saw in the <code>output details</code>, those values are quantized and should be dequantized:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>scale, zero_point <span class="op">=</span> output_details[<span class="dv">0</span>][<span class="st">'quantization'</span>]</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>dequantized_output <span class="op">=</span> (predictions.astype(np.float32) <span class="op">-</span> zero_point) <span class="op">*</span> scale</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>dequantized_output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">array</span><span class="er">(</span><span class="ex">[-0.8900329,</span> <span class="at">-0.4944627,</span>  1.285603 , ..., <span class="at">-1.9778508,</span>  1.5822806,</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>        <span class="ex">4.549057</span> ], dtype=float32<span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>scale, zero_point <span class="op">=</span> output_details[<span class="dv">0</span>][<span class="st">'quantization'</span>]</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>dequantized_output <span class="op">=</span> (predictions.astype(np.float32) <span class="op">-</span> zero_point) <span class="op">*</span> scale</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>dequantized_output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">array</span><span class="er">(</span><span class="ex">[1.8662813e-06,</span> 3.0599874e-06, 1.8146475e-05, ..., 6.9421253e-07,</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>       <span class="ex">2.0032754e-05,</span> 4.2967865e-04], shape=<span class="er">(</span><span class="ex">1001,</span><span class="kw">)</span><span class="ex">,</span> dtype=float32<span class="kw">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The output (positive and negative numbers) shows that the output probably does not have a Softmax. Checking the model documentation (https://arxiv.org/abs/1801.04381v4): MobileNet V2 typically doesn’t include a softmax layer at the output. It usually ends with a 1x1 convolution followed by average pooling and a fully connected layer. So, for getting the probabilities (0 to 1), we should apply Softmax:</p>
 <pre><code>exp_output = np.exp(dequantized_output - np.max(dequantized_output))
 probabilities = exp_output / np.sum(exp_output)</code></pre>
 <p>Let’s print the top-5 probabilities:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (probabilities[<span class="dv">286</span>])</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (probabilities[<span class="dv">283</span>])</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (probabilities[<span class="dv">282</span>])</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (probabilities[<span class="dv">288</span>])</span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (probabilities[<span class="dv">479</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="ex">0.27741462</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="ex">0.3732285</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="ex">0.16919471</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="ex">0.10319158</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="ex">0.023410844</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (probabilities[<span class="dv">286</span>])</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (probabilities[<span class="dv">283</span>])</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (probabilities[<span class="dv">282</span>])</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (probabilities[<span class="dv">288</span>])</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (probabilities[<span class="dv">479</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="ex">0.265947</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="ex">0.39499295</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="ex">0.17906114</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="ex">0.08961108</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="ex">0.022443123</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>For clarity, let’s create a function to relate the labels to the probabilities:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(top_k_results):</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="sc">{:20}</span><span class="st">: </span><span class="sc">{}</span><span class="st">%"</span>.<span class="bu">format</span>(</span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>        labels[top_k_indices[i]],</span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>        (<span class="bu">int</span>(probabilities[top_k_indices[i]]<span class="op">*</span><span class="dv">100</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tiger</span> cat           : 37%</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Egyptian</span> cat        : 27%</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="ex">tabby</span>               : 16%</span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lynx</span>                : 10%</span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="ex">carton</span>              : 2%</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(top_k_results):</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="sc">{:20}</span><span class="st">: </span><span class="sc">{}</span><span class="st">%"</span>.<span class="bu">format</span>(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>        labels[top_k_indices[i]],</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>        (<span class="bu">int</span>(probabilities[top_k_indices[i]]<span class="op">*</span><span class="dv">100</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="ex">tiger</span> cat           : 39%</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Egyptian</span> cat        : 26%</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="ex">tabby</span>               : 17%</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lynx</span>                : 8%</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="ex">carton</span>              : 2%</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="define-a-general-image-classification-function" class="level3">
 <h3 class="anchored" data-anchor-id="define-a-general-image-classification-function">Define a general Image Classification function</h3>
-Let’s create a general function to give an image as input, and we get the Top-5 possible classes:
-<div class="scroll-code-block">
-<div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> image_classification(img_path, model_path, labels, top_k_results<span class="op">=</span><span class="dv">5</span>):</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># load the image</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">4</span>))</span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    plt.imshow(img)</span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">'off'</span>)</span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load the TFLite model</span></span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>    interpreter.allocate_tensors()</span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get input and output tensors</span></span>
-<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>    input_details <span class="op">=</span> interpreter.get_input_details()</span>
-<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>    output_details <span class="op">=</span> interpreter.get_output_details()</span>
-<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Preprocess</span></span>
-<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> img.resize((input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">1</span>], </span>
-<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>                      input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">2</span>]))</span>
-<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>    input_data <span class="op">=</span> np.expand_dims(img, axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inference on Raspi-Zero</span></span>
-<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>    interpreter.set_tensor(input_details[<span class="dv">0</span>][<span class="st">'index'</span>], input_data)</span>
-<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>    interpreter.invoke()</span>
-<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Obtain results and map them to the classes</span></span>
-<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a>    predictions <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">0</span>][<span class="st">'index'</span>])[<span class="dv">0</span>]</span>
-<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get indices of the top k results</span></span>
-<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>    top_k_indices <span class="op">=</span> np.argsort(predictions)[::<span class="op">-</span><span class="dv">1</span>][:top_k_results]</span>
-<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get quantization parameters</span></span>
-<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a>    scale, zero_point <span class="op">=</span> output_details[<span class="dv">0</span>][<span class="st">'quantization'</span>]</span>
-<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb47-34"><a href="#cb47-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Dequantize the output and apply softmax</span></span>
-<span id="cb47-35"><a href="#cb47-35" aria-hidden="true" tabindex="-1"></a>    dequantized_output <span class="op">=</span> (predictions.astype(np.float32) <span class="op">-</span> zero_point) <span class="op">*</span> scale</span>
-<span id="cb47-36"><a href="#cb47-36" aria-hidden="true" tabindex="-1"></a>    exp_output <span class="op">=</span> np.exp(dequantized_output <span class="op">-</span> np.<span class="bu">max</span>(dequantized_output))</span>
-<span id="cb47-37"><a href="#cb47-37" aria-hidden="true" tabindex="-1"></a>    probabilities <span class="op">=</span> exp_output <span class="op">/</span> np.<span class="bu">sum</span>(exp_output)</span>
-<span id="cb47-38"><a href="#cb47-38" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb47-39"><a href="#cb47-39" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\t</span><span class="st">[PREDICTION]        [Prob]</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb47-40"><a href="#cb47-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(top_k_results):</span>
-<span id="cb47-41"><a href="#cb47-41" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="sc">{:20}</span><span class="st">: </span><span class="sc">{}</span><span class="st">%"</span>.<span class="bu">format</span>(</span>
-<span id="cb47-42"><a href="#cb47-42" aria-hidden="true" tabindex="-1"></a>            labels[top_k_indices[i]],</span>
-<span id="cb47-43"><a href="#cb47-43" aria-hidden="true" tabindex="-1"></a>            (<span class="bu">int</span>(probabilities[top_k_indices[i]]<span class="op">*</span><span class="dv">100</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p>Let’s create a general function to give an image as input, and we get the Top-5 possible classes:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> image_classification(img_path, model_path, labels, top_k_results<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># load the image</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    plt.imshow(img)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load the LiteRT model</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    interpreter <span class="op">=</span> Interpreter(model_path<span class="op">=</span>model_path)</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>    interpreter.allocate_tensors()</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get input and output tensors</span></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>    input_details <span class="op">=</span> interpreter.get_input_details()</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>    output_details <span class="op">=</span> interpreter.get_output_details()</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Preprocess</span></span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> img.resize((input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">1</span>], </span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>                      input_details[<span class="dv">0</span>][<span class="st">'shape'</span>][<span class="dv">2</span>]))</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>    input_data <span class="op">=</span> np.expand_dims(img, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inference on Raspi</span></span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>    interpreter.set_tensor(input_details[<span class="dv">0</span>][<span class="st">'index'</span>], input_data)</span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>    interpreter.invoke()</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Obtain results and map them to the classes</span></span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a>    predictions <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">0</span>][<span class="st">'index'</span>])[<span class="dv">0</span>]</span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get indices of the top k results</span></span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a>    top_k_indices <span class="op">=</span> np.argsort(predictions)[::<span class="op">-</span><span class="dv">1</span>][:top_k_results]</span>
+<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get quantization parameters</span></span>
+<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a>    scale, zero_point <span class="op">=</span> output_details[<span class="dv">0</span>][<span class="st">'quantization'</span>]</span>
+<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-34"><a href="#cb45-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Dequantize the output and apply softmax</span></span>
+<span id="cb45-35"><a href="#cb45-35" aria-hidden="true" tabindex="-1"></a>    dequantized_output <span class="op">=</span> (predictions.astype(np.float32) <span class="op">-</span> zero_point) <span class="op">*</span> scale</span>
+<span id="cb45-36"><a href="#cb45-36" aria-hidden="true" tabindex="-1"></a>    exp_output <span class="op">=</span> np.exp(dequantized_output <span class="op">-</span> np.<span class="bu">max</span>(dequantized_output))</span>
+<span id="cb45-37"><a href="#cb45-37" aria-hidden="true" tabindex="-1"></a>    probabilities <span class="op">=</span> exp_output <span class="op">/</span> np.<span class="bu">sum</span>(exp_output)</span>
+<span id="cb45-38"><a href="#cb45-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb45-39"><a href="#cb45-39" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\t</span><span class="st">[PREDICTION]        [Prob]</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb45-40"><a href="#cb45-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(top_k_results):</span>
+<span id="cb45-41"><a href="#cb45-41" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="sc">{:20}</span><span class="st">: </span><span class="sc">{}</span><span class="st">%"</span>.<span class="bu">format</span>(</span>
+<span id="cb45-42"><a href="#cb45-42" aria-hidden="true" tabindex="-1"></a>            labels[top_k_indices[i]],</span>
+<span id="cb45-43"><a href="#cb45-43" aria-hidden="true" tabindex="-1"></a>            (<span class="bu">int</span>(probabilities[top_k_indices[i]]<span class="op">*</span><span class="dv">100</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>And loading some images for testing, we have:</p>
 <p><img src="images/jpeg/img_class_func.jpg" class="img-fluid"></p>
 </section>
 <section id="testing-the-classification-with-the-camera" class="level3">
 <h3 class="anchored" data-anchor-id="testing-the-classification-with-the-camera">Testing the classification with the Camera</h3>
 <p>Let’s modify the Python script used before to capture an image from the camera (size: 224x224), saving it in the images folder:</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> picamera2 <span class="im">import</span> Picamera2</span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> capture_image(image_path):</span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Initialize camera</span></span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  picam2 <span class="op">=</span> Picamera2() <span class="co"># default is index 0</span></span>
-<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Configure the camera</span></span>
-<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  config <span class="op">=</span> picam2.create_still_configuration(main<span class="op">=</span>{<span class="st">"size"</span>: (<span class="dv">224</span>, <span class="dv">224</span>)})</span>
-<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>  picam2.configure(config)</span>
-<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>  picam2.start()</span>
-<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Wait for camera to warm up</span></span>
-<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>  time.sleep(<span class="dv">2</span>)</span>
-<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Capture image</span></span>
-<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>  picam2.capture_file(image_path)</span>
-<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="st">"Image captured: "</span><span class="op">+</span><span class="st">"image_path"</span>)</span>
-<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Stop camera</span></span>
-<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>  picam2.stop()</span>
-<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a>  picam2.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> picamera2 <span class="im">import</span> Picamera2</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> capture_image(image_path):</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Initialize camera</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  picam2 <span class="op">=</span> Picamera2() <span class="co"># default is index 0</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Configure the camera</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>  config <span class="op">=</span> picam2.create_still_configuration(main<span class="op">=</span>{<span class="st">"size"</span>: (<span class="dv">224</span>, <span class="dv">224</span>)})</span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>  picam2.configure(config)</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>  picam2.start()</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Wait for camera to warm up</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>  time.sleep(<span class="dv">2</span>)</span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Capture image</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>  picam2.capture_file(image_path)</span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="st">"Image captured: "</span><span class="op">+</span><span class="st">"image_path"</span>)</span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Stop camera</span></span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>  picam2.stop()</span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>  picam2.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Now, let’s capture an image and sent it for inference:</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">'./images/cam_img_test.jpg'</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/mobilenet_v2_1.0_224_quant.tflite"</span></span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> load_labels(<span class="st">"./models/labels.txt"</span>)</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>capture_image(img_path)</span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>image_classification(img_path, model_path, labels, top_k_results<span class="op">=</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">'./images/cam_img_test.jpg'</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/mobilenet_v2_1.0_224_quant.tflite"</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> load_labels(<span class="st">"./models/labels.txt"</span>)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>capture_image(img_path)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>image_classification(img_path, model_path, labels, top_k_results<span class="op">=</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/can_test-infer-cup.png" class="img-fluid"></p>
 </section>
 <section id="exploring-a-model-trained-from-zero" class="level3">
@@ -834,9 +853,9 @@ Let’s create a general function to give an image as input, and we get the Top-
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion:</h2>
-<p>This chapter has established a solid foundation for understanding and implementing image classification on Raspberry Pi devices using Python and TensorFlow Lite. Throughout this journey, we have explored the essential components that make edge-based computer vision both practical and powerful.</p>
+<p>This chapter has established a solid foundation for understanding and implementing image classification on Raspberry Pi devices using Python and LiteRT. Throughout this journey, we have explored the essential components that make edge-based computer vision both practical and powerful.</p>
 <p>We began by understanding the theoretical foundations of image classification and its real-world applications across diverse sectors, from healthcare to environmental monitoring. The advantages of running classification on edge devices like the Raspberry Pi—including low latency, offline functionality, enhanced privacy, and cost-effectiveness—make it an attractive solution for many practical applications.</p>
-<p>The hands-on experience of setting up the development environment provided crucial insights into the requirements and constraints of embedded systems. We successfully configured TensorFlow Lite runtime, installed essential Python libraries, and established a working directory structure that serves as the foundation for computer vision projects.</p>
+<p>The hands-on experience of setting up the development environment provided crucial insights into the requirements and constraints of embedded systems. We successfully configured LiteRT, installed essential Python libraries, and established a working directory structure that serves as the foundation for computer vision projects.</p>
 <p>Working with the pre-trained MobileNet V2 model demonstrated several key concepts:</p>
 <ul>
 <li><strong>Model Architecture Understanding</strong>: We explored how pre-trained models like MobileNet V2 are optimized for mobile and embedded applications, achieving an excellent balance between accuracy and computational efficiency.</li>
@@ -847,7 +866,7 @@ Let’s create a general function to give an image as input, and we get the Top-
 <p>The practical implementation using cameras connected to a Raspberry Pi demonstrated the seamless integration between hardware and software components. The ability to capture images directly from the device and perform real-time classification showcases the potential for autonomous and IoT applications.</p>
 <p>Key technical achievements include:</p>
 <ul>
-<li>Successfully setting up TensorFlow Lite runtime and dependencies</li>
+<li>Successfully setting up LiteRT and dependencies</li>
 <li>Implementing proper image preprocessing pipelines</li>
 <li>Understanding quantized model operations and dequantization processes</li>
 <li>Creating reusable functions for image classification tasks</li>

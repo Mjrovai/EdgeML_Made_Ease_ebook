@@ -249,6 +249,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Counting objects with YOLO</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
  <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
@@ -397,9 +409,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Building upon our exploration of image classification, we now turn our attention to a more advanced computer vision task: object detection. While image classification assigns a single label to an entire image, object detection goes further by identifying and locating multiple objects within a single image. This capability opens up many new applications and challenges, particularly in edge computing and IoT devices like the Raspberry Pi.</p>
-<p>Object detection combines the tasks of classification and localization. It not only determines what objects are present in an image but also pinpoints their locations by, for example, drawing bounding boxes around them. This added complexity makes object detection a more powerful tool for understanding visual scenes, but it also requires more sophisticated models and training techniques.</p>
-<p>In edge AI, where we work with constrained computational resources, implementing efficient object detection models becomes crucial. The challenges we faced with image classification—balancing model size, inference speed, and accuracy—are even more pronounced in object detection. However, the rewards are also more significant, as object detection enables more nuanced and detailed analysis of visual data.</p>
+<p>Building on our exploration of image classification, we now turn to a more advanced computer vision task: object detection. While image classification assigns a single label to an entire image, object detection goes further by identifying and locating multiple objects within a single image. This capability opens up many new applications and challenges, particularly in edge computing and IoT devices like the Raspberry Pi.</p>
+<p>Object detection combines classification and localization. It not only determines which objects are present in an image but also pinpoints their locations, for example, by drawing bounding boxes around them. This added complexity makes object detection a more powerful tool for understanding visual scenes, but it also requires more sophisticated models and training techniques.</p>
+<p>In edge AI, where computational resources are constrained, implementing efficient object detection models is crucial. The challenges we faced with image classification—balancing model size, inference speed, and accuracy—are even more pronounced in object detection. However, the rewards are also more significant, as object detection enables more nuanced and detailed analysis of visual data.</p>
 <p>Some applications of object detection on edge devices include:</p>
 <ol type="1">
 <li>Surveillance and security systems</li>
@@ -408,7 +420,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Wildlife monitoring</li>
 <li>Augmented reality applications</li>
 </ol>
-<p>As we put our hands into object detection, we’ll build upon the concepts and techniques we explored in image classification. We’ll examine popular object detection architectures designed for efficiency, such as:</p>
+<p>As we put our hands into object detection, we’ll build on the concepts and techniques we explored in image classification. We’ll examine popular object detection architectures designed for efficiency, such as:</p>
 <ul>
 <li>Single Stage Detectors, such as MobileNet and EfficientDet,</li>
 <li>FOMO (Faster Objects, More Objects), and</li>
@@ -470,7 +482,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>There are two main approaches to object detection:</p>
 <ol type="1">
 <li><p>Two-stage detectors: These first propose regions of interest and then classify each region. Examples include R-CNN and its variants (Fast R-CNN, Faster R-CNN).</p></li>
-<li><p>Single-stage detectors: These predict bounding boxes (or centroids) and class probabilities in one forward pass of the network. Examples include YOLO (You Only Look Once), EfficientDet, SSD (Single Shot Detector), and FOMO (Faster Objects, More Objects). These are often faster and more suitable for edge devices, such as the Raspberry Pi.</p></li>
+<li><p>Single-stage detectors: These predict bounding boxes (or centroids) and class probabilities in a single forward pass through the network. Examples include YOLO (You Only Look Once), EfficientDet, SSD (Single Shot Detector), and FOMO (Faster Objects, More Objects). These are often faster and better suited to edge devices, such as the Raspberry Pi.</p></li>
 </ol>
 </section>
 <section id="evaluation-metrics" class="level4">
@@ -496,7 +508,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>You can test some common models online by visiting <a href="https://mediapipe-studio.webapps.google.com/studio/demo/object_detector">Object Detection - MediaPipe Studio</a></p>
 </blockquote>
-<p>On <a href="https://www.kaggle.com/models?id=298,130,299">Kaggle</a>, we can find the most common pre-trained TFLite models to use with the Raspberry Pi, <a href="https://www.kaggle.com/models/tensorflow/ssd-mobilenet-v1/tfLite">ssd_mobilenet_v1,</a> and <a href="https://www.kaggle.com/models/tensorflow/efficientdet/tfLite">efficiendet</a>. Those models were trained on the COCO (Common Objects in Context) dataset, with over 200,000 labeled images in 91 categories.</p>
+<p>On <a href="https://www.kaggle.com/models?id=298,130,299">Kaggle</a>, we can find the most common pre-trained TFLite models to use with the Raspberry Pi, <a href="https://www.kaggle.com/models/tensorflow/ssd-mobilenet-v1/tfLite">ssd_mobilenet_v1,</a> and <a href="https://www.kaggle.com/models/tensorflow/efficientdet/tfLite">efficiendet</a>. Those models were trained on the COCO (Common Objects in Context) dataset, which contains over 200,000 labeled images across 91 categories.</p>
 <p>Download the models and upload them to the <code>./models</code> folder on the Raspberry Pi.</p>
 <blockquote class="blockquote">
 <p>Alternatively<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">,</a> you can find the models and the COCO labels on <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">GitHub</a>.</p>
@@ -542,23 +554,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tflite_runtime.interpreter <span class="im">as</span> tflite</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Load the TFLite model and allocate tensors:</p>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ai_edge_litert.interpreter <span class="im">import</span> Interpreter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Download the model and labels from the folder <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">models</a> and save them in the <code>models</code> folder under <code>OBJ_DETECT</code>.</p>
+<p>Load the model and allocate tensors:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/ssd-mobilenet-v1-tflite-default-v1.tflite"</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> tflite.Interpreter(model_path<span class="op">=</span>model_path)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>interpreter <span class="op">=</span> Interpreter(model_path<span class="op">=</span>model_path)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>interpreter.allocate_tensors()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Get input and output tensors.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>input_details <span class="op">=</span> interpreter.get_input_details()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>output_details <span class="op">=</span> interpreter.get_output_details()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>Input details</strong> will inform us how the model should be fed with an image. The shape of <code>(1, 300, 300, 3)</code> with a dtype of <code>uint8</code> tells us that a non-normalized (pixel value range from 0 to 255) image with dimensions (300x300x3) should be input one by one (Batch Dimension: 1).</p>
 <p><img src="./images/png/input_details.png" class="img-fluid"></p>
-<p>The <strong>output details</strong> include not only the labels (“classes”) and probabilities (“scores”) but also the relative window position of the bounding boxes (“boxes”) about where the object is located on the image and the number of detected objects (“num_detections”). The output details also tell us that the model can detect a <strong>maximum of 10 objects</strong> in the image.</p>
+<p>The <strong>output details</strong> include not only the labels (“classes”) and probabilities (“scores”), but also the relative window positions of the bounding boxes (“boxes”), indicating where the object is located in the image, and the number of detected objects (“num_detections”). The output details also indicate that the model can detect up to <strong>10 objects</strong> in the image.</p>
 <p><img src="./images/png/out-details.png" class="img-fluid"></p>
 <p>So, for the above example, using the same cat image used with the <em>Image Classification Lab</em>, looking for the output, we have a <strong>76% probability</strong> of having found an object with a <strong>class ID of 16</strong> on an area delimited by a <strong>bounding box of [0.028011084, 0.020121813, 0.9886069, 0.802299]</strong>. Those four numbers are related to <code>ymin</code>, <code>xmin</code>, <code>ymax</code>, and <code>xmax</code>, the box coordinates.</p>
 <p><img src="./images/png/inference_result.png" class="img-fluid"></p>
 <p>Considering that y ranges from the top (<code>ymin</code>) to the bottom (<code>ymax</code>) and x ranges from left (<code>xmin</code>) to right (<code>xmax</code>), we have, in fact, the coordinates of the top-left corner and the bottom-right one. With both edges and knowing the shape of the picture, it is possible to draw a rectangle around the object, as shown in the figure below:</p>
 <p><img src="images/png/boulding-boxes.png" class="img-fluid"></p>
-<p>Next, we should find what class ID 16 means. Opening the file <code>coco_labels.txt</code>, as a list, each element has an associated index, and inspecting index 16, we get, as expected, <code>cat</code>. The probability is the value returned from the score.</p>
+<p>Next, we should find what class ID 16 means. Opening the file <code>coco_labels.txt</code>, we see that each element has an associated index; inspecting index 16, we get, as expected, <code>cat</code>. The probability is the value returned from the score.</p>
 <p>Let’s now upload some images with multiple objects on them for testing.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>img_path <span class="op">=</span> <span class="st">"./images/cat_dog.jpeg"</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>orig_img <span class="op">=</span> Image.<span class="bu">open</span>(img_path)</span>
@@ -582,7 +595,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>end_time <span class="op">=</span> time.time()</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>inference_time <span class="op">=</span> (end_time <span class="op">-</span> start_time) <span class="op">*</span> <span class="dv">1000</span>  <span class="co"># Convert to milliseconds</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">"Inference time: </span><span class="sc">{:.1f}</span><span class="st">ms"</span>.<span class="bu">format</span>(inference_time))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>With a latency of around 800ms, we can get four distinct outputs:</p>
+<p>With a latency of around 800 ms on the Raspi-Zero and 100 ms n the Raspi-5 , we can get four distinct outputs:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>boxes <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">0</span>][<span class="st">'index'</span>])[<span class="dv">0</span>] </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">1</span>][<span class="st">'index'</span>])[<span class="dv">0</span>]  </span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> interpreter.get_tensor(output_details[<span class="dv">2</span>][<span class="st">'index'</span>])[<span class="dv">0</span>]   </span>
@@ -614,7 +627,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                 color<span class="op">=</span><span class="st">'red'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, backgroundcolor<span class="op">=</span><span class="st">'white'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/visual_inf.png" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p>The choice of the <code>confidence threshold</code> is crucial. For example, changing it to <code>0.2</code> will show false positives. A proper code should handle it.</p>
+<p>The choice of the <code>confidence threshold</code> is crucial. For example, setting it to <code>0.2</code> will show false positives. A proper code should handle it.</p>
 </blockquote>
 </section>
 <section id="efficientdet" class="level3">
@@ -626,7 +639,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Developed by Google researchers in 2019</li>
 <li>Uses EfficientNet as the backbone network</li>
 <li>Employs a novel bi-directional feature pyramid network (BiFPN)</li>
-<li>It uses compound scaling to scale the backbone network and the object detection components efficiently.</li>
+<li>It uses compound scaling to efficiently scale the backbone network and object detection components.</li>
 </ul></li>
 <li>Similarities to SSD:
 <ul>
@@ -641,11 +654,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 <li>Advantages of EfficientDet:
 <ul>
-<li>Generally achieves better accuracy-efficiency trade-offs than SSD and many other object detection models.</li>
+<li>Generally achieves better trade-offs between accuracy and efficiency than SSD and many other object detection models.</li>
 <li>More flexible scaling enables a family of models with varying size-performance trade-offs.</li>
 </ul></li>
 </ol>
-<p>While EfficientDet is not an SSD model, it can be seen as an evolution of single-stage detection architectures, incorporating more advanced techniques to improve efficiency and accuracy. When using EfficientDet, we can expect similar output structures to SSD (e.g., bounding boxes and class scores).</p>
+<p>While EfficientDet is not an SSD model, it can be seen as an evolution of single-stage detection architectures, incorporating more advanced techniques to improve efficiency and accuracy. When using EfficientDet, we can expect outputs similar to those of SSD (e.g., bounding boxes and class scores).</p>
 <blockquote class="blockquote">
 <p>On GitHub, you can find another <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/SSD_EfficientDet.ipynb">notebook</a> exploring the EfficientDet model that we did with SSD MobileNet.</p>
 </blockquote>
@@ -653,14 +666,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="object-detection-on-a-live-stream" class="level2">
 <h2 class="anchored" data-anchor-id="object-detection-on-a-live-stream">Object Detection on a live stream</h2>
-<p>The object detection models can also detect objects in real-time using a camera. The captured image should be the input for the trained and converted model. For the Raspberry Pi 4 or 5 with a desktop, <code>OpenCV</code> can capture the frames and display the inference result.</p>
-<p>However, even without a desktop, creating a live stream with a webcam to detect objects in real-time is also possible. For example, let’s start with the script developed for the Image Classification app and adapt it for a <em>Real-Time Object Detection Web Application Using TensorFlow Lite and Flask</em>.</p>
-<p>This app version should work for any <code>TFLite</code> models.</p>
+<p>Object detection models can also detect objects in real-time using a camera. The captured image should be the input for the trained and converted model. On the Raspberry Pi 4 or 5, OpenCV can capture frames and display inference results on a desktop.</p>
+<p>However, even without a desktop, it’s possible to create a live stream with a webcam to detect objects in real time. For example, let’s start with the script developed for the Image Classification app and adapt it for a <em>Real-Time Object Detection Web Application Using TensorFlow Lite and Flask</em>.</p>
+<p>Download the Python script <code>object_detection_app.py</code> from <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/python_scripts/object_detection_app.py">GitHub</a>.</p>
+<p>This app version should work for any <code>TFLite/LiteRT</code> models.</p>
 <blockquote class="blockquote">
 <p>Verify if the model is in its correct folder, for example:</p>
 </blockquote>
 <div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/ssd-mobilenet-v1-tflite-default-v1.tflite"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Download the Python script <code>object_detection_app.py</code> from <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/python_scripts/object_detection_app.py">GitHub</a>.</p>
 <p>Check the model and labels:</p>
 <p><img src="./images/png/app-model-label.png" class="img-fluid"></p>
 <p>And on the terminal, run:</p>
@@ -679,11 +692,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="images/png/app-running.png" class="img-fluid"></p>
 <p>Let’s see a technical description of the key modules used in the object detection application:</p>
 <ol type="1">
-<li><strong>TensorFlow Lite (tflite_runtime)</strong>:
+<li><strong>LiteRT</strong>:
 <ul>
 <li>Purpose: Efficient inference of machine learning models on edge devices.</li>
-<li>Why: TFLite offers reduced model size and optimized performance compared to full TensorFlow, which is crucial for resource-constrained devices like Raspberry Pi. It supports hardware acceleration and quantization, further improving efficiency.</li>
-<li>Key functions: <code>Interpreter</code> for loading and running the model, <code>get_input_details()</code> and <code>get_output_details()</code> for interfacing with the model.</li>
+<li>Why: <code>LiteRT</code> offers a smaller model size and optimized performance compared to full TensorFlow, which is crucial for resource-constrained devices like the Raspberry Pi. It supports hardware acceleration and quantization, further improving efficiency.</li>
+<li>Key functions: <code>Interpreter</code> for loading and running the model, <code>get_input_details(),</code> and <code>get_output_details()</code> for interfacing with the model.</li>
 </ul></li>
 <li><strong>Flask:</strong>
 <ul>
@@ -736,36 +749,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li><strong>Main Thread</strong>: Runs the Flask server, handling HTTP requests and serving the web interface.</li>
 <li><strong>Camera Thread</strong>: Continuously captures frames from the camera.</li>
-<li><strong>Detection Thread</strong>: Processes frames through the TFLite model for object detection.</li>
+<li><strong>Detection Thread</strong>: Processes frames using the LiteRT object detection model.</li>
 <li><strong>Frame Buffer</strong>: Shared memory space (protected by locks) storing the latest frame and detection results.</li>
 </ol>
 <p>And the app data flow, we can describe in short:</p>
 <ol type="1">
 <li>Camera captures frame → Frame Buffer</li>
-<li>Detection thread reads from Frame Buffer → Processes through TFLite model → Updates detection results in Frame Buffer</li>
-<li>Flask routes access Frame Buffer to serve the latest frame and detection results</li>
-<li>Web client receives updates via AJAX and updates UI</li>
+<li>Detection thread reads from Frame Buffer → Processes through TFLite/LiteRT model → Updates detection results in Frame Buffer</li>
+<li>Flask routes access the Frame Buffer to serve the latest frame and detection results</li>
+<li>Web client receives updates via AJAX and updates the UI</li>
 </ol>
-<p>This architecture enables efficient, real-time object detection while maintaining a responsive web interface on a resource-constrained edge device, such as a Raspberry Pi. Threading and efficient libraries, such as TFLite and PIL, enable the system to process video frames in real-time, while Flask and jQuery provide a user-friendly way to interact with them.</p>
+<p>This architecture enables efficient, real-time object detection while maintaining a responsive web interface on a resource-constrained edge device, such as a Raspberry Pi. Threading and efficient libraries, such as LiteRT and PIL, enable the system to process video frames in real-time, while Flask and jQuery provide a user-friendly way to interact with them.</p>
 <p>You can test the app with another pre-processed model, such as the EfficientDet, by changing the app line:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model_path <span class="op">=</span> <span class="st">"./models/lite-model_efficientdet_lite0_detection_metadata_1.tflite"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
-<p>If we want to use the app for the SSD-MobileNetV2 model, trained on Edge Impulse Studio with the “Box versus Wheel” dataset, the code should also be adapted depending on the input details, as we have explored in its <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/EI-SSD-MobileNetV2.ipynb">notebook</a>.</p>
+<p>If we want to use the app with the SSD-MobileNetV2 model, trained in Edge Impulse Studio with the “Box versus Wheel” dataset, the code should also be adapted to the input details, as we explored in its <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/EI-SSD-MobileNetV2.ipynb">notebook</a>.</p>
 </blockquote>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>This lab has explored the implementation of object detection on edge devices like the Raspberry Pi, demonstrating the power and potential of running advanced computer vision tasks on resource-constrained hardware. We examined the object detection models SSD-MobileNet and EfficientDet, comparing their performance and trade-offs on edge devices.</p>
-<p>The lab exemplified a real-time object detection web application, demonstrating how these models can be integrated into practical, interactive systems.</p>
-<p>The ability to perform object detection on edge devices opens up numerous possibilities across various domains, including precision agriculture, industrial automation, quality control, smart home applications, and environmental monitoring. By processing data locally, these systems can offer reduced latency, improved privacy, and operation in environments with limited connectivity.</p>
+<p>This lab has explored implementing object detection on edge devices such as the Raspberry Pi, demonstrating the power and potential of running advanced computer vision tasks on resource-constrained hardware. We examined the object detection models SSD-MobileNet and EfficientDet, comparing their performance and trade-offs on edge devices.</p>
+<p>The lab demonstrated a real-time object-detection web application, showing how these models can be integrated into practical, interactive systems.</p>
+<p>The ability to perform object detection on edge devices opens up numerous possibilities across domains such as precision agriculture, industrial automation, quality control, smart home applications, and environmental monitoring. By processing data locally, these systems can offer reduced latency, improved privacy, and operation in environments with limited connectivity.</p>
 <p>Looking ahead, potential areas for further exploration include: - Using a custom dataset (labeled on Roboflow), walking through the process of training models using Edge Impulse Studio and Ultralytics, and deploying them on Raspberry Pi. - To improve inference speed on edge devices, explore various optimization methods, such as model quantization (TFLite int8) and format conversion (e.g., to NCNN). - Implementing multi-model pipelines for more complex tasks - Exploring hardware acceleration options for Raspberry Pi - Integrating object detection with other sensors for more comprehensive edge AI systems - Developing edge-to-cloud solutions that leverage both local processing and cloud resources</p>
 <p>Object detection on edge devices can create intelligent, responsive systems that bring the power of AI directly into the physical world, opening up new frontiers in how we interact with and understand our environment.</p>
 </section>
 <section id="resources" class="level2">
 <h2 class="anchored" data-anchor-id="resources">Resources</h2>
 <ul>
-<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/SSD_MobileNetV1.ipynb">SSD-MobileNet Notebook on a Raspi</a></p></li>
-<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/SSD_EfficientDet.ipynb">EfficientDet Notebook on a Raspi</a></p></li>
+<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/SSD_MobileNetV1.ipynb">SSD-MobileNet Notebook on a Raspberry Pi</a></p></li>
+<li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OBJ_DETEC/notebooks/SSD_EfficientDet.ipynb">EfficientDet Notebook on a Raspberry Pi</a></p></li>
 <li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/python_scripts">Python Scripts</a></p></li>
 <li><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/OBJ_DETEC/models">Models</a></p>
 <p>​</p></li>

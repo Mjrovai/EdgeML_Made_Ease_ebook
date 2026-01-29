@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Edge AI Engineering - Beyond CPU - Hardware Acceleration for Edge AI</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/rnn-verne/rnn-verne.html" rel="next">
+<link href="../../raspi/executorch/executorch.html" rel="prev">
+<link href="../../images/unifei-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/hw_acceleration/hw_acceleration.html">Beyond CPU - Hardware Acceleration for Edge AI</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/cv_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Computer Vision Applications with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/rnn-verne/rnn-verne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text Generation with RNNs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_opt_tech.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLM: Basic Optimization Techniques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/audio_pipeline/audio_pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Audio and Vision AI Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul>
+  <li><a href="#why-hardware-acceleration" id="toc-why-hardware-acceleration" class="nav-link" data-scroll-target="#why-hardware-acceleration">Why Hardware Acceleration?</a></li>
+  <li><a href="#our-goal" id="toc-our-goal" class="nav-link" data-scroll-target="#our-goal">Our goal</a></li>
+  </ul></li>
+  <li><a href="#hardware-installation-and-verification" id="toc-hardware-installation-and-verification" class="nav-link" data-scroll-target="#hardware-installation-and-verification">Hardware Installation and Verification</a>
+  <ul>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#installation-and-cooling-considerations" id="toc-installation-and-cooling-considerations" class="nav-link" data-scroll-target="#installation-and-cooling-considerations">Installation and Cooling Considerations</a></li>
+  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  </ul></li>
+  <li><a href="#software-installation" id="toc-software-installation" class="nav-link" data-scroll-target="#software-installation">Software Installation</a>
+  <ul>
+  <li><a href="#create-project-directory" id="toc-create-project-directory" class="nav-link" data-scroll-target="#create-project-directory">Create Project Directory</a></li>
+  <li><a href="#python-version-management-with-pyenv" id="toc-python-version-management-with-pyenv" class="nav-link" data-scroll-target="#python-version-management-with-pyenv">Python Version Management with Pyenv</a>
+  <ul class="collapse">
+  <li><a href="#installing-pyenv-on-debian-trixie" id="toc-installing-pyenv-on-debian-trixie" class="nav-link" data-scroll-target="#installing-pyenv-on-debian-trixie">Installing Pyenv on Debian Trixie</a></li>
+  <li><a href="#set-python-version-for-project" id="toc-set-python-version-for-project" class="nav-link" data-scroll-target="#set-python-version-for-project">Set Python Version for Project</a></li>
+  </ul></li>
+  <li><a href="#memryx-drivers-and-sdk-installation" id="toc-memryx-drivers-and-sdk-installation" class="nav-link" data-scroll-target="#memryx-drivers-and-sdk-installation">MemryX Drivers and SDK Installation</a>
+  <ul class="collapse">
+  <li><a href="#prepare-the-system" id="toc-prepare-the-system" class="nav-link" data-scroll-target="#prepare-the-system">Prepare the System</a></li>
+  <li><a href="#add-memryx-repository-and-key" id="toc-add-memryx-repository-and-key" class="nav-link" data-scroll-target="#add-memryx-repository-and-key">Add MemryX Repository and Key</a></li>
+  <li><a href="#update-and-install-drivers-and-sdk" id="toc-update-and-install-drivers-and-sdk" class="nav-link" data-scroll-target="#update-and-install-drivers-and-sdk">Update and Install Drivers and SDK</a></li>
+  <li><a href="#configure-platform-settings" id="toc-configure-platform-settings" class="nav-link" data-scroll-target="#configure-platform-settings">Configure Platform Settings</a></li>
+  <li><a href="#verify-driver-installation" id="toc-verify-driver-installation" class="nav-link" data-scroll-target="#verify-driver-installation">Verify Driver Installation</a></li>
+  <li><a href="#install-utilities" id="toc-install-utilities" class="nav-link" data-scroll-target="#install-utilities">Install Utilities</a></li>
+  <li><a href="#prepare-system-dependencies" id="toc-prepare-system-dependencies" class="nav-link" data-scroll-target="#prepare-system-dependencies">Prepare System Dependencies</a></li>
+  </ul></li>
+  <li><a href="#install-tools-inside-virtual-environment" id="toc-install-tools-inside-virtual-environment" class="nav-link" data-scroll-target="#install-tools-inside-virtual-environment">Install Tools (Inside Virtual Environment)</a></li>
+  <li><a href="#verification-1" id="toc-verification-1" class="nav-link" data-scroll-target="#verification-1">Verification</a></li>
+  </ul></li>
+  <li><a href="#our-first-accelerated-model" id="toc-our-first-accelerated-model" class="nav-link" data-scroll-target="#our-first-accelerated-model">Our First Accelerated Model</a>
+  <ul>
+  <li><a href="#understanding-the-mx3-workflow" id="toc-understanding-the-mx3-workflow" class="nav-link" data-scroll-target="#understanding-the-mx3-workflow">Understanding the MX3 Workflow</a>
+  <ul class="collapse">
+  <li><a href="#step-1-select-or-train-a-model" id="toc-step-1-select-or-train-a-model" class="nav-link" data-scroll-target="#step-1-select-or-train-a-model">Step 1: Select or Train a Model</a></li>
+  <li><a href="#step-2-compile-with-neural-compiler" id="toc-step-2-compile-with-neural-compiler" class="nav-link" data-scroll-target="#step-2-compile-with-neural-compiler">Step 2: Compile with Neural Compiler</a></li>
+  <li><a href="#step-3-deploy-and-benchmark" id="toc-step-3-deploy-and-benchmark" class="nav-link" data-scroll-target="#step-3-deploy-and-benchmark">Step 3: Deploy and Benchmark</a></li>
+  <li><a href="#step-4-integrate-into-the-application" id="toc-step-4-integrate-into-the-application" class="nav-link" data-scroll-target="#step-4-integrate-into-the-application">Step 4: Integrate into the Application</a></li>
+  <li><a href="#complete-workflow-example" id="toc-complete-workflow-example" class="nav-link" data-scroll-target="#complete-workflow-example">Complete Workflow Example</a></li>
+  </ul></li>
+  <li><a href="#download-and-compile-mobilenetv2" id="toc-download-and-compile-mobilenetv2" class="nav-link" data-scroll-target="#download-and-compile-mobilenetv2">Download and Compile MobileNetV2</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-dfp-file" id="toc-what-is-a-dfp-file" class="nav-link" data-scroll-target="#what-is-a-dfp-file">What is a DFP file?</a></li>
+  </ul></li>
+  <li><a href="#benchmarking-performance" id="toc-benchmarking-performance" class="nav-link" data-scroll-target="#benchmarking-performance">Benchmarking Performance</a></li>
+  </ul></li>
+  <li><a href="#building-an-inference-application" id="toc-building-an-inference-application" class="nav-link" data-scroll-target="#building-an-inference-application">Building an Inference Application</a>
+  <ul>
+  <li><a href="#prepare-directory-structure" id="toc-prepare-directory-structure" class="nav-link" data-scroll-target="#prepare-directory-structure">Prepare Directory Structure</a></li>
+  <li><a href="#download-test-image" id="toc-download-test-image" class="nav-link" data-scroll-target="#download-test-image">Download Test Image</a></li>
+  <li><a href="#understanding-input-requirements" id="toc-understanding-input-requirements" class="nav-link" data-scroll-target="#understanding-input-requirements">Understanding Input Requirements</a></li>
+  <li><a href="#getting-the-labels" id="toc-getting-the-labels" class="nav-link" data-scroll-target="#getting-the-labels">Getting the Labels</a></li>
+  <li><a href="#image-preprocessing" id="toc-image-preprocessing" class="nav-link" data-scroll-target="#image-preprocessing">Image Preprocessing</a></li>
+  <li><a href="#prepare-input-tensor" id="toc-prepare-input-tensor" class="nav-link" data-scroll-target="#prepare-input-tensor">Prepare Input Tensor</a></li>
+  <li><a href="#run-inference-on-memryx-accelerator-mxa" id="toc-run-inference-on-memryx-accelerator-mxa" class="nav-link" data-scroll-target="#run-inference-on-memryx-accelerator-mxa">Run Inference on MemryX Accelerator (MXA)</a></li>
+  <li><a href="#decode-the-mxa-results" id="toc-decode-the-mxa-results" class="nav-link" data-scroll-target="#decode-the-mxa-results">Decode the MXA Results</a></li>
+  <li><a href="#comparing-cpu-vs.-mxa-performance" id="toc-comparing-cpu-vs.-mxa-performance" class="nav-link" data-scroll-target="#comparing-cpu-vs.-mxa-performance">Comparing CPU vs.&nbsp;MXA Performance</a></li>
+  <li><a href="#measuring-latency" id="toc-measuring-latency" class="nav-link" data-scroll-target="#measuring-latency">Measuring Latency</a></li>
+  <li><a href="#testing-with-larger-models" id="toc-testing-with-larger-models" class="nav-link" data-scroll-target="#testing-with-larger-models">Testing with Larger Models</a></li>
+  <li><a href="#clean-shutdown" id="toc-clean-shutdown" class="nav-link" data-scroll-target="#clean-shutdown">Clean Shutdown</a></li>
+  </ul></li>
+  <li><a href="#folders-structure" id="toc-folders-structure" class="nav-link" data-scroll-target="#folders-structure">Folders Structure</a></li>
+  <li><a href="#performance-comparison-summary" id="toc-performance-comparison-summary" class="nav-link" data-scroll-target="#performance-comparison-summary">Performance Comparison Summary</a>
+  <ul>
+  <li><a href="#key-observations" id="toc-key-observations" class="nav-link" data-scroll-target="#key-observations">Key Observations</a></li>
+  <li><a href="#when-to-use-the-mx3" id="toc-when-to-use-the-mx3" class="nav-link" data-scroll-target="#when-to-use-the-mx3">When to Use the MX3?</a></li>
+  </ul></li>
+  <li><a href="#yolov8-object-detection-with-mx3-hardware-acceleration" id="toc-yolov8-object-detection-with-mx3-hardware-acceleration" class="nav-link" data-scroll-target="#yolov8-object-detection-with-mx3-hardware-acceleration">YOLOv8 Object Detection with MX3 Hardware Acceleration</a>
+  <ul>
+  <li><a href="#model-export-and-compilation" id="toc-model-export-and-compilation" class="nav-link" data-scroll-target="#model-export-and-compilation">Model Export and Compilation</a>
+  <ul class="collapse">
+  <li><a href="#step-1-export-yolov8-to-onnx" id="toc-step-1-export-yolov8-to-onnx" class="nav-link" data-scroll-target="#step-1-export-yolov8-to-onnx">Step 1: Export YOLOv8 to ONNX</a></li>
+  <li><a href="#step-2-compile-for-mx3" id="toc-step-2-compile-for-mx3" class="nav-link" data-scroll-target="#step-2-compile-for-mx3">Step 2: Compile for MX3</a></li>
+  </ul></li>
+  <li><a href="#understanding-yolov8-output-format" id="toc-understanding-yolov8-output-format" class="nav-link" data-scroll-target="#understanding-yolov8-output-format">Understanding YOLOv8 Output Format</a>
+  <ul class="collapse">
+  <li><a href="#yolov8-output-structure" id="toc-yolov8-output-structure" class="nav-link" data-scroll-target="#yolov8-output-structure">YOLOv8 Output Structure</a></li>
+  <li><a href="#decoding-process" id="toc-decoding-process" class="nav-link" data-scroll-target="#decoding-process">Decoding Process</a></li>
+  </ul></li>
+  <li><a href="#complete-inference-pipeline" id="toc-complete-inference-pipeline" class="nav-link" data-scroll-target="#complete-inference-pipeline">Complete Inference Pipeline</a>
+  <ul class="collapse">
+  <li><a href="#configuration-section" id="toc-configuration-section" class="nav-link" data-scroll-target="#configuration-section">Configuration section</a></li>
+  <li><a href="#running-detection" id="toc-running-detection" class="nav-link" data-scroll-target="#running-detection">Running detection</a></li>
+  <li><a href="#printing-results" id="toc-printing-results" class="nav-link" data-scroll-target="#printing-results">Printing results</a></li>
+  <li><a href="#saving-the-annotated-image" id="toc-saving-the-annotated-image" class="nav-link" data-scroll-target="#saving-the-annotated-image">Saving the annotated image</a></li>
+  <li><a href="#final-summary-output" id="toc-final-summary-output" class="nav-link" data-scroll-target="#final-summary-output">Final summary output</a></li>
+  </ul></li>
+  <li><a href="#going-deeper-in-the-functions" id="toc-going-deeper-in-the-functions" class="nav-link" data-scroll-target="#going-deeper-in-the-functions">Going deeper in the functions</a>
+  <ul class="collapse">
+  <li><a href="#image-preprocessing-preprocess_image" id="toc-image-preprocessing-preprocess_image" class="nav-link" data-scroll-target="#image-preprocessing-preprocess_image">1. Image preprocessing (<code>preprocess_image</code>)</a></li>
+  <li><a href="#decoding-yolov8-output-decode_predictions" id="toc-decoding-yolov8-output-decode_predictions" class="nav-link" data-scroll-target="#decoding-yolov8-output-decode_predictions">2. Decoding YOLOv8 output (<code>decode_predictions</code>)</a></li>
+  <li><a href="#iou-and-nms-compute_iou_batch-and-apply_nms" id="toc-iou-and-nms-compute_iou_batch-and-apply_nms" class="nav-link" data-scroll-target="#iou-and-nms-compute_iou_batch-and-apply_nms">3. IoU and NMS (<code>compute_iou_batch</code> and <code>apply_nms</code>)</a></li>
+  <li><a href="#mapping-back-to-the-original-image-scale_boxes_to_original" id="toc-mapping-back-to-the-original-image-scale_boxes_to_original" class="nav-link" data-scroll-target="#mapping-back-to-the-original-image-scale_boxes_to_original">4. Mapping back to the original image (<code>scale_boxes_to_original</code>)</a></li>
+  <li><a href="#drawing-results-draw_detections" id="toc-drawing-results-draw_detections" class="nav-link" data-scroll-target="#drawing-results-draw_detections">5. Drawing results (<code>draw_detections</code>)</a></li>
+  <li><a href="#the-memryx-pipeline-detect_objects-and-asyncaccl-usage" id="toc-the-memryx-pipeline-detect_objects-and-asyncaccl-usage" class="nav-link" data-scroll-target="#the-memryx-pipeline-detect_objects-and-asyncaccl-usage">6. The Memryx pipeline (<code>detect_objects</code> and <code>AsyncAccl</code> usage)</a></li>
+  </ul></li>
+  <li><a href="#making-inferences" id="toc-making-inferences" class="nav-link" data-scroll-target="#making-inferences">Making Inferences</a></li>
+  </ul></li>
+  <li><a href="#inference-with-a-custom-model" id="toc-inference-with-a-custom-model" class="nav-link" data-scroll-target="#inference-with-a-custom-model">Inference with a custom model</a>
+  <ul>
+  <li><a href="#adjusting-confidence-threshold" id="toc-adjusting-confidence-threshold" class="nav-link" data-scroll-target="#adjusting-confidence-threshold">Adjusting Confidence Threshold</a></li>
+  </ul></li>
+  <li><a href="#advanced-topics" id="toc-advanced-topics" class="nav-link" data-scroll-target="#advanced-topics"><strong>Advanced Topics</strong></a>
+  <ul>
+  <li><a href="#batch-processing-optimization" id="toc-batch-processing-optimization" class="nav-link" data-scroll-target="#batch-processing-optimization">Batch Processing (Optimization)</a></li>
+  <li><a href="#thermal-management" id="toc-thermal-management" class="nav-link" data-scroll-target="#thermal-management">Thermal Management</a></li>
+  <li><a href="#confidence-threshold-tuning" id="toc-confidence-threshold-tuning" class="nav-link" data-scroll-target="#confidence-threshold-tuning">Confidence Threshold Tuning</a></li>
+  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection">Model Selection</a></li>
+  </ul></li>
+  <li><a href="#exploring-memryx-examples" id="toc-exploring-memryx-examples" class="nav-link" data-scroll-target="#exploring-memryx-examples">Exploring MemryX eXamples</a>
+  <ul>
+  <li><a href="#clone-the-memryx-examples-repository" id="toc-clone-the-memryx-examples-repository" class="nav-link" data-scroll-target="#clone-the-memryx-examples-repository">Clone the MemryX eXamples Repository</a></li>
+  </ul></li>
+  <li><a href="#troubleshooting-common-issues" id="toc-troubleshooting-common-issues" class="nav-link" data-scroll-target="#troubleshooting-common-issues">Troubleshooting Common Issues</a>
+  <ul>
+  <li><a href="#device-not-detected" id="toc-device-not-detected" class="nav-link" data-scroll-target="#device-not-detected">Device Not Detected</a></li>
+  <li><a href="#compilation-errors" id="toc-compilation-errors" class="nav-link" data-scroll-target="#compilation-errors">Compilation Errors</a></li>
+  <li><a href="#thermal-throttling" id="toc-thermal-throttling" class="nav-link" data-scroll-target="#thermal-throttling">Thermal Throttling</a></li>
+  <li><a href="#python-version-conflicts" id="toc-python-version-conflicts" class="nav-link" data-scroll-target="#python-version-conflicts">Python Version Conflicts</a></li>
+  <li><a href="#low-fps-poor-performance" id="toc-low-fps-poor-performance" class="nav-link" data-scroll-target="#low-fps-poor-performance">Low FPS / Poor Performance</a></li>
+  <li><a href="#import-errors" id="toc-import-errors" class="nav-link" data-scroll-target="#import-errors">Import Errors</a></li>
+  <li><a href="#model-accuracy-issues" id="toc-model-accuracy-issues" class="nav-link" data-scroll-target="#model-accuracy-issues">Model Accuracy Issues</a></li>
+  </ul></li>
+  <li><a href="#next-steps-and-extensions" id="toc-next-steps-and-extensions" class="nav-link" data-scroll-target="#next-steps-and-extensions">Next Steps and Extensions</a>
+  <ul>
+  <li><a href="#project-ideas" id="toc-project-ideas" class="nav-link" data-scroll-target="#project-ideas">Project Ideas</a></li>
+  <li><a href="#advanced-topics-to-explore" id="toc-advanced-topics-to-explore" class="nav-link" data-scroll-target="#advanced-topics-to-explore">Advanced Topics to Explore</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references-and-further-reading" id="toc-references-and-further-reading" class="nav-link" data-scroll-target="#references-and-further-reading">References and Further Reading</a>
+  <ul>
+  <li><a href="#official-documentation" id="toc-official-documentation" class="nav-link" data-scroll-target="#official-documentation">Official Documentation</a></li>
+  <li><a href="#code-and-examples" id="toc-code-and-examples" class="nav-link" data-scroll-target="#code-and-examples">Code and Examples</a></li>
+  <li><a href="#background-reading" id="toc-background-reading" class="nav-link" data-scroll-target="#background-reading">Background Reading</a></li>
+  <li><a href="#community-and-support" id="toc-community-and-support" class="nav-link" data-scroll-target="#community-and-support">Community and Support</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/hw_acceleration/hw_acceleration.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/hw_acceleration/hw_acceleration.qmd" class="toc-action">View source</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Beyond CPU - Hardware Acceleration for Edge AI</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><img src="./images/png/portada.png" class="img-fluid"></p>
+<p><em>Hardware Acceleration with MemryX MX3 on Raspberry Pi 5.</em></p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Throughout this course, we’ve explored various approaches to deploying AI models at the edge. We started with TensorFlow Lite running on the Raspberry Pi’s CPU, then moved to YOLO and ExecuTorch with optimized backends like XNNPACK. While these software optimizations significantly improve performance, they still rely on the general-purpose CPU to execute neural network operations.</p>
+<p>In this chapter, we’ll take the next step: <strong>dedicated hardware acceleration</strong>. We’ll use the <a href="https://memryx.com/wp-content/uploads/2025/04/MX3-M.2-AI-Accelerator-Module-Product-brief-DEC25-Gold.pdf">MemryX MX3 M.2 AI Accelerator Module</a>—a specialized processor designed specifically for neural network inference. The MX3 module contains four AI accelerator chips that can run deep learning models with dramatically lower latency and power consumption compared to CPU execution.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/board.png" class="img-fluid figure-img" style="width:65.0%"></p>
+</figure>
+</div>
+<section id="why-hardware-acceleration" class="level3">
+<h3 class="anchored" data-anchor-id="why-hardware-acceleration">Why Hardware Acceleration?</h3>
+<p>Consider the requirements for real-time edge AI applications: - <strong>Latency</strong>: Autonomous systems need predictions in milliseconds - <strong>Power efficiency</strong>: Battery-powered devices must conserve energy - <strong>Throughput</strong>: Multi-camera systems may need to process several streams simultaneously - <strong>Cost</strong>: System designs often cannot afford high-end GPUs</p>
+<p>The MX3 addresses these challenges with a unique architecture: - <strong>At-memory computing</strong>: All memory is integrated on the accelerator, eliminating bandwidth bottlenecks - <strong>Pipelined dataflow</strong>: Optimized for streaming inputs with a batch size of 1 - <strong>Floating-point accuracy</strong>: No quantization required (though supported) - <strong>Low power</strong>: Maximum 10W for four accelerator chips</p>
+<blockquote class="blockquote">
+<p>For learning more about AI Acceleration, please refer to <a href="https://mlsysbook.ai/book/contents/core/hw_acceleration/hw_acceleration.html">MLSys book</a> and how the MemryX module works, read the <a href="https://developer.memryx.com/architecture/architecture.html">Architecture Overview</a>.</p>
+</blockquote>
+</section>
+<section id="our-goal" class="level3">
+<h3 class="anchored" data-anchor-id="our-goal">Our goal</h3>
+<p>By the end of this lab, we will have installed and configured the MX3 hardware on a Raspberry Pi 5, set up the MemryX SDK and development environment, and gained a clear understanding of the MX3 compilation and deployment workflow. We will also compile neural network models for execution on the MX3 accelerator, compare their performance against CPU-based inference while analyzing the trade-offs, and finally build a complete end-to-end inference pipeline using the MemryX Python API.</p>
+</section>
+</section>
+<section id="hardware-installation-and-verification" class="level2">
+<h2 class="anchored" data-anchor-id="hardware-installation-and-verification">Hardware Installation and Verification</h2>
+<section id="prerequisites" class="level3">
+<h3 class="anchored" data-anchor-id="prerequisites">Prerequisites</h3>
+<p>Before starting this lab, we should have:</p>
+<p><strong>Raspberry Pi 5 with M.2 HAT+ adapter</strong> (or similar)</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/hat.jpg" class="img-fluid figure-img" style="width:65.0%"></p>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p><strong>IMPORTANT NOTE</strong>: MemryX recommends the <a href="https://www.amazon.com/GeeekPi-NVMe-Adapter-Raspberry-Support/dp/B0CRK4YB4C">GeeekPi N04 M.2 2280 HAT</a> as an excellent choice for the Raspberry Pi 5. It delivers solid power and fits the 2280 MX3 M.2 form factor. Some hats can lead to instabilities, mainly due to PCIe speed (Gen3). The Raspberry Pi 5 can have stability issues on Gen3.</p>
+</blockquote>
+<p>The <a href="https://www.amazon.com/dp/B0D5CGDJLQ?tag=consecho57301-20&amp;linkCode=osi&amp;th=1&amp;psc=1&amp;ascsubtag=NoCID%7Cda83d918-3f4e-415e-ad00-b1791332db69">Raspberry Pi M.2 HAT+</a> is a good option. It works very well, despite the fact that we should adapt the MX3 board to it (The MX3 is longer than the hat).</p>
+<p><strong>MemryX MX3 M.2 module with the heatsink installed</strong></p>
+<p>For heatsink installation, follow the video instructions: https://youtu.be/wNmka0nrRRE</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/hat-assembly.png" class="img-fluid figure-img" style="width:95.0%"></p>
+</figure>
+</div>
+</section>
+<section id="installation-and-cooling-considerations" class="level3">
+<h3 class="anchored" data-anchor-id="installation-and-cooling-considerations">Installation and Cooling Considerations</h3>
+<p>It is essential to ensure we have sufficient cooling for the MemryX MX3 M.2 module, or we may experience thermal throttling and reduced performance. <strong>The chips will throttle their performance if they hit 100 °C</strong>.</p>
+<p>During normal operation, the current MemryX MX3 temperature and throttle status can be viewed at any time with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /sys/memx0/temperature</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Or measurd continuay every 1 second, for example with the command:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">watch</span> <span class="at">-n</span> 1 cat /sys/memx0/temperature</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="verification" class="level3">
+<h3 class="anchored" data-anchor-id="verification">Verification</h3>
+<p>After installing the hardware, turn on the Raspberry Pi and verify the system setup.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> /dev/memx<span class="pp">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It should return: <code>/dev/memx0</code></p>
+<p>If the device is not detected, see the <a href="#troubleshooting-common-issues">Troubleshooting section</a> below.</p>
+<p>Let’s also check the initial temperature:</p>
+<p><img src="./images/png/temp.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>The lab temperature at the time of the above measurement was 25 °C.</p>
+</blockquote>
+</section>
+</section>
+<section id="software-installation" class="level2">
+<h2 class="anchored" data-anchor-id="software-installation">Software Installation</h2>
+<section id="create-project-directory" class="level3">
+<h3 class="anchored" data-anchor-id="create-project-directory">Create Project Directory</h3>
+<p>First, we should create a project directory:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Documents</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> MEMRYX</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> MEMRYX</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="python-version-management-with-pyenv" class="level3">
+<h3 class="anchored" data-anchor-id="python-version-management-with-pyenv">Python Version Management with Pyenv</h3>
+<p>Verify your Python version:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">--version</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If using the latest Raspberry Pi OS (based on Debian Trixie), it should be:</p>
+<p><code>Python 3.13.5</code></p>
+<p>Or, if the OS is the Legacy version:</p>
+<p><code>Python 3.11.2</code></p>
+<p><strong>Important</strong>: As of January 2026, MemryX officially supports only <a href="https://developer.memryx.com/release_notes.html#general"><strong>Python 3.09 to 3.12</strong></a>. Python 3.13.5 is too new and will likely cause compatibility issues. Since <strong>Debian Trixie ships with Python 3.13</strong> by default, we’ll need to install a compatible Python version alongside it.</p>
+<p>One solution is to install <a href="https://github.com/pyenv/pyenv">Pyenv</a>, which allows us to easily manage multiple Python versions for different projects without affecting the system Python.</p>
+<blockquote class="blockquote">
+<p>If the Raspberry Pi OS is the legacy version, the Python version should be 3.11, and it is not necessary to install Pyenv.</p>
+</blockquote>
+<section id="installing-pyenv-on-debian-trixie" class="level4">
+<h4 class="anchored" data-anchor-id="installing-pyenv-on-debian-trixie">Installing Pyenv on Debian Trixie</h4>
+<p>If you need to install Pyenv on Debian Trixie, follow these steps:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install dependencies</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> make build-essential libssl-dev zlib1g-dev <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev <span class="dt">\</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>libffi-dev liblzma-dev</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Install pyenv</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> https://pyenv.run <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Add to ~/.bashrc</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export PYENV_ROOT="$HOME/.pyenv"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'command -v pyenv &gt;/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'eval "$(pyenv init -)"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Reload shell</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Python 3.11.14</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="ex">pyenv</span> install 3.11.14</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This process takes several minutes as it compiles Python from source.</p>
+</section>
+<section id="set-python-version-for-project" class="level4">
+<h4 class="anchored" data-anchor-id="set-python-version-for-project">Set Python Version for Project</h4>
+<p>Once Pyenv and the selected Python version are installed, define it <strong>for the project directory:</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pyenv</span> local 3.11.14</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Checking the Python version again, we should see: <code>Python 3.11.14</code>.</p>
+</section>
+</section>
+<section id="memryx-drivers-and-sdk-installation" class="level3">
+<h3 class="anchored" data-anchor-id="memryx-drivers-and-sdk-installation">MemryX Drivers and SDK Installation</h3>
+<p>The MemryX software stack consists of two main components:</p>
+<ul>
+<li><strong>Drivers</strong> (<code>memx-drivers</code>): Kernel-level drivers for PCIe communication with the accelerator hardware</li>
+<li><strong>SDK</strong> (<code>memx-accl</code>): Python libraries, neural compiler, runtime, and benchmarking tools</li>
+</ul>
+<section id="prepare-the-system" class="level4">
+<h4 class="anchored" data-anchor-id="prepare-the-system">Prepare the System</h4>
+<p>Install the Linux kernel headers required for driver compilation:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install linux-headers-<span class="va">$(</span><span class="fu">uname</span> <span class="at">-r</span><span class="va">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="add-memryx-repository-and-key" class="level4">
+<h4 class="anchored" data-anchor-id="add-memryx-repository-and-key">Add MemryX Repository and Key</h4>
+<p>This command downloads the repository’s GPG key for package verification and adds the MemryX package repository:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-qO-</span> https://developer.memryx.com/deb/memryx.asc <span class="kw">|</span> <span class="fu">sudo</span> tee /etc/apt/trusted.gpg.d/memryx.asc <span class="op">&gt;</span>/dev/null</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'deb https://developer.memryx.com/deb stable main'</span> <span class="kw">|</span> <span class="fu">sudo</span> tee /etc/apt/sources.list.d/memryx.list <span class="op">&gt;</span>/dev/null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="update-and-install-drivers-and-sdk" class="level4">
+<h4 class="anchored" data-anchor-id="update-and-install-drivers-and-sdk">Update and Install Drivers and SDK</h4>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install memx-drivers memx-accl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="configure-platform-settings" class="level4">
+<h4 class="anchored" data-anchor-id="configure-platform-settings">Configure Platform Settings</h4>
+<p>Run the ARM setup utility to configure platform-specific settings. This opens a menu to select the platform and apply the necessary configurations (e.g., enabling PCIe Gen 3.0 on the Raspberry Pi 5):</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mx_arm_setup</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/mx_arm_setup.png" class="img-fluid"></p>
+<p>Select the appropriate option for your hardware, and press <code>&lt;OK&gt;</code> in the next page:</p>
+<p><img src="./images/png/mx_arm_setup_ok.png" class="img-fluid"></p>
+<p>After configuration, reboot the system:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="verify-driver-installation" class="level4">
+<h4 class="anchored" data-anchor-id="verify-driver-installation">Verify Driver Installation</h4>
+<p>After rebooting, verify that the MemryX driver is installed by checking its version:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">apt</span> policy memx-drivers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/drivers.png" class="img-fluid"></p>
+</section>
+<section id="install-utilities" class="level4">
+<h4 class="anchored" data-anchor-id="install-utilities">Install Utilities</h4>
+<p>Install additional utilities including GUI tools and plugins:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install memx-accl-plugins memx-utils-gui</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="prepare-system-dependencies" class="level4">
+<h4 class="anchored" data-anchor-id="prepare-system-dependencies">Prepare System Dependencies</h4>
+<p>Install system libraries required for the Python SDK:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install libhdf5-dev python3-dev cmake python3-venv build-essential</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="install-tools-inside-virtual-environment" class="level3">
+<h3 class="anchored" data-anchor-id="install-tools-inside-virtual-environment">Install Tools (Inside Virtual Environment)</h3>
+<p>It’s best practice to use a virtual environment to avoid conflicts with system packages.</p>
+<p>Create and activate a virtual environment:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv mx-env</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> mx-env/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Inside the environment, install the MemryX Python package:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install <span class="at">--upgrade</span> pip wheel</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install <span class="at">--extra-index-url</span> https://developer.memryx.com/pip memryx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Verify the neural compiler is installed:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">--version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/version.png" class="img-fluid"></p>
+</section>
+<section id="verification-1" class="level3">
+<h3 class="anchored" data-anchor-id="verification-1">Verification</h3>
+<p>Verify the complete installation by running the built-in “hello world” benchmark:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_bench</span> <span class="at">--hello</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/hello.png" class="img-fluid"></p>
+<p>With the benchmark results, our MemryX MX3 is properly installed and ready to use.</p>
+</section>
+</section>
+<section id="our-first-accelerated-model" class="level2">
+<h2 class="anchored" data-anchor-id="our-first-accelerated-model">Our First Accelerated Model</h2>
+<section id="understanding-the-mx3-workflow" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-the-mx3-workflow">Understanding the MX3 Workflow</h3>
+<p>Working with the MemryX MX3 follows a straightforward four-step workflow that differs from traditional CPU-based inference:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/flow.png" class="img-fluid figure-img" style="width:65.0%"></p>
+</figure>
+</div>
+<section id="step-1-select-or-train-a-model" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-select-or-train-a-model">Step 1: Select or Train a Model</h4>
+<p>Start with a pre-trained model or train your own. MemryX supports models from major frameworks:</p>
+<ul>
+<li><strong>TensorFlow/Keras</strong> (.h5, SavedModel)</li>
+<li><strong>ONNX</strong> (.onnx)</li>
+<li><strong>PyTorch</strong> (.pt, .pth) (Should be converted to ONNX first)</li>
+<li><strong>TensorFlow Lite</strong> (.tflite)</li>
+</ul>
+<p>The model remains in its original format—no framework-specific conversions needed yet. For this lab, we’re using MobileNetV2 from Keras Applications, but we could equally use a custom model we have trained for a specific task, as we have seen before.</p>
+<p><strong>Supported Operations</strong>: The MX3 supports most common deep learning operators (convolutions, pooling, activations, etc.). Check the <a href="https://developer.memryx.com/specs/supported_ops.html">supported operators list</a> if using custom architectures. Unsupported operations will fall back to CPU, though this is rare for standard vision models.</p>
+</section>
+<section id="step-2-compile-with-neural-compiler" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-compile-with-neural-compiler">Step 2: Compile with Neural Compiler</h4>
+<p>The MemryX Neural Compiler (<code>mx_nc</code>) transforms the model into a DFP (Dataflow Package):</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span> <span class="at">-m</span> <span class="op">&lt;</span>model_file<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Common compilation options</strong>: - <code>-v</code> : Verbose output showing compilation stages - <code>-c &lt;chip_count&gt;</code> : Target specific number of chips (1-4) - <code>-q &lt;8|4&gt;</code> : Apply quantization (8-bit or 4-bit)</p>
+<p><strong>What happens during compilation?</strong></p>
+<ol type="1">
+<li><strong>Model parsing</strong>: Loads the model and extracts the computational graph</li>
+<li><strong>Graph optimization</strong>: Fuses operations, eliminates redundancies</li>
+<li><strong>Operator mapping</strong>: Maps each layer to MX3 hardware instructions</li>
+<li><strong>Dataflow scheduling</strong>: Determines optimal execution order for pipelined processing</li>
+<li><strong>Memory allocation</strong>: Assigns on-chip memory for all intermediate activations</li>
+<li><strong>Multi-chip distribution</strong>: If using multiple chips, partitions the workload</li>
+</ol>
+<p>The compiler is surprisingly tolerant—most models compile without any modifications. If a layer isn’t supported, you’ll get a clear error message indicating which operation failed.</p>
+<p><strong>Compilation time</strong> varies by model complexity: - Small models (MobileNet): ~30 seconds - Medium models (ResNet50): ~2 minutes<br>
+- Large models (EfficientNet): ~5 minutes</p>
+<p>Once compiled, the DFP file is portable across all MX3 hardware.</p>
+</section>
+<section id="step-3-deploy-and-benchmark" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-deploy-and-benchmark">Step 3: Deploy and Benchmark</h4>
+<p>Before integrating into our application, we can verify performance with the benchmarking tool:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_bench</span> <span class="at">-d</span> <span class="op">&lt;</span>dfp_file<span class="op">&gt;</span> -f <span class="op">&lt;</span>num_frames<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The benchmarker: - Generates synthetic input data matching the model’s input shape - Runs warm-up inferences to stabilize performance - Measures throughput (FPS), latency, and chip utilization - Reports first-inference latency (includes loading overhead)</p>
+<p><strong>Why benchmark separately?</strong> Because real-world applications involve preprocessing (image loading, resizing) and postprocessing (parsing outputs). Benchmarking isolates pure inference performance, letting to identify bottlenecks in our full pipeline.</p>
+</section>
+<section id="step-4-integrate-into-the-application" class="level4">
+<h4 class="anchored" data-anchor-id="step-4-integrate-into-the-application">Step 4: Integrate into the Application</h4>
+<p>Finally, integrate the accelerator into our Python application using the MemryX API:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> memryx <span class="im">import</span> SyncAccl  <span class="co"># or AsyncAccl for concurrent processing</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize accelerator with our DFP</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>accl <span class="op">=</span> SyncAccl(dfp<span class="op">=</span><span class="st">"model.dfp"</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Run inference</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> accl.run(input_data)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Process results</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean up</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>accl.shutdown()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Synchronous vs.&nbsp;Asynchronous APIs</strong>:</p>
+<ul>
+<li><code>SyncAccl</code>: Blocking calls, simple to use, good for single-stream processing</li>
+<li><code>AsyncAccl</code>: Non-blocking, better for multi-stream or real-time applications</li>
+</ul>
+<p>The API handles all hardware communication, memory transfers, and scheduling. Our code just provides input tensors and receives output tensors—the complexity is abstracted away.</p>
+</section>
+<section id="complete-workflow-example" class="level4">
+<h4 class="anchored" data-anchor-id="complete-workflow-example">Complete Workflow Example</h4>
+<p>Let’s see the four steps in action with MobileNetV2:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Get a model (already trained)</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import tensorflow as tf; tf.keras.applications.MobileNetV2().save('mobilenet_v2.h5');"</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Compile to DFP</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">-m</span> mobilenet_v2.h5</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Benchmark</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_bench</span> <span class="at">-d</span> mobilenet_v2.dfp <span class="at">-f</span> 1000</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Integrate (see full Python script in next section)</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run_inference_mobilenetv2.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This workflow is remarkably consistent across models and use cases. Once we’ve done it for one model, adapting to others is straightforward.</p>
+<blockquote class="blockquote">
+<p><strong>Key Takeaway</strong>: The MX3 workflow separates compilation (done once) from inference (done repeatedly). This “compile-once, run-many” approach means the optimization overhead is amortized over thousands or millions of inferences in production.</p>
+</blockquote>
+</section>
+</section>
+<section id="download-and-compile-mobilenetv2" class="level3">
+<h3 class="anchored" data-anchor-id="download-and-compile-mobilenetv2">Download and Compile MobileNetV2</h3>
+<p>On <a href="https://keras.io/api/applications/">Keras Applications</a>, we can find deep learning models that are made available alongside pre-trained weights. These models can be used for prediction, feature extraction, and fine-tuning.</p>
+<p>Let’s download MobileNetV2, which was used in previous labs:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import tensorflow as tf; tf.keras.applications.MobileNetV2().save('mobilenet_v2.h5');"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The model is saved in the current directory as <code>mobilenet_v2.h5</code>.</p>
+<p>Next, we will compile the MobileNetV2 model using the MemryX Neural Compiler. This step verifies that both the compiler and the SDK tools are installed and functioning as expected:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">-m</span> mobilenet_v2.h5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/compile.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>The compiled model, <code>mobilenet_v2.dfp</code>, is saved in the current folder.</p>
+</blockquote>
+<section id="what-is-a-dfp-file" class="level4">
+<h4 class="anchored" data-anchor-id="what-is-a-dfp-file">What is a DFP file?</h4>
+<p>The <code>.dfp</code> (Dataflow Package) file is MemryX’s proprietary compiled format. Unlike standard model formats (H5, ONNX, etc.) that describe the network architecture, a DFP file contains:</p>
+<ul>
+<li><strong>Optimized operator graph</strong>: The network restructured for dataflow execution</li>
+<li><strong>Memory layout</strong>: Pre-calculated memory allocations for at-memory computing</li>
+<li><strong>Chip mappings</strong>: Instructions for distributing work across the four MX3 accelerators</li>
+<li><strong>Quantization parameters</strong>: If applicable, the bit-width and scaling factors</li>
+</ul>
+<p>The neural compiler (<code>mx_nc</code>) performs this transformation automatically, with no manual tuning required. The compilation process: 1. Parses the input model (H5, ONNX, TFLite, etc.) 2. Maps operators to MX3-supported operations 3. Optimizes the dataflow graph 4. Allocates memory on-chip 5. Generates the DFP binary</p>
+<p>This is why compilation takes a few minutes, but inference is blazingly fast—all the optimization work happens once, upfront.</p>
+</section>
+</section>
+<section id="benchmarking-performance" class="level3">
+<h3 class="anchored" data-anchor-id="benchmarking-performance">Benchmarking Performance</h3>
+<p>Now that the model is compiled, it’s time to deploy it and run a benchmark to test its performance on the MXA hardware. We will run 1000 frames of random data through the accelerator to measure performance metrics:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_bench</span> <span class="at">-v</span> <span class="at">-d</span> mobilenet_v2.dfp <span class="at">-f</span> 1000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/benchmark.png" class="img-fluid"></p>
+<p>Let’s understand what these metrics mean:</p>
+<ul>
+<li><strong>FPS (Frames Per Second)</strong>: How many images the accelerator can process per second (~1,200 FPS for MobileNetV2)</li>
+<li><strong>Latency</strong>: Time for a single inference (shown as “Avg” in the output)
+<ul>
+<li><strong>Subsequent inferences</strong>: True steady-state performance (~2ms)</li>
+</ul></li>
+<li><strong>Throughput</strong>: Total data processed per second</li>
+</ul>
+<p>The benchmark runs with random input data, which is why we see consistent performance. Real-world performance with actual images should be similar once the preprocessing pipeline is optimized, but we have found bigger latency.</p>
+<blockquote class="blockquote">
+<p><strong>Power consumption during benchmarking is around 12W (2.4A), and the module temperature reaches approximately 60°C.</strong></p>
+</blockquote>
+</section>
+</section>
+<section id="building-an-inference-application" class="level2">
+<h2 class="anchored" data-anchor-id="building-an-inference-application">Building an Inference Application</h2>
+<p>Now let’s build a complete inference application that processes real images and compares CPU vs.&nbsp;MX3 performance.</p>
+<section id="prepare-directory-structure" class="level3">
+<h3 class="anchored" data-anchor-id="prepare-directory-structure">Prepare Directory Structure</h3>
+<p>Let’s create subdirectories for organization:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> models</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> images</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="download-test-image" class="level3">
+<h3 class="anchored" data-anchor-id="download-test-image">Download Test Image</h3>
+<p>Load an image from the internet, for example, a cat (for comparison, it is the same as used on previous chapters):</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="st">"https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg"</span> <span class="dt">\</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">-O</span> ./images/cat.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here is the image:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/cat.png" class="img-fluid figure-img" style="width:65.0%"></p>
+</figure>
+</div>
+</section>
+<section id="understanding-input-requirements" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-input-requirements">Understanding Input Requirements</h3>
+<p>All neural networks expect input data in a specific format, determined during training. For MobileNetV2 trained on ImageNet:</p>
+<ul>
+<li><strong>Input shape</strong>: (224, 224, 3) - RGB images at 224x224 pixels</li>
+<li><strong>Batch dimension</strong>: Models expect batch inputs, so (1, 224, 224, 3) for single images</li>
+<li><strong>Preprocessing</strong>: MobileNetV2 uses specific normalization (scaling pixel values to [-1, 1])</li>
+<li><strong>Color channels</strong>: RGB order (not BGR)</li>
+</ul>
+<p>The preprocessing must match exactly what was used during training, or accuracy will suffer.</p>
+</section>
+<section id="getting-the-labels" class="level3">
+<h3 class="anchored" data-anchor-id="getting-the-labels">Getting the Labels</h3>
+<p>For inference, we will need the ImageNet labels. The following function checks if the file exists, and if not, downloads it:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os, json</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>MODELS_DIR <span class="op">=</span> Path(<span class="st">"./models"</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>IMAGENET_JSON <span class="op">=</span> MODELS_DIR <span class="op">/</span> <span class="st">"imagenet_class_index.json"</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>IMAGENET_JSON_URL <span class="op">=</span> (</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://storage.googleapis.com/download.tensorflow.org/data/imagenet_class_index.json"</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- one-time label download ----</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ensure_imagenet_labels():</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    MODELS_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> IMAGENET_JSON.exists():</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Downloading ImageNet class index..."</span>)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    resp <span class="op">=</span> requests.get(IMAGENET_JSON_URL, timeout<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    resp.raise_for_status()</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    IMAGENET_JSON.write_bytes(resp.content)</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Saved:"</span>, IMAGENET_JSON)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The function <code>load_idx2label()</code> loads the labels into a list:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_idx2label():</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(IMAGENET_JSON, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        class_idx <span class="op">=</span> json.load(f)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    idx2label <span class="op">=</span> [class_idx[<span class="bu">str</span>(k)][<span class="dv">1</span>] <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(class_idx))]</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> idx2label</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="image-preprocessing" class="level3">
+<h3 class="anchored" data-anchor-id="image-preprocessing">Image Preprocessing</h3>
+<p>The image used for inference should be preprocessed in the same way as during model training. <code>keras.applications.mobilenet_v2.preprocess_input()</code> takes an image of shape (224, 224) and converts it to <code>(1, 224, 224, 3)</code>:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_and_preprocess_image(image_path):</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> Image.<span class="bu">open</span>(image_path).convert(<span class="st">"RGB"</span>).resize((<span class="dv">224</span>, <span class="dv">224</span>))</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    arr <span class="op">=</span> np.array(img).astype(np.float32)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    arr <span class="op">=</span> keras.applications.mobilenet_v2.preprocess_input(arr)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    arr <span class="op">=</span> np.expand_dims(arr, <span class="dv">0</span>)  <span class="co"># Add batch dimension</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> arr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="prepare-input-tensor" class="level3">
+<h3 class="anchored" data-anchor-id="prepare-input-tensor">Prepare Input Tensor</h3>
+<p>The processed image will serve as the model’s input tensor (<code>x</code>):</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>ensure_imagenet_labels()</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>idx2label_full <span class="op">=</span> load_idx2label()  <span class="co"># length 1000 for ImageNet</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>IMAGE_PATH <span class="op">=</span> Path(<span class="st">"./images/cat.jpg"</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> load_and_preprocess_image(IMAGE_PATH)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="run-inference-on-memryx-accelerator-mxa" class="level3">
+<h3 class="anchored" data-anchor-id="run-inference-on-memryx-accelerator-mxa">Run Inference on MemryX Accelerator (MXA)</h3>
+<p>Move the models (the original and compiled) to the models folder and set up the paths:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>MODELS_DIR <span class="op">=</span> Path(<span class="st">"./models"</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>DFP_PATH <span class="op">=</span> MODELS_DIR <span class="op">/</span> <span class="st">"mobilenet_v2.dfp"</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>KERAS_PATH <span class="op">=</span> MODELS_DIR <span class="op">/</span> <span class="st">"mobilenet_v2.h5"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Run inference on the compiled model using the MemryX accelerator:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> memryx <span class="im">import</span> SyncAccl</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>accl <span class="op">=</span> SyncAccl(dfp<span class="op">=</span><span class="bu">str</span>(DFP_PATH))</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>mxa_outputs <span class="op">=</span> accl.run(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We get a list/array of outputs. In this case, with a shape of <code>(1, 1000)</code> and a dtype of <code>float32</code>. This output should be normalized to a NumPy array:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>mxa_outputs <span class="op">=</span> np.array(mxa_outputs)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> mxa_outputs.ndim <span class="op">==</span> <span class="dv">3</span>:</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    mxa_outputs <span class="op">=</span> mxa_outputs[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="decode-the-mxa-results" class="level3">
+<h3 class="anchored" data-anchor-id="decode-the-mxa-results">Decode the MXA Results</h3>
+<p>Now, using helper functions to extract top-k predictions:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> topk_from_probs(probs, k<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co">    probs: (1, num_classes) or (num_classes,)</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns [(index, prob)] sorted by prob desc.</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> np.array(probs)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> probs.ndim <span class="op">==</span> <span class="dv">2</span>:</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>        probs <span class="op">=</span> probs[<span class="dv">0</span>]</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># If outputs are logits, uncomment this:</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># probs = tf.nn.softmax(probs).numpy()</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> probs.<span class="bu">sum</span>()</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> s <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>        probs <span class="op">=</span> probs <span class="op">/</span> s</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    idxs <span class="op">=</span> np.argsort(probs)[::<span class="op">-</span><span class="dv">1</span>][:k]</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [(<span class="bu">int</span>(i), <span class="bu">float</span>(probs[i])) <span class="cf">for</span> i <span class="kw">in</span> idxs]</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> label_for(idx, idx2label):</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> idx2label <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> idx <span class="op">&lt;</span> <span class="bu">len</span>(idx2label):</span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> idx2label[idx]</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"class_</span><span class="sc">{</span>idx<span class="sc">}</span><span class="ss">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can decode and print the results:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>mxa_top5 <span class="op">=</span> topk_from_probs(mxa_outputs, k<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">MXA top-5:"</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, prob <span class="kw">in</span> mxa_top5:</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> label_for(idx, idx2label_full)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  #</span><span class="sc">{</span>idx<span class="sc">:4d}</span><span class="ss">: </span><span class="sc">{</span>name<span class="sc">:20s}</span><span class="ss">  (</span><span class="sc">{</span>prob<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Expected output:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">MXA</span> top-5:</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 282: tiger_cat             (38.6%)</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 281: tabby                 (18.3%)</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 285: Egyptian_cat          (15.2%)</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 287: lynx                  (3.9%)</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 478: carton                (1.7%)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="comparing-cpu-vs.-mxa-performance" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-cpu-vs.-mxa-performance">Comparing CPU vs.&nbsp;MXA Performance</h3>
+<p>We can also run the unconverted model (<code>mobilenet_v2.h5</code>) on the CPU, applying the code to the same input tensor:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>cpu_model <span class="op">=</span> keras.models.load_model(KERAS_PATH)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>cpu_outputs <span class="op">=</span> cpu_model.predict(x)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>num_classes <span class="op">=</span> cpu_outputs.shape[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>idx2label <span class="op">=</span> idx2label_full <span class="cf">if</span> num_classes <span class="op">==</span> <span class="bu">len</span>(idx2label_full) <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>cpu_top5 <span class="op">=</span> topk_from_probs(cpu_outputs, k<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">CPU top-5:"</span>)</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, prob <span class="kw">in</span> cpu_top5:</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> label_for(idx, idx2label)</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  #</span><span class="sc">{</span>idx<span class="sc">:4d}</span><span class="ss">: </span><span class="sc">{</span>name<span class="sc">:20s}</span><span class="ss">  (</span><span class="sc">{</span>prob<span class="op">*</span><span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Expected output:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">CPU</span> top-5:</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 282: tiger_cat             (58.4%)</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 285: Egyptian_cat          (12.9%)</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 281: tabby                 (11.6%)</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 287: lynx                  (3.4%)</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 588: hamper                (1.3%)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Despite the probabilities not being identical, both models reach the same top prediction. The slight differences are due to numerical precision variations between CPU and accelerator implementations.</p>
+</section>
+<section id="measuring-latency" class="level3">
+<h3 class="anchored" data-anchor-id="measuring-latency">Measuring Latency</h3>
+<p>Let’s create a complete Python script (<code>run_inference_mobilenetv2.py</code>) that also measures and compares latency for both CPU and MXA.</p>
+<blockquote class="blockquote">
+<p><strong>Note</strong>: The following sections break down the complete inference script into logical components. The full working script is available separately and integrates all these pieces together.</p>
+</blockquote>
+<p>To measure latency accurately, we’ll add timing code:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Warm-up run</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> accl.run(x)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Timed inference</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>start <span class="op">=</span> time.time()</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>mxa_outputs <span class="op">=</span> accl.run(x)</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>mxa_latency <span class="op">=</span> time.time() <span class="op">-</span> start</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">MXA latency: </span><span class="sc">{</span>mxa_latency<span class="op">*</span><span class="dv">1000</span><span class="sc">:.2f}</span><span class="ss"> ms"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Run the complete script <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/run_inference_comp_mobilenetv2.py">run_inference_comp_mobilenetv2.py</a> in the terminal:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run_inference_comp_mobilenetv2.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Expected results:</p>
+<p><img src="./images/png/run_cpu_mxa_mblv2.png" class="img-fluid"></p>
+<p><strong>The Accelerator runs 11 times faster than the CPU!</strong></p>
+<blockquote class="blockquote">
+<p>The MobileNet V2 running with ExecuTorch/XNNPACK backend on a CPU has around 20 ms of latency.</p>
+</blockquote>
+</section>
+<section id="testing-with-larger-models" class="level3">
+<h3 class="anchored" data-anchor-id="testing-with-larger-models">Testing with Larger Models</h3>
+<p>We can also test a larger model like ResNet50:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download ResNet50</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import tensorflow as tf; tf.keras.applications.ResNet50().save('resnet50.h5');"</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">-m</span> resnet50.h5</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the script in the terminal:</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run_inference_comp_resnet50.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>The script can be found in the lab repo: <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/run_inference_comp_resnet50.py">run_inference_comp_resnet50.py</a> in the terminal:</p>
+</blockquote>
+<p><img src="./images/png/run_cpu_mxa_resnet.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>The performance improvements are even more dramatic with larger models!</p>
+</blockquote>
+</section>
+<section id="clean-shutdown" class="level3">
+<h3 class="anchored" data-anchor-id="clean-shutdown">Clean Shutdown</h3>
+<p>Always properly shut down the accelerator when done:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>accl.shutdown()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>BTW, to shut down the Raspberry Pi via SSH, we can use</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> shutdown <span class="at">-h</span> now</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="folders-structure" class="level2">
+<h2 class="anchored" data-anchor-id="folders-structure">Folders Structure</h2>
+<div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Documents/MEMRYX/</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> run_inference_comp_mobilenetv2.py          <span class="co"># MobileNetV2 script</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> run_inference_comp_resnet50.py             <span class="co"># ResNet50 script</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> images/</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   ├── cat.jpg                           <span class="co"># Test image</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> models/</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   ├── mobilenet_v2.h5                   <span class="co"># Original model</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   ├── mobilenet_v2.dfp                  <span class="co"># Compiled model</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   ├── resnet50.h5                       <span class="co"># Original model</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   ├── resnet50.dfp                      <span class="co"># Compiled model</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   └── imagenet_class_index.json         <span class="co"># Labels (auto-downloaded)</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> mx-env/   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="performance-comparison-summary" class="level2">
+<h2 class="anchored" data-anchor-id="performance-comparison-summary">Performance Comparison Summary</h2>
+<p>Here’s how the MX3 compares across different deployment approaches we’ve covered in this course:</p>
+<table class="table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 28%">
+<col style="width: 24%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>Hardware</th>
+<th>MobileNetV2 Latency</th>
+<th>ResNet50 Latency</th>
+<th>Power (Active)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>TFLite (CPU)</td>
+<td>Raspberry Pi 5</td>
+<td>~110 ms</td>
+<td>~266 ms</td>
+<td>~</td>
+</tr>
+<tr class="even">
+<td>ExecuTorch/XNNPACK</td>
+<td>Raspberry Pi 5</td>
+<td>~20 ms</td>
+<td>NA</td>
+<td>~</td>
+</tr>
+<tr class="odd">
+<td><strong>MemryX MX3</strong></td>
+<td><strong>Dedicated accelerator</strong></td>
+<td><strong>~10 ms</strong></td>
+<td><strong>~10 ms</strong></td>
+<td><strong>~</strong></td>
+</tr>
+</tbody>
+</table>
+<section id="key-observations" class="level3">
+<h3 class="anchored" data-anchor-id="key-observations">Key Observations</h3>
+<ul>
+<li><strong>25x faster</strong> than unoptimized TFLite on CPU (Resnet50)</li>
+<li><strong>2x faster</strong> than highly optimized ExecuTorch with XNNPACK (MobileNetV2)</li>
+<li><strong>Minimal CPU load</strong>: The host CPU is free for preprocessing, postprocessing, and application logic</li>
+<li><strong>Consistent latency</strong>: Hardware acceleration provides deterministic performance</li>
+<li><strong>Power efficiency</strong>: Not measured</li>
+</ul>
+</section>
+<section id="when-to-use-the-mx3" class="level3">
+<h3 class="anchored" data-anchor-id="when-to-use-the-mx3">When to Use the MX3?</h3>
+<p>The MemryX MX3 is ideal for:</p>
+<ul>
+<li>✅ <strong>Real-time applications</strong> requiring &lt;20ms latency</li>
+<li>✅ <strong>Multi-stream processing</strong> (multiple cameras, sensors)</li>
+<li>✅ <strong>Power-constrained environments</strong> where CPU load matters</li>
+<li>✅ <strong>Production deployments</strong> requiring consistent, predictable performance</li>
+<li>✅ <strong>Complex models</strong> where CPU inference is too slow</li>
+</ul>
+<p>The MX3 may be overkill for:</p>
+<ul>
+<li>❌ Simple models that run fast enough on CPU</li>
+<li>❌ Non-latency-critical batch processing</li>
+<li>❌ Prototyping where development speed matters more than performance</li>
+<li>❌ Very cost-sensitive applications</li>
+</ul>
+<p>Perfect! You have a clean, working script. Let me help you create a comprehensive tutorial structure for YOLOv8 inference with MX3 hardware acceleration. Here’s what I suggest:</p>
+</section>
+</section>
+<section id="yolov8-object-detection-with-mx3-hardware-acceleration" class="level2">
+<h2 class="anchored" data-anchor-id="yolov8-object-detection-with-mx3-hardware-acceleration">YOLOv8 Object Detection with MX3 Hardware Acceleration</h2>
+<p>In this part of the lab, we’ll deploy YOLOv8n (nano) for real-time object detection using the MemryX MX3 AI accelerator on Raspberry Pi 5. We’ll cover the complete workflow from model export to inference optimization.</p>
+<p><img src="./images/png/flow-yolo.png" class="img-fluid"></p>
+<p>But first, we should install ULTRALYTICS</p>
+<p>The MemoryX team suggested:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ultralytics==8.3.161</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you face issues, try it with:</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ultralytics<span class="pp">[</span><span class="ss">export</span><span class="pp">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you still have issues, reinstall memryx</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install <span class="at">--extra-index-url</span> https://developer.memryx.com/pip memryx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, download the YOLOv8.pt model and test it:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict model=<span class="st">'yolov8n'</span> source=<span class="st">'https://ultralytics.com/images/bus.jpg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The model and the image <code>bus.jpg</code> will be download and tested with the YOLOV8n:</p>
+<p><img src="./images/png/yolov8n-test.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>4 persons, 1 bus, and one stop signal were detected in 522 ms.</p>
+</blockquote>
+<p>Under <code>./runs/detect</code>, the output processed image can be analysed:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/yolov8-1st-infer.png" class="img-fluid figure-img" style="width:65.0%"></p>
+</figure>
+</div>
+<section id="model-export-and-compilation" class="level3">
+<h3 class="anchored" data-anchor-id="model-export-and-compilation">Model Export and Compilation</h3>
+<section id="step-1-export-yolov8-to-onnx" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-export-yolov8-to-onnx">Step 1: Export YOLOv8 to ONNX</h4>
+<p>YOLOv8 must be converted to ONNX format before compilation for the MX3:</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co">#### Load pretrained YOLOv8n model</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'yolov8n.pt'</span>)</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="co">#### Export to ONNX format</span></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>model.export(<span class="bu">format</span><span class="op">=</span><span class="st">'onnx'</span>, simplify<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This creates <code>yolov8n.onnx</code> with the complete model graph.</p>
+<p>We can also use CLI for the conversion:</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=yolov8n.pt format=onnx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/yolo-onnx-conv.png" class="img-fluid"></p>
+</section>
+<section id="step-2-compile-for-mx3" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-compile-for-mx3">Step 2: Compile for MX3</h4>
+<p>We can use the MemryX Neural Compiler to generate the DFP file:</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">--autocrop</span> <span class="at">-m</span> yolov8n.onnx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Key flags:</strong></p>
+<ul>
+<li><code>-v</code>: Verbose output for debugging</li>
+<li><code>-m</code>: Input model path</li>
+<li><code>--autocrop</code>: Automatically split model for optimal MX3 execution</li>
+</ul>
+<p><strong>Output files:</strong></p>
+<ul>
+<li><code>yolov8n.dfp</code> - Accelerator executable (runs on MX3 chips)</li>
+<li><code>yolov8n_post.onnx</code> - Post-processing model (runs on CPU)</li>
+</ul>
+<p><strong>Why Two Files?</strong></p>
+<p>The MX3 compiler splits the model:</p>
+<ol type="1">
+<li><strong>Feature extraction</strong> (yolov8n.dfp): Neural network backbone on MX3 hardware</li>
+<li><strong>Detection head</strong> (yolov8n_post.onnx): Bounding box decoding on CPU</li>
+</ol>
+<p>This hybrid approach optimizes performance by running computationally intensive operations on the accelerator while keeping final post-processing flexible.</p>
+<p><img src="./images/png/yolo-onnx-export.png" class="img-fluid"></p>
+<p>Now, let’s check the model with a benchmark</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_bench</span> <span class="at">-d</span> yolov8n.dfp <span class="at">-f</span> 1000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/bench-yolov8.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="understanding-yolov8-output-format" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-yolov8-output-format">Understanding YOLOv8 Output Format</h3>
+<section id="yolov8-output-structure" class="level4">
+<h4 class="anchored" data-anchor-id="yolov8-output-structure">YOLOv8 Output Structure</h4>
+<p>The post-processing model outputs predictions in shape <code>(1, 84, 8400)</code>:</p>
+<ul>
+<li><strong>Dimension 0 (1)</strong>: Batch size</li>
+<li><strong>Dimension 1 (84)</strong>:
+<ul>
+<li>First 4 values: Bounding box <code>[x_center, y_center, width, height]</code></li>
+<li>Next 80 values: Class probabilities (COCO dataset)</li>
+</ul></li>
+<li><strong>Dimension 2 (8400)</strong>: Anchor points across three detection scales:
+<ul>
+<li>80×80 = 6400 points (small objects)</li>
+<li>40×40 = 1600 points (medium objects)</li>
+<li>20×20 = 400 points (large objects)</li>
+</ul></li>
+</ul>
+</section>
+<section id="decoding-process" class="level4">
+<h4 class="anchored" data-anchor-id="decoding-process">Decoding Process</h4>
+<ol type="1">
+<li><strong>Transpose</strong>: Convert from <code>(1, 84, 8400)</code> → <code>(8400, 84)</code></li>
+<li><strong>Extract</strong>: Separate boxes and class scores</li>
+<li><strong>Filter</strong>: Keep predictions above confidence threshold</li>
+<li><strong>Convert coordinates</strong>: Transform from <code>xywh</code> to <code>xyxy</code></li>
+<li><strong>NMS</strong>: Remove overlapping detections</li>
+<li><strong>Scale</strong>: Map to original image coordinates</li>
+</ol>
+</section>
+</section>
+<section id="complete-inference-pipeline" class="level3">
+<h3 class="anchored" data-anchor-id="complete-inference-pipeline">Complete Inference Pipeline</h3>
+<p>We should now create a script to run an object detector (YOLOv8 with a pre/post-processing pipeline), print each detection (label, confidence, bounding box), and save a copy of the image with the boxes drawn.</p>
+<section id="configuration-section" class="level4">
+<h4 class="anchored" data-anchor-id="configuration-section">Configuration section</h4>
+<p>At the top of <code>__main__</code> we define the configuration values:</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>DFP_PATH <span class="op">=</span> <span class="st">"./models/yolov8n.dfp"</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>POST_MODEL_PATH <span class="op">=</span> <span class="st">"./models/yolov8n_post.onnx"</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>IMAGE_PATH <span class="op">=</span> <span class="st">"./images/bus.jpg"</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>CONF_THRESHOLD <span class="op">=</span> <span class="fl">0.25</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>DFP_PATH</code>: path to the compiled model used for inference.<br>
+</li>
+<li><code>POST_MODEL_PATH</code>: path to a post-processing model or graph, usually converting raw outputs into boxes, scores, and class IDs.<br>
+</li>
+<li><code>IMAGE_PATH</code>: image file we want to run detection on.<br>
+</li>
+<li><code>CONF_THRESHOLD</code>: minimum confidence score; detections below this are filtered out.</li>
+</ul>
+<p>In a tutorial you can explain that changing these values lets the user swap models or images without modifying the rest of the code.</p>
+</section>
+<section id="running-detection" class="level4">
+<h4 class="anchored" data-anchor-id="running-detection">Running detection</h4>
+<div class="sourceCode" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>detections, annotated_image, inference_time <span class="op">=</span> detect_objects(</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>    DFP_PATH,</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    POST_MODEL_PATH,</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>    IMAGE_PATH,</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    CONF_THRESHOLD</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here we call a helper function <code>detect_objects</code> that encapsulates the heavy lifting:</p>
+<ul>
+<li>Loads the model(s).<br>
+</li>
+<li>Loads and preprocesses the image.<br>
+</li>
+<li>Runs inference.<br>
+</li>
+<li>Applies post-processing (NMS, thresholding, etc.).<br>
+</li>
+<li>Returns:
+<ul>
+<li><code>detections</code>: list/array where each element is <code>[x1, y1, x2, y2, conf, class_id]</code>.<br>
+</li>
+<li><code>annotated_image</code>: a PIL image with bounding boxes and labels drawn.<br>
+</li>
+<li><code>inference_time</code>: time spent doing the detection (in milliseconds).</li>
+</ul></li>
+</ul>
+</section>
+<section id="printing-results" class="level4">
+<h4 class="anchored" data-anchor-id="printing-results">Printing results</h4>
+<div class="sourceCode" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="sc">{</span><span class="st">'='</span><span class="op">*</span><span class="dv">60</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Detection Results:"</span>)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'='</span><span class="op">*</span><span class="dv">60</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, det <span class="kw">in</span> <span class="bu">enumerate</span>(detections):</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>    x1, y1, x2, y2, conf, class_id <span class="op">=</span> det</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">. </span><span class="sc">{</span>COCO_CLASSES[<span class="bu">int</span>(class_id)]<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>conf<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"      Box: [</span><span class="sc">{</span><span class="bu">int</span>(x1)<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="bu">int</span>(y1)<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="bu">int</span>(x2)<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="bu">int</span>(y2)<span class="sc">}</span><span class="ss">]"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>The loop goes over each detection, unpacks the bounding box coordinates, confidence, and class ID.<br>
+</li>
+<li><code>COCO_CLASSES[int(class_id)]</code> converts the numeric class index into a human-readable label (e.g., “person”, “bus”).<br>
+</li>
+<li>Coordinates are cast to <code>int</code> for cleaner printing.</li>
+</ul>
+</section>
+<section id="saving-the-annotated-image" class="level4">
+<h4 class="anchored" data-anchor-id="saving-the-annotated-image">Saving the annotated image</h4>
+<div class="sourceCode" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(detections) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    output_path <span class="op">=</span> IMAGE_PATH.rsplit(<span class="st">'.'</span>, <span class="dv">1</span>)[<span class="dv">0</span>] <span class="op">+</span> <span class="st">'_detected.jpg'</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    annotated_image.save(output_path)</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Saved: </span><span class="sc">{</span>output_path<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Only saves an output file if at least one object was detected.<br>
+</li>
+<li>The output filename is built by taking the original name and appending <code>_detected</code> before the extension (e.g., <code>bus_detected.jpg</code>).<br>
+</li>
+<li><code>annotated_image.save(...)</code> writes the image with drawn boxes and labels to disk.</li>
+</ul>
+</section>
+<section id="final-summary-output" class="level4">
+<h4 class="anchored" data-anchor-id="final-summary-output">Final summary output</h4>
+<div class="sourceCode" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="sc">{</span><span class="st">'='</span><span class="op">*</span><span class="dv">60</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total: </span><span class="sc">{</span><span class="bu">len</span>(detections)<span class="sc">}</span><span class="ss"> objects"</span>)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Time: </span><span class="sc">{</span>inference_time<span class="sc">:.2f}</span><span class="ss"> ms"</span>)</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'='</span><span class="op">*</span><span class="dv">60</span><span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Prints how many objects were found in total.<br>
+</li>
+<li>Prints the inference time, which is useful to talk about performance (e.g., model size vs.&nbsp;speed, hardware differences).</li>
+</ul>
+<p>Run the script <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/yolov8_mx3_detect.py">yolov8_m3_detect.py</a></p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> yolov8_m3_detect.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As a result, we can see that the models found 4 persons and 1 bus, missing only the stop signal. Regarding latency, the <strong>MX3 runs inference about 11 times faster than a CPU-only</strong> system.</p>
+<blockquote class="blockquote">
+<p>Basically, the same accuracy result that we got on the YOLO chapter running yolov11</p>
+</blockquote>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/infer-compar.png" class="img-fluid figure-img" style="width:95.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="going-deeper-in-the-functions" class="level3">
+<h3 class="anchored" data-anchor-id="going-deeper-in-the-functions">Going deeper in the functions</h3>
+<section id="image-preprocessing-preprocess_image" class="level4">
+<h4 class="anchored" data-anchor-id="image-preprocessing-preprocess_image">1. Image preprocessing (<code>preprocess_image</code>)</h4>
+<p><code>original image → resized → padded → tensor</code></p>
+<ul>
+<li>Load and normalize:
+<ul>
+<li>Open the image with PIL, convert to RGB, and get its original size.</li>
+<li>Compute a scale <code>ratio</code> so the image fits into 640×640 without distortion (preserving aspect ratio).</li>
+</ul></li>
+<li>Letterboxing:
+<ul>
+<li>Resize the image to <code>(new_w, new_h) = (int(w * ratio), int(h * ratio))</code>.</li>
+<li>Paste it onto a 640×640 canvas filled with color <code>(114, 114, 114)</code> (same as Ultralytics).<br>
+</li>
+<li>Compute the padding offsets <code>(pad_w, pad_h)</code> so we can undo this later.</li>
+</ul></li>
+<li>Tensor conversion:
+<ul>
+<li>Convert to <code>numpy</code>, normalize to <code>[0,1]</code>, permute from HWC to CHW, and add a batch dimension to get shape <code>[1, 3, 640, 640]</code>, which matches YOLOv8’s expected input.[1][2]</li>
+</ul></li>
+</ul>
+</section>
+<section id="decoding-yolov8-output-decode_predictions" class="level4">
+<h4 class="anchored" data-anchor-id="decoding-yolov8-output-decode_predictions">2. Decoding YOLOv8 output (<code>decode_predictions</code>)</h4>
+<p><em>How to turn raw model numbers into human-readable detections.</em></p>
+<p><strong>The raw output format:</strong></p>
+<ul>
+<li>For COCO YOLOv8n ONNX, the detection head outputs a tensor of shape <code>(1, 84, 8400)</code>.</li>
+<li><code>84 = 4 (bbox) + 80 (class scores)</code>. Each of the 8400 positions corresponds to one candidate box.</li>
+</ul>
+<p><strong>Function Walkthrough:</strong></p>
+<ul>
+<li>Transpose:
+<ul>
+<li>From <code>(1, 84, 8400)</code> to <code>(8400, 84)</code> so each row is: <code>[x_center, y_center, width, height, class_0_score, ..., class_79_score]</code>.</li>
+</ul></li>
+<li>Best class per box:
+<ul>
+<li>Take <code>max_scores = np.max(class_scores, axis=1)</code> and <code>class_ids = np.argmax(class_scores, axis=1)</code> to select the most likely class and its score for each of the 8400 candidates.</li>
+</ul></li>
+<li>Confidence filtering:
+<ul>
+<li>Drop boxes whose max class score is below <code>conf_threshold</code>.</li>
+</ul></li>
+<li>Coordinate conversion:
+<ul>
+<li>Convert from YOLO’s center-format <code>(x, y, w, h)</code> to corner-format <code>(x1, y1, x2, y2)</code> to make drawing and IoU calculation simpler.</li>
+</ul></li>
+<li>NMS:
+<ul>
+<li>Call <code>apply_nms</code> to remove overlapping boxes and keep only the best ones.</li>
+</ul></li>
+</ul>
+</section>
+<section id="iou-and-nms-compute_iou_batch-and-apply_nms" class="level4">
+<h4 class="anchored" data-anchor-id="iou-and-nms-compute_iou_batch-and-apply_nms">3. IoU and NMS (<code>compute_iou_batch</code> and <code>apply_nms</code>)</h4>
+<p><strong>IoU:</strong></p>
+<ul>
+<li>IoU (Intersection over Union) measures overlap between two boxes:<br>
+<span class="math display">\[\text{IoU} = \frac{\text{area of intersection}}{\text{area of union}}\]</span></li>
+<li><code>compute_iou_batch</code> does this between one box and many boxes at once using vectorized Numpy operations.</li>
+</ul>
+<p><strong>NMS:</strong></p>
+<ul>
+<li><code>apply_nms</code>:
+<ul>
+<li>Sort boxes by score descending.</li>
+<li>Repeatedly pick the highest-score box, compute its IoU with the remaining boxes, and discard those whose IoU is above <code>iou_threshold</code>.</li>
+</ul></li>
+<li>The result is a list of indices for boxes that don’t overlap too much and represent unique objects.</li>
+</ul>
+</section>
+<section id="mapping-back-to-the-original-image-scale_boxes_to_original" class="level4">
+<h4 class="anchored" data-anchor-id="mapping-back-to-the-original-image-scale_boxes_to_original">4. Mapping back to the original image (<code>scale_boxes_to_original</code>)</h4>
+<p><em>Everything after the model must undo what preprocessing did.</em></p>
+<ul>
+<li>During preprocessing we:
+<ul>
+<li>Rescaled the image by <code>ratio</code>.</li>
+<li>Padded by <code>(pad_w, pad_h)</code>.</li>
+</ul></li>
+<li>The model’s boxes live in that padded, resized 640×640 space.</li>
+<li><code>scale_boxes_to_original</code>:
+<ul>
+<li>Subtracts the padding.</li>
+<li>Divides by <code>ratio</code> to go back to the original resolution.</li>
+<li>Clips coordinates so they stay inside the original image bounds.</li>
+</ul></li>
+</ul>
+</section>
+<section id="drawing-results-draw_detections" class="level4">
+<h4 class="anchored" data-anchor-id="drawing-results-draw_detections">5. Drawing results (<code>draw_detections</code>)</h4>
+<p><code>model output → decoded boxes → drawn on the original image</code></p>
+<ul>
+<li>Make a copy of the original image and get an <code>ImageDraw</code> context.</li>
+<li>For each detection:
+<ul>
+<li>Choose a color deterministically using <code>np.random.seed(class_id)</code> so the same class always has the same color.</li>
+<li>Draw the rectangle <code>[x1, y1, x2, y2]</code>.</li>
+<li>Build a label string <code>"class_name: confidence"</code>, measure text size using <code>textbbox</code>, draw a filled rectangle for the label background, and render the text.</li>
+</ul></li>
+</ul>
+</section>
+<section id="the-memryx-pipeline-detect_objects-and-asyncaccl-usage" class="level4">
+<h4 class="anchored" data-anchor-id="the-memryx-pipeline-detect_objects-and-asyncaccl-usage">6. The Memryx pipeline (<code>detect_objects</code> and <code>AsyncAccl</code> usage)</h4>
+<p><em>How to integrate Memryx’s async accelerator into a typical vision pipeline</em></p>
+<ul>
+<li>Preprocess once: call <code>preprocess_image</code> to get the model-ready tensor and the info needed for rescaling.</li>
+<li>Create the accelerator:
+<ul>
+<li><code>accl = AsyncAccl(dfp_path)</code> loads the compiled Memryx DFP model.</li>
+<li><code>accl.set_postprocessing_model(post_model_path, model_idx=0)</code> attaches the ONNX post-processing graph.</li>
+</ul></li>
+<li>Streaming-style design:
+<ul>
+<li><code>frame_queue</code> is a queue of inputs; you put your tensor in it.</li>
+<li><code>generate_frame</code> is a generator feeding frames into the accelerator.</li>
+<li><code>process_output</code> is a callback that collects outputs into <code>results</code>.</li>
+<li>The code wires them with <code>connect_input</code> and <code>connect_output</code>, then waits for completion with <code>accl.wait()</code>.</li>
+</ul></li>
+<li>Post-processing:
+<ul>
+<li>Grab the first output, call <code>decode_predictions</code>, rescale boxes, and draw.</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="making-inferences" class="level3">
+<h3 class="anchored" data-anchor-id="making-inferences">Making Inferences</h3>
+<p>Let’s change the script to easily handle different images and confidence threshold (<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/yolov8_mx3_detect_v2.py">yolov8_m3_detect_v2.py</a>). We should replace the hardcoded <code>IMAGE_PATH</code> with a command-line argument:</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> argparse</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>    parser <span class="op">=</span> argparse.ArgumentParser()</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"-i"</span>, <span class="st">"--image"</span>,</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">type</span><span class="op">=</span><span class="bu">str</span>,</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>        required<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">help</span><span class="op">=</span><span class="st">"Path to input image"</span></span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(</span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"-c"</span>, <span class="st">"--conf"</span>,</span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">type</span><span class="op">=</span><span class="bu">float</span>,</span>
+<span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a>        default<span class="op">=</span><span class="fl">0.25</span>,</span>
+<span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">help</span><span class="op">=</span><span class="st">"Confidence threshold"</span></span>
+<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a>    args <span class="op">=</span> parser.parse_args()</span>
+<span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Configuration</span></span>
+<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a>    DFP_PATH <span class="op">=</span> <span class="st">"./models/yolov8n.dfp"</span></span>
+<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a>    POST_MODEL_PATH <span class="op">=</span> <span class="st">"./models/yolov8n_post.onnx"</span></span>
+<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a>    IMAGE_PATH <span class="op">=</span> args.image</span>
+<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a>    CONF_THRESHOLD <span class="op">=</span> args.conf</span>
+<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run detection</span></span>
+<span id="cb61-26"><a href="#cb61-26" aria-hidden="true" tabindex="-1"></a>    detections, annotated_image, inference_time <span class="op">=</span> detect_objects(</span>
+<span id="cb61-27"><a href="#cb61-27" aria-hidden="true" tabindex="-1"></a>        DFP_PATH,</span>
+<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a>        POST_MODEL_PATH,</span>
+<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a>        IMAGE_PATH,</span>
+<span id="cb61-30"><a href="#cb61-30" aria-hidden="true" tabindex="-1"></a>        CONF_THRESHOLD</span>
+<span id="cb61-31"><a href="#cb61-31" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb61-32"><a href="#cb61-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-33"><a href="#cb61-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Print results</span></span>
+<span id="cb61-34"><a href="#cb61-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="sc">{</span><span class="st">'='</span><span class="op">*</span><span class="dv">60</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb61-35"><a href="#cb61-35" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Detection Results:"</span>)</span>
+<span id="cb61-36"><a href="#cb61-36" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'='</span><span class="op">*</span><span class="dv">60</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb61-37"><a href="#cb61-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, det <span class="kw">in</span> <span class="bu">enumerate</span>(detections):</span>
+<span id="cb61-38"><a href="#cb61-38" aria-hidden="true" tabindex="-1"></a>        x1, y1, x2, y2, conf, class_id <span class="op">=</span> det</span>
+<span id="cb61-39"><a href="#cb61-39" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">. </span><span class="sc">{</span>COCO_CLASSES[<span class="bu">int</span>(class_id)]<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>conf<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb61-40"><a href="#cb61-40" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"      Box: [</span><span class="sc">{</span><span class="bu">int</span>(x1)<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="bu">int</span>(y1)<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="bu">int</span>(x2)<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="bu">int</span>(y2)<span class="sc">}</span><span class="ss">]"</span>)</span>
+<span id="cb61-41"><a href="#cb61-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-42"><a href="#cb61-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Save annotated image</span></span>
+<span id="cb61-43"><a href="#cb61-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(detections) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb61-44"><a href="#cb61-44" aria-hidden="true" tabindex="-1"></a>        output_path <span class="op">=</span> IMAGE_PATH.rsplit(<span class="st">'.'</span>, <span class="dv">1</span>)[<span class="dv">0</span>] <span class="op">+</span> <span class="st">'_detected.jpg'</span></span>
+<span id="cb61-45"><a href="#cb61-45" aria-hidden="true" tabindex="-1"></a>        annotated_image.save(output_path)</span>
+<span id="cb61-46"><a href="#cb61-46" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Saved: </span><span class="sc">{</span>output_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb61-47"><a href="#cb61-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-48"><a href="#cb61-48" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="sc">{</span><span class="st">'='</span><span class="op">*</span><span class="dv">60</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb61-49"><a href="#cb61-49" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Total: </span><span class="sc">{</span><span class="bu">len</span>(detections)<span class="sc">}</span><span class="ss"> objects"</span>)</span>
+<span id="cb61-50"><a href="#cb61-50" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Time: </span><span class="sc">{</span>inference_time<span class="sc">:.2f}</span><span class="ss"> ms"</span>)</span>
+<span id="cb61-51"><a href="#cb61-51" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'='</span><span class="op">*</span><span class="dv">60</span><span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can run it as:</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> yolov8_mx3_detect_v2.py <span class="at">--image</span> ./images/home-office.jpg <span class="at">-c</span> 0.2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here are some results with other images:</p>
+<p><img src="./images/png/yolo-result.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="inference-with-a-custom-model" class="level2">
+<h2 class="anchored" data-anchor-id="inference-with-a-custom-model">Inference with a custom model</h2>
+<p>As we saw in the YOLO chapter, we are assuming we are in an industrial facility that must sort and count <strong>wheels</strong> and special <strong>boxes</strong>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/factore.png" class="img-fluid figure-img" style="width:85.0%"></p>
+</figure>
+</div>
+<p>Each image can have three classes:</p>
+<ul>
+<li>Background (no objects)</li>
+<li>Box</li>
+<li>Wheel</li>
+</ul>
+<p>We have captured a raw dataset using the Raspberry Pi Camera and labeled it with the ROBOFLOW. The Yolo model was trained on a Google Colab using Ultralytics.</p>
+<p><img src="./images/png/yolo-custom-dataset-flow.png" class="img-fluid"></p>
+<p>After training, we download the trained model from <code>/runs/detect/train/weights/best.pt</code> to our computer, renaming it to <code>box_wheel_320_yolo.pt</code>.</p>
+<blockquote class="blockquote">
+<p>Using the FileZilla FTP, transfer a few images from the test dataset to <code>.\images</code>:</p>
+</blockquote>
+<p>Let’s return to the <code>./MEMRYX/YOLO</code> folder and using the Python Interpreter, to quickly do some inferences:</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We will import the YOLO library and define the model to use:</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> model <span class="op">=</span> YOLO(<span class="st">'./models/box_wheel_320_yolo.pt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, let’s define an image and call the inference (we will save the image result this time to external verification):</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> img <span class="op">=</span> <span class="st">'./images/box_3_wheel_4.jpg'</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">320</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/test-custon_model-1.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/custon-img-1st-infer.png" class="img-fluid figure-img" style="width:65.0%"></p>
+</figure>
+</div>
+<p>We can see that the model is working and that the latency was 168 ms.</p>
+<p>Let’s now export the model first to ONNX and after to FFPls</p>
+<p>, to run it in the MX3 device:</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ./models</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=box_wheel_320_yolo.pt format=onnx</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">--autocrop</span> <span class="at">-m</span> box_wheel_320_yolo.onnx</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In the models folder, we will have <code>box_wheel_320_yolo.dfp</code> and <code>box_wheel_320_yolo_post.onnx</code></p>
+<p>Let’s adapt the previous script to be more generic in terms of models (<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/box_wheel_mx3_detect_v2.py">box_wheel_mx3_detect_v2.py</a>):</p>
+<blockquote class="blockquote">
+<p>Naturally we should enter with the new models ’names and instead of COCO_LABELS, the script was changed to:</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dataset class names </span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>CLASSES <span class="op">=</span> [</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Box'</span>, <span class="st">'Wheel'</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Thant’s all!</p>
+</blockquote>
+<p>Run it with:</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> box_wheel_mx3_detect_v2.py <span class="at">--image</span> ./images/box_3_wheel_4.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/infer-mx3-custom-yolo.png" class="img-fluid figure-img" style="width:85.0%"></p>
+</figure>
+</div>
+<p>The Result was great! <strong>And the latency (~38 ms) was 4 times lower than with the CPU-only</strong> approach (even smaller than the model exported to NCNN, runing 100% at CPU - 80 ms).</p>
+<section id="adjusting-confidence-threshold" class="level3">
+<h3 class="anchored" data-anchor-id="adjusting-confidence-threshold">Adjusting Confidence Threshold</h3>
+<p>Lower confidence for more detections (may include false positives):</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> box_wheel_mx3_detect_v2.py <span class="at">--image</span> ./images/box_3_wheel_4.jpg <span class="at">-c</span> 0.15</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We should experiment with the right confidence threshold.</p>
+</section>
+</section>
+<section id="advanced-topics" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-topics"><strong>Advanced Topics</strong></h2>
+<section id="batch-processing-optimization" class="level3">
+<h3 class="anchored" data-anchor-id="batch-processing-optimization">Batch Processing (Optimization)</h3>
+<p>For multiple images, reuse the accelerator instance:</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>accl <span class="op">=</span> AsyncAccl(dfp_path)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>accl.set_postprocessing_model(post_model_path)</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> image_path <span class="kw">in</span> image_list:</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>    detections <span class="op">=</span> detect_single_image(accl, image_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="thermal-management" class="level3">
+<h3 class="anchored" data-anchor-id="thermal-management">Thermal Management</h3>
+<p>Always monitor temperature during operation:</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="ex">watch</span> <span class="at">-n</span> 1 cat /sys/memx0/temperature</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="confidence-threshold-tuning" class="level3">
+<h3 class="anchored" data-anchor-id="confidence-threshold-tuning">Confidence Threshold Tuning</h3>
+<ul>
+<li><strong>0.15-0.20</strong>: Maximum recall (catch everything)</li>
+<li><strong>0.25-0.40</strong>: Balanced (default)</li>
+<li><strong>0.45-0.50</strong>: High precision (only confident detections)</li>
+</ul>
+</section>
+<section id="model-selection" class="level3">
+<h3 class="anchored" data-anchor-id="model-selection">Model Selection</h3>
+<ul>
+<li><strong>yolov8n</strong>: Fastest, 3.2M parameters</li>
+<li><strong>yolov8s</strong>: Balanced, 11.2M parameters</li>
+<li><strong>yolov8m</strong>: Accurate, 25.9M parameters</li>
+</ul>
+</section>
+</section>
+<section id="exploring-memryx-examples" class="level2">
+<h2 class="anchored" data-anchor-id="exploring-memryx-examples">Exploring MemryX eXamples</h2>
+<p><strong><a href="https://github.com/memryx/MemryX_eXamples/tree/release">MemryX eXamples</a></strong> is a collection of end-to-end AI applications and tasks powered by MemryX hardware and software solutions. These examples provide practical, hands-on use cases to help leverage MemryX technology.</p>
+<section id="clone-the-memryx-examples-repository" class="level3">
+<h3 class="anchored" data-anchor-id="clone-the-memryx-examples-repository">Clone the MemryX eXamples Repository</h3>
+<p>Clone this repository plus any linked submodules:</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--recursive</span> https://github.com/memryx/memryx_examples.git</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> memryx_examples</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After cloning the repository, you’ll find several subdirectories with different categories of applications:</p>
+<ul>
+<li><strong>image_inference</strong> - Single image classification and detection</li>
+<li><strong>video_inference</strong> - Real-time video processing</li>
+<li><strong>multistream_video_inference</strong> - Multi-camera scenarios</li>
+<li><strong>audio_inference</strong> - Audio processing and speech recognition</li>
+<li><strong>open_vocabulary</strong> - Open-set classification tasks</li>
+<li><strong>accuracy_calculation</strong> - Model accuracy verification</li>
+<li><strong>multi_dfp_application</strong> - Running multiple models</li>
+<li><strong>optimized_multistream_apps</strong> - Production-ready multi-stream examples</li>
+<li><strong>fun_projects</strong> - Creative applications and demos</li>
+</ul>
+<p>These examples demonstrate best practices for:</p>
+<ul>
+<li>Preprocessing pipelines</li>
+<li>Multi-threaded inference</li>
+<li>Output visualization</li>
+<li>Performance optimization</li>
+<li>Multi-model orchestration</li>
+</ul>
+<p>Exploring these examples is an excellent way to learn production-ready patterns for deploying MemryX applications.</p>
+</section>
+</section>
+<section id="troubleshooting-common-issues" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting-common-issues">Troubleshooting Common Issues</h2>
+<section id="device-not-detected" class="level3">
+<h3 class="anchored" data-anchor-id="device-not-detected">Device Not Detected</h3>
+<p><strong>Symptom</strong>: <code>ls /dev/memx*</code> returns “No such file or directory”</p>
+<p><strong>Solutions</strong>: 1. <strong>Verify physical connection</strong>: Reseat the M.2 module in its slot 2. <strong>Check PCIe settings</strong>: <code>bash    sudo raspi-config    # Navigate to: Advanced Options → PCIe Speed → Enable PCIe Gen 3    sudo reboot</code> 3. <strong>Verify in kernel logs</strong>: <code>bash    dmesg | grep -i memryx    lspci | grep -i memryx</code></p>
+<p><img src="./images/png/check1.png" class="img-fluid"> 4. <strong>Ensure sufficient power</strong>: Use the official Raspberry Pi 27W power supply 5. <strong>Check HAT installation</strong>: Ensure the M.2 HAT is properly seated. 6. <strong>Lower Frequency</strong>: Try running <code>sudo mx_set_powermode</code> with a lower frequency, such as 200 or 300 MHz. Then restart mxa-manager for good measure with <code>sudo service mxa-manager restart</code></p>
+<pre><code>&gt; If decreasing the frequency solves the issue, then you can either keep the default frequency for all DFPs at 300 MHz (or 400, 450, etc.), or you can raise it back to 500 MHz and use the [C++ API's set_operating_frequency function](https://developer.memryx.com/api/accelerator/cpp.html#_CPPv4N2MX7Runtime10MxAcclBase23set_operating_frequencyEiN2MX5Types17MxFrequencyOptionE) to change the clock speed on a per-DFP basis.</code></pre>
+<p><img src="./images/png/change-freq..png" class="img-fluid"></p>
+</section>
+<section id="compilation-errors" class="level3">
+<h3 class="anchored" data-anchor-id="compilation-errors">Compilation Errors</h3>
+<p><strong>Symptom</strong>: <code>mx_nc</code> fails with “Unsupported operator” error</p>
+<p><strong>Solutions</strong>: 1. Check the <a href="https://developer.memryx.com/specs/supported_ops.html">supported operators</a> 2. Some custom layers may need reformulation 3. Try exporting to ONNX first for better compatibility: ```python import tensorflow as tf import tf2onnx</p>
+<p>model = tf.keras.models.load_model(‘model.h5’) onnx_model, _ = tf2onnx.convert.from_keras(model) with open(“model.onnx”, “wb”) as f: f.write(onnx_model.SerializeToString()) ``<code>4. Check the compilation log (</code>-v` flag) to identify which specific layer is causing issues</p>
+</section>
+<section id="thermal-throttling" class="level3">
+<h3 class="anchored" data-anchor-id="thermal-throttling">Thermal Throttling</h3>
+<p><strong>Symptom</strong>: Performance degrades over time, temperature &gt; 90°C</p>
+<p><strong>Solutions</strong>: 1. <strong>Verify heatsink installation</strong>: Ensure thermal paste is properly applied and heatsink is firmly attached 2. <strong>Improve airflow</strong>: Position the Raspberry Pi for better air circulation 3. <strong>Check ambient temperature</strong>: Ensure the room temperature is reasonable (&lt;30°C) 4. <strong>Monitor continuously</strong>:</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="ex">watch</span> <span class="at">-n</span> 1 cat /sys/memx0/temperature</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="5" type="1">
+<li><strong>Consider additional cooling</strong>: Add a small fan directed at the heatsink</li>
+</ol>
+</section>
+<section id="python-version-conflicts" class="level3">
+<h3 class="anchored" data-anchor-id="python-version-conflicts">Python Version Conflicts</h3>
+<p><strong>Symptom</strong>: <code>pip install memryx</code> fails with compatibility errors</p>
+<p><strong>Solutions</strong>:</p>
+<ol type="1">
+<li><p>Verify Python version:</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">--version</span>  <span class="co"># Must show 3.11.x or 3.12.x</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> <span class="at">--version</span>     <span class="co"># Should match the Python version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Ensure you’re in the virtual environment:</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> python  <span class="co"># Should point to mx-env/bin/python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Try reinstalling in a fresh virtual environment:</p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="ex">deactivate</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> mx-env</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv mx-env</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> mx-env/bin/activate</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> pip wheel</span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--extra-index-url</span> https://developer.memryx.com/pip memryx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+</section>
+<section id="low-fps-poor-performance" class="level3">
+<h3 class="anchored" data-anchor-id="low-fps-poor-performance">Low FPS / Poor Performance</h3>
+<p><strong>Symptom</strong>: Benchmark shows much lower FPS than expected</p>
+<p><strong>Solutions</strong>: 1. <strong>Check for thermal throttling</strong>: <code>bash    cat /sys/memx0/temperature  # Should be &lt;80°C</code> 2. <strong>Verify PCIe Gen 3 is enabled</strong> (not Gen 2): <code>bash    sudo raspi-config    # Advanced Options → PCIe Speed</code> 3. <strong>Close other PCIe-intensive applications</strong>: Ensure no other devices are saturating the PCIe bus 4. <strong>Check for background CPU load</strong>: <code>bash    htop</code> 5. <strong>Verify driver version</strong>: Ensure you have the latest drivers</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="ex">apt</span> policy memx-drivers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="6" type="1">
+<li><strong>Verify Frequency</strong></li>
+</ol>
+<p>​ By default, the frequency should be at 500 MHz. Smaller frequencies will reduce the FPS (increase the latency)</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>   <span class="ex">mx_bench</span> <span class="at">--hello</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="import-errors" class="level3">
+<h3 class="anchored" data-anchor-id="import-errors">Import Errors</h3>
+<p><strong>Symptom</strong>: <code>ImportError: cannot import name 'SyncAccl' from 'memryx'</code></p>
+<p><strong>Solutions</strong>: 1. Ensure memryx is installed in the current environment: <code>bash    pip list | grep memryx</code> 2. Reinstall if necessary: <code>bash    pip install --force-reinstall --extra-index-url https://developer.memryx.com/pip memryx</code> 3. Check Python path conflicts: <code>python    import sys    print(sys.path)</code></p>
+</section>
+<section id="model-accuracy-issues" class="level3">
+<h3 class="anchored" data-anchor-id="model-accuracy-issues">Model Accuracy Issues</h3>
+<p><strong>Symptom</strong>: Inference results are incorrect or significantly different from CPU</p>
+<p><strong>Solutions</strong>: 1. <strong>Verify preprocessing</strong>: Ensure the same preprocessing is applied as during training 2. <strong>Check input normalization</strong>: Confirm the value range matches training (e.g., [0, 1] vs [-1, 1]) 3. <strong>Test with known inputs</strong>: Use the validation dataset to verify accuracy 4. <strong>Compare outputs numerically</strong>: Print raw logits/probabilities to identify differences 5. <strong>Check for quantization effects</strong>: If using <code>-q</code> flag, try without quantization first</p>
+</section>
+</section>
+<section id="next-steps-and-extensions" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps-and-extensions">Next Steps and Extensions</h2>
+<section id="project-ideas" class="level3">
+<h3 class="anchored" data-anchor-id="project-ideas">Project Ideas</h3>
+<ol type="1">
+<li><strong>Real-time Object Detection with Camera</strong>
+<ul>
+<li>Integrate picamera2 with YOLO</li>
+<li>Display bounding boxes in real-time</li>
+<li>Measure end-to-end latency (capture → inference → display)</li>
+</ul></li>
+<li><strong>Multi-Model Pipeline</strong>
+<ul>
+<li>Use detection + classification cascade</li>
+<li>Leverage multiple MX3 chips for parallel inference</li>
+<li>Build a smart surveillance system</li>
+</ul></li>
+<li><strong>Custom Model Deployment</strong>
+<ul>
+<li>Train your own model for a specific task</li>
+<li>Optimize and compile for MX3</li>
+<li>Compare against the models from previous labs</li>
+</ul></li>
+<li><strong>Power Efficiency Study</strong>
+<ul>
+<li>Measure power consumption with a USB meter</li>
+<li>Compare CPU vs.&nbsp;MX3 energy per inference</li>
+<li>Calculate battery life for mobile applications</li>
+</ul></li>
+<li><strong>Multi-Stream Processing</strong>
+<ul>
+<li>Process multiple camera streams simultaneously</li>
+<li>Demonstrate chip utilization across streams</li>
+<li>Build a multi-camera monitoring system</li>
+</ul></li>
+</ol>
+</section>
+<section id="advanced-topics-to-explore" class="level3">
+<h3 class="anchored" data-anchor-id="advanced-topics-to-explore">Advanced Topics to Explore</h3>
+<ul>
+<li><strong>Quantization</strong>: Experiment with 8-bit and 4-bit quantization for even better performance</li>
+<li><strong>Model Zoo</strong>: Explore pre-optimized models in the MemryX Model Explorer</li>
+<li><strong>Async API</strong>: Use AsyncAccl for non-blocking, concurrent processing</li>
+<li><strong>Custom Operators</strong>: Learn to handle models with custom layers</li>
+<li><strong>Multi-chip Scaling</strong>: Understand how workload distributes across the four accelerators</li>
+</ul>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>In this lab, we’ve explored hardware acceleration for edge AI using the MemryX MX3 accelerator. We’ve learned:</p>
+<ol type="1">
+<li>✅ How to install and configure the MX3 hardware</li>
+<li>✅ The MX3 compilation and deployment workflow</li>
+<li>✅ How to benchmark and measure performance</li>
+<li>✅ Building complete inference applications</li>
+<li>✅ Comparing CPU vs.&nbsp;dedicated accelerator performance</li>
+</ol>
+<p>The MX3 demonstrates that dedicated AI accelerators can deliver significant performance improvements for edge applications, achieving FPS several times higher (up to 25x for ResNet-50) than CPU inference while maintaining accuracy and providing deterministic latency.</p>
+<p>As edge AI continues to evolve, hardware acceleration will become increasingly important for real-time, power-efficient deployments. The skills we’ve developed in this lab—understanding the compilation workflow, benchmarking methodologies, and performance optimization—will transfer to other accelerator platforms as well.</p>
+</section>
+<section id="references-and-further-reading" class="level2">
+<h2 class="anchored" data-anchor-id="references-and-further-reading">References and Further Reading</h2>
+<section id="official-documentation" class="level3">
+<h3 class="anchored" data-anchor-id="official-documentation">Official Documentation</h3>
+<ol type="1">
+<li><a href="https://developer.memryx.com/">MemryX Developer Hub</a></li>
+<li><a href="https://memryx.com/wp-content/uploads/2025/04/MX3-M.2-AI-Accelerator-Module-Product-brief-DEC25-Gold.pdf">MX3 Product Brief</a></li>
+<li><a href="https://developer.memryx.com/architecture/architecture.html">Architecture Overview</a></li>
+<li><a href="https://developer.memryx.com/specs/supported_ops.html">Supported Operators</a></li>
+</ol>
+</section>
+<section id="code-and-examples" class="level3">
+<h3 class="anchored" data-anchor-id="code-and-examples">Code and Examples</h3>
+<ol start="5" type="1">
+<li><a href="https://github.com/memryx/MemryX_eXamples">MemryX eXamples Repository</a></li>
+<li><a href="https://github.com/MemryX">MemryX GitHub Organization</a></li>
+<li><a href="https://developer.memryx.com/model_explorer/models.html">Model eXplorer</a></li>
+<li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/Hardware_Acceleration">Lab Code Repo</a></li>
+</ol>
+</section>
+<section id="background-reading" class="level3">
+<h3 class="anchored" data-anchor-id="background-reading">Background Reading</h3>
+<ol start="9" type="1">
+<li><a href="https://mlsysbook.ai/book/contents/core/hw_acceleration/hw_acceleration.html">MLSys Book - Hardware Acceleration</a></li>
+<li><a href="https://www.raspberrypi.com/documentation/computers/raspberry-pi-5.html#pcie-gen-3-mode">Raspberry Pi PCIe Documentation</a></li>
+</ol>
+</section>
+<section id="community-and-support" class="level3">
+<h3 class="anchored" data-anchor-id="community-and-support">Community and Support</h3>
+<ol start="11" type="1">
+<li><a href="https://www.youtube.com/@MemryxInc">MemryX YouTube Channel</a></li>
+<li><a href="https://developer.memryx.com/support/index.html">MemryX Support Portal</a></li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/executorch/executorch.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Image Classification with EXECUTORCH</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/rnn-verne/rnn-verne.html" class="pagination-link">
+        <span class="nav-page-text">Text Generation with RNNs</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>
