@@ -624,14 +624,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Add to ~/.bashrc</span></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export PYENV_ROOT="$HOME/.pyenv"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'command -v pyenv &gt;/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'eval "$(pyenv init -)"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Reload shell</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Python 3.11.14</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="ex">pyenv</span> install 3.11.14</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'command -v pyenv &gt;/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"'</span> <span class="dt">\</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;</span> ~/.bashrc</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'eval "$(pyenv init -)"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Reload shell</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Python 3.11.14</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="ex">pyenv</span> install 3.11.14</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This process takes several minutes as it compiles Python from source.</p>
 </section>
 <section id="set-python-version-for-project" class="level4">
@@ -656,9 +657,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="add-memryx-repository-and-key" class="level4">
 <h4 class="anchored" data-anchor-id="add-memryx-repository-and-key">Add MemryX Repository and Key</h4>
 <p>This command downloads the repository’s GPG key for package verification and adds the MemryX package repository:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-qO-</span> https://developer.memryx.com/deb/memryx.asc <span class="kw">|</span> <span class="fu">sudo</span> tee /etc/apt/trusted.gpg.d/memryx.asc <span class="op">&gt;</span>/dev/null</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'deb https://developer.memryx.com/deb stable main'</span> <span class="kw">|</span> <span class="fu">sudo</span> tee /etc/apt/sources.list.d/memryx.list <span class="op">&gt;</span>/dev/null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-qO-</span> https://developer.memryx.com/deb/memryx.asc <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tee /etc/apt/trusted.gpg.d/memryx.asc <span class="op">&gt;</span>/dev/null</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'deb https://developer.memryx.com/deb stable main'</span> <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tee /etc/apt/sources.list.d/memryx.list <span class="op">&gt;</span>/dev/null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="update-and-install-drivers-and-sdk" class="level4">
 <h4 class="anchored" data-anchor-id="update-and-install-drivers-and-sdk">Update and Install Drivers and SDK</h4>
@@ -734,13 +737,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>TensorFlow Lite</strong> (.tflite)</li>
 </ul>
 <p>The model remains in its original format—no framework-specific conversions needed yet. For this lab, we’re using MobileNetV2 from Keras Applications, but we could equally use a custom model we have trained for a specific task, as we have seen before.</p>
-<p><strong>Supported Operations</strong>: The MX3 supports most common deep learning operators (convolutions, pooling, activations, etc.). Check the <a href="https://developer.memryx.com/specs/supported_ops.html">supported operators list</a> if using custom architectures. Unsupported operations will fall back to CPU, though this is rare for standard vision models.</p>
+<p><strong>Supported Operations</strong>: The MX3 supports most common deep learning operators (convolutions, pooling, activations, etc.). Check the <a href="https://developer.memryx.com/specs/operators/operators.html">supported operators</a> if using custom architectures. Unsupported operations will fall back to CPU, though this is rare for standard vision models.</p>
 </section>
 <section id="step-2-compile-with-neural-compiler" class="level4">
 <h4 class="anchored" data-anchor-id="step-2-compile-with-neural-compiler">Step 2: Compile with Neural Compiler</h4>
 <p>The MemryX Neural Compiler (<code>mx_nc</code>) transforms the model into a DFP (Dataflow Package):</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span> <span class="at">-m</span> <span class="op">&lt;</span>model_file<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><strong>Common compilation options</strong>: - <code>-v</code> : Verbose output showing compilation stages - <code>-c &lt;chip_count&gt;</code> : Target specific number of chips (1-4) - <code>-q &lt;8|4&gt;</code> : Apply quantization (8-bit or 4-bit)</p>
+<p>The MemryX Neural Compiler, <a href="https://developer.memryx.com/tools/neural_compiler.html">mx_nc</a>, is a command‑line tool that takes one or more neural‑network models (Keras, TensorFlow, TFLite, ONNX, etc.) and compiles them into a MemryX Dataflow Program (DFP) that can run on MemryX accelerators (MXA). Internally, it does framework import, graph optimization (fusion/splitting, operator expansion, activation approximation), resource mapping on the MXA cores, and finally emits the DFP used by the runtime or simulator.</p>
+<p><strong>What <code>mx_nc</code> does:</strong></p>
+<ul>
+<li><p>Compiles models into a single DFP file per compilation, then loads it onto one or more MXA chips to run inference.</p></li>
+<li><p>Supports multi‑model, multi‑stream, and multi‑chip mapping, automatically distributing models and layers across available MX3 devices for higher throughput.</p></li>
+<li><p>Handles mixed‑precision weights (per‑channel 4/8/16‑bit) while keeping activations in floating point on the accelerator. By default, MemryX quantizes weights to INT8 precision and activations to BFloat16.</p></li>
+<li><p>Can crop pre/post‑processing parts of the graph so the MXA focuses on the core CNN/ML operators while the host CPU runs the cropped sections.</p></li>
+</ul>
 <p><strong>What happens during compilation?</strong></p>
 <ol type="1">
 <li><strong>Model parsing</strong>: Loads the model and extracts the computational graph</li>
@@ -751,8 +761,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Multi-chip distribution</strong>: If using multiple chips, partitions the workload</li>
 </ol>
 <p>The compiler is surprisingly tolerant—most models compile without any modifications. If a layer isn’t supported, you’ll get a clear error message indicating which operation failed.</p>
-<p><strong>Compilation time</strong> varies by model complexity: - Small models (MobileNet): ~30 seconds - Medium models (ResNet50): ~2 minutes<br>
-- Large models (EfficientNet): ~5 minutes</p>
+<p><strong>Key command‑line options (high level)</strong></p>
+<ul>
+<li>Model specification:
+<ul>
+<li><code>-m</code> / <code>--models</code> – input model file(s) (e.g.&nbsp;<code>.h5</code>, <code>.pb</code>, <code>.onnx</code>, TFLite).<br>
+</li>
+<li>Multi‑model example: <code>mx_nc -v -m model_0.h5 model_1.onnx</code>.</li>
+</ul></li>
+<li>Input shapes:
+<ul>
+<li><code>-is</code>, <code>--input_shapes</code> – specify input shape(s) when they cannot be inferred, always in NHWC order (e.g.&nbsp;<code>"224,224,3"</code>).</li>
+<li>Supports <code>"auto"</code> for models where shapes can be inferred: <code>-is "auto" "300,300,3"</code>.</li>
+</ul></li>
+<li>Cropping / pre‑ and post‑processing control:
+<ul>
+<li><code>--autocrop</code> – experimental automatic cropping of pre/post‑processing layers. See the YOLOv8 example further in this chapter.</li>
+<li><code>--inputs</code>, <code>--outputs</code> – manually set which graph nodes are treated as the MXA inputs/outputs; everything outside is cropped to run on the host.</li>
+<li>For multi‑model graphs, inputs/outputs of different models are separated with <code>|</code> (vertical bar).</li>
+<li><code>--model_in_out</code> – JSON file describing model inputs/outputs for more complex single or multi‑model cases.</li>
+</ul></li>
+<li>Multi‑chip / system sizing:
+<ul>
+<li><code>-c</code> – number of MXA chips; <code>-c 2</code> means compile for two chips and distribute workload across them.</li>
+</ul></li>
+<li>Diagnostics / verbosity:
+<ul>
+<li><code>-v</code>, <code>-vv</code>, etc. – increase verbosity, useful to inspect graph transformations and cropping decisions.</li>
+</ul></li>
+<li>Extensions / unsupported patterns:
+<ul>
+<li><code>--extensions</code> – load Neural Compiler Extensions (<code>.nce</code> files or builtin names) to add or patch graph handling (e.g., complex transformer subgraphs or unsupported ops) without a new SDK release.</li>
+</ul></li>
+</ul>
+<blockquote class="blockquote">
+<p>For the complete option list (including less common flags), run <code>mx_nc -h</code> or consult the <a href="https://developer.memryx.com/tools/neural_compiler.html">Neural Compiler</a> page in the MemryX Developer Hub, which documents all arguments and includes usage examples for single‑model, multi‑model, cropping, and mixed‑precision flows.</p>
+</blockquote>
+<p><strong>Compilation time</strong> varies by model complexity:</p>
+<ul>
+<li>Small models (MobileNet): ~30 seconds</li>
+<li>Medium models (ResNet50): ~2 minutes<br>
+</li>
+<li>Large models (EfficientNet): ~5 minutes</li>
+</ul>
 <p>Once compiled, the DFP file is portable across all MX3 hardware.</p>
 </section>
 <section id="step-3-deploy-and-benchmark" class="level4">
@@ -760,7 +811,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Before integrating into our application, we can verify performance with the benchmarking tool:</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_bench</span> <span class="at">-d</span> <span class="op">&lt;</span>dfp_file<span class="op">&gt;</span> -f <span class="op">&lt;</span>num_frames<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The benchmarker: - Generates synthetic input data matching the model’s input shape - Runs warm-up inferences to stabilize performance - Measures throughput (FPS), latency, and chip utilization - Reports first-inference latency (includes loading overhead)</p>
-<p><strong>Why benchmark separately?</strong> Because real-world applications involve preprocessing (image loading, resizing) and postprocessing (parsing outputs). Benchmarking isolates pure inference performance, letting to identify bottlenecks in our full pipeline.</p>
+<p><strong>Why benchmark separately?</strong> Real-world applications involve preprocessing (image loading and resizing) and postprocessing (parsing outputs). Benchmarking isolates pure inference performance, letting to identify bottlenecks in our full pipeline.</p>
 </section>
 <section id="step-4-integrate-into-the-application" class="level4">
 <h4 class="anchored" data-anchor-id="step-4-integrate-into-the-application">Step 4: Integrate into the Application</h4>
@@ -789,16 +840,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="complete-workflow-example">Complete Workflow Example</h4>
 <p>Let’s see the four steps in action with MobileNetV2:</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Get a model (already trained)</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import tensorflow as tf; tf.keras.applications.MobileNetV2().save('mobilenet_v2.h5');"</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Compile to DFP</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">-m</span> mobilenet_v2.h5</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Benchmark</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_bench</span> <span class="at">-d</span> mobilenet_v2.dfp <span class="at">-f</span> 1000</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Integrate (see full Python script in next section)</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run_inference_mobilenetv2.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import tensorflow as tf; </span><span class="dt">\</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="st">tf.keras.applications.MobileNetV2().save('mobilenet_v2.h5');"</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Compile to DFP</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">-m</span> mobilenet_v2.h5</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Benchmark</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_bench</span> <span class="at">-d</span> mobilenet_v2.dfp <span class="at">-f</span> 1000</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Integrate (see full Python script in next section)</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run_inference_mobilenetv2.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This workflow is remarkably consistent across models and use cases. Once we’ve done it for one model, adapting to others is straightforward.</p>
 <blockquote class="blockquote">
 <p><strong>Key Takeaway</strong>: The MX3 workflow separates compilation (done once) from inference (done repeatedly). This “compile-once, run-many” approach means the optimization overhead is amortized over thousands or millions of inferences in production.</p>
@@ -807,9 +859,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="download-and-compile-mobilenetv2" class="level3">
 <h3 class="anchored" data-anchor-id="download-and-compile-mobilenetv2">Download and Compile MobileNetV2</h3>
-<p>On <a href="https://keras.io/api/applications/">Keras Applications</a>, we can find deep learning models that are made available alongside pre-trained weights. These models can be used for prediction, feature extraction, and fine-tuning.</p>
+<p>In Keras Applications, we can find deep learning models that are provided with pre-trained weights. These models can be used for prediction, feature extraction, and fine-tuning.</p>
 <p>Let’s download MobileNetV2, which was used in previous labs:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import tensorflow as tf; tf.keras.applications.MobileNetV2().save('mobilenet_v2.h5');"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import tensorflow as tf; \ </span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="st">tf.keras.applications.MobileNetV2().save('mobilenet_v2.h5');"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The model is saved in the current directory as <code>mobilenet_v2.h5</code>.</p>
 <p>Next, we will compile the MobileNetV2 model using the MemryX Neural Compiler. This step verifies that both the compiler and the SDK tools are installed and functioning as expected:</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">-m</span> mobilenet_v2.h5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -846,8 +899,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>The benchmark runs with random input data, which is why we see consistent performance. Real-world performance with actual images should be similar once the preprocessing pipeline is optimized, but we have found bigger latency.</p>
 <blockquote class="blockquote">
-<p><strong>Power consumption during benchmarking is around 12W (2.4A), and the module temperature reaches approximately 60°C.</strong></p>
+<p>In true dataflow architecture, latency and FPS are not coupled in the traditional sense; latency does not equal 1/FPS. Note that even though latency is ~2ms in the above benchmarking results, FPS is not measured to be 1000 ms / 2 ms = 500 FPS; rather, the FPS from the benchmarking results is ~1160.</p>
 </blockquote>
+<p>In MemryX’s dataflow architecture, the “usual” rule (<code>latency = 1/FPS</code>) only applies to frame‑to‑frame latency, not to end‑to‑end in‑to‑out latency for a single frame. That is why we see ~2 ms latency per frame, yet still measure around 1160 FPS in MX3 benchmarks.</p>
+<p><strong>Two different latencies</strong> MemryX explicitly distinguishes two metrics.</p>
+<ul>
+<li>Latency 1 (frame‑to‑frame latency): Time between consecutive outputs once the pipeline is full. Its reciprocal is FPS.</li>
+<li>Latency 2 (full in‑to‑out latency): Time from when the first input frame enters the system (host + MX3 pipeline) until its output appears. This can be larger, but it does not set the FPS.</li>
+</ul>
+<p>In a streaming, pipelined accelerator like MX3, multiple frames are in‑flight simultaneously, so the pipeline “fills” once and then produces results at a steady cadence.</p>
 </section>
 </section>
 <section id="building-an-inference-application" class="level2">
@@ -892,19 +952,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>MODELS_DIR <span class="op">=</span> Path(<span class="st">"./models"</span>)</span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>IMAGENET_JSON <span class="op">=</span> MODELS_DIR <span class="op">/</span> <span class="st">"imagenet_class_index.json"</span></span>
 <span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>IMAGENET_JSON_URL <span class="op">=</span> (</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://storage.googleapis.com/download.tensorflow.org/data/imagenet_class_index.json"</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- one-time label download ----</span></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ensure_imagenet_labels():</span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    MODELS_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> IMAGENET_JSON.exists():</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Downloading ImageNet class index..."</span>)</span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    resp <span class="op">=</span> requests.get(IMAGENET_JSON_URL, timeout<span class="op">=</span><span class="dv">30</span>)</span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    resp.raise_for_status()</span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    IMAGENET_JSON.write_bytes(resp.content)</span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Saved:"</span>, IMAGENET_JSON)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://storage.googleapis.com/download.tensorflow.org/data/</span><span class="ch">\</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="st">    imagenet_class_index.json"</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- one-time label download ----</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ensure_imagenet_labels():</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    MODELS_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> IMAGENET_JSON.exists():</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Downloading ImageNet class index..."</span>)</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    resp <span class="op">=</span> requests.get(IMAGENET_JSON_URL, timeout<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    resp.raise_for_status()</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    IMAGENET_JSON.write_bytes(resp.content)</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Saved:"</span>, IMAGENET_JSON)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The function <code>load_idx2label()</code> loads the labels into a list:</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_idx2label():</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(IMAGENET_JSON, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
@@ -1043,13 +1104,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="testing-with-larger-models">Testing with Larger Models</h3>
 <p>We can also test a larger model like ResNet50:</p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download ResNet50</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import tensorflow as tf; tf.keras.applications.ResNet50().save('resnet50.h5');"</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile</span></span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">-m</span> resnet50.h5</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the script in the terminal:</span></span>
-<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run_inference_comp_resnet50.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import tensorflow as tf; </span><span class="dt">\</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="st">tf.keras.applications.ResNet50().save('resnet50.h5');"</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">-m</span> resnet50.h5</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the script in the terminal:</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run_inference_comp_resnet50.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
 <p>The script can be found in the lab repo: <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/run_inference_comp_resnet50.py">run_inference_comp_resnet50.py</a> in the terminal:</p>
 </blockquote>
@@ -1152,12 +1214,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>❌ Prototyping where development speed matters more than performance</li>
 <li>❌ Very cost-sensitive applications</li>
 </ul>
-<p>Perfect! You have a clean, working script. Let me help you create a comprehensive tutorial structure for YOLOv8 inference with MX3 hardware acceleration. Here’s what I suggest:</p>
 </section>
 </section>
 <section id="yolov8-object-detection-with-mx3-hardware-acceleration" class="level2">
 <h2 class="anchored" data-anchor-id="yolov8-object-detection-with-mx3-hardware-acceleration">YOLOv8 Object Detection with MX3 Hardware Acceleration</h2>
-<p>In this part of the lab, we’ll deploy YOLOv8n (nano) for real-time object detection using the MemryX MX3 AI accelerator on Raspberry Pi 5. We’ll cover the complete workflow from model export to inference optimization.</p>
+<p>In this part of the lab, we’ll deploy YOLOv8n (nano) for real-time object detection on the Raspberry Pi 5 using the MemryX MX3 AI accelerator. We’ll cover the complete workflow from model export to inference optimization.</p>
 <p><img src="./images/png/flow-yolo.png" class="img-fluid"></p>
 <p>But first, we should install ULTRALYTICS</p>
 <p>The MemoryX team suggested:</p>
@@ -1275,7 +1336,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
 <li><code>CONF_THRESHOLD</code>: minimum confidence score; detections below this are filtered out.</li>
 </ul>
-<p>In a tutorial you can explain that changing these values lets the user swap models or images without modifying the rest of the code.</p>
 </section>
 <section id="running-detection" class="level4">
 <h4 class="anchored" data-anchor-id="running-detection">Running detection</h4>
@@ -1684,65 +1744,147 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="device-not-detected" class="level3">
 <h3 class="anchored" data-anchor-id="device-not-detected">Device Not Detected</h3>
 <p><strong>Symptom</strong>: <code>ls /dev/memx*</code> returns “No such file or directory”</p>
-<p><strong>Solutions</strong>: 1. <strong>Verify physical connection</strong>: Reseat the M.2 module in its slot 2. <strong>Check PCIe settings</strong>: <code>bash    sudo raspi-config    # Navigate to: Advanced Options → PCIe Speed → Enable PCIe Gen 3    sudo reboot</code> 3. <strong>Verify in kernel logs</strong>: <code>bash    dmesg | grep -i memryx    lspci | grep -i memryx</code></p>
-<p><img src="./images/png/check1.png" class="img-fluid"> 4. <strong>Ensure sufficient power</strong>: Use the official Raspberry Pi 27W power supply 5. <strong>Check HAT installation</strong>: Ensure the M.2 HAT is properly seated. 6. <strong>Lower Frequency</strong>: Try running <code>sudo mx_set_powermode</code> with a lower frequency, such as 200 or 300 MHz. Then restart mxa-manager for good measure with <code>sudo service mxa-manager restart</code></p>
-<pre><code>&gt; If decreasing the frequency solves the issue, then you can either keep the default frequency for all DFPs at 300 MHz (or 400, 450, etc.), or you can raise it back to 500 MHz and use the [C++ API's set_operating_frequency function](https://developer.memryx.com/api/accelerator/cpp.html#_CPPv4N2MX7Runtime10MxAcclBase23set_operating_frequencyEiN2MX5Types17MxFrequencyOptionE) to change the clock speed on a per-DFP basis.</code></pre>
+<p><strong>Solutions</strong>:</p>
+<ul>
+<li><strong>Verify physical connection</strong>: Reseat the M.2 module in its slot</li>
+<li><strong>Check PCIe settings</strong>:</li>
+</ul>
+<div class="sourceCode" id="cb73"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Navigate to: Advanced Options → PCIe Speed → Enable PCIe Gen 3</span></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>Verify in kernel logs</strong>:</li>
+</ul>
+<div class="sourceCode" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dmesg</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-i</span> memryx</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-i</span> memryx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/check1.png" class="img-fluid"></p>
+<ul>
+<li><strong>Ensure sufficient power</strong>: Use the official Raspberry Pi 27W power supply<strong>Check HAT installation</strong>: Ensure the M.2 HAT is properly seated.</li>
+<li><strong>Lower Frequency</strong>: Try running <code>sudo mx_set_powermode</code> with a lower frequency, such as 200 or 300 MHz. Then restart mxa-manager for good measure with <code>sudo service mxa-manager restart</code></li>
+</ul>
+<div class="sourceCode" id="cb75"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mx_set_powermode</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/change-freq..png" class="img-fluid"></p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> service mxa-manager restart</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Check the frequency with the following command:</p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/memryx/power.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="./images/png/check-freq.png" class="img-fluid"></p>
+<p>We can check it by the first field of the file, <code>FREQ4</code>. If the Raspberry Pi is set to the module’s default operating frequency (500 MHz), we should see <code>FREQ4C=500</code>, indicating that the module is set to a 500 MHz clock speed for 4-chip DFPs.</p>
+<blockquote class="blockquote">
+<p>If decreasing the frequency solves the issue, then you can either keep the default frequency for all DFPs at 300 MHz (or 400, 450, etc.), or you can raise it back to 500 MHz and use the <a href="https://developer.memryx.com/api/accelerator/cpp.html#_CPPv4N2MX7Runtime10MxAcclBase23set_operating_frequencyEiN2MX5Types17MxFrequencyOptionE">C++ API’s set_operating_frequency function</a> to change the clock speed on a per-DFP basis.</p>
+</blockquote>
 </section>
 <section id="compilation-errors" class="level3">
 <h3 class="anchored" data-anchor-id="compilation-errors">Compilation Errors</h3>
 <p><strong>Symptom</strong>: <code>mx_nc</code> fails with “Unsupported operator” error</p>
-<p><strong>Solutions</strong>: 1. Check the <a href="https://developer.memryx.com/specs/supported_ops.html">supported operators</a> 2. Some custom layers may need reformulation 3. Try exporting to ONNX first for better compatibility: ```python import tensorflow as tf import tf2onnx</p>
-<p>model = tf.keras.models.load_model(‘model.h5’) onnx_model, _ = tf2onnx.convert.from_keras(model) with open(“model.onnx”, “wb”) as f: f.write(onnx_model.SerializeToString()) ``<code>4. Check the compilation log (</code>-v` flag) to identify which specific layer is causing issues</p>
+<p><strong>Solutions</strong>: - Check the <a href="https://developer.memryx.com/specs/supported_ops.html">supported operators</a></p>
+<ul>
+<li><p>Some custom layers may need reformulation</p></li>
+<li><p>Try exporting to ONNX first for better compatibility:</p></li>
+</ul>
+<div class="sourceCode" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tf2onnx</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.load_model(<span class="st">'model.h5'</span>)</span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>onnx_model, _ <span class="op">=</span> tf2onnx.convert.from_keras(model)</span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"model.onnx"</span>, <span class="st">"wb"</span>) <span class="im">as</span> f:</span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a>    f.write(onnx_model.SerializeToString())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Check the compilation log (<code>-v</code> flag) to identify which specific layer is causing issues</li>
+</ul>
 </section>
 <section id="thermal-throttling" class="level3">
 <h3 class="anchored" data-anchor-id="thermal-throttling">Thermal Throttling</h3>
 <p><strong>Symptom</strong>: Performance degrades over time, temperature &gt; 90°C</p>
-<p><strong>Solutions</strong>: 1. <strong>Verify heatsink installation</strong>: Ensure thermal paste is properly applied and heatsink is firmly attached 2. <strong>Improve airflow</strong>: Position the Raspberry Pi for better air circulation 3. <strong>Check ambient temperature</strong>: Ensure the room temperature is reasonable (&lt;30°C) 4. <strong>Monitor continuously</strong>:</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="ex">watch</span> <span class="at">-n</span> 1 cat /sys/memx0/temperature</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ol start="5" type="1">
-<li><strong>Consider additional cooling</strong>: Add a small fan directed at the heatsink</li>
-</ol>
+<p><strong>Solutions</strong>:</p>
+<ul>
+<li><strong>Verify heatsink installation</strong>: Ensure thermal paste is properly applied and heatsink is firmly attached</li>
+<li><strong>Improve airflow</strong>: Position the Raspberry Pi for better air circulation</li>
+<li><strong>Check ambient temperature</strong>: Ensure the room temperature is reasonable (&lt;30°C)</li>
+<li><strong>Monitor continuously</strong>:</li>
+</ul>
+<div class="sourceCode" id="cb79"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="ex">watch</span> <span class="at">-n</span> 1 cat /sys/memx0/temperature</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>= <strong>Consider additional cooling</strong>: Add a small fan directed at the heatsink</p>
 </section>
 <section id="python-version-conflicts" class="level3">
 <h3 class="anchored" data-anchor-id="python-version-conflicts">Python Version Conflicts</h3>
 <p><strong>Symptom</strong>: <code>pip install memryx</code> fails with compatibility errors</p>
 <p><strong>Solutions</strong>:</p>
-<ol type="1">
-<li><p>Verify Python version:</p>
-<div class="sourceCode" id="cb75"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">--version</span>  <span class="co"># Must show 3.11.x or 3.12.x</span></span>
-<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> <span class="at">--version</span>     <span class="co"># Should match the Python version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-<li><p>Ensure you’re in the virtual environment:</p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> python  <span class="co"># Should point to mx-env/bin/python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-<li><p>Try reinstalling in a fresh virtual environment:</p>
-<div class="sourceCode" id="cb77"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="ex">deactivate</span></span>
-<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> mx-env</span>
-<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv mx-env</span>
-<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> mx-env/bin/activate</span>
-<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> pip wheel</span>
-<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--extra-index-url</span> https://developer.memryx.com/pip memryx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-</ol>
+<ul>
+<li>Verify Python version:</li>
+</ul>
+<div class="sourceCode" id="cb80"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">--version</span>  <span class="co"># Must show 3.11.x or 3.12.x</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> <span class="at">--version</span>     <span class="co"># Should match the Python version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Ensure you’re in the virtual environment:</li>
+</ul>
+<div class="sourceCode" id="cb81"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> python  <span class="co"># Should point to mx-env/bin/python</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Try reinstalling in a fresh virtual environment:</li>
+</ul>
+<div class="sourceCode" id="cb82"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="ex">deactivate</span></span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> mx-env</span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv mx-env</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> mx-env/bin/activate</span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> pip wheel</span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--extra-index-url</span> https://developer.memryx.com/pip memryx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="low-fps-poor-performance" class="level3">
 <h3 class="anchored" data-anchor-id="low-fps-poor-performance">Low FPS / Poor Performance</h3>
 <p><strong>Symptom</strong>: Benchmark shows much lower FPS than expected</p>
-<p><strong>Solutions</strong>: 1. <strong>Check for thermal throttling</strong>: <code>bash    cat /sys/memx0/temperature  # Should be &lt;80°C</code> 2. <strong>Verify PCIe Gen 3 is enabled</strong> (not Gen 2): <code>bash    sudo raspi-config    # Advanced Options → PCIe Speed</code> 3. <strong>Close other PCIe-intensive applications</strong>: Ensure no other devices are saturating the PCIe bus 4. <strong>Check for background CPU load</strong>: <code>bash    htop</code> 5. <strong>Verify driver version</strong>: Ensure you have the latest drivers</p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="ex">apt</span> policy memx-drivers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ol start="6" type="1">
+<p><strong>Solutions</strong>:</p>
+<ul>
+<li><strong>Check for thermal throttling</strong>:</li>
+</ul>
+<div class="sourceCode" id="cb83"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /sys/memx0/temperature  <span class="co"># Should be &lt;80°C</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>Verify PCIe Gen 3 is enabled</strong> (not Gen 2):</li>
+</ul>
+<div class="sourceCode" id="cb84"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Advanced Options → PCIe Speed</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>Close other PCIe-intensive applications</strong>: Ensure no other devices are saturating the PCIe bus</li>
+<li><strong>Check for background CPU load</strong>:</li>
+</ul>
+<div class="sourceCode" id="cb85"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="ex">htop</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>Verify driver version</strong>: Ensure you have the latest drivers</li>
+</ul>
+<div class="sourceCode" id="cb86"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="ex">apt</span> policy memx-drivers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
 <li><strong>Verify Frequency</strong></li>
-</ol>
+</ul>
 <p>​ By default, the frequency should be at 500 MHz. Smaller frequencies will reduce the FPS (increase the latency)</p>
-<div class="sourceCode" id="cb79"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>   <span class="ex">mx_bench</span> <span class="at">--hello</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/memryx/power.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="import-errors" class="level3">
 <h3 class="anchored" data-anchor-id="import-errors">Import Errors</h3>
 <p><strong>Symptom</strong>: <code>ImportError: cannot import name 'SyncAccl' from 'memryx'</code></p>
-<p><strong>Solutions</strong>: 1. Ensure memryx is installed in the current environment: <code>bash    pip list | grep memryx</code> 2. Reinstall if necessary: <code>bash    pip install --force-reinstall --extra-index-url https://developer.memryx.com/pip memryx</code> 3. Check Python path conflicts: <code>python    import sys    print(sys.path)</code></p>
+<p><strong>Solutions</strong>:</p>
+<ul>
+<li>Ensure <code>memryx</code> is installed in the current environment:</li>
+</ul>
+<div class="sourceCode" id="cb88"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> list <span class="kw">|</span> <span class="fu">grep</span> memryx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Reinstall if necessary:</li>
+</ul>
+<div class="sourceCode" id="cb89"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--force-reinstall</span> <span class="at">--extra-index-url</span> <span class="dt">\</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>https://developer.memryx.com/pip memryx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Check Python path conflicts:</li>
+</ul>
+<div class="sourceCode" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sys.path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="model-accuracy-issues" class="level3">
 <h3 class="anchored" data-anchor-id="model-accuracy-issues">Model Accuracy Issues</h3>
 <p><strong>Symptom</strong>: Inference results are incorrect or significantly different from CPU</p>
-<p><strong>Solutions</strong>: 1. <strong>Verify preprocessing</strong>: Ensure the same preprocessing is applied as during training 2. <strong>Check input normalization</strong>: Confirm the value range matches training (e.g., [0, 1] vs [-1, 1]) 3. <strong>Test with known inputs</strong>: Use the validation dataset to verify accuracy 4. <strong>Compare outputs numerically</strong>: Print raw logits/probabilities to identify differences 5. <strong>Check for quantization effects</strong>: If using <code>-q</code> flag, try without quantization first</p>
+<p><strong>Solutions</strong>: - <strong>Verify preprocessing</strong>: Ensure the same preprocessing is applied as during training</p>
+<ul>
+<li><p><strong>Check input normalization</strong>: Confirm the value range matches training (e.g., [0, 1] vs [-1, 1])</p></li>
+<li><p><strong>Test with known inputs</strong>: Use the validation dataset to verify accuracy</p></li>
+<li><p><strong>Compare outputs numerically</strong>: Print raw logits/probabilities to identify differences</p></li>
+<li><p><strong>Check for quantization effects</strong>: If using <code>-q</code> flag, try without quantization first</p></li>
+</ul>
 </section>
 </section>
 <section id="next-steps-and-extensions" class="level2">
@@ -1814,7 +1956,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><a href="https://developer.memryx.com/">MemryX Developer Hub</a></li>
 <li><a href="https://memryx.com/wp-content/uploads/2025/04/MX3-M.2-AI-Accelerator-Module-Product-brief-DEC25-Gold.pdf">MX3 Product Brief</a></li>
 <li><a href="https://developer.memryx.com/architecture/architecture.html">Architecture Overview</a></li>
-<li><a href="https://developer.memryx.com/specs/supported_ops.html">Supported Operators</a></li>
+<li><a href="https://developer.memryx.com/specs/operators/operators.html">Supported Operators</a></li>
 </ol>
 </section>
 <section id="code-and-examples" class="level3">
