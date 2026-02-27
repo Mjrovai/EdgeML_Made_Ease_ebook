@@ -95,6 +95,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -113,29 +115,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
     <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
-    <div class="dropdown">
-      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
-          <li>
-            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
-              <i class="bi bi-bi-twitter pe-1"></i>
-            Twitter
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
-              <i class="bi bi-bi-linkedin pe-1"></i>
-            LinkedIn
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
-              <i class="bi bi-bi-facebook pe-1"></i>
-            Facebook
-            </a>
-          </li>
-      </ul>
-    </div>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" rel="" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
@@ -383,7 +363,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#transferring-files-using-ftp" id="toc-transferring-files-using-ftp" class="nav-link" data-scroll-target="#transferring-files-using-ftp">Transferring files using FTP</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#increasing-swap-memory" id="toc-increasing-swap-memory" class="nav-link" data-scroll-target="#increasing-swap-memory">Increasing SWAP Memory</a></li>
+  <li><a href="#increasing-swap-memory" id="toc-increasing-swap-memory" class="nav-link" data-scroll-target="#increasing-swap-memory">Increasing SWAP Memory</a>
+  <ul>
+  <li><a href="#fixedsize-zram-better-for-zero2s-sd-card" id="toc-fixedsize-zram-better-for-zero2s-sd-card" class="nav-link" data-scroll-target="#fixedsize-zram-better-for-zero2s-sd-card">Fixed‑size <strong>zram</strong> (better for Zero‑2’s SD card)</a></li>
+  <li><a href="#notes-specific-to-zero-2-w-trixie" id="toc-notes-specific-to-zero-2-w-trixie" class="nav-link" data-scroll-target="#notes-specific-to-zero-2-w-trixie">Notes specific to Zero 2 W Trixie</a></li>
+  </ul></li>
   <li><a href="#installing-a-camera" id="toc-installing-a-camera" class="nav-link" data-scroll-target="#installing-a-camera">Installing a Camera</a>
   <ul>
   <li><a href="#installing-a-camera-module-on-the-csi-port" id="toc-installing-a-camera-module-on-the-csi-port" class="nav-link" data-scroll-target="#installing-a-camera-module-on-the-csi-port">Installing a Camera Module on the CSI port</a></li>
@@ -398,6 +382,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#raspberry-pi-zero-raspi-zero" id="toc-raspberry-pi-zero-raspi-zero" class="nav-link" data-scroll-target="#raspberry-pi-zero-raspi-zero">Raspberry Pi Zero (Raspi-Zero)</a></li>
   <li><a href="#raspberry-pi-4-or-5-raspi-4-or-raspi-5" id="toc-raspberry-pi-4-or-5-raspi-4-or-raspi-5" class="nav-link" data-scroll-target="#raspberry-pi-4-or-5-raspi-4-or-raspi-5">Raspberry Pi 4 or 5 (Raspi-4 or Raspi-5)</a></li>
+  </ul></li>
+  <li><a href="#measuring-temperature-and-power" id="toc-measuring-temperature-and-power" class="nav-link" data-scroll-target="#measuring-temperature-and-power">Measuring Temperature and Power</a>
+  <ul>
+  <li><a href="#check-cpu-temperature" id="toc-check-cpu-temperature" class="nav-link" data-scroll-target="#check-cpu-temperature">Check CPU Temperature</a>
+  <ul class="collapse">
+  <li><a href="#quick-oneshot-reading" id="toc-quick-oneshot-reading" class="nav-link" data-scroll-target="#quick-oneshot-reading">Quick one‑shot reading</a></li>
+  <li><a href="#continuous-temperature-monitor" id="toc-continuous-temperature-monitor" class="nav-link" data-scroll-target="#continuous-temperature-monitor">Continuous temperature monitor</a></li>
+  <li><a href="#reading-from-sysfs-for-scripts" id="toc-reading-from-sysfs-for-scripts" class="nav-link" data-scroll-target="#reading-from-sysfs-for-scripts">Reading from sysfs (for scripts)</a></li>
+  </ul></li>
+  <li><a href="#understand-power-measurement-on-pi-5" id="toc-understand-power-measurement-on-pi-5" class="nav-link" data-scroll-target="#understand-power-measurement-on-pi-5">Understand Power Measurement on Pi 5</a></li>
+  <li><a href="#script-average-temperature-and-power" id="toc-script-average-temperature-and-power" class="nav-link" data-scroll-target="#script-average-temperature-and-power">Script: Average Temperature and Power</a>
+  <ul class="collapse">
+  <li><a href="#create-the-script" id="toc-create-the-script" class="nav-link" data-scroll-target="#create-the-script">Create the script</a></li>
+  <li><a href="#make-it-executable" id="toc-make-it-executable" class="nav-link" data-scroll-target="#make-it-executable">Make it executable</a></li>
+  </ul></li>
+  <li><a href="#run-a-measurement" id="toc-run-a-measurement" class="nav-link" data-scroll-target="#run-a-measurement">Run a measurement</a></li>
+  <li><a href="#interpreting-the-results" id="toc-interpreting-the-results" class="nav-link" data-scroll-target="#interpreting-the-results">Interpreting the Results</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/setup/setup.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action">Report an issue</a></p><p><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/setup/setup.qmd" class="toc-action">View source</a></p></div></div></nav>
@@ -606,7 +607,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Find your Raspberry Pi’s IP address (for example, check your router).</p></li>
 <li><p>On your computer, open a terminal and connect via SSH:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> username@<span class="pp">[</span><span class="ss">raspberry_pi_ip_address</span><span class="pp">]</span>   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Alternatively, if you do not have the IP address, you can try for example, <code>ssh mjrovai@rpi-5.local</code> , <code>ssh mjrovai@raspi.local</code> , etc.: <code>bash ssh username@hostname.local</code> When you see the prompt:</p>
+<p>Alternatively, if you do not have the IP address, you can try, for example, <code>ssh mjrovai@rpi-5.local</code> , <code>ssh mjrovai@raspi.local</code> , etc.: <code>bash ssh username@hostname.local</code> When you see the prompt:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mjrovai@rpi-5:~</span> $</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>It means you are interacting with your Raspberry Pi remotely.</p>
 <p>It is a good practice to regularly update/upgrade the system. For that, you should run:</p>
@@ -685,31 +686,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Using <code>htop</code>, a cross-platform interactive process viewer, we can easily monitor resources on our Raspberry Pi in real time, including the list of processes, the running CPUs, and the memory usage. To lunch <code>hop</code>, enter with the command on the terminal:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">htop</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/htop.png" class="img-fluid"></p>
-<p>Regarding memory, among the devices in the Raspberry Pi family, the Raspberry Pi Zero has the least SRAM (500 MB), compared to 2GB to 16GB on the Raspberry Pi 4 or 5.</p>
+<p>Regarding memory, among the Raspberry Pi family, the Raspberry Pi Zero has the least SRAM (500 MB), compared to 2GB to 16GB on the Raspberry Pi 4 or 5.</p>
 <p>On any Raspberry Pi, it is possible to increase/modify the system’s available memory using “Swap.” Swap memory, also known as swap space, is a technique used in computer operating systems to temporarily store data from RAM (Random Access Memory) on the SD card when the physical RAM is fully utilized. This allows the operating system (OS) to continue running even when RAM is full, which can prevent system crashes or slowdowns.</p>
 <p>Swap memory benefits devices with limited RAM, such as the Raspberry Pi Zero. Increasing swap can help run more demanding applications or processes, but it’s essential to balance this with the potential performance impact of frequent disk access.</p>
 <p>We can check the swap memory using <code>htop</code>or by the command:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> swapon <span class="at">--show</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/check-swap.png" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p>On the Debian Trixie, 2 MB of swap memory is configured by default on the Rasp-5.</p>
+<p>On the Debian Trixie, 2 MB of swap memory is configured by default on the Rasp-5 and 512MB on the Raspi-Zero</p>
 </blockquote>
-<p>By default, the Rapi-Zero’s SWAP (Swp) memory is only 100MB, which is very small for running some more complex and demanding Machine Learning applications (for example, YOLO). Let’s increase it to 2MB:</p>
-<p>First, turn off swap-file:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dphys-swapfile swapoff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Next, open and modify <code>/etc/dphys-swapfile</code> file. For that, we will use the nano:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/dphys-swapfile</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Search for the <strong>CONF_SWAPSIZE</strong> variable (default is 200) and update it to <strong>2000</strong>:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="va">CONF_SWAPSIZE</span><span class="op">=</span>2000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>And save the file.</p>
-<p>Next, turn on the swapfile again and reboot the Raspberry Pi Zero:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dphys-swapfile setup</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dphys-swapfile swapon</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>When your device reboots (you should enter SSH again), you will notice that the maximum swap memory value shown at the top is now around 2GB (in my case, 1.95GB).</p>
+<p>By default, the Rapi-Zero’s SWAP (zram) memory is 512MB, which may be insufficient for running more complex and demanding Machine Learning applications (for example, YOLO). So, let’s increase it to 2MB:</p>
+<p>On Zero 2 W with Raspberry Pi OS <strong>Trixie</strong>, you configure <code>rpi-swap</code> by dropping a small config file into <code>/etc/rpi/swap.conf.d/</code>. The same mechanism works on Pi 5 and Zero‑2.</p>
+<p>Below are two common patterns: fixed swap file (on SD/SSD) and fixed zram size (in RAM). ### Fixed‑size swap file (e.g., 2 GB on SD)</p>
+<ol type="1">
+<li><p>Create the override directory (if not already there):</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkdir <span class="at">-p</span> /etc/rpi/swap.conf.d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Create an override file:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/rpi/swap.conf.d/fixedswapsize.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Put this in it (example: 2 GB = 2048 MiB):</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[Main]</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Mechanism</span><span class="ot">=</span><span class="st">swapfile</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[File]</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="dt">FixedSizeMiB</span><span class="ot">=</span><span class="dv">2048</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>Mechanism=swapfile</code> tells <code>rpi-swap</code> to use a classic swap file.<br>
+</li>
+<li><code>FixedSizeMiB</code> is the exact size we want, in MiB.</li>
+</ul></li>
+<li><p>Apply:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl restart rpi-swap</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<p>We should now see <code>/var/swap</code> with the size we set.</p>
+<section id="fixedsize-zram-better-for-zero2s-sd-card" class="level3">
+<h3 class="anchored" data-anchor-id="fixedsize-zram-better-for-zero2s-sd-card">Fixed‑size <strong>zram</strong> (better for Zero‑2’s SD card)</h3>
+<p>If we want to keep everything in compressed RAM (no SD wear), we can set a fixed zram size instead:</p>
+<ol type="1">
+<li><p>Create the same drop‑in file:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/rpi/swap.conf.d/fixedzram.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Set the zram swap:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode ini code-with-copy"><code class="sourceCode ini"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[Main]</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Mechanism</span><span class="ot">=</span><span class="st">zram</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[Zram]</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="dt">FixedSizeMiB</span><span class="ot">=</span><span class="dv">2048</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Apply and check:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl restart rpi-swap</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<p>We should see <code>/dev/zram0</code> with the new size.</p>
+</section>
+<section id="notes-specific-to-zero-2-w-trixie" class="level3">
+<h3 class="anchored" data-anchor-id="notes-specific-to-zero-2-w-trixie">Notes specific to Zero 2 W Trixie</h3>
+<ul>
+<li>Default Trixie on Zero‑2 uses <code>rpi-swap</code> with zram sized roughly to <strong>RAM×1</strong>, capped by <code>MaxSizeMiB</code> (usually 2048), and no swap file unless you add it.</li>
+<li>If we create multiple drop‑ins in <code>/etc/rpi/swap.conf.d/</code>, they are merged; keep it simple with one clear override file per board/use‑case.</li>
+</ul>
 <blockquote class="blockquote">
-<p>To keep htop running, open another terminal window to interact with your Raspberry Pi continuously.</p>
+<p>To keep htop running, open another terminal window to continuously interact with the Raspberry Pi.</p>
 </blockquote>
+</section>
 </section>
 <section id="installing-a-camera" class="level2">
 <h2 class="anchored" data-anchor-id="installing-a-camera">Installing a Camera</h2>
@@ -725,28 +762,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Here is another example of a v2 Camera Module, which has a <strong>Sony IMX219</strong> 8-megapixel sensor:</p>
 <p><img src="images/png/raspi-5-cam.png" class="img-fluid"></p>
 <p>First, try to list the installed cameras:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-hello</span> <span class="at">--list-cameras</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-hello</span> <span class="at">--list-cameras</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If the command is not recognized, install</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install libcamera-apps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install libcamera-apps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Try to list the installed camera again. If Ok, you should see something like:</p>
 <p><img src="./images/png/camera-installed.png" class="img-fluid"></p>
 <p>Any camera module will work on the Raspberry Pi, but for that, it is possible that the <code>config.txt</code> file must be updated:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /boot/firmware/config.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /boot/firmware/config.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>At the bottom of the file, for example, to use the 5MP Arducam OV5647 camera, add the line:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="va">dtoverlay</span><span class="op">=</span>ov5647,cam0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="va">dtoverlay</span><span class="op">=</span>ov5647,cam0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Or for the v2 module, wich has the 8MP Sony IMX219 camera:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="va">dtoverlay</span><span class="op">=</span>imx219,cam0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="va">dtoverlay</span><span class="op">=</span>imx219,cam0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Save the file (CTRL+O [ENTER] CRTL+X) and reboot the Raspi:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Sudo</span> reboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>After the boot, you can see if the camera is listed:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-hello</span> <span class="at">--list-cameras</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-hello</span> <span class="at">--list-cameras</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/jpeg/list_cams_raspi-zero.jpg" class="img-fluid"></p>
 <p><img src="images/png/list_cams_raspi-5.png" class="img-fluid"></p>
 <blockquote class="blockquote">
 <p><a href="https://www.raspberrypi.com/documentation/computers/camera_software.html#libcamera">libcamera</a>is an open-source software library that supports camera systems directly on Linux for Arm processors. It minimizes the amount of proprietary code running on the Broadcom GPU.</p>
 </blockquote>
 <p>Let’s capture a JPEG image with a resolution of 640 x 480 for testing and save it to a file named <code>test_cli_camera.jpg</code></p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-jpeg</span> <span class="at">--output</span> test_cli_camera.jpg <span class="at">--width</span> 640 <span class="at">--height</span> 480</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rpicam-jpeg</span> <span class="at">--output</span> test_cli_camera.jpg <span class="at">--width</span> 640 <span class="at">--height</span> 480</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>To view the saved file, we should use <code>ls</code>, which lists the contents of the current directory:</p>
 <p><img src="./images/png/image-test-system.png" class="img-fluid"></p>
 <p>As before, we can use scp to view the image:</p>
@@ -758,7 +795,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li>Power off the Raspi:</li>
 </ol>
-<div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> shutdown <span class="at">-h</span> no</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> shutdown <span class="at">-h</span> no</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="2" type="1">
 <li>Connect the USB Webcam (USB Camera Module 30 fps, 1280x720) to your Raspberry Pi (in this example, I am using a Raspberry Pi Zero, but the instructions work for all Raspberry Pis).</li>
 </ol>
@@ -767,20 +804,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Power on again and run the SSH</li>
 <li>To check if your USB camera is recognized, run:</li>
 </ol>
-<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lsusb</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lsusb</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You should see your camera listed in the output.</p>
 <p><img src="images/png/USB-CAM-2.png" class="img-fluid"></p>
 <ol start="5" type="1">
 <li>To take a test picture with your USB camera, use:</li>
 </ol>
-<div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fswebcam</span> test_image.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fswebcam</span> test_image.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This will save an image named “test_image.jpg” in your current directory.</p>
 <p><img src="images/png/image-test.png" class="img-fluid"></p>
 <ol start="6" type="1">
 <li>Since we are using SSH to connect to our Rapsi, we must transfer the image to our main computer so we can view it. We can use FileZilla or SCP for this:</li>
 </ol>
 <p>Open a terminal <strong>on your host computer</strong> and run:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> mjrovai@raspi-zero.local:~/test_image.jpg .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> mjrovai@raspi-zero.local:~/test_image.jpg .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
 <p>Replace “mjrovai” with your username and “raspi-zero” with Pi’s hostname.</p>
 </blockquote>
@@ -788,7 +825,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol start="7" type="1">
 <li>If the image quality isn’t satisfactory, you can adjust various settings; for example, define a resolution that is suitable for YOLO (640x640):</li>
 </ol>
-<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fswebcam</span> <span class="at">-r</span> 640x640 <span class="at">--no-banner</span> test_image_yolo.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">fswebcam</span> <span class="at">-r</span> 640x640 <span class="at">--no-banner</span> test_image_yolo.jpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This captures a higher-resolution image without the default banner.</p>
 <p><img src="images/png/usb-cam-test-2.png" class="img-fluid"></p>
 <p>An ordinary USB Webcam can also be used:</p>
@@ -799,19 +836,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="video-streaming">Video Streaming</h4>
 <p>For stream video (which is more resource-intensive), we can install and use mjpg-streamer:</p>
 <p>First, install Git:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Now, we should install the necessary dependencies for mjpg-streamer, clone the repository, and proceed with the installation:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install cmake libjpeg62-turbo-dev</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/jacksonliam/mjpg-streamer.git</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> mjpg-streamer/mjpg-streamer-experimental</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> make install</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install cmake libjpeg62-turbo-dev</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/jacksonliam/mjpg-streamer.git</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> mjpg-streamer/mjpg-streamer-experimental</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> make install</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then start the stream with:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mjpg_streamer</span> <span class="at">-i</span> <span class="st">"input_uvc.so"</span> <span class="at">-o</span> <span class="st">"output_http.so -w ./www"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mjpg_streamer</span> <span class="at">-i</span> <span class="st">"input_uvc.so"</span> <span class="at">-o</span> <span class="st">"output_http.so -w ./www"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>We can then access the stream by opening a web browser and navigating to:</p>
 <p><code>http://&lt;your_pi_ip_address&gt;:8080</code>. In my case: http://192.168.4.210:8080</p>
 <p>We should see a webpage with options to view the stream. Click on the link that says “Stream” or try accessing:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">http://</span><span class="op">&lt;</span>raspberry_pi_ip_address<span class="op">&gt;</span>:8080/<span class="pp">?</span>action=stream</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">http://</span><span class="op">&lt;</span>raspberry_pi_ip_address<span class="op">&gt;</span>:8080/<span class="pp">?</span>action=stream</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/streem.png" class="img-fluid"></p>
 </section>
 </section>
@@ -824,7 +861,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><p>Connect to your Raspberry Pi via SSH.</p></li>
 <li><p>Run the Raspberry Pi configuration tool by entering:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> raspi-config</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Navigate to <code>Interface Options</code> using the arrow keys.</p></li>
 </ul>
 <p><img src="images/png/vnc-1.png" class="img-fluid"></p>
@@ -841,7 +878,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Download and install a VNC viewer application on your main computer. Popular options include RealVNC Viewer, TightVNC, or VNC Viewer by RealVNC. We will install <a href="https://www.realvnc.com/en/connect/download/viewer">VNC Viewer</a> by RealVNC.</li>
 </ul></li>
 <li><p>Once installed, confirm the Raspberry Pi’s IP address. For example, on the terminal, you can use:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span> <span class="at">-I</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span> <span class="at">-I</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="images/png/vnc-4.png" class="img-fluid"></p></li>
 <li><p>Connect to Your Raspberry Pi:</p>
 <ul>
@@ -867,11 +904,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="updating-and-installing-software">Updating and Installing Software</h2>
 <ol type="1">
 <li><p>Update your system:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Install essential software:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install python3-pip <span class="at">-y</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install python3-pip <span class="at">-y</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Enable pip for Python projects:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> rm /usr/lib/python3.11/EXTERNALLY-MANAGED</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> rm /usr/lib/python3.11/EXTERNALLY-MANAGED</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ol>
 <blockquote class="blockquote">
 <p>AVOID using PIP for System-Level dependencies libraries</p>
@@ -901,10 +938,204 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Suitable for more demanding projects, including AI and machine learning.</li>
 <li>It can run the whole desktop environment smoothly.</li>
-<li>Raspi-4 can be used for Image Classification and Object Detection Labs, but will not work well with LLMs (SLM).</li>
-<li>For Raspi-5, consider using an active cooler for temperature management during intensive tasks, as in the LLMs (SLMs) lab.</li>
+<li>The Raspberry Pi 4 can be used for Image Classification and Object Detection Labs, but it will not work well with LLMs (SLM) due to high latency.</li>
+<li>For the Raspberry Pi 5, consider using an active cooler to manage temperature during intensive tasks, as in the LLMs (SLMs) lab.</li>
 </ul>
 <p>Remember to adjust your project requirements based on the specific Raspberry Pi model you’re using. The Raspi-Zero is great for low-power, space-constrained projects, while the Raspi-4 or 5 models are better suited for more computationally intensive tasks.</p>
+<p>Here’s a concise, copy‑pasteable tutorial you can share or publish.</p>
+<hr>
+</section>
+</section>
+<section id="measuring-temperature-and-power" class="level2">
+<h2 class="anchored" data-anchor-id="measuring-temperature-and-power">Measuring Temperature and Power</h2>
+<p>In this section, we will explore how to measure (and monitor) <strong>CPU temperature</strong> and <strong>power consumption</strong> on a Raspberry Pi 5 using only built‑in tools and a small shell script.</p>
+<hr>
+<section id="check-cpu-temperature" class="level3">
+<h3 class="anchored" data-anchor-id="check-cpu-temperature">Check CPU Temperature</h3>
+<section id="quick-oneshot-reading" class="level4">
+<h4 class="anchored" data-anchor-id="quick-oneshot-reading">Quick one‑shot reading</h4>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcgencmd</span> measure_temp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example:</p>
+<pre class="text"><code>temp=47.2'C</code></pre>
+<p>This is the SoC (CPU/GPU) temperature in degrees Celsius.</p>
+</section>
+<section id="continuous-temperature-monitor" class="level4">
+<h4 class="anchored" data-anchor-id="continuous-temperature-monitor">Continuous temperature monitor</h4>
+<div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">watch</span> <span class="at">-n</span> 2 vcgencmd measure_temp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Updates every 2 seconds.<br>
+</li>
+<li>Press <code>Ctrl+C</code> to stop.</li>
+</ul>
+</section>
+<section id="reading-from-sysfs-for-scripts" class="level4">
+<h4 class="anchored" data-anchor-id="reading-from-sysfs-for-scripts">Reading from sysfs (for scripts)</h4>
+<div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /sys/class/thermal/thermal_zone0/temp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The result is in millidegrees Celsius (e.g., 47200 = 47.2 °C).</p>
+<p>We should convert to human‑readable:</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$(($(</span><span class="fu">cat</span> /sys/class/thermal/thermal_zone0/temp<span class="va">)</span> <span class="op">/</span> <span class="dv">1000</span><span class="va">))</span><span class="st">'°C'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+<section id="understand-power-measurement-on-pi-5" class="level3">
+<h3 class="anchored" data-anchor-id="understand-power-measurement-on-pi-5">Understand Power Measurement on Pi 5</h3>
+<p>Raspberry Pi 5 exposes internal <strong>PMIC rails</strong> via <code>vcgencmd pmic_read_adc</code>.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vcgencmd</span> pmic_read_adc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example (truncated):</p>
+<pre class="text"><code>3V3_SYS_A   current(1)=0.06245952A
+1V8_SYS_A   current(2)=0.16102850A
+...
+3V3_SYS_V   volt(13)=3.29687500V
+1V8_SYS_V   volt(14)=1.79687500V
+...</code></pre>
+<p>To get power, we need to sum <span class="math display">\[P_i = V_i \times I_i\]</span> over all rails. This gives <strong>board core power</strong>, not exact wall power (USB devices and PSU losses are not fully included).</p>
+<hr>
+</section>
+<section id="script-average-temperature-and-power" class="level3">
+<h3 class="anchored" data-anchor-id="script-average-temperature-and-power">Script: Average Temperature and Power</h3>
+<p>Let’s create a script that:</p>
+<ul>
+<li>Samples once per second for N seconds.<br>
+</li>
+<li>Computes the average CPU temperature.<br>
+</li>
+<li>Sums all PMIC rails to get power.<br>
+</li>
+<li>Applies a linear correction to estimate real board power, <a href="https://github.com/jfikar/RPi5-power/blob/main/README.md">based on the RPi5‑power calibration</a>.</li>
+</ul>
+<section id="create-the-script" class="level4">
+<h4 class="anchored" data-anchor-id="create-the-script">Create the script</h4>
+<div class="sourceCode" id="cb51"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> avg_temp_power.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Paste:</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co"># avg_temp_power.sh</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Measure average CPU temperature and power on Raspberry Pi 5</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="va">SECONDS</span><span class="op">=</span>50   <span class="co"># number of samples (1 per second)</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="va">TEMP_FILE</span><span class="op">=</span><span class="va">$(</span><span class="fu">mktemp</span><span class="va">)</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="va">PMIC_FILE</span><span class="op">=</span><span class="va">$(</span><span class="fu">mktemp</span><span class="va">)</span></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Sampling for </span><span class="va">${SECONDS}</span><span class="st"> seconds..."</span></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="va">$(</span><span class="fu">seq</span> 1 <span class="va">${SECONDS})</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- Temperature (°C) ---</span></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">temp_c</span><span class="op">=</span><span class="va">$(</span><span class="ex">vcgencmd</span> measure_temp <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-d</span><span class="op">=</span> <span class="at">-f2</span> <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-d</span><span class="st">"'"</span> <span class="at">-f1</span><span class="va">)</span></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"</span><span class="va">$temp_c</span><span class="st">"</span> <span class="op">&gt;&gt;</span> <span class="st">"</span><span class="va">${TEMP_FILE}</span><span class="st">"</span></span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- PMIC power sum (W) ---</span></span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>    <span class="va">pmic_line</span><span class="op">=</span><span class="va">$(</span><span class="ex">vcgencmd</span> pmic_read_adc<span class="va">)</span></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>    <span class="va">volts</span><span class="op">=</span><span class="va">($(</span><span class="bu">echo</span> <span class="st">"</span><span class="va">$pmic_line</span><span class="st">"</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-o</span> <span class="st">"volt([^)]*)=[0-9.]*V"</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s/.*=//;s/V//'</span><span class="va">))</span></span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>    <span class="va">currents</span><span class="op">=</span><span class="va">($(</span><span class="bu">echo</span> <span class="st">"</span><span class="va">$pmic_line</span><span class="st">"</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-o</span> <span class="st">"current([^)]*)=[0-9.]*A"</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s/.*=//;s/A//'</span><span class="va">))</span></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>    <span class="va">sum_pmic</span><span class="op">=</span>0</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> idx <span class="kw">in</span> <span class="st">"</span><span class="va">${</span><span class="op">!</span><span class="va">volts</span><span class="op">[@]</span><span class="va">}</span><span class="st">"</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>        <span class="va">v</span><span class="op">=</span><span class="va">${volts</span><span class="op">[</span><span class="va">$idx</span><span class="op">]</span><span class="va">}</span></span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>        <span class="va">i_amp</span><span class="op">=</span><span class="va">${currents</span><span class="op">[</span><span class="va">$idx</span><span class="op">]</span><span class="va">}</span></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">sum_pmic</span><span class="op">=</span><span class="va">$(</span><span class="fu">awk</span> <span class="at">-v</span> a=<span class="st">"</span><span class="va">$sum_pmic</span><span class="st">"</span> <span class="at">-v</span> b=<span class="st">"</span><span class="va">$v</span><span class="st">"</span> <span class="at">-v</span> c=<span class="st">"</span><span class="va">$i_amp</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>                   <span class="st">'BEGIN{printf "%.8f", a + b*c}'</span><span class="va">)</span></span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">done</span></span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"</span><span class="va">$sum_pmic</span><span class="st">"</span> <span class="op">&gt;&gt;</span> <span class="st">"</span><span class="va">${PMIC_FILE}</span><span class="st">"</span></span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sleep</span> 1</span>
+<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Compute statistics ---</span></span>
+<span id="cb52-35"><a href="#cb52-35" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-v</span> corr_a=1.1451 <span class="at">-v</span> corr_b=0.5879 <span class="st">'</span></span>
+<span id="cb52-36"><a href="#cb52-36" aria-hidden="true" tabindex="-1"></a><span class="st">function stats(file,   x, n, sum, sum2, mean, std) {</span></span>
+<span id="cb52-37"><a href="#cb52-37" aria-hidden="true" tabindex="-1"></a><span class="st">    while ((getline x &lt; file) &gt; 0) {</span></span>
+<span id="cb52-38"><a href="#cb52-38" aria-hidden="true" tabindex="-1"></a><span class="st">        n++</span></span>
+<span id="cb52-39"><a href="#cb52-39" aria-hidden="true" tabindex="-1"></a><span class="st">        sum  += x</span></span>
+<span id="cb52-40"><a href="#cb52-40" aria-hidden="true" tabindex="-1"></a><span class="st">        sum2 += x*x</span></span>
+<span id="cb52-41"><a href="#cb52-41" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb52-42"><a href="#cb52-42" aria-hidden="true" tabindex="-1"></a><span class="st">    close(file)</span></span>
+<span id="cb52-43"><a href="#cb52-43" aria-hidden="true" tabindex="-1"></a><span class="st">    if (n &gt; 1) {</span></span>
+<span id="cb52-44"><a href="#cb52-44" aria-hidden="true" tabindex="-1"></a><span class="st">        mean = sum / n</span></span>
+<span id="cb52-45"><a href="#cb52-45" aria-hidden="true" tabindex="-1"></a><span class="st">        std  = sqrt( (sum2 - (sum*sum)/n) / (n-1) )</span></span>
+<span id="cb52-46"><a href="#cb52-46" aria-hidden="true" tabindex="-1"></a><span class="st">    } else {</span></span>
+<span id="cb52-47"><a href="#cb52-47" aria-hidden="true" tabindex="-1"></a><span class="st">        mean = sum</span></span>
+<span id="cb52-48"><a href="#cb52-48" aria-hidden="true" tabindex="-1"></a><span class="st">        std  = 0</span></span>
+<span id="cb52-49"><a href="#cb52-49" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
+<span id="cb52-50"><a href="#cb52-50" aria-hidden="true" tabindex="-1"></a><span class="st">    return mean "|" std</span></span>
+<span id="cb52-51"><a href="#cb52-51" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb52-52"><a href="#cb52-52" aria-hidden="true" tabindex="-1"></a><span class="st">BEGIN{</span></span>
+<span id="cb52-53"><a href="#cb52-53" aria-hidden="true" tabindex="-1"></a><span class="st">    split(stats("'"</span><span class="va">${TEMP_FILE}</span><span class="st">"'"), t, "|")</span></span>
+<span id="cb52-54"><a href="#cb52-54" aria-hidden="true" tabindex="-1"></a><span class="st">    t_mean = t[1]</span></span>
+<span id="cb52-55"><a href="#cb52-55" aria-hidden="true" tabindex="-1"></a><span class="st">    t_std  = t[2]</span></span>
+<span id="cb52-56"><a href="#cb52-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-57"><a href="#cb52-57" aria-hidden="true" tabindex="-1"></a><span class="st">    split(stats("'"</span><span class="va">${PMIC_FILE}</span><span class="st">"'"), p, "|")</span></span>
+<span id="cb52-58"><a href="#cb52-58" aria-hidden="true" tabindex="-1"></a><span class="st">    p_pmic_mean = p[1]</span></span>
+<span id="cb52-59"><a href="#cb52-59" aria-hidden="true" tabindex="-1"></a><span class="st">    p_pmic_std  = p[2]</span></span>
+<span id="cb52-60"><a href="#cb52-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-61"><a href="#cb52-61" aria-hidden="true" tabindex="-1"></a><span class="st">    # Apply linear correction for real power estimate (RPi5-power calibration)</span></span>
+<span id="cb52-62"><a href="#cb52-62" aria-hidden="true" tabindex="-1"></a><span class="st">    p_real_mean = corr_a * p_pmic_mean + corr_b</span></span>
+<span id="cb52-63"><a href="#cb52-63" aria-hidden="true" tabindex="-1"></a><span class="st">    p_real_std  = corr_a * p_pmic_std</span></span>
+<span id="cb52-64"><a href="#cb52-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-65"><a href="#cb52-65" aria-hidden="true" tabindex="-1"></a><span class="st">    printf "Average_temperature = %.2f +/- %.2f °C\n", t_mean, t_std</span></span>
+<span id="cb52-66"><a href="#cb52-66" aria-hidden="true" tabindex="-1"></a><span class="st">    printf "Average_pmic_power  = %.3f +/- %.3f W\n", p_pmic_mean, p_pmic_std</span></span>
+<span id="cb52-67"><a href="#cb52-67" aria-hidden="true" tabindex="-1"></a><span class="st">    printf "Estimated_real_power = %.3f +/- %.3f W\n", p_real_mean, p_real_std</span></span>
+<span id="cb52-68"><a href="#cb52-68" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb52-69"><a href="#cb52-69" aria-hidden="true" tabindex="-1"></a><span class="st">'</span> /dev/null</span>
+<span id="cb52-70"><a href="#cb52-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-71"><a href="#cb52-71" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-f</span> <span class="st">"</span><span class="va">${TEMP_FILE}</span><span class="st">"</span> <span class="st">"</span><span class="va">${PMIC_FILE}</span><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Save and exit.</p>
+</section>
+<section id="make-it-executable" class="level4">
+<h4 class="anchored" data-anchor-id="make-it-executable">Make it executable</h4>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x avg_temp_power.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="run-a-measurement" class="level3">
+<h3 class="anchored" data-anchor-id="run-a-measurement">Run a measurement</h3>
+<p>Idle baseline:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./avg_temp_power.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Example output (30–50 s window, active fan):</p>
+<pre class="text"><code>Sampling for 50 seconds...
+Average_temperature = 47.25 +/- 0.40 °C
+Average_pmic_power  = 2.312 +/- 0.298 W
+Estimated_real_power = 3.235 +/- 0.341 W</code></pre>
+<p>Then start a heavy workload (e.g., Llama 3.2:3B) in another terminal and run the script again during inference. You should see higher temperature and power, often around 70–75 °C and 10–11 W with active cooling.</p>
+<p><img src="./images/png/temp=power.png" class="img-fluid"></p>
+<hr>
+</section>
+<section id="interpreting-the-results" class="level3">
+<h3 class="anchored" data-anchor-id="interpreting-the-results">Interpreting the Results</h3>
+<p>Typical Raspberry Pi 5 ranges with active cooling:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>State</th>
+<th>Temp (°C)</th>
+<th>Estimated real power (W)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Idle CLI</td>
+<td>40–50</td>
+<td>3.0–3.5</td>
+</tr>
+<tr class="even">
+<td>Light desktop</td>
+<td>50–60</td>
+<td>4–5</td>
+</tr>
+<tr class="odd">
+<td>Moderate CPU load</td>
+<td>55–70</td>
+<td>5–7</td>
+</tr>
+<tr class="even">
+<td>Heavy CPU/GPU</td>
+<td>70–80</td>
+<td>7–10</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Throttling usually starts around 80 °C, with a hard limit at 85 °C.[5]</li>
+<li>If we are well below that under full load, your cooling solution is working properly.</li>
+</ul>
 
 
 </section>

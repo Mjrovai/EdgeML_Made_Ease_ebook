@@ -114,29 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <div class="quarto-navbar-tools ms-auto tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
     <a href="../../Edge-AI-Engineering.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
-    <div class="dropdown">
-      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
-      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
-          <li>
-            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://twitter.com/intent/tweet?url=|url|">
-              <i class="bi bi-bi-twitter pe-1"></i>
-            Twitter
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
-              <i class="bi bi-bi-linkedin pe-1"></i>
-            LinkedIn
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
-              <i class="bi bi-bi-facebook pe-1"></i>
-            Facebook
-            </a>
-          </li>
-      </ul>
-    </div>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" rel="" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
@@ -542,7 +520,7 @@ Output:         o(t-1) → o(t) → o(t+1) → ...</code></pre>
 <li><strong>“Twenty Thousand Leagues under the Sea”</strong></li>
 </ol>
 <p>“A Journey to the Centre of the Earth” teaches the model about geological descriptions and underground adventures. “Twenty Thousand Leagues Under the Sea” provides vocabulary about marine life and submarine technology. “Around the World in Eighty Days” offers geographical references and travel descriptions. Each book contributes unique vocabulary and stylistic elements while maintaining Verne’s consistent voice.</p>
-<p>The complete dataset contains <strong>5,768,791 characters</strong>, with <strong>123 unique characters</strong>. To put this in perspective, that’s roughly equivalent to <strong>1,200 pages of double-spaced text.</strong> This gives our neural network plenty of material to learn from, ensuring it can capture both common patterns and unique expressions in Verne’s writing.</p>
+<p>The complete dataset contains <strong>5,768,791 characters</strong>, of which <strong>123</strong> are unique. To put this in perspective, that’s roughly equivalent to <strong>3,000 pages of text.</strong> This provides our neural network with ample material to learn from, enabling it to capture both common patterns and unique expressions in Verne’s writing.</p>
 <section id="data-preprocessing-steps" class="level3">
 <h3 class="anchored" data-anchor-id="data-preprocessing-steps">Data Preprocessing Steps</h3>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example preprocessing workflow</span></span>
@@ -603,7 +581,8 @@ Output:         o(t-1) → o(t) → o(t+1) → ...</code></pre>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Unique characters: </span><span class="sc">{</span>vocab<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><img src="./images/png/tokens.png" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p>You can experiment with tokenization using OpenAI’s tokenizer tool at: https://platform.openai.com/tokenizer</p>
+<p>It is possible to experiment with (sub-word level) tokenization using OpenAI’s tokenizer tool at:</p>
+<p>https://platform.openai.com/tokenizer</p>
 </blockquote>
 </section>
 </section>
@@ -622,7 +601,7 @@ Output:         o(t-1) → o(t) → o(t+1) → ...</code></pre>
 </ul>
 <section id="why-120-characters" class="level4">
 <h4 class="anchored" data-anchor-id="why-120-characters">Why 120 Characters?</h4>
-<p>We chose 120 characters as our context window because it represents roughly one paragraph of text. This gives the model enough context to understand local patterns (like completing words and phrases) while remaining computationally manageable. In practical terms, 120 characters might look like:</p>
+<p>We chose 120 characters as our <strong>context window</strong> because it roughly corresponds to one paragraph of text in English. This gives the model enough context to understand local patterns (like completing words and phrases) while remaining computationally manageable. In practical terms, 120 characters might look like:</p>
 <p>“The Nautilus had been cruising in these waters for some time. Captain Nemo stood on the bridge, observing the vast exp”</p>
 <p>From this context, the model might predict “a” to complete “expanse” or “l” to form “explore”.</p>
 <blockquote class="blockquote">
@@ -631,7 +610,10 @@ Output:         o(t-1) → o(t) → o(t+1) → ...</code></pre>
 </section>
 <section id="training-example" class="level4">
 <h4 class="anchored" data-anchor-id="training-example">Training Example</h4>
-<p><strong>Input Sequence</strong>: “Hello my nam” <strong>Target Sequence</strong>: “ello my name”</p>
+<ul>
+<li><p><strong>Input Sequence</strong>: “Hello my nam”</p></li>
+<li><p><strong>Target Sequence</strong>: “ello my name”</p></li>
+</ul>
 <p>The model learns:</p>
 <ul>
 <li>Given “H”, predict “e”</li>
@@ -739,7 +721,7 @@ Non-trainable params: 0 (0.00 B)</code></pre>
 <section id="hardware-and-time-requirements" class="level3">
 <h3 class="anchored" data-anchor-id="hardware-and-time-requirements">Hardware and Time Requirements</h3>
 <p>We trained our model on a <strong>Tesla T4 GPU,</strong> which can perform thousands of calculations simultaneously. This parallelization is crucial because each training step involves matrix multiplications with millions of numbers. The training took 33 minutes for 30 complete passes through the entire dataset.</p>
-<p>To understand why we need a GPU, consider that training involves calculating gradients for all 4 million parameters, potentially thousands of times per second. A regular CPU would take days or weeks to complete the same training that a GPU accomplishes in minutes.</p>
+<p>To understand why we need a GPU, consider that training involves calculating gradients for all 4 million parameters, potentially thousands of times per second. A regular CPU would take many hours to complete the same training that a GPU accomplishes in minutes.</p>
 </section>
 <section id="monitoring-progress" class="level3">
 <h3 class="anchored" data-anchor-id="monitoring-progress">Monitoring Progress</h3>
@@ -749,7 +731,7 @@ Non-trainable params: 0 (0.00 B)</code></pre>
 </section>
 <section id="preventing-overfitting" class="level3">
 <h3 class="anchored" data-anchor-id="preventing-overfitting">Preventing Overfitting</h3>
-<p>One challenge in training is overfitting, where the model memorizes the training data instead of learning generalizable patterns. We use techniques like monitoring validation loss and potentially stopping training early if the model stops improving on unseen text.</p>
+<p>One challenge in training is overfitting, in which the model memorizes the training data rather than learning generalizable patterns. We use techniques like monitoring validation loss and potentially <strong>stopping training early</strong> if the model stops improving on unseen text.</p>
 </section>
 <section id="training-configuration-1" class="level3">
 <h3 class="anchored" data-anchor-id="training-configuration-1">Training Configuration</h3>
@@ -933,14 +915,14 @@ with a threatening voice.
 <section id="scale-comparison" class="level3">
 <h3 class="anchored" data-anchor-id="scale-comparison">Scale Comparison</h3>
 <p>To appreciate how far language modeling has advanced, consider the scale differences between our Jules Verne Bot and modern language models:</p>
-<p>Our model has 4 million parameters and was trained on 5.8 million characters (about 10 books). GPT-3 has 175 billion parameters and was trained on 45 terabytes of text (roughly equivalent to millions of books). That’s a difference of over 40,000 times more parameters and millions of times more training data.</p>
+<p>Our model has 4 million parameters and was trained on about 5.8 million characters (10 books). GPT-3 has 175 billion parameters and was trained on 45 terabytes of text (roughly equivalent to millions of books). That’s a difference of over 40,000 times more parameters and millions of times more training data.</p>
 <p>Modern small language models (SLMs) like Phi-3-mini still dwarf our model with 3.8 billion parameters, but they represent more efficient designs that achieve impressive performance with “only” 1,000 times more parameters than our model.</p>
 <table class="table">
 <colgroup>
-<col style="width: 28%">
-<col style="width: 21%">
-<col style="width: 24%">
-<col style="width: 24%">
+<col style="width: 29%">
+<col style="width: 22%">
+<col style="width: 23%">
+<col style="width: 25%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -984,13 +966,13 @@ with a threatening voice.
 <tr class="even">
 <td><strong>Training Time</strong></td>
 <td>33 minutes</td>
-<td>Months</td>
+<td>Weeks</td>
 <td>7 days</td>
 </tr>
 <tr class="odd">
 <td><strong>GPU Requirements</strong></td>
 <td>1 Tesla T4</td>
-<td>Thousands of GPUs</td>
+<td>10,000 V100 GPUs</td>
 <td>512 H100 GPUs</td>
 </tr>
 </tbody>
