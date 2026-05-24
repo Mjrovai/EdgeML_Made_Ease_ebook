@@ -309,6 +309,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/litert-lm/litert-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
+  </div>
+</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -424,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="the-audio-to-audio-ai-pipeline-architecture" class="level2">
 <h2 class="anchored" data-anchor-id="the-audio-to-audio-ai-pipeline-architecture">The Audio to Audio AI Pipeline Architecture</h2>
-<p><img src="./images/png/pipe.png" class="img-fluid"></p>
+<p><img src="./images/jpeg/pipe.jpg" class="img-fluid"></p>
 <p>We will understand how to architect and implement multimodal AI systems by building a complete voice interaction pipeline. The goal is to gain practical experience with audio processing on edge devices while learning to efficiently integrate multiple AI models within resource constraints. Additionally, you will develop troubleshooting skills for complex AI pipelines and understand the engineering trade-offs involved in edge audio processing.</p>
 <section id="understanding-multimodal-ai-systems" class="level3">
 <h3 class="anchored" data-anchor-id="understanding-multimodal-ai-systems">Understanding Multimodal AI Systems</h3>
@@ -454,7 +460,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="audio-hardware-detection">Audio Hardware Detection</h3>
 <p>Begin by identifying the audio capabilities of our system. The Raspberry Pi can work with various audio input and output devices, but proper configuration is essential for reliable operation.</p>
 <p>Use the command <code>arecord -l</code> to list available recording devices. You should see output showing your microphone’s card and device numbers. For USB microphones, this typically appears as something like <code>card 2: Microphone [USB Condenser Microphone], device 0: USB Audio [USB Audio]</code>. The critical information is the <strong>card number</strong> and device number, which you’ll reference as <code>hw:2,0</code> in the code.</p>
-<p><img src="./images/png/mic.png" class="img-fluid"></p>
+<p><img src="./images/jpeg/mic.jpg" class="img-fluid"></p>
 <p><img src="./images/png/arecord.png" class="img-fluid"></p>
 </section>
 <section id="testing-basic-audio-functionality" class="level3">
@@ -780,7 +786,7 @@ print(text[0])</code></pre>
 <section id="the-image-to-audio-ai-pipeline-architecture" class="level2">
 <h2 class="anchored" data-anchor-id="the-image-to-audio-ai-pipeline-architecture">The Image to Audio AI Pipeline Architecture</h2>
 <p>Voice interaction systems have significant potential for educational applications and accessibility improvements by designing interfaces that adapt to different user needs and capabilities. By integrating small visual models, such as Moondream, with existing TTS pipelines, we can create multimodal assistants that describe images for people with visual impairments, converting visual content into detailed spoken descriptions of scenes, objects, and spatial relationships.</p>
-<p><img src="./images/png/visual-sound.png" class="img-fluid"></p>
+<p><img src="./images/jpeg/visual-sound.jpg" class="img-fluid"></p>
 <p>To use the camera, we must ensure that the NumPy version is compatible with the Raspberry Pi system (<code>1.24.2</code>). If this version was changed (what it should be due to the Moonshine installation), revert it to the <code>1.24.2</code> version.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> uninstall numpy</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="st">'numpy==1.24.2'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

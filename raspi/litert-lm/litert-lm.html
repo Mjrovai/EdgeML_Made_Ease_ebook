@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>LiteRT-LM: Production-Ready LLM Inference at the Edge – Edge AI Engineering</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/advancing_adgeai/adv_edgeai.html" rel="prev">
+<link href="../../images/unifei-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-daec65ff3ba034f51daec66ecad3ce27.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-wide tools-end">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="../../Edge-AI-Engineering.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/litert-lm/litert-lm.html">LiteRT-LM: Production-Ready LLM Inference at the Edge</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/cv_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Computer Vision Applications with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/rnn-verne/rnn-verne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text Generation with RNNs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_opt_tech.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLM: Basic Optimization Techniques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/audio_pipeline/audio_pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Audio and Vision AI Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/litert-lm/litert-lm.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#what-is-litert-lm" id="toc-what-is-litert-lm" class="nav-link" data-scroll-target="#what-is-litert-lm">What is LiteRT-LM?</a>
+  <ul>
+  <li><a href="#from-tensorflow-lite-to-litert" id="toc-from-tensorflow-lite-to-litert" class="nav-link" data-scroll-target="#from-tensorflow-lite-to-litert">From TensorFlow Lite to LiteRT</a></li>
+  <li><a href="#architecture-overview" id="toc-architecture-overview" class="nav-link" data-scroll-target="#architecture-overview">Architecture Overview</a></li>
+  <li><a href="#the-.litertlm-format" id="toc-the-.litertlm-format" class="nav-link" data-scroll-target="#the-.litertlm-format">The <code>.litertlm</code> Format</a></li>
+  <li><a href="#supported-models" id="toc-supported-models" class="nav-link" data-scroll-target="#supported-models">Supported Models</a></li>
+  </ul></li>
+  <li><a href="#litert-lm-vs-ollama-when-to-use-each" id="toc-litert-lm-vs-ollama-when-to-use-each" class="nav-link" data-scroll-target="#litert-lm-vs-ollama-when-to-use-each">LiteRT-LM vs Ollama: When to Use Each</a></li>
+  <li><a href="#installation-on-raspberry-pi-5" id="toc-installation-on-raspberry-pi-5" class="nav-link" data-scroll-target="#installation-on-raspberry-pi-5">Installation on Raspberry Pi 5</a>
+  <ul>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#creating-a-virtual-environment" id="toc-creating-a-virtual-environment" class="nav-link" data-scroll-target="#creating-a-virtual-environment">Creating a Virtual Environment</a></li>
+  <li><a href="#installing-the-package" id="toc-installing-the-package" class="nav-link" data-scroll-target="#installing-the-package">Installing the Package</a></li>
+  <li><a href="#installing-the-hugging-face-cli-for-model-downloads" id="toc-installing-the-hugging-face-cli-for-model-downloads" class="nav-link" data-scroll-target="#installing-the-hugging-face-cli-for-model-downloads">Installing the Hugging Face CLI (for model downloads)</a></li>
+  </ul></li>
+  <li><a href="#downloading-a-model" id="toc-downloading-a-model" class="nav-link" data-scroll-target="#downloading-a-model">Downloading a Model</a>
+  <ul>
+  <li><a href="#quick-sanity-check-with-the-cli" id="toc-quick-sanity-check-with-the-cli" class="nav-link" data-scroll-target="#quick-sanity-check-with-the-cli">Quick Sanity Check with the CLI</a></li>
+  </ul></li>
+  <li><a href="#python-api" id="toc-python-api" class="nav-link" data-scroll-target="#python-api">Python API</a>
+  <ul>
+  <li><a href="#the-engine-and-conversation-objects" id="toc-the-engine-and-conversation-objects" class="nav-link" data-scroll-target="#the-engine-and-conversation-objects">The Engine and Conversation Objects</a></li>
+  <li><a href="#simple-single-turn-query" id="toc-simple-single-turn-query" class="nav-link" data-scroll-target="#simple-single-turn-query">1. Simple Single-Turn Query</a>
+  <ul class="collapse">
+  <li><a href="#wrapping-it-as-a-reusable-function" id="toc-wrapping-it-as-a-reusable-function" class="nav-link" data-scroll-target="#wrapping-it-as-a-reusable-function">Wrapping it as a Reusable Function</a></li>
+  </ul></li>
+  <li><a href="#interactive-chat-with-persistent-history" id="toc-interactive-chat-with-persistent-history" class="nav-link" data-scroll-target="#interactive-chat-with-persistent-history">2. Interactive Chat with Persistent History</a></li>
+  <li><a href="#tool-calling-function-calling" id="toc-tool-calling-function-calling" class="nav-link" data-scroll-target="#tool-calling-function-calling">3. Tool Calling (Function Calling)</a>
+  <ul class="collapse">
+  <li><a href="#step-1-define-the-tool-function" id="toc-step-1-define-the-tool-function" class="nav-link" data-scroll-target="#step-1-define-the-tool-function">Step 1 — Define the Tool Function</a></li>
+  <li><a href="#step-2-define-the-system-instruction" id="toc-step-2-define-the-system-instruction" class="nav-link" data-scroll-target="#step-2-define-the-system-instruction">Step 2 — Define the System Instruction</a></li>
+  <li><a href="#step-3-the-tool-calling-loop" id="toc-step-3-the-tool-calling-loop" class="nav-link" data-scroll-target="#step-3-the-tool-calling-loop">Step 3 — The Tool-Calling Loop</a></li>
+  </ul></li>
+  <li><a href="#streaming-with-performance-metrics" id="toc-streaming-with-performance-metrics" class="nav-link" data-scroll-target="#streaming-with-performance-metrics">4. Streaming with Performance Metrics</a>
+  <ul class="collapse">
+  <li><a href="#interpreting-the-metrics" id="toc-interpreting-the-metrics" class="nav-link" data-scroll-target="#interpreting-the-metrics">Interpreting the Metrics</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#complete-example-putting-it-all-together" id="toc-complete-example-putting-it-all-together" class="nav-link" data-scroll-target="#complete-example-putting-it-all-together">Complete Example: Putting it All Together</a></li>
+  <li><a href="#going-further" id="toc-going-further" class="nav-link" data-scroll-target="#going-further">Going Further</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/litert-lm/litert-lm.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/litert-lm/litert-lm.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">LiteRT-LM: Production-Ready LLM Inference at the Edge</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/jpeg/litert_lm_cover.jpg" class="img-fluid figure-img"></p>
+<figcaption>DALL·E prompt — <em>A 1950s-style cartoon illustration of a Raspberry Pi 5 running a language model entirely on-device. The board glows with a warm amber halo. Around it, speech bubbles with gears inside float in mid-air, representing tool calling. A tiny robot arm extends from the board to press a physical button, hinting at IoT integration. The background shows a cozy retro-futuristic lab bench cluttered with transistors, vacuum tubes, and blinking LED panels. Soft pastel palette with bold outlines typical of 1950s editorial cartoons</em>.</figcaption>
+</figure>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In the previous chapters, we explored <a href="https://ollama.com/">Ollama</a> as our primary gateway to running Small Language Models (SLMs) on the Raspberry Pi 5. Ollama is excellent for rapid experimentation: one command downloads and serves a model, and the Python library wraps everything in a clean, familiar API. However, Ollama was designed primarily for desktop and server machines; it runs <a href="https://github.com/ggerganov/llama.cpp">llama.cpp</a> under the hood, and its runtime is not purpose-built for the tight memory and latency budgets of IoT deployments.</p>
+<p>This chapter introduces <a href="https://ai.google.dev/edge/litert-lm"><strong>LiteRT-LM</strong></a>, Google AI Edge’s production-ready, open-source inference framework for deploying Large Language Models directly on edge devices. While Ollama is great for getting started, LiteRT-LM offers a different set of tradeoffs that make it particularly well-suited for scenarios where startup latency, memory footprint, and cross-platform consistency matter — or simply when you want your Raspberry Pi to run the same model binary that powers Google’s own Pixel Watch and Chromebook Plus.</p>
+<p><img src="./images/png/os.png" class="img-fluid"></p>
+<p>By the end of this chapter, you will be able to:</p>
+<ul>
+<li>Explain the architecture of LiteRT-LM and how it differs from Ollama / llama.cpp.</li>
+<li>Install the <code>litert-lm</code> Python package on a Raspberry Pi 5.</li>
+<li>Download and run a Gemma 4 model in the <code>.litertlm</code> format from Hugging Face.</li>
+<li>Build a simple query function, an interactive chat loop, a basic tool-calling pipeline, and a streaming inference loop with performance metrics — all using LiteRT-LM’s Python API.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Prerequisites:</strong> A Raspberry Pi 5 (8 GB recommended) running Raspberry Pi OS (64-bit), set up as described in the <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/setup/setup.html">Setup</a> chapter, and familiarity with the Ollama-based examples from the <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/llm/slm_intro.html">Small Language Models</a> and <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/llm/slm_opt_tech.html">SLM: Basic Optimization Techniques</a> chapters.</p>
+</blockquote>
+</section>
+<section id="what-is-litert-lm" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-litert-lm">What is LiteRT-LM?</h2>
+<section id="from-tensorflow-lite-to-litert" class="level3">
+<h3 class="anchored" data-anchor-id="from-tensorflow-lite-to-litert">From TensorFlow Lite to LiteRT</h3>
+<p>Google’s on-device ML story has a long history. <strong>TensorFlow Lite (TFLite)</strong> was released in 2017 as a stripped-down runtime for deploying neural networks on mobile and embedded devices. It popularized quantization-aware training, delegate-based hardware acceleration (GPU, DSP, Edge TPU), and the flat <code>.tflite</code> model format — all ideas that have since become standard practice across the industry.</p>
+<p>In 2024, Google rebranded TensorFlow Lite as <strong>LiteRT</strong> (Lite RunTime), reflecting a broader vision: a unified on-device ML runtime that covers not just classification and detection models, but the full spectrum of modern AI workloads, including generative models. <strong>LiteRT-LM</strong> is the part of this ecosystem dedicated to Large Language Models.</p>
+<pre><code>TensorFlow Lite (2017)
+        ↓
+   LiteRT (2024)           ← unified on-device ML runtime
+        ↓
+  LiteRT-LM (2025)         ← LLM-specific inference framework</code></pre>
+</section>
+<section id="architecture-overview" class="level3">
+<h3 class="anchored" data-anchor-id="architecture-overview">Architecture Overview</h3>
+<p><img src="./images/png/arq-block.png" class="img-fluid"></p>
+<p>LiteRT-LM is organized as a layered stack:</p>
+<p><strong>Layer 1 — User-Facing APIs:</strong> Language bindings (Python, Kotlin, C++, Swift) and a high-level <code>Conversation</code> API that handles the full chat loop for you.</p>
+<p><strong>Layer 2 — Core Runtime:</strong> An <code>Engine</code> object that loads model weights into RAM and holds them for the lifetime of the context manager. Loading takes several seconds; create the Engine once and reuse it for multiple conversations.</p>
+<p><strong>Layer 3 — Executors:</strong> Low-level interfaces to the actual hardware. On Raspberry Pi 5 (ARM64 CPU), the XNNPACK delegate is used—the same highly optimized CPU kernel library that accelerates TFLite models.</p>
+<p>The execution pipeline follows a two-phase pattern familiar from any autoregressive LLM:</p>
+<ol type="1">
+<li><strong>Prefill</strong> — the full prompt is tokenized and processed to fill the KV cache.</li>
+<li><strong>Decode</strong> — tokens are generated one at a time, each conditioned on the cached context.</li>
+</ol>
+<blockquote class="blockquote">
+<p>The important insight for Edge AI is that LiteRT-LM manages the KV cache for you. You never need to manually rebuild message history turn by turn (as you do with raw REST APIs). As long as you stay inside the same <code>Conversation</code> object, the model retains full context.</p>
+</blockquote>
+</section>
+<section id="the-.litertlm-format" class="level3">
+<h3 class="anchored" data-anchor-id="the-.litertlm-format">The <code>.litertlm</code> Format</h3>
+<p>LiteRT-LM uses its own model packaging format: <code>.litertlm</code>. A <code>.litertlm</code> file is a single archive that bundles together:</p>
+<ul>
+<li>The quantized model weights (INT4 or INT8 by default).</li>
+<li>A tokenizer.</li>
+<li>Inference metadata (context length, sampler settings, etc.).</li>
+</ul>
+<p>This is analogous to Ollama’s <code>.gguf</code> format, but with one key difference: <code>.litertlm</code> files are specifically optimized for the LiteRT executor pipeline. You <strong>cannot</strong> use GGUF files with LiteRT-LM, and you cannot use <code>.litertlm</code> files with Ollama. Pre-converted models are hosted on the <a href="https://huggingface.co/litert-community">LiteRT Community on Hugging Face</a>.</p>
+</section>
+<section id="supported-models" class="level3">
+<h3 class="anchored" data-anchor-id="supported-models">Supported Models</h3>
+<p>The table below shows some of the models available at the time of writing. Check the <a href="https://ai.google.dev/edge/litert-lm/overview">LiteRT-LM overview page</a> for the latest additions.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 14%">
+<col style="width: 13%">
+<col style="width: 8%">
+<col style="width: 14%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Parameters</th>
+<th>Quantization</th>
+<th>Context</th>
+<th>RAM (approx.)</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gemma3-1B-IT</td>
+<td>1B</td>
+<td>INT4</td>
+<td>4096</td>
+<td>~1 GB</td>
+<td>Ultra-low-memory devices</td>
+</tr>
+<tr class="even">
+<td><strong>Gemma 4 E2B</strong></td>
+<td><strong>2.3B eff.</strong></td>
+<td><strong>INT4</strong></td>
+<td><strong>8192</strong></td>
+<td><strong>~2.7 GB</strong></td>
+<td><strong>Raspberry Pi 5 sweet spot</strong></td>
+</tr>
+<tr class="odd">
+<td>Gemma 4 E4B</td>
+<td>4B eff.</td>
+<td>INT4</td>
+<td>8192</td>
+<td>~3.7 GB</td>
+<td>Higher quality, more RAM</td>
+</tr>
+<tr class="even">
+<td>Gemma-3n-E2B</td>
+<td>2B eff.</td>
+<td>INT4</td>
+<td>4096</td>
+<td>~3 GB</td>
+<td>Previous generation</td>
+</tr>
+<tr class="odd">
+<td>Gemma-3n-E4B</td>
+<td>4B eff.</td>
+<td>INT4</td>
+<td>4096</td>
+<td>~4.2 GB</td>
+<td>Previous generation</td>
+</tr>
+<tr class="even">
+<td>Phi-4-mini</td>
+<td>3.9B</td>
+<td>INT4</td>
+<td>4096</td>
+<td>~2.5 GB</td>
+<td>Reasoning-focused tasks</td>
+</tr>
+<tr class="odd">
+<td>Qwen3-0.6B</td>
+<td>0.6B</td>
+<td>INT4</td>
+<td>4096</td>
+<td>~0.5 GB</td>
+<td>Fastest option</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Gemma 4 architecture note:</strong> The “E” in Gemma 4 E2B stands for <em>Effective</em> parameters. Gemma 4 uses a <strong>MatMul-free attention</strong> design combined with <strong>Per-Layer Embeddings (PLE)</strong>, which achieves frontier-level quality with substantially fewer active parameters than traditional dense transformers. The E2B model benchmarks above Gemma 3 27B on several reasoning tasks despite being 12× smaller.</p>
+</blockquote>
+</section>
+</section>
+<section id="litert-lm-vs-ollama-when-to-use-each" class="level2">
+<h2 class="anchored" data-anchor-id="litert-lm-vs-ollama-when-to-use-each">LiteRT-LM vs Ollama: When to Use Each</h2>
+<p>Both Ollama and LiteRT-LM are excellent tools for running SLMs on Raspberry Pi. They solve the same fundamental problem but with different priorities. Understanding the tradeoffs will help you choose the right tool for each project.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 29%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Ollama</th>
+<th>LiteRT-LM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Ease of setup</strong></td>
+<td>⭐⭐⭐⭐⭐ One-line install</td>
+<td>⭐⭐⭐⭐ <code>pip install</code></td>
+</tr>
+<tr class="even">
+<td><strong>Model variety</strong></td>
+<td>⭐⭐⭐⭐⭐ Hundreds of models</td>
+<td>⭐⭐⭐ ~20 models</td>
+</tr>
+<tr class="odd">
+<td><strong>Format</strong></td>
+<td>GGUF</td>
+<td><code>.litertlm</code></td>
+</tr>
+<tr class="even">
+<td><strong>Backend engine</strong></td>
+<td>llama.cpp</td>
+<td>LiteRT / XNNPACK</td>
+</tr>
+<tr class="odd">
+<td><strong>Python API</strong></td>
+<td>Stable, mature</td>
+<td>In active development</td>
+</tr>
+<tr class="even">
+<td><strong>Conversation memory</strong></td>
+<td>Manual (you manage history)</td>
+<td>Automatic (KV-cache per session)</td>
+</tr>
+<tr class="odd">
+<td><strong>OpenAI compatibility</strong></td>
+<td>✅ Drop-in replacement</td>
+<td>❌ Custom API</td>
+</tr>
+<tr class="even">
+<td><strong>Production provenance</strong></td>
+<td>Community-driven</td>
+<td>Powers Chrome, Pixel Watch, Chromebook+</td>
+</tr>
+<tr class="odd">
+<td><strong>Cross-platform binary</strong></td>
+<td>❌ Separate runtimes</td>
+<td>✅ Same binary, all platforms</td>
+</tr>
+<tr class="even">
+<td><strong>IoT / embedded focus</strong></td>
+<td>Secondary</td>
+<td>Primary design goal</td>
+</tr>
+<tr class="odd">
+<td><strong>GPU acceleration (RPi)</strong></td>
+<td>❌ CPU only</td>
+<td>❌ CPU only</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Choose Ollama</strong> when you need the widest model selection, the simplest API, or OpenAI-compatible endpoints for existing code.</p>
+<p><strong>Choose LiteRT-LM</strong> when you are targeting a production IoT deployment, want a consistent runtime from prototype (Raspberry Pi) to mobile (Android/iOS), or need tighter memory control and a framework that is actively hardened for edge constraints.</p>
+<blockquote class="blockquote">
+<p><strong>Important benchmark note:</strong> On the Raspberry Pi 5 with the Gemma 4 E2B model, you can expect roughly <strong>4–8 tokens/second</strong> at INT4 precision using the CPU backend. This is comparable to Ollama with Gemma 3 2B, confirming that both frameworks extract similar throughput from the RPi5’s Cortex-A76 cores. The practical difference shows up on mobile hardware with GPU/NPU backends, where LiteRT-LM achieves massive speedups that llama.cpp-based tools cannot match.</p>
+</blockquote>
+</section>
+<section id="installation-on-raspberry-pi-5" class="level2">
+<h2 class="anchored" data-anchor-id="installation-on-raspberry-pi-5">Installation on Raspberry Pi 5</h2>
+<section id="prerequisites" class="level3">
+<h3 class="anchored" data-anchor-id="prerequisites">Prerequisites</h3>
+<p>Confirm that your Raspberry Pi 5 is running the 64-bit (aarch64) version of Raspberry Pi OS. LiteRT-LM requires this architecture.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uname</span> <span class="at">-m</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Expected: aarch64</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Also, confirm your Python version. LiteRT-LM’s Python package targets Python 3.10–3.13:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Update the system</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="creating-a-virtual-environment" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-virtual-environment">Creating a Virtual Environment</h3>
+<p>It is good practice to use a dedicated virtual environment for LiteRT-LM experiments, especially since <code>litert-lm</code> may conflict with <code>torch</code> or <code>tensorflow</code> packages when installed in the same environment.</p>
+<p>Starting criating a working directory</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/Documents/LITERT</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/Documents/LITERT</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create the environment:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .venv</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="installing-the-package" class="level3">
+<h3 class="anchored" data-anchor-id="installing-the-package">Installing the Package</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> litert-lm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This single command pulls the pre-built wheel for <code>aarch64</code> Linux and its dependencies (including the XNNPACK-accelerated LiteRT runtime). There is no separate server to start — LiteRT-LM runs in-process, embedded inside your Python script.</p>
+<blockquote class="blockquote">
+<p><strong>No server, no port.</strong> Unlike Ollama, which runs as a background daemon on port 11434, LiteRT-LM is a library. When your script exits, the model is unloaded. This is a natural fit for embedded applications where you want complete control over the application lifecycle.</p>
+</blockquote>
+<p>Verify the installation:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import litert_lm; print('LiteRT-LM OK')"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="./images/png/install.png" class="img-fluid"></p>
+</section>
+<section id="installing-the-hugging-face-cli-for-model-downloads" class="level3">
+<h3 class="anchored" data-anchor-id="installing-the-hugging-face-cli-for-model-downloads">Installing the Hugging Face CLI (for model downloads)</h3>
+<p>Models are hosted on Hugging Face. The <code>huggingface_hub</code> CLI is the most reliable way to download <code>.litertlm</code> files.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install huggingface_hub</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">huggingface-cli</span> login   <span class="co"># optional; required for gated models</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="downloading-a-model" class="level2">
+<h2 class="anchored" data-anchor-id="downloading-a-model">Downloading a Model</h2>
+<p>We will use <strong>Gemma 4 E2B</strong> (<code>gemma-4-E2B-it</code>), the sweet-spot model for Raspberry Pi 5. It runs in approximately 1.5 GB of working memory, leaving headroom for your application code.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/Documents/LITERT/models</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">huggingface-cli</span> download <span class="dt">\</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    litert-community/gemma-4-E2B-it-litert-lm <span class="dt">\</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    gemma-4-E2B-it.litertlm <span class="dt">\</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--local-dir</span> ~/Documents/LITERT/models</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The download is approximately 1.5 GB. Once complete:</p>
+<pre><code>~/Documents/LITERT/models
+└── gemma-4-E2B-it.litertlm</code></pre>
+<section id="quick-sanity-check-with-the-cli" class="level3">
+<h3 class="anchored" data-anchor-id="quick-sanity-check-with-the-cli">Quick Sanity Check with the CLI</h3>
+<p>LiteRT-LM ships with a command-line runner. Before writing any Python, confirm the model works:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">litert-lm</span> run <span class="dt">\</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    ~/Documents/LITERT/models/gemma-4-E2B-it.litertlm <span class="dt">\</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--prompt</span><span class="op">=</span><span class="st">"What is the capital of Brazil?"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Expected output (after a few seconds of model loading):</p>
+<pre><code>The capital of Brazil is **Brasília**.</code></pre>
+<p><img src="./images/png/infer.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p><strong>First-run latency:</strong> Loading a 1.5 GB model from an SD card takes 10–20 seconds. Using an NVMe SSD via the PCIe slot reduces this to 2–4 seconds. For production IoT applications, an SSD is strongly recommended.</p>
+</blockquote>
+</section>
+</section>
+<section id="python-api" class="level2">
+<h2 class="anchored" data-anchor-id="python-api">Python API</h2>
+<p>We can create Python scripts with a text editor, such as <code>nano</code>, or install a Jupyter Notebook:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install jupyter</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now let’s explore the Python API systematically, building from a single query to a streaming chat loop with performance metrics. All examples assume the following preamble:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> litert_lm</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>litert_lm.set_min_log_severity(litert_lm.LogSeverity.ERROR)  <span class="co"># suppress verbose logs</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>MODEL_PATH <span class="op">=</span> <span class="st">"/home/mjrovai/Documents/LITERT/models/gemma-4-E2B-it.litertlm"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>set_min_log_severity</code> call silences LiteRT-LM’s internal diagnostic messages (model-loading progress, tokenizer initialization, etc.) so your terminal output stays clean. During development, you may want to remove this line to see what’s happening under the hood.</p>
+<section id="the-engine-and-conversation-objects" class="level3">
+<h3 class="anchored" data-anchor-id="the-engine-and-conversation-objects">The Engine and Conversation Objects</h3>
+<p>The two core objects you will use in every LiteRT-LM script are:</p>
+<ul>
+<li><strong><code>litert_lm.Engine(model_path)</code></strong> — a heavyweight object that loads model weights into RAM and holds them for the lifetime of the context manager. Create the Engine once and reuse it for multiple conversations.</li>
+<li><strong><code>engine.create_conversation()</code></strong> — a lightweight object representing a single conversation thread. It maintains its own KV cache, so it automatically retains the full message history.</li>
+</ul>
+<p>Both objects are Python context managers (use them with <code>with</code> statements), which ensures clean resource deallocation.</p>
+<pre><code>┌──────────────────────────────────────────┐
+│  Engine  (model weights loaded once)     │
+│  ┌────────────────────────────────────┐  │
+│  │  Conversation A  (KV cache A)      │  │
+│  └────────────────────────────────────┘  │
+│  ┌────────────────────────────────────┐  │
+│  │  Conversation B  (KV cache B)      │  │
+│  └────────────────────────────────────┘  │
+└──────────────────────────────────────────┘</code></pre>
+<p>A single <code>Engine</code> can host multiple concurrent <code>Conversation</code> objects, each with an independent state. This is useful for multi-user applications or for maintaining separate conversation threads for different tasks.</p>
+</section>
+<section id="simple-single-turn-query" class="level3">
+<h3 class="anchored" data-anchor-id="simple-single-turn-query">1. Simple Single-Turn Query</h3>
+<p>The simplest pattern: open an <code>Engine</code>, create a <code>Conversation</code>, send one message, read the response.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> litert_lm</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>litert_lm.set_min_log_severity(litert_lm.LogSeverity.ERROR)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>MODEL_PATH <span class="op">=</span> <span class="st">"/home/mjrovai/Documents/LITERT/models/gemma-4-E2B-it.litertlm"</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>PROMPT <span class="op">=</span> <span class="st">"What is the capital of Colombia?"</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> litert_lm.Engine(MODEL_PATH) <span class="im">as</span> engine:</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> engine.create_conversation() <span class="im">as</span> conversation:</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> conversation.send_message(PROMPT)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        answer <span class="op">=</span> response[<span class="st">"content"</span>][<span class="dv">0</span>][<span class="st">"text"</span>]</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(answer)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Output:</strong></p>
+<pre><code>The capital of Brazil is **Bogotá**.</code></pre>
+<p>The <code>response</code> object is a dictionary with a <code>content</code> list, where each item has a <code>type</code> field (<code>"text"</code>) and a <code>text</code> field containing the generated string. This structure is intentionally similar to the Anthropic and OpenAI messages API, making the pattern familiar.</p>
+<section id="wrapping-it-as-a-reusable-function" class="level4">
+<h4 class="anchored" data-anchor-id="wrapping-it-as-a-reusable-function">Wrapping it as a Reusable Function</h4>
+<p>For quick experiments, a helper function is convenient:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> simple_query(prompt, model<span class="op">=</span>MODEL_PATH):</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> litert_lm.Engine(model) <span class="im">as</span> engine:</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> engine.create_conversation() <span class="im">as</span> conversation:</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>            response <span class="op">=</span> conversation.send_message(prompt)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> response[<span class="st">"content"</span>][<span class="dv">0</span>][<span class="st">"text"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Let’s use the function:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(simple_query(<span class="st">"What is the capital of France?"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Output:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">The</span> capital of France is <span class="pp">**</span>Paris<span class="pp">**</span>.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If we ask the following question:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(simple_query(<span class="st">"And Peru"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Output:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Please</span> provide more context! <span class="st">"And Peru?"</span> is a very open-ended question. To give you a helpful answer, I need to know what you are referring to.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>No conversation history in <code>simple_query</code>:</strong> Each call creates a fresh <code>Engine</code> and <code>Conversation</code>. A follow-up question like <code>"and Peru?"</code> will elicit a confused answer because the model has no memory of the previous question about a country’s capital. The next section solves this.</p>
+</blockquote>
+</section>
+</section>
+<section id="interactive-chat-with-persistent-history" class="level3">
+<h3 class="anchored" data-anchor-id="interactive-chat-with-persistent-history">2. Interactive Chat with Persistent History</h3>
+<p>The key advantage of LiteRT-LM’s <code>Conversation</code> object is that it <strong>automatically manages history.</strong> As long as you stay inside the same <code>conversation</code> context, every new <code>send_message</code> call has access to the full prior exchange — no manual history list required.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> litert_lm</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>litert_lm.set_min_log_severity(litert_lm.LogSeverity.ERROR)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>MODEL_PATH <span class="op">=</span> <span class="st">"/home/mjrovai/Documents/LITERT/models/gemma-4-E2B-it.litertlm"</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> litert_lm.Engine(MODEL_PATH) <span class="im">as</span> engine:</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> engine.create_conversation() <span class="im">as</span> conversation:</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Chat started. Type 'quit' or 'exit' to stop.</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>            user_input <span class="op">=</span> <span class="bu">input</span>(<span class="st">"&gt;&gt;&gt; "</span>).strip()</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> user_input.lower() <span class="kw">in</span> {<span class="st">"exit"</span>, <span class="st">"quit"</span>}:</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">"[Exiting chat]"</span>)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> user_input:</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Streaming: iterate over chunks as they are generated</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> chunk <span class="kw">in</span> conversation.send_message_async(user_input):</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(chunk[<span class="st">"content"</span>][<span class="dv">0</span>][<span class="st">"text"</span>], end<span class="op">=</span><span class="st">""</span>, flush<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>()  <span class="co"># newline after the full response</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Example session:</strong></p>
+<pre><code>Chat started. Type 'quit' or 'exit' to stop.
+
+&gt;&gt;&gt; What is the capital of France?
+The capital of France is **Paris**.
+
+&gt;&gt;&gt; and Peru?
+The capital of Peru is **Lima**.
+
+&gt;&gt;&gt; quit
+[Exiting chat]</code></pre>
+<p>Notice how <code>"and Peru?"</code> (a context-dependent follow-up) is correctly resolved to Peru’s capital. The model understood the implicit reference because the KV cache preserved the prior turn. With the <code>simple_query</code> function from the previous section, the same follow-up would fail.</p>
+<p>The key API difference here is <strong><code>send_message_async</code></strong> vs <code>send_message</code>. The async variant returns a generator that yields partial chunks as tokens are produced, enabling streaming output that makes interactions feel responsive. Each <code>chunk</code> has the same structure as the full response from <code>send_message</code>.</p>
+</section>
+<section id="tool-calling-function-calling" class="level3">
+<h3 class="anchored" data-anchor-id="tool-calling-function-calling">3. Tool Calling (Function Calling)</h3>
+<p>As we saw in the <a href="https://mjrovai.github.io/EdgeML_Made_Ease_ebook/raspi/llm/slm_opt_tech.html">SLM: Basic Optimization Techniques</a> chapter, LLMs are unreliable calculators. Let’s reproduce that demonstration with LiteRT-LM:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>PROMPT <span class="op">=</span> <span class="st">"What is 123456 multiplied by 123456?"</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(simple_query(PROMPT))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Output (typical — wrong!):</strong></p>
+<pre><code>...123,456² = 15,238,827,536</code></pre>
+<p>The correct answer is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="dv">123456</span><span class="op">*</span><span class="dv">123456</span><span class="sc">:,}</span><span class="ss">"</span>)  <span class="co"># → 15,241,383,936</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="./images/png/tools.png" class="img-fluid"></p>
+<p>LiteRT-LM supports native function-calling protocols for Gemma models. At the Python API level (still in active development), the most robust and universally compatible approach is <strong>JSON-based prompt engineering</strong> — the same technique we used with Ollama in the previous chapter. The idea is identical: use a system instruction to constrain the model’s output to a specific JSON schema, then parse and dispatch that JSON in Python.</p>
+<section id="step-1-define-the-tool-function" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-define-the-tool-function">Step 1 — Define the Tool Function</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> multiply_numbers(a: <span class="bu">float</span>, b: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Multiply two numbers.</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">        a: The first number.</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">        b: The second number.</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f'</span><span class="sc">{</span>a <span class="op">*</span> b<span class="sc">:,}</span><span class="ss">'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-2-define-the-system-instruction" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-define-the-system-instruction">Step 2 — Define the System Instruction</h4>
+<p>LiteRT-LM does not yet have a separate <code>system</code> role in its Python API. The standard workaround is to send the system instruction as the <strong>first user message</strong> before any real query. The conversation’s KV cache retains this instruction for all subsequent turns.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>SYSTEM_INSTRUCTION <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="st">You are a helpful assistant with access to a single tool: multiply_numbers(a, b).</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="st">When the user asks for a multiplication, DO NOT explain.</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="st">Instead, respond ONLY with a JSON object of this form:</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="st">{</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="st">  "tool": "multiply_numbers",</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="st">  "a": &lt;number&gt;,</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="st">  "b": &lt;number&gt;</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="st">No extra text. No Markdown. No backticks.</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="st">If the user is not asking for a multiplication, answer normally in plain text.</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="step-3-the-tool-calling-loop" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-the-tool-calling-loop">Step 3 — The Tool-Calling Loop</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> litert_lm.Engine(MODEL_PATH) <span class="im">as</span> engine:</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> engine.create_conversation() <span class="im">as</span> conversation:</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Prime the model with the system instruction</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>        conversation.send_message(SYSTEM_INSTRUCTION)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Send the user's actual question</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>        user_prompt <span class="op">=</span> <span class="st">"What is 123456 multiplied by 123456?"</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> conversation.send_message(user_prompt)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>        text <span class="op">=</span> response[<span class="st">"content"</span>][<span class="dv">0</span>][<span class="st">"text"</span>]</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Model raw output:</span><span class="ch">\n</span><span class="st">"</span>, text)</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Parse the JSON and dispatch to the tool</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>            tool_call <span class="op">=</span> json.loads(text)</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> tool_call.get(<span class="st">"tool"</span>) <span class="op">==</span> <span class="st">"multiply_numbers"</span>:</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>                a <span class="op">=</span> <span class="bu">float</span>(tool_call[<span class="st">"a"</span>])</span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>                b <span class="op">=</span> <span class="bu">float</span>(tool_call[<span class="st">"b"</span>])</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>                result <span class="op">=</span> multiply_numbers(a, b)</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"[Could not parse tool call]"</span>, e)</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> result <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">[Tool result] multiply_numbers(</span><span class="sc">{</span>a<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">) = </span><span class="sc">{</span>result<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[No tool call detected; treating reply as plain text]"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Output:</strong></p>
+<pre><code>Model raw output:
+ {
+  "tool": "multiply_numbers",
+  "a": 123456,
+  "b": 123456
+}
+
+[Tool result] multiply_numbers(123456.0, 123456.0) = 15,241,383,936.0</code></pre>
+<p>The pattern is clean and reusable:</p>
+<ol type="1">
+<li>The LLM handles <strong>natural language understanding</strong> — extracting intent and operands.</li>
+<li>Python handles <strong>actual computation</strong> — always correct, always deterministic.</li>
+</ol>
+<blockquote class="blockquote">
+<p><strong>Swapping the tool:</strong> You can replace <code>multiply_numbers</code> with any Python function — a GPIO sensor read, a file lookup, a distance calculation, a REST API call. The model doesn’t care how the function is implemented internally; it only needs to emit the correct JSON. This makes the pattern reusable across all kinds of Edge AI + IoT applications.</p>
+</blockquote>
+<p>If we run the tool calling loop again with a new query, such as <strong>“What is the capital of Guatemala?”</strong>, the answer will be a normal response from the model:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Model</span> raw output:</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a> <span class="ex">The</span> capital of Guatemala is Guatemala City.</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="ex">[Could</span> not parse tool call or invalid format] Expecting value: line 1 column 1 <span class="er">(</span><span class="ex">char</span> 0<span class="kw">)</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="ex">[No</span> tool call detected<span class="kw">;</span> <span class="ex">treat</span> model reply as plain text]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="streaming-with-performance-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="streaming-with-performance-metrics">4. Streaming with Performance Metrics</h3>
+<p>For production deployments, knowing your inference speed is essential. The following code adds <strong>Time to First Token (TTFT)</strong>, <strong>total latency</strong>, and <strong>tokens/second</strong> measurements to the chat loop.</p>
+<p>TTFT measures how long the user waits before any output appears — it is dominated by the prefill phase. Tokens/second measures decode throughput. Together, they give a complete picture of perceived responsiveness.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> litert_lm</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>litert_lm.set_min_log_severity(litert_lm.LogSeverity.ERROR)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>MODEL_PATH <span class="op">=</span> <span class="st">"/home/mjrovai/Documents/LITERT/models/gemma-4-E2B-it.litertlm"</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rough_token_count(text: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Estimate token count using word/punctuation splitting.</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co">    This is an approximation — a proper tokenizer would be more accurate,</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co">    but this is sufficient for ballpark throughput measurements.</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">len</span>(re.findall(<span class="vs">r"</span><span class="dv">\w</span><span class="op">+</span><span class="cf">|</span><span class="pp">[^</span><span class="dv">\w\s</span><span class="pp">]</span><span class="vs">"</span>, text, re.UNICODE))</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> chunk_to_text(chunk) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Extract plain text from a LiteRT-LM response chunk."""</span></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>    parts <span class="op">=</span> []</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(chunk, <span class="bu">dict</span>):</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> item <span class="kw">in</span> chunk.get(<span class="st">"content"</span>, []):</span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">dict</span>) <span class="kw">and</span> item.get(<span class="st">"type"</span>) <span class="op">==</span> <span class="st">"text"</span>:</span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>                parts.append(item.get(<span class="st">"text"</span>, <span class="st">""</span>))</span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">""</span>.join(parts)</span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> litert_lm.Engine(MODEL_PATH) <span class="im">as</span> engine:</span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> engine.create_conversation() <span class="im">as</span> conversation:</span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Chat with metrics. Type 'quit' to exit.</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a>            user_input <span class="op">=</span> <span class="bu">input</span>(<span class="st">"&gt;&gt;&gt; "</span>).strip()</span>
+<span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-34"><a href="#cb34-34" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> user_input.lower() <span class="kw">in</span> {<span class="st">"exit"</span>, <span class="st">"quit"</span>}:</span>
+<span id="cb34-35"><a href="#cb34-35" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb34-36"><a href="#cb34-36" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> user_input:</span>
+<span id="cb34-37"><a href="#cb34-37" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb34-38"><a href="#cb34-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-39"><a href="#cb34-39" aria-hidden="true" tabindex="-1"></a>            start <span class="op">=</span> time.perf_counter()</span>
+<span id="cb34-40"><a href="#cb34-40" aria-hidden="true" tabindex="-1"></a>            first_token_time <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb34-41"><a href="#cb34-41" aria-hidden="true" tabindex="-1"></a>            pieces <span class="op">=</span> []</span>
+<span id="cb34-42"><a href="#cb34-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-43"><a href="#cb34-43" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> chunk <span class="kw">in</span> conversation.send_message_async(user_input):</span>
+<span id="cb34-44"><a href="#cb34-44" aria-hidden="true" tabindex="-1"></a>                text <span class="op">=</span> chunk_to_text(chunk)</span>
+<span id="cb34-45"><a href="#cb34-45" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> text:</span>
+<span id="cb34-46"><a href="#cb34-46" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> first_token_time <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb34-47"><a href="#cb34-47" aria-hidden="true" tabindex="-1"></a>                        first_token_time <span class="op">=</span> time.perf_counter()</span>
+<span id="cb34-48"><a href="#cb34-48" aria-hidden="true" tabindex="-1"></a>                    pieces.append(text)</span>
+<span id="cb34-49"><a href="#cb34-49" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(text, end<span class="op">=</span><span class="st">""</span>, flush<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb34-50"><a href="#cb34-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-51"><a href="#cb34-51" aria-hidden="true" tabindex="-1"></a>            end <span class="op">=</span> time.perf_counter()</span>
+<span id="cb34-52"><a href="#cb34-52" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>()</span>
+<span id="cb34-53"><a href="#cb34-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-54"><a href="#cb34-54" aria-hidden="true" tabindex="-1"></a>            output <span class="op">=</span> <span class="st">""</span>.join(pieces)</span>
+<span id="cb34-55"><a href="#cb34-55" aria-hidden="true" tabindex="-1"></a>            output_tokens <span class="op">=</span> rough_token_count(output)</span>
+<span id="cb34-56"><a href="#cb34-56" aria-hidden="true" tabindex="-1"></a>            total_latency <span class="op">=</span> end <span class="op">-</span> start</span>
+<span id="cb34-57"><a href="#cb34-57" aria-hidden="true" tabindex="-1"></a>            ttft <span class="op">=</span> (first_token_time <span class="op">-</span> start) <span class="cf">if</span> first_token_time <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb34-58"><a href="#cb34-58" aria-hidden="true" tabindex="-1"></a>            decode_time <span class="op">=</span> (end <span class="op">-</span> first_token_time) <span class="cf">if</span> first_token_time <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb34-59"><a href="#cb34-59" aria-hidden="true" tabindex="-1"></a>            tps <span class="op">=</span> (output_tokens <span class="op">/</span> decode_time) <span class="cf">if</span> decode_time <span class="kw">and</span> decode_time <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb34-60"><a href="#cb34-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-61"><a href="#cb34-61" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> ttft <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb34-62"><a href="#cb34-62" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(</span>
+<span id="cb34-63"><a href="#cb34-63" aria-hidden="true" tabindex="-1"></a>                    <span class="ss">f"[TTFT: </span><span class="sc">{</span>ttft<span class="sc">:.3f}</span><span class="ss">s | Total: </span><span class="sc">{</span>total_latency<span class="sc">:.3f}</span><span class="ss">s | "</span></span>
+<span id="cb34-64"><a href="#cb34-64" aria-hidden="true" tabindex="-1"></a>                    <span class="ss">f"OutTok(est): </span><span class="sc">{</span>output_tokens<span class="sc">}</span><span class="ss"> | Tk/s(est): </span><span class="sc">{</span>tps<span class="sc">:.2f}</span><span class="ss">]"</span></span>
+<span id="cb34-65"><a href="#cb34-65" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb34-66"><a href="#cb34-66" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb34-67"><a href="#cb34-67" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f"[Total: </span><span class="sc">{</span>total_latency<span class="sc">:.3f}</span><span class="ss">s | OutTok(est): </span><span class="sc">{</span>output_tokens<span class="sc">}</span><span class="ss">]"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Example session:</strong></p>
+<pre><code>Chat with metrics. Type 'quit' to exit.
+
+&gt;&gt;&gt;  what is the capital of Brazil?
+The capital of Brazil is **Brasília**.
+[TTFT: 1.524s | Total: 3.438s | OutTok(est): 11 | Tk/s(est): 5.75]
+
+&gt;&gt;&gt;  and France?
+The capital of France is **Paris**.
+[TTFT: 1.468s | Total: 3.156s | OutTok(est): 11 | Tk/s(est): 6.52]
+
+&gt;&gt;&gt;  y la de Bolivia?
+The capital of Bolivia is **Sucre**.
+
+However, it's important to note that **La Paz** is the administrative capital and the seat of the government, while **Sucre** is the constitutional capital. Sucre holds the constitutional status.
+[TTFT: 1.427s | Total: 11.427s | OutTok(est): 54 | Tk/s(est): 5.40]</code></pre>
+<section id="interpreting-the-metrics" class="level4">
+<h4 class="anchored" data-anchor-id="interpreting-the-metrics">Interpreting the Metrics</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 18%">
+<col style="width: 65%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>Typical RPi 5 Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>TTFT</strong></td>
+<td>1-2 s (SSD)</td>
+<td>Time until first visible output. Dominated by prefill (prompt processing).</td>
+</tr>
+<tr class="even">
+<td><strong>Total latency</strong></td>
+<td>3-11 s</td>
+<td>Full wall-clock time from send to end-of-stream.</td>
+</tr>
+<tr class="odd">
+<td><strong>OutTok(est)</strong></td>
+<td>varies</td>
+<td>Estimated number of output tokens (word-level approximation).</td>
+</tr>
+<tr class="even">
+<td><strong>Tk/s(est)</strong></td>
+<td>5-7</td>
+<td>Decode throughput in tokens per second.</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Why is TTFT several seconds?</strong> On the first question in a session, TTFT includes model-loading overhead. On subsequent turns, it shrinks because the <code>Engine</code> is already warm. Longer prompts increase TTFT proportionally, since prefill scales with prompt length.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Improving performance:</strong> The single most impactful hardware upgrade is replacing the SD card with an NVMe SSD. This reduces model load time from ~20 s to ~2 s. Within a session, performance is CPU-bound and not affected by storage speed.</p>
+</blockquote>
+</section>
+</section>
+</section>
+<section id="complete-example-putting-it-all-together" class="level2">
+<h2 class="anchored" data-anchor-id="complete-example-putting-it-all-together">Complete Example: Putting it All Together</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co">litert_lm_chat.py  —  Interactive streaming chat with Gemma 4 E2B on RPi5.</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">Usage:</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co">    source ~/litert-env/bin/activate</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co">    python3 litert_lm_chat.py</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> litert_lm</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>MODEL_PATH <span class="op">=</span> <span class="st">"/home/mjrovai/Documents/LITERT/models/gemma-4-E2B-it.litertlm"</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>litert_lm.set_min_log_severity(litert_lm.LogSeverity.ERROR)</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rough_token_count(text: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">len</span>(re.findall(<span class="vs">r"</span><span class="dv">\w</span><span class="op">+</span><span class="cf">|</span><span class="pp">[^</span><span class="dv">\w\s</span><span class="pp">]</span><span class="vs">"</span>, text, re.UNICODE))</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> chunk_to_text(chunk) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>    parts <span class="op">=</span> []</span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(chunk, <span class="bu">dict</span>):</span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> item <span class="kw">in</span> chunk.get(<span class="st">"content"</span>, []):</span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">isinstance</span>(item, <span class="bu">dict</span>) <span class="kw">and</span> item.get(<span class="st">"type"</span>) <span class="op">==</span> <span class="st">"text"</span>:</span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>                parts.append(item.get(<span class="st">"text"</span>, <span class="st">""</span>))</span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">""</span>.join(parts)</span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Loading model: </span><span class="sc">{</span>MODEL_PATH<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Type 'quit' or 'exit' to stop.</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> litert_lm.Engine(MODEL_PATH) <span class="im">as</span> engine:</span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> engine.create_conversation() <span class="im">as</span> conversation:</span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a>            <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>                <span class="cf">try</span>:</span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>                    user_input <span class="op">=</span> <span class="bu">input</span>(<span class="st">"You: "</span>).strip()</span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>                <span class="cf">except</span> (<span class="pp">EOFError</span>, <span class="pp">KeyboardInterrupt</span>):</span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Interrupted]"</span>)</span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">break</span></span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> user_input.lower() <span class="kw">in</span> {<span class="st">"exit"</span>, <span class="st">"quit"</span>}:</span>
+<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">"[Goodbye]"</span>)</span>
+<span id="cb36-46"><a href="#cb36-46" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">break</span></span>
+<span id="cb36-47"><a href="#cb36-47" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="kw">not</span> user_input:</span>
+<span id="cb36-48"><a href="#cb36-48" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">continue</span></span>
+<span id="cb36-49"><a href="#cb36-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-50"><a href="#cb36-50" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">"AI: "</span>, end<span class="op">=</span><span class="st">""</span>, flush<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb36-51"><a href="#cb36-51" aria-hidden="true" tabindex="-1"></a>                start <span class="op">=</span> time.perf_counter()</span>
+<span id="cb36-52"><a href="#cb36-52" aria-hidden="true" tabindex="-1"></a>                first_token_time <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb36-53"><a href="#cb36-53" aria-hidden="true" tabindex="-1"></a>                pieces <span class="op">=</span> []</span>
+<span id="cb36-54"><a href="#cb36-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-55"><a href="#cb36-55" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> chunk <span class="kw">in</span> conversation.send_message_async(user_input):</span>
+<span id="cb36-56"><a href="#cb36-56" aria-hidden="true" tabindex="-1"></a>                    text <span class="op">=</span> chunk_to_text(chunk)</span>
+<span id="cb36-57"><a href="#cb36-57" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> text:</span>
+<span id="cb36-58"><a href="#cb36-58" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> first_token_time <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb36-59"><a href="#cb36-59" aria-hidden="true" tabindex="-1"></a>                            first_token_time <span class="op">=</span> time.perf_counter()</span>
+<span id="cb36-60"><a href="#cb36-60" aria-hidden="true" tabindex="-1"></a>                        pieces.append(text)</span>
+<span id="cb36-61"><a href="#cb36-61" aria-hidden="true" tabindex="-1"></a>                        <span class="bu">print</span>(text, end<span class="op">=</span><span class="st">""</span>, flush<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb36-62"><a href="#cb36-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-63"><a href="#cb36-63" aria-hidden="true" tabindex="-1"></a>                end <span class="op">=</span> time.perf_counter()</span>
+<span id="cb36-64"><a href="#cb36-64" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb36-65"><a href="#cb36-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-66"><a href="#cb36-66" aria-hidden="true" tabindex="-1"></a>                output <span class="op">=</span> <span class="st">""</span>.join(pieces)</span>
+<span id="cb36-67"><a href="#cb36-67" aria-hidden="true" tabindex="-1"></a>                output_tokens <span class="op">=</span> rough_token_count(output)</span>
+<span id="cb36-68"><a href="#cb36-68" aria-hidden="true" tabindex="-1"></a>                total_latency <span class="op">=</span> end <span class="op">-</span> start</span>
+<span id="cb36-69"><a href="#cb36-69" aria-hidden="true" tabindex="-1"></a>                ttft <span class="op">=</span> (first_token_time <span class="op">-</span> start) <span class="cf">if</span> first_token_time <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb36-70"><a href="#cb36-70" aria-hidden="true" tabindex="-1"></a>                decode_time <span class="op">=</span> (end <span class="op">-</span> first_token_time) <span class="cf">if</span> first_token_time <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb36-71"><a href="#cb36-71" aria-hidden="true" tabindex="-1"></a>                tps <span class="op">=</span> (output_tokens <span class="op">/</span> decode_time) <span class="cf">if</span> decode_time <span class="kw">and</span> decode_time <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb36-72"><a href="#cb36-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-73"><a href="#cb36-73" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> ttft <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb36-74"><a href="#cb36-74" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(</span>
+<span id="cb36-75"><a href="#cb36-75" aria-hidden="true" tabindex="-1"></a>                        <span class="ss">f"  ↳ [TTFT: </span><span class="sc">{</span>ttft<span class="sc">:.2f}</span><span class="ss">s | Total: </span><span class="sc">{</span>total_latency<span class="sc">:.2f}</span><span class="ss">s | "</span></span>
+<span id="cb36-76"><a href="#cb36-76" aria-hidden="true" tabindex="-1"></a>                        <span class="ss">f"~</span><span class="sc">{</span>output_tokens<span class="sc">}</span><span class="ss"> tokens | </span><span class="sc">{</span>tps<span class="sc">:.1f}</span><span class="ss"> tk/s]</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb36-77"><a href="#cb36-77" aria-hidden="true" tabindex="-1"></a>                    )</span>
+<span id="cb36-78"><a href="#cb36-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-79"><a href="#cb36-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-80"><a href="#cb36-80" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb36-81"><a href="#cb36-81" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="./images/png/complete.png" class="img-fluid"></p>
+<p>During the inference, it is possible to see that the memory consumption is low (2.1GB of RAM + ~1GB of Swap):</p>
+<p><img src="./images/png/htop-infer.png" class="img-fluid"> Runing a simple query on the Raspi, using the same model but with Ollama, we can see that memory usage is intense (7.7GB of RAM + 4GB of Swap): <img src="./images/png/htop-infer-ollama.png" class="img-fluid"> Another point is the model’s size. The Gemma4:e2b needs 7.2GB of RAM, and its LiteRT-LM version only 2.7GB.</p>
+</section>
+<section id="going-further" class="level2">
+<h2 class="anchored" data-anchor-id="going-further">Going Further</h2>
+<p><strong>Multi-modal inputs.</strong> Gemma 4 is natively multi-modal. LiteRT-LM can accept image buffers alongside text prompts, opening the door to vision-language tasks directly on Raspberry Pi — using the same <code>.litertlm</code> file.</p>
+<blockquote class="blockquote">
+<p>UNFORTUNATELY, at this time, the multimodality is still not working properly on the Raspberry Pi using LiteRT-LM, only with OLLAMA, but with high latency (around 4 minutes).</p>
+</blockquote>
+<p><strong>Feeding tool results back into the conversation.</strong> The tool-calling example stops after the function is called. A richer pattern sends the function’s result back as a follow-up message, allowing the model to formulate a natural-language reply that incorporates the correct answer.</p>
+<p><strong>Multiple simultaneous conversations.</strong> A single <code>Engine</code> can host multiple <code>Conversation</code> objects at the same time — useful for multi-user local assistants in, say, a classroom setting, without loading model weights twice.</p>
+<p><strong>Upgrading to Gemma 4 E4B.</strong> If your Raspberry Pi 5 has 8 GB of RAM, the E4B model (~3.7 GB working memory) offers noticeably better reasoning quality, especially for longer contexts (with higher latency).</p>
+<p><strong>Cross-platform consistency.</strong> A <code>.litertlm</code> binary tested on a Raspberry Pi 5 will run without modification on an NVIDIA Jetson Orin Nano or a Qualcomm-based Android device — with the additional benefit of GPU/NPU acceleration on those targets. This is the key architectural advantage of LiteRT-LM: one model file, one runtime, every platform.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>LiteRT-LM occupies a distinct niche in the edge AI toolbox. It is not a replacement for Ollama — it is a complement. Ollama excels at broad model selection, simplicity, and desktop development. LiteRT-LM excels at production-quality, cross-platform deployment where the same runtime binary needs to travel from prototyping (Raspberry Pi) to production (Android phone, wearable, embedded system).</p>
+<p>In this chapter, we covered the complete development arc: understanding LiteRT-LM’s architecture (Engine → Conversation → XNNPACK executor); installing the Python package and downloading a Gemma 4 <code>.litertlm</code> model; and building four progressively more complex patterns — single query, persistent chat, tool calling, and streaming with metrics.</p>
+<p>The most important mental model to take away is the <strong>Engine / Conversation separation</strong>: weights are loaded once (expensive), and conversation state is maintained automatically per session (free). This design makes LiteRT-LM well-suited for always-on IoT applications where the model is loaded at boot and conversations flow naturally for as long as the device is running.</p>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<ul>
+<li><strong>LiteRT-LM Official Documentation:</strong> <a href="https://ai.google.dev/edge/litert-lm">ai.google.dev/edge/litert-lm</a></li>
+<li><strong>LiteRT-LM GitHub Repository:</strong> <a href="https://github.com/google-ai-edge/LiteRT-LM">github.com/google-ai-edge/LiteRT-LM</a></li>
+<li><strong>LiteRT Community on Hugging Face (pre-converted models):</strong> <a href="https://huggingface.co/litert-community">huggingface.co/litert-community</a></li>
+<li><strong>Gemma 4 E2B model:</strong> <a href="https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm">huggingface.co/litert-community/gemma-4-E2B-it-litert-lm</a></li>
+<li><strong>LiteRT-Optimized INT8 LLM for Raspberry Pi (ICCV Workshop 2025):</strong> <a href="https://openaccess.thecvf.com/content/ICCV2025W/AIM/papers/Yoon_LiteRT-Optimized_INT8_LLM_for_Raspberry_Pi4_Deployment_ICCVW_2025_paper.pdf">openaccess.thecvf.com</a></li>
+<li><strong>Google AI Edge Gallery (Android/iOS demo app):</strong> <a href="https://github.com/google-ai-edge/gallery">github.com/google-ai-edge/gallery</a></li>
+<li><strong>Study Notebook for this chapter:</strong> <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/LiteRT-LM/LiteRT-LM-Test.ipynb"><code>LiteRT-LM-Test.ipynb</code></a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="pagination-link" aria-label="Advancing EdgeAI: Beyond Basic SLMs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Advancing EdgeAI: Beyond Basic SLMs</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/litert-lm/litert-lm.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/litert-lm/litert-lm.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

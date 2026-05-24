@@ -338,6 +338,12 @@ window.Quarto = {
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/litert-lm/litert-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
+  </div>
+</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -539,7 +545,7 @@ window.Quarto = {
 </header>
 
 
-<p><img src="./images/png/portada.png" class="img-fluid"></p>
+<p><img src="./images/jpeg/portada.jpg" class="img-fluid"></p>
 <p><em>Hardware Acceleration with MemryX MX3 on Raspberry Pi 5.</em></p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
@@ -1256,7 +1262,7 @@ window.Quarto = {
 <p>Under <code>./runs/detect</code>, the output processed image can be analysed:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/png/yolov8-1st-infer.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
+<p><img src="./images/jpeg/yolov8-1st-infer.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
 </figure>
 </div>
 <section id="model-export-and-compilation" class="level3">
@@ -1434,7 +1440,7 @@ window.Quarto = {
 </blockquote>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/png/infer-compar.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
+<p><img src="./images/jpeg/infer-compar.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
 </figure>
 </div>
 </section>
@@ -1625,7 +1631,7 @@ window.Quarto = {
 <p>We can run it as:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> yolov8_mx3_detect_v2.py <span class="at">--image</span> ./images/home-office.jpg <span class="at">-c</span> 0.2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Here are some results with other images:</p>
-<p><img src="./images/png/yolo-result.png" class="img-fluid"></p>
+<p><img src="./images/jpeg/yolo-result.jpg" class="img-fluid"></p>
 </section>
 </section>
 <section id="inference-with-a-custom-model" class="level2">
@@ -1683,7 +1689,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> box_wheel_mx3_detect_v2.py <span class="at">--image</span> ./images/box_3_wheel_4.jpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/png/infer-mx3-custom-yolo.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
+<p><img src="./images/jpeg/infer-mx3-custom-yolo.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
 </figure>
 </div>
 <p>The Result was great! <strong>And the latency (~38 ms) was 4 times lower than with the CPU-only</strong> approach (even smaller than the model exported to NCNN, runing 100% at CPU - 80 ms).</p>

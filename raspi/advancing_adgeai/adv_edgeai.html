@@ -67,6 +67,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../raspi/litert-lm/litert-lm.html" rel="next">
 <link href="../../raspi/iot/slm_iot.html" rel="prev">
 <link href="../../images/unifei-logo.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
@@ -308,6 +309,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/litert-lm/litert-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
+  </div>
+</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -447,7 +454,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="exploring-cot-prompting-agents-function-calling-rag-and-more.">Exploring CoT Prompting, Agents, Function Calling, RAG, and more.</h4>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/png/cover.png" class="img-fluid figure-img"></p>
+<p><img src="./images/jpeg/cover.jpg" class="img-fluid figure-img"></p>
 <figcaption><em>Image from author, with a Raspberry Pi from ImageFX - prompt - Create a cartoon image with a single Raspberry Pi with a white background</em></figcaption>
 </figure>
 </div>
@@ -540,18 +547,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="chain-of-thought-prompting" class="level3">
 <h3 class="anchored" data-anchor-id="chain-of-thought-prompting">Chain-of-Thought Prompting</h3>
 <p>Chain-of-thought prompting encourages SLMs to break down complex problems into step-by-step reasoning, leading to more accurate results:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> solve_math_problem(problem):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ss">    Problem: </span><span class="sc">{</span>problem<span class="sc">}</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ss">    Let's think about this step by step:</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ss">    1. First, I'll identify what we're looking for</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ss">    2. Then, I'll identify the relevant information</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ss">    3. Next, I'll set up the appropriate equations</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ss">    4. Finally, I'll solve the problem carefully</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ss">    Solving:</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    """</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> ollama.generate(model<span class="op">=</span><span class="st">"llama3.2:3b"</span>, prompt<span class="op">=</span>prompt)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response[<span class="st">'response'</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> solve_math_problem(problem: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> <span class="ss">f"""You are a math expert. Solve the problem using chain-of-thought reasoning.</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ss">Follow this structure:</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ss">1. Restate the problem in your own words.</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ss">2. Identify all given quantities and what is being asked.</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ss">3. Plan the solution (what formulas or steps you will use).</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ss">4. Execute the plan step by step, showing intermediate calculations.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ss">5. Double-check the result for reasonableness.</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ss">6. On the last line, write only: Answer: &lt;final answer&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="ss">Problem:</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>problem<span class="sc">}</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> ollama.generate(model<span class="op">=</span><span class="st">"llama3.2:3b"</span>, prompt<span class="op">=</span>prompt)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response[<span class="st">"response"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This technique significantly improves performance on reasoning tasks by emulating human problem-solving approaches.</p>
 </section>
 <section id="few-shot-learning" class="level3">
@@ -615,7 +626,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>What is an Agent? It is an <strong>AI model capable of reasoning, planning, and interacting with its environment</strong>. It can be called an <em>Agent</em> because it has an <em>agency</em> that can interact with the environment.</p>
 </blockquote>
-<p>Let’s think about the multiplication problem that we faced before. An Agent can be used for that.</p>
+<p>Let’s think about the multiplication problem that we faced before. A <em>minimal agent</em> can be used for that.</p>
 <p>An agent is a system that uses an AI Model as its core reasoning engine to:</p>
 <ul>
 <li><strong>Understand natural language:</strong> (1) Interpret and respond to human instructions meaningfully.</li>
@@ -625,6 +636,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="./images/png/image-20250319093008853.png" class="img-fluid"></p>
 <p>For example, if it is a multiplication, we can use a Python function as a “tool” to calculate it, as shown in the diagram:</p>
 <p><img src="./images/png/image-20250319162640705.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>This example shows a minimal agentic workflow: the model decides whether to use a tool for multiplication or answer normally.</p>
+</blockquote>
 <p>Our code works through the following steps:</p>
 <ol type="1">
 <li><p><strong>User Input</strong>: The user types a query like “What is 7 times 8?” or “What is the capital of France?”</p></li>
@@ -2124,6 +2138,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../../raspi/litert-lm/litert-lm.html" class="pagination-link" aria-label="LiteRT-LM: Production-Ready LLM Inference at the Edge">
+        <span class="nav-page-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

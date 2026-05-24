@@ -309,6 +309,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/litert-lm/litert-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
+  </div>
+</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -366,10 +372,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#gemma3" id="toc-gemma3" class="nav-link" data-scroll-target="#gemma3">Gemma3</a></li>
   <li><a href="#gemma-3n" id="toc-gemma-3n" class="nav-link" data-scroll-target="#gemma-3n">Gemma 3n</a></li>
+  <li><a href="#gemma-4" id="toc-gemma-4" class="nav-link" data-scroll-target="#gemma-4">Gemma 4</a></li>
+  <li><a href="#e2b-and-e4b-models-a-new-level-of-intelligence-for-mobile-and-iot-devices" id="toc-e2b-and-e4b-models-a-new-level-of-intelligence-for-mobile-and-iot-devices" class="nav-link" data-scroll-target="#e2b-and-e4b-models-a-new-level-of-intelligence-for-mobile-and-iot-devices">E2B and E4B models: A new level of intelligence for mobile and IoT devices</a></li>
   </ul></li>
   <li><a href="#microsoft-phi3.5-3.8b" id="toc-microsoft-phi3.5-3.8b" class="nav-link" data-scroll-target="#microsoft-phi3.5-3.8b">Microsoft Phi3.5 3.8B</a></li>
   <li><a href="#moondream" id="toc-moondream" class="nav-link" data-scroll-target="#moondream">MoonDream</a></li>
   <li><a href="#llava-phi-3" id="toc-llava-phi-3" class="nav-link" data-scroll-target="#llava-phi-3">Llava-Phi-3</a></li>
+  <li><a href="#ollama-commands" id="toc-ollama-commands" class="nav-link" data-scroll-target="#ollama-commands">Ollama Commands</a></li>
   <li><a href="#inspecting-model-parameters" id="toc-inspecting-model-parameters" class="nav-link" data-scroll-target="#inspecting-model-parameters">Inspecting Model parameters</a>
   <ul class="collapse">
   <li><a href="#highlevel-identity" id="toc-highlevel-identity" class="nav-link" data-scroll-target="#highlevel-identity">High‑level identity</a></li>
@@ -439,7 +448,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/jpeg/cover.jpg" class="img-fluid figure-img"></p>
-<figcaption><em>DALL·E prompt - A 1950s-style cartoon illustration showing a Raspberry Pi running a small language model at the edge. The Raspberry Pi is stylized in a retro-futuristic way with rounded edges and chrome accents, connected to playful cartoonish sensors and devices. Speech bubbles are floating around, representing language processing, and the background has a whimsical landscape of interconnected devices with wires and small gadgets, all drawn in a vintage cartoon style. The color palette uses soft pastel colors and bold outlines typical of 1950s cartoons, giving a fun and nostalgic vibe to the scene.</em></figcaption>
+<figcaption><em>Nano Banana prompt - A cartoon about SLMs runing SLMs as Llama and Gemma with Ollama - Python on a Raspberry Pi</em></figcaption>
 </figure>
 </div>
 <section id="introduction" class="level2">
@@ -546,15 +555,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 <p>The primary and most user-friendly tool for running Small Language Models (SLMs) directly on a Raspberry Pi, especially the Pi 5, is <a href="https://ollama.com/">Ollama</a>. It is an open-source framework that allows us to install, manage, and run various SLMs (such as TinyLlama, smollm, Microsoft Phi, Google Gemma, Meta Llama, MoonDream, LLaVa, among others) locally on our Raspberry Pi for tasks such as text generation, image captioning, and translation.</p>
-<blockquote class="blockquote">
-<p><strong>Alternatives options:</strong></p>
-<p><a href="https://en.wikipedia.org/wiki/Llama.cpp">llama.cpp</a><a href="https://en.wikipedia.org/wiki/Llama.cpp"></a>and the Hugging Face <a href="https://huggingface.co/docs/transformers/en/index">Transformers</a> library are well-supported for running SLMs on Raspberry Pi. llama.cpp is particularly efficient for running quantized models natively. At the same time, Hugging Face Transformers offers a broader range of models and tasks, which are best suited to smaller architectures due to hardware limitations. Note that Ollama run llama.cpp under the hood.</p>
-</blockquote>
+<div class="callout callout-style-simple callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Alternative options:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://en.wikipedia.org/wiki/Llama.cpp">llama.cpp</a><a href="https://en.wikipedia.org/wiki/Llama.cpp"></a> and the Hugging Face <a href="https://huggingface.co/docs/transformers/en/index">Transformers</a> library are well supported for running SLMs on Raspberry Pi. llama.cpp is particularly efficient for running quantized models natively. At the same time, Hugging Face Transformers offers a broader range of models and tasks, which are best suited to smaller architectures due to hardware limitations. Note that Ollama runs llama.cpp under the hood.</p>
+<p>For production deployments on edge devices, a good option is Google <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/LiteRT-LM">AI Edge’s LiteRT-LM</a>, which is covered in the chapter “LiteRT-LM: Production-Ready LLM Inference at the Edge”.</p>
+</div>
+</div>
 <p>Here are some critical points about Ollama:</p>
 <ol type="1">
-<li><p><strong>Local Model Execution</strong>: Ollama enables running LMs on personal computers or edge devices such as the Raspi-5, eliminating the need for cloud-based API calls.</p></li>
+<li><p><strong>Local Model Execution</strong>: Ollama enables running LMs on personal computers or edge devices such as the Raspberry Pi 5, eliminating the need for cloud-based API calls.</p></li>
 <li><p><strong>Ease of Use</strong>: It provides a simple command-line interface for downloading, running, and managing different language models.</p></li>
-<li><p><strong>Model Variety</strong>: Ollama supports various LLMs, including Phi, Gemma, Llama, Mistral, and other open-source models.</p></li>
+<li><p><strong>Model Variety</strong>: Ollama supports a variety of LLMs, including Phi, Gemma, Llama, Mistral, and other open-source models.</p></li>
 <li><p><strong>Customization</strong>: Users can create and share custom models tailored to specific needs or domains.</p></li>
 <li><p><strong>Lightweight</strong>: Designed to be efficient and run on consumer-grade hardware.</p></li>
 <li><p><strong>API Integration</strong>: Offers an API that allows integration with other applications and services.</p></li>
@@ -687,6 +706,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>When we run it, we can see that, despite having 4.5B parameters, it is faster than Llama3.3:3B.</p>
 <p><img src="./images/png/gemma_2.png" class="img-fluid"></p>
 </section>
+<section id="gemma-4" class="level4">
+<h4 class="anchored" data-anchor-id="gemma-4">Gemma 4</h4>
+<p><a href="https://deepmind.google/models/gemma/gemma-4/">Gemma 4</a> models are designed to deliver frontier-level performance across all sizes. They are well-suited for reasoning, agentic workflows, coding, and multimodal understanding. Gemma 4 is released under a commercially permissive <a href="https://goo.gle/gemma-4-apache-2">Apache 2.0 license</a>, which is a huge milestone for open generative AI models at the edge.</p>
+</section>
+<section id="e2b-and-e4b-models-a-new-level-of-intelligence-for-mobile-and-iot-devices" class="level4">
+<h4 class="anchored" data-anchor-id="e2b-and-e4b-models-a-new-level-of-intelligence-for-mobile-and-iot-devices">E2B and E4B models: A new level of intelligence for mobile and IoT devices</h4>
+<p>Engineered from the ground up for maximum compute and memory efficiency, these models operate with an effective 2- and 4-billion-parameter footprint during inference to preserve RAM and battery life. In close collaboration with our Google Pixel team and mobile hardware leaders such as Qualcomm Technologies and MediaTek, these multimodal models run completely offline with near-zero latency on edge devices such as phones, Raspberry Pi, and NVIDIA Jetson Orin Nano. Android developers can now prototype agentic flows in the <a href="https://android-developers.googleblog.com/2026/03/AI-Core-Developer-Preview">AICore Developer Preview</a> today for forward compatibility with Gemini Nano 4.</p>
+<blockquote class="blockquote">
+<p>Gemma 4 E2B and E4B are too heavy to be deployed on a Raspberry Pi 5 with Ollama, but it works very well with Google <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/tree/main/LiteRT-LM">AI Edge’s LiteRT-LM</a>, which is covered in the chapter “LiteRT-LM: Production-Ready LLM Inference at the Edge”.</p>
+</blockquote>
+</section>
 </section>
 <section id="microsoft-phi3.5-3.8b" class="level3">
 <h3 class="anchored" data-anchor-id="microsoft-phi3.5-3.8b">Microsoft Phi3.5 3.8B</h3>
@@ -781,6 +811,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> Describe <span class="ex">the</span> image /home/mjrovai/Documents/OLLAMA/image_test_1.jpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The result was great, but the overall latency was significant; almost 4 minutes to perform the inference.</p>
 <p><img src="images/png/paris-infer-1.png" class="img-fluid"></p>
+</section>
+<section id="ollama-commands" class="level3">
+<h3 class="anchored" data-anchor-id="ollama-commands">Ollama Commands</h3>
+<p>Ollama has several commands available, which can be accessed using<code>/</code>, such as <code>/bye</code> to exit, or <code>/set</code>to toggle section variables as <code>verbose/quiet</code> to see variables as token/s or latency, and <code>think/nothink</code> to turn on/off the thinking mode in models that “reason” as Qwen and Gemma.</p>
+<p><img src="./images/png/commands.png" class="img-fluid"></p>
 </section>
 <section id="inspecting-model-parameters" class="level3">
 <h3 class="anchored" data-anchor-id="inspecting-model-parameters">Inspecting Model parameters</h3>
@@ -1597,6 +1632,7 @@ The hidden/embedding dimension is <strong>3072</strong>:
 <h2 class="anchored" data-anchor-id="resources">Resources</h2>
 <ul>
 <li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/OLLAMA_SLMs/Ollama_Python_Intro.ipynb">Ollama_Python_Library Intro notebook</a></li>
+<li><a href="https://www.canirun.ai/">Find out which AI models your machine can actually run</a></li>
 </ul>
 
 
