@@ -361,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#setting-up-the-environment" id="toc-setting-up-the-environment" class="nav-link" data-scroll-target="#setting-up-the-environment">Setting Up the Environment</a>
   <ul>
   <li><a href="#updating-the-raspberry-pi" id="toc-updating-the-raspberry-pi" class="nav-link" data-scroll-target="#updating-the-raspberry-pi">Updating the Raspberry Pi</a></li>
-  <li><a href="#installing-required-system-level-libraries" id="toc-installing-required-system-level-libraries" class="nav-link" data-scroll-target="#installing-required-system-level-libraries">Installing Required System Level Libraries</a></li>
+  <li><a href="#installing-required-system-level-libraries" id="toc-installing-required-system-level-libraries" class="nav-link" data-scroll-target="#installing-required-system-level-libraries">Installing Required System-Level Libraries</a></li>
   <li><a href="#setting-up-a-virtual-environment" id="toc-setting-up-a-virtual-environment" class="nav-link" data-scroll-target="#setting-up-a-virtual-environment">Setting up a Virtual Environment</a></li>
   <li><a href="#install-python-packages-inside-virtual-environment" id="toc-install-python-packages-inside-virtual-environment" class="nav-link" data-scroll-target="#install-python-packages-inside-virtual-environment">Install Python Packages (inside Virtual Environment)</a>
   <ul class="collapse">
@@ -455,11 +455,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot <span class="co"># Reboot to ensure all updates take effect</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="installing-required-system-level-libraries" class="level3">
-<h3 class="anchored" data-anchor-id="installing-required-system-level-libraries">Installing Required System Level Libraries</h3>
+<h3 class="anchored" data-anchor-id="installing-required-system-level-libraries">Installing Required System-Level Libraries</h3>
 <p>Install Python tools and camera libraries</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> python3-pip python3-venv python3-picamera2</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> libcamera-dev libcamera-tools libcamera-apps</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Picamera2](https://github.com/raspberrypi/picamera2), a Python library for interacting with Raspberry Pi’s camera, is based on the <em>libcamera</em> camera stack, and the Raspberry Pi Foundation maintains it. The Picamera2 library is supported on all Raspberry Pi models, from the Pi Zero to the Pi 5.</p>
+<p><a href="https://github.com/raspberrypi/picamera2">Picamera2</a>, a Python library for interacting with Raspberry Pi’s camera, is based on the <em>libcamera</em> camera stack, and the Raspberry Pi Foundation maintains it. The Picamera2 library is supported on all Raspberry Pi models, from the Pi Zero to the Pi 5.</p>
 <p><strong>Testing picamera2 Instalation</strong></p>
 <p><img src="./images/png/picamera2-test.png" class="img-fluid"></p>
 </section>
