@@ -87,9 +87,21 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
-        <div class="quarto-navbar-tools tools-wide tools-end">
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/Mjrovai/EdgeML_Made_Ease_ebook/releases/latest/download/Edge-AI-Engineering.pdf"> <i class="bi bi-file-earmark-pdf" role="img">
+</i> 
+<span class="menu-text">Download PDF</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./Edge-AI-Engineering.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -97,7 +109,6 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </a>
 </div>
-          <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
   <nav class="quarto-secondary-nav">
@@ -159,7 +170,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+ <span class="menu-text">Fixed Function AI (Reactive)</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -200,7 +211,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Counting objects with YOLO</span></a>
+ <span class="menu-text">Counting Objects with YOLO</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -217,7 +228,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+ <span class="menu-text">Generative AI (Proactive)</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -229,6 +240,12 @@ ul.task-list li input[type="checkbox"] {
   <div class="sidebar-item-container"> 
   <a href="./raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./raspi/local_inference/local_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLMs at the Edge</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -279,10 +296,22 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./raspi/llama_cpp/llama_cpp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">From Ollama to llama.cpp</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./raspi/mtp/mtp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multi-Token Prediction on the Raspberry Pi 5</span></a>
+  </div>
+</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+ <span class="menu-text">Weekly Labs</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -293,7 +322,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+ <span class="menu-text">References &amp; Author</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -317,15 +346,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#to-learn-more" id="toc-to-learn-more" class="nav-link active" data-scroll-target="#to-learn-more">To learn more:</a>
+  <li><a href="#to-learn-more" id="toc-to-learn-more" class="nav-link active" data-scroll-target="#to-learn-more">To learn more</a>
   <ul>
   <li><a href="#online-courses" id="toc-online-courses" class="nav-link" data-scroll-target="#online-courses">Online Courses</a></li>
   <li><a href="#books" id="toc-books" class="nav-link" data-scroll-target="#books">Books</a></li>
   <li><a href="#projects-repository" id="toc-projects-repository" class="nav-link" data-scroll-target="#projects-repository">Projects Repository</a></li>
   </ul></li>
-  <li><a href="#aieng4d" id="toc-aieng4d" class="nav-link" data-scroll-target="#aieng4d">AiEng4D</a></li>
+  <li><a href="#aieng4d" id="toc-aieng4d" class="nav-link" data-scroll-target="#aieng4d">AIEng4D</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/references.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/references.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -350,7 +379,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <section id="to-learn-more" class="level2">
-<h2 class="anchored" data-anchor-id="to-learn-more">To learn more:</h2>
+<h2 class="anchored" data-anchor-id="to-learn-more">To learn more</h2>
 <section id="online-courses" class="level3">
 <h3 class="anchored" data-anchor-id="online-courses">Online Courses</h3>
 <ul>
@@ -372,6 +401,7 @@ ul.task-list li input[type="checkbox"] {
 <li><a href="https://www.oreilly.com/library/view/ai-at-the/9781098120191/">“AI at the Edge” book by Daniel Situnayake and Jenny Plunkett</a></li>
 <li><a href="https://mjrovai.github.io/XIAO_Big_Power_Small_Board-ebook/">“XIAO: Big Power, Small Board” by Lei Feng and Marcelo Rovai</a></li>
 <li><a href="https://mlsysbook.ai">“Machine Learning Systems” by Vijay Janapa Reddi</a></li>
+<li><a href="https://mjrovai.github.io/genai-uno-q/">“Generative AI at the Edge” by Marcelo Rovai</a>, the companion book on the Arduino UNO Q</li>
 </ul>
 </section>
 <section id="projects-repository" class="level3">
@@ -381,12 +411,12 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 </section>
 </section>
-<section id="aieng4d" class="level1">
-<h1>AiEng4D</h1>
-<p><strong>Edge AI Engineering</strong>, an eBook in a series of Hands-On tutorials, is part of the <a href="https://tinyml.seas.harvard.edu/team">AIEng4D</a> (formerly TinyML4D) group, an initiative to make Embedded Machine Learning education available to everyone, explicitly enabling innovative solutions for the unique challenges Developing Countries face.</p>
+<section id="aieng4d" class="level2">
+<h2 class="anchored" data-anchor-id="aieng4d">AIEng4D</h2>
+<p><strong>Edge AI Engineering</strong>, an eBook in a series of Hands-On tutorials, is part of the <a href="https://aieng4d.mlsysbook.ai">AIEng4D</a> (formerly TinyML4D) group, an initiative to make Embedded Machine Learning education available to everyone, explicitly enabling innovative solutions for the unique challenges Developing Countries face.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/aieng4d_logo.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:4.41in"></p>
+<p><img src="./images/aieng4d_logo.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:4.41in"></p>
 </figure>
 </div>
 
@@ -818,7 +848,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/references.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/references.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    </div>
     <div class="nav-footer-right">
 <p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>

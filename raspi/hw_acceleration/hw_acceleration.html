@@ -152,9 +152,21 @@ window.Quarto = {
     <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
-        <div class="quarto-navbar-tools tools-wide tools-end">
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/Mjrovai/EdgeML_Made_Ease_ebook/releases/latest/download/Edge-AI-Engineering.pdf"> <i class="bi bi-file-earmark-pdf" role="img">
+</i> 
+<span class="menu-text">Download PDF</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../Edge-AI-Engineering.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -162,7 +174,6 @@ window.Quarto = {
   </div>
 </a>
 </div>
-          <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
   <nav class="quarto-secondary-nav">
@@ -224,7 +235,7 @@ window.Quarto = {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+ <span class="menu-text">Fixed Function AI (Reactive)</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -265,7 +276,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Counting objects with YOLO</span></a>
+ <span class="menu-text">Counting Objects with YOLO</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -282,7 +293,7 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+ <span class="menu-text">Generative AI (Proactive)</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -294,6 +305,12 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/local_inference/local_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLMs at the Edge</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -344,10 +361,22 @@ window.Quarto = {
  <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llama_cpp/llama_cpp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">From Ollama to llama.cpp</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/mtp/mtp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multi-Token Prediction on the Raspberry Pi 5</span></a>
+  </div>
+</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+ <span class="menu-text">Weekly Labs</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -358,7 +387,7 @@ window.Quarto = {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+ <span class="menu-text">References &amp; Author</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -478,7 +507,7 @@ window.Quarto = {
   <li><a href="#iou-and-nms-compute_iou_batch-and-apply_nms" id="toc-iou-and-nms-compute_iou_batch-and-apply_nms" class="nav-link" data-scroll-target="#iou-and-nms-compute_iou_batch-and-apply_nms">3. IoU and NMS (<code>compute_iou_batch</code> and <code>apply_nms</code>)</a></li>
   <li><a href="#mapping-back-to-the-original-image-scale_boxes_to_original" id="toc-mapping-back-to-the-original-image-scale_boxes_to_original" class="nav-link" data-scroll-target="#mapping-back-to-the-original-image-scale_boxes_to_original">4. Mapping back to the original image (<code>scale_boxes_to_original</code>)</a></li>
   <li><a href="#drawing-results-draw_detections" id="toc-drawing-results-draw_detections" class="nav-link" data-scroll-target="#drawing-results-draw_detections">5. Drawing results (<code>draw_detections</code>)</a></li>
-  <li><a href="#the-memryx-pipeline-detect_objects-and-asyncaccl-usage" id="toc-the-memryx-pipeline-detect_objects-and-asyncaccl-usage" class="nav-link" data-scroll-target="#the-memryx-pipeline-detect_objects-and-asyncaccl-usage">6. The Memryx pipeline (<code>detect_objects</code> and <code>AsyncAccl</code> usage)</a></li>
+  <li><a href="#the-memryx-pipeline-detect_objects-and-asyncaccl-usage" id="toc-the-memryx-pipeline-detect_objects-and-asyncaccl-usage" class="nav-link" data-scroll-target="#the-memryx-pipeline-detect_objects-and-asyncaccl-usage">6. The MemryX pipeline (<code>detect_objects</code> and <code>AsyncAccl</code> usage)</a></li>
   </ul></li>
   <li><a href="#making-inferences" id="toc-making-inferences" class="nav-link" data-scroll-target="#making-inferences">Making Inferences</a></li>
   </ul></li>
@@ -486,7 +515,7 @@ window.Quarto = {
   <ul>
   <li><a href="#adjusting-confidence-threshold" id="toc-adjusting-confidence-threshold" class="nav-link" data-scroll-target="#adjusting-confidence-threshold">Adjusting Confidence Threshold</a></li>
   </ul></li>
-  <li><a href="#advanced-topics" id="toc-advanced-topics" class="nav-link" data-scroll-target="#advanced-topics"><strong>Advanced Topics</strong></a>
+  <li><a href="#advanced-topics" id="toc-advanced-topics" class="nav-link" data-scroll-target="#advanced-topics">Advanced Topics</a>
   <ul>
   <li><a href="#batch-processing-optimization" id="toc-batch-processing-optimization" class="nav-link" data-scroll-target="#batch-processing-optimization">Batch Processing (Optimization)</a></li>
   <li><a href="#thermal-management" id="toc-thermal-management" class="nav-link" data-scroll-target="#thermal-management">Thermal Management</a></li>
@@ -521,7 +550,7 @@ window.Quarto = {
   <li><a href="#community-and-support" id="toc-community-and-support" class="nav-link" data-scroll-target="#community-and-support">Community and Support</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/hw_acceleration/hw_acceleration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/hw_acceleration/hw_acceleration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -549,17 +578,29 @@ window.Quarto = {
 <p><em>Hardware Acceleration with MemryX MX3 on Raspberry Pi 5.</em></p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Throughout this course, we’ve explored various approaches to deploying AI models at the edge. We started with TensorFlow Lite running on the Raspberry Pi’s CPU, then moved to YOLO and ExecuTorch with optimized backends like XNNPACK. While these software optimizations significantly improve performance, they still rely on the general-purpose CPU to execute neural network operations.</p>
+<p>Throughout this book, we’ve explored various approaches to deploying AI models at the edge. We started with TensorFlow Lite running on the Raspberry Pi’s CPU, then moved to YOLO and ExecuTorch with optimized backends like XNNPACK. While these software optimizations significantly improve performance, they still rely on the general-purpose CPU to execute neural network operations.</p>
 <p>In this chapter, we’ll take the next step: <strong>dedicated hardware acceleration</strong>. We’ll use the <a href="https://memryx.com/wp-content/uploads/2025/04/MX3-M.2-AI-Accelerator-Module-Product-brief-DEC25-Gold.pdf">MemryX MX3 M.2 AI Accelerator Module</a>—a specialized processor designed specifically for neural network inference. The MX3 module contains four AI accelerator chips that can run deep learning models with dramatically lower latency and power consumption compared to CPU execution.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/png/board.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
+<p><img src="./images/png/board.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
 </figure>
 </div>
 <section id="why-hardware-acceleration" class="level3">
 <h3 class="anchored" data-anchor-id="why-hardware-acceleration">Why Hardware Acceleration?</h3>
-<p>Consider the requirements for real-time edge AI applications: - <strong>Latency</strong>: Autonomous systems need predictions in milliseconds - <strong>Power efficiency</strong>: Battery-powered devices must conserve energy - <strong>Throughput</strong>: Multi-camera systems may need to process several streams simultaneously - <strong>Cost</strong>: System designs often cannot afford high-end GPUs</p>
-<p>The MX3 addresses these challenges with a unique architecture: - <strong>At-memory computing</strong>: All memory is integrated on the accelerator, eliminating bandwidth bottlenecks - <strong>Pipelined dataflow</strong>: Optimized for streaming inputs with a batch size of 1 - <strong>Floating-point accuracy</strong>: No quantization required (though supported) - <strong>Low power</strong>: Maximum 10W for four accelerator chips</p>
+<p>Consider the requirements for real-time edge AI applications:</p>
+<ul>
+<li><strong>Latency</strong>: Autonomous systems need predictions in milliseconds</li>
+<li><strong>Power efficiency</strong>: Battery-powered devices must conserve energy</li>
+<li><strong>Throughput</strong>: Multi-camera systems may need to process several streams simultaneously</li>
+<li><strong>Cost</strong>: System designs often cannot afford high-end GPUs</li>
+</ul>
+<p>The MX3 addresses these challenges with a unique architecture:</p>
+<ul>
+<li><strong>At-memory computing</strong>: All memory is integrated on the accelerator, eliminating bandwidth bottlenecks</li>
+<li><strong>Pipelined dataflow</strong>: Optimized for streaming inputs with a batch size of 1</li>
+<li><strong>Floating-point accuracy</strong>: No quantization required (though supported)</li>
+<li><strong>Low power</strong>: Maximum 10W for four accelerator chips</li>
+</ul>
 <blockquote class="blockquote">
 <p>For learning more about AI Acceleration, please refer to <a href="https://mlsysbook.ai/book/contents/core/hw_acceleration/hw_acceleration.html">MLSys book</a> and how the MemryX module works, read the <a href="https://developer.memryx.com/architecture/architecture.html">Architecture Overview</a>.</p>
 </blockquote>
@@ -581,14 +622,14 @@ window.Quarto = {
 </figure>
 </div>
 <blockquote class="blockquote">
-<p><strong>IMPORTANT NOTE</strong>: MemryX recommends the <a href="https://www.amazon.com/GeeekPi-NVMe-Adapter-Raspberry-Support/dp/B0CRK4YB4C">GeeekPi N04 M.2 2280 HAT</a> as an excellent choice for the Raspberry Pi 5. It delivers solid power and fits the 2280 MX3 M.2 form factor. Some hats can lead to instabilities, mainly due to PCIe speed (Gen3). The Raspberry Pi 5 can have stability issues on Gen3.</p>
+<p><strong>IMPORTANT NOTE</strong>: MemryX recommends the <a href="https://www.amazon.com/GeeekPi-NVMe-Adapter-Raspberry-Support/dp/B0CRK4YB4C">GeeekPi N04 M.2 2280 HAT</a> as an excellent choice for the Raspberry Pi 5. It delivers solid power and fits the 2280 MX3 M.2 form factor. Some HATs can lead to instabilities, mainly due to PCIe speed (Gen3). The Raspberry Pi 5 can have stability issues on Gen3.</p>
 </blockquote>
-<p>The <a href="https://www.amazon.com/dp/B0D5CGDJLQ?tag=consecho57301-20&amp;linkCode=osi&amp;th=1&amp;psc=1&amp;ascsubtag=NoCID%7Cda83d918-3f4e-415e-ad00-b1791332db69">Raspberry Pi M.2 HAT+</a> is a good option. It works very well, despite the fact that we should adapt the MX3 board to it (The MX3 is longer than the hat).</p>
+<p>The <a href="https://www.raspberrypi.com/products/m2-hat-plus/">Raspberry Pi M.2 HAT+</a> is a good option. It works very well, despite the fact that we should adapt the MX3 board to it (The MX3 is longer than the hat).</p>
 <p><strong>MemryX MX3 M.2 module with the heatsink installed</strong></p>
-<p>For heatsink installation, follow the video instructions: https://youtu.be/wNmka0nrRRE</p>
+<p>For heatsink installation, follow the <a href="https://youtu.be/wNmka0nrRRE">video instructions</a>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/png/hat-assembly.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
+<p><img src="./images/png/hat-assembly.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
 </figure>
 </div>
 </section>
@@ -597,7 +638,7 @@ window.Quarto = {
 <p>It is essential to ensure we have sufficient cooling for the MemryX MX3 M.2 module, or we may experience thermal throttling and reduced performance. <strong>The chips will throttle their performance if they hit 100 °C</strong>.</p>
 <p>During normal operation, the current MemryX MX3 temperature and throttle status can be viewed at any time with:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /sys/memx0/temperature</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Or measurd continuay every 1 second, for example with the command:</p>
+<p>Or measured continuously every second, for example with the command:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">watch</span> <span class="at">-n</span> 1 cat /sys/memx0/temperature</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="verification" class="level3">
@@ -630,7 +671,7 @@ window.Quarto = {
 <p><code>Python 3.13.5</code></p>
 <p>Or, if the OS is the Legacy version:</p>
 <p><code>Python 3.11.2</code></p>
-<p><strong>Important</strong>: As of January 2026, MemryX officially supports only <a href="https://developer.memryx.com/release_notes.html#general"><strong>Python 3.09 to 3.12</strong></a>. Python 3.13.5 is too new and will likely cause compatibility issues. Since <strong>Debian Trixie ships with Python 3.13</strong> by default, we’ll need to install a compatible Python version alongside it.</p>
+<p><strong>Important</strong>: As of January 2026, MemryX officially supports only <a href="https://developer.memryx.com/release_notes.html#general"><strong>Python 3.9 to 3.12</strong></a>. Python 3.13.5 is too new and will likely cause compatibility issues. Since <strong>Debian Trixie ships with Python 3.13</strong> by default, we’ll need to install a compatible Python version alongside it.</p>
 <p>One solution is to install <a href="https://github.com/pyenv/pyenv">Pyenv</a>, which allows us to easily manage multiple Python versions for different projects without affecting the system Python.</p>
 <blockquote class="blockquote">
 <p>If the Raspberry Pi OS is the legacy version, the Python version should be 3.11, and it is not necessary to install Pyenv.</p>
@@ -698,7 +739,7 @@ window.Quarto = {
 <p>Run the ARM setup utility to configure platform-specific settings. This opens a menu to select the platform and apply the necessary configurations (e.g., enabling PCIe Gen 3.0 on the Raspberry Pi 5):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mx_arm_setup</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="./images/png/mx_arm_setup.png" class="img-fluid"></p>
-<p>Select the appropriate option for your hardware, and press <code>&lt;OK&gt;</code> in the next page:</p>
+<p>Select the appropriate option for your hardware, and press <code>&lt;OK&gt;</code> on the next page:</p>
 <p><img src="./images/png/mx_arm_setup_ok.png" class="img-fluid"></p>
 <p>After configuration, reboot the system:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> reboot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -768,13 +809,13 @@ window.Quarto = {
 <h4 class="anchored" data-anchor-id="step-2-compile-with-neural-compiler">Step 2: Compile with Neural Compiler</h4>
 <p>The MemryX Neural Compiler (<code>mx_nc</code>) transforms the model into a DFP (Dataflow Package):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="pp">[</span><span class="ss">options</span><span class="pp">]</span> <span class="at">-m</span> <span class="op">&lt;</span>model_file<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The MemryX Neural Compiler, <a href="https://developer.memryx.com/tools/neural_compiler.html">mx_nc</a>, is a command‑line tool that takes one or more neural‑network models (Keras, TensorFlow, TFLite, ONNX, etc.) and compiles them into a MemryX Dataflow Program (DFP) that can run on MemryX accelerators (MXA). Internally, it does framework import, graph optimization (fusion/splitting, operator expansion, activation approximation), resource mapping on the MXA cores, and finally emits the DFP used by the runtime or simulator.</p>
+<p>The MemryX Neural Compiler, <a href="https://developer.memryx.com/tools/neural_compiler.html">mx_nc</a>, is a command-line tool that takes one or more neural-network models (Keras, TensorFlow, TFLite, ONNX, etc.) and compiles them into a MemryX Dataflow Program (DFP) that can run on MemryX accelerators (MXA). Internally, it does framework import, graph optimization (fusion/splitting, operator expansion, activation approximation), resource mapping on the MXA cores, and finally emits the DFP used by the runtime or simulator.</p>
 <p><strong>What <code>mx_nc</code> does:</strong></p>
 <ul>
 <li><p>Compiles models into a single DFP file per compilation, then loads it onto one or more MXA chips to run inference.</p></li>
-<li><p>Supports multi‑model, multi‑stream, and multi‑chip mapping, automatically distributing models and layers across available MX3 devices for higher throughput.</p></li>
-<li><p>Handles mixed‑precision weights (per‑channel 4/8/16‑bit) while keeping activations in floating point on the accelerator. By default, MemryX quantizes weights to INT8 precision and activations to BFloat16.</p></li>
-<li><p>Can crop pre/post‑processing parts of the graph so the MXA focuses on the core CNN/ML operators while the host CPU runs the cropped sections.</p></li>
+<li><p>Supports multi-model, multi-stream, and multi-chip mapping, automatically distributing models and layers across available MX3 devices for higher throughput.</p></li>
+<li><p>Handles mixed-precision weights (per-channel 4/8/16-bit) while keeping activations in floating point on the accelerator. By default, MemryX quantizes weights to INT8 precision and activations to BFloat16.</p></li>
+<li><p>Can crop pre/post-processing parts of the graph so the MXA focuses on the core CNN/ML operators while the host CPU runs the cropped sections.</p></li>
 </ul>
 <p><strong>What happens during compilation?</strong></p>
 <ol type="1">
@@ -786,27 +827,27 @@ window.Quarto = {
 <li><strong>Multi-chip distribution</strong>: If using multiple chips, partitions the workload</li>
 </ol>
 <p>The compiler is surprisingly tolerant—most models compile without any modifications. If a layer isn’t supported, you’ll get a clear error message indicating which operation failed.</p>
-<p><strong>Key command‑line options (high level)</strong></p>
+<p><strong>Key command-line options (high level)</strong></p>
 <ul>
 <li>Model specification:
 <ul>
 <li><code>-m</code> / <code>--models</code> – input model file(s) (e.g.&nbsp;<code>.h5</code>, <code>.pb</code>, <code>.onnx</code>, TFLite).<br>
 </li>
-<li>Multi‑model example: <code>mx_nc -v -m model_0.h5 model_1.onnx</code>.</li>
+<li>Multi-model example: <code>mx_nc -v -m model_0.h5 model_1.onnx</code>.</li>
 </ul></li>
 <li>Input shapes:
 <ul>
 <li><code>-is</code>, <code>--input_shapes</code> – specify input shape(s) when they cannot be inferred, always in NHWC order (e.g.&nbsp;<code>"224,224,3"</code>).</li>
 <li>Supports <code>"auto"</code> for models where shapes can be inferred: <code>-is "auto" "300,300,3"</code>.</li>
 </ul></li>
-<li>Cropping / pre‑ and post‑processing control:
+<li>Cropping / pre- and post-processing control:
 <ul>
-<li><code>--autocrop</code> – experimental automatic cropping of pre/post‑processing layers. See the YOLOv8 example further in this chapter.</li>
+<li><code>--autocrop</code> – experimental automatic cropping of pre/post-processing layers. See the YOLOv8 example further in this chapter.</li>
 <li><code>--inputs</code>, <code>--outputs</code> – manually set which graph nodes are treated as the MXA inputs/outputs; everything outside is cropped to run on the host.</li>
-<li>For multi‑model graphs, inputs/outputs of different models are separated with <code>|</code> (vertical bar).</li>
-<li><code>--model_in_out</code> – JSON file describing model inputs/outputs for more complex single or multi‑model cases.</li>
+<li>For multi-model graphs, inputs/outputs of different models are separated with <code>|</code> (vertical bar).</li>
+<li><code>--model_in_out</code> – JSON file describing model inputs/outputs for more complex single or multi-model cases.</li>
 </ul></li>
-<li>Multi‑chip / system sizing:
+<li>Multi-chip / system sizing:
 <ul>
 <li><code>-c</code> – number of MXA chips; <code>-c 2</code> means compile for two chips and distribute workload across them.</li>
 </ul></li>
@@ -820,7 +861,7 @@ window.Quarto = {
 </ul></li>
 </ul>
 <blockquote class="blockquote">
-<p>For the complete option list (including less common flags), run <code>mx_nc -h</code> or consult the <a href="https://developer.memryx.com/tools/neural_compiler.html">Neural Compiler</a> page in the MemryX Developer Hub, which documents all arguments and includes usage examples for single‑model, multi‑model, cropping, and mixed‑precision flows.</p>
+<p>For the complete option list (including less common flags), run <code>mx_nc -h</code> or consult the <a href="https://developer.memryx.com/tools/neural_compiler.html">Neural Compiler</a> page in the MemryX Developer Hub, which documents all arguments and includes usage examples for single-model, multi-model, cropping, and mixed-precision flows.</p>
 </blockquote>
 <p><strong>Compilation time</strong> varies by model complexity:</p>
 <ul>
@@ -835,8 +876,14 @@ window.Quarto = {
 <h4 class="anchored" data-anchor-id="step-3-deploy-and-benchmark">Step 3: Deploy and Benchmark</h4>
 <p>Before integrating into our application, we can verify performance with the benchmarking tool:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_bench</span> <span class="at">-d</span> <span class="op">&lt;</span>dfp_file<span class="op">&gt;</span> -f <span class="op">&lt;</span>num_frames<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The benchmarker: - Generates synthetic input data matching the model’s input shape - Runs warm-up inferences to stabilize performance - Measures throughput (FPS), latency, and chip utilization - Reports first-inference latency (includes loading overhead)</p>
-<p><strong>Why benchmark separately?</strong> Real-world applications involve preprocessing (image loading and resizing) and postprocessing (parsing outputs). Benchmarking isolates pure inference performance, letting to identify bottlenecks in our full pipeline.</p>
+<p>The benchmarker:</p>
+<ul>
+<li>Generates synthetic input data matching the model’s input shape</li>
+<li>Runs warm-up inferences to stabilize performance</li>
+<li>Measures throughput (FPS), latency, and chip utilization</li>
+<li>Reports first-inference latency (includes loading overhead)</li>
+</ul>
+<p><strong>Why benchmark separately?</strong> Real-world applications involve preprocessing (image loading and resizing) and postprocessing (parsing outputs). Benchmarking isolates pure inference performance, letting us identify bottlenecks in our full pipeline.</p>
 </section>
 <section id="step-4-integrate-into-the-application" class="level4">
 <h4 class="anchored" data-anchor-id="step-4-integrate-into-the-application">Step 4: Integrate into the Application</h4>
@@ -904,7 +951,14 @@ window.Quarto = {
 <li><strong>Chip mappings</strong>: Instructions for distributing work across the four MX3 accelerators</li>
 <li><strong>Quantization parameters</strong>: If applicable, the bit-width and scaling factors</li>
 </ul>
-<p>The neural compiler (<code>mx_nc</code>) performs this transformation automatically, with no manual tuning required. The compilation process: 1. Parses the input model (H5, ONNX, TFLite, etc.) 2. Maps operators to MX3-supported operations 3. Optimizes the dataflow graph 4. Allocates memory on-chip 5. Generates the DFP binary</p>
+<p>The neural compiler (<code>mx_nc</code>) performs this transformation automatically, with no manual tuning required. The compilation process:</p>
+<ol type="1">
+<li>Parses the input model (H5, ONNX, TFLite, etc.)</li>
+<li>Maps operators to MX3-supported operations</li>
+<li>Optimizes the dataflow graph</li>
+<li>Allocates memory on-chip</li>
+<li>Generates the DFP binary</li>
+</ol>
 <p>This is why compilation takes a few minutes, but inference is blazingly fast—all the optimization work happens once, upfront.</p>
 </section>
 </section>
@@ -922,17 +976,18 @@ window.Quarto = {
 </ul></li>
 <li><strong>Throughput</strong>: Total data processed per second</li>
 </ul>
-<p>The benchmark runs with random input data, which is why we see consistent performance. Real-world performance with actual images should be similar once the preprocessing pipeline is optimized, but we have found bigger latency.</p>
+<p>The benchmark runs with random input data, which is why we see consistent performance. Real-world performance with actual images should be similar once the preprocessing pipeline is optimized, although in our tests the latency was higher.</p>
 <blockquote class="blockquote">
 <p>In true dataflow architecture, latency and FPS are not coupled in the traditional sense; latency does not equal 1/FPS. Note that even though latency is ~2ms in the above benchmarking results, FPS is not measured to be 1000 ms / 2 ms = 500 FPS; rather, the FPS from the benchmarking results is ~1160.</p>
 </blockquote>
-<p>In MemryX’s dataflow architecture, the “usual” rule (<code>latency = 1/FPS</code>) only applies to frame‑to‑frame latency, not to end‑to‑end in‑to‑out latency for a single frame. That is why we see ~2 ms latency per frame, yet still measure around 1160 FPS in MX3 benchmarks.</p>
-<p><strong>Two different latencies</strong> MemryX explicitly distinguishes two metrics.</p>
+<p>In MemryX’s dataflow architecture, the “usual” rule (<code>latency = 1/FPS</code>) only applies to frame-to-frame latency, not to end-to-end in-to-out latency for a single frame. That is why we see ~2 ms latency per frame, yet still measure around 1160 FPS in MX3 benchmarks.</p>
+<p><strong>Two different latencies</strong></p>
+<p>MemryX explicitly distinguishes two metrics.</p>
 <ul>
-<li>Latency 1 (frame‑to‑frame latency): Time between consecutive outputs once the pipeline is full. Its reciprocal is FPS.</li>
-<li>Latency 2 (full in‑to‑out latency): Time from when the first input frame enters the system (host + MX3 pipeline) until its output appears. This can be larger, but it does not set the FPS.</li>
+<li>Latency 1 (frame-to-frame latency): Time between consecutive outputs once the pipeline is full. Its reciprocal is FPS.</li>
+<li>Latency 2 (full in-to-out latency): Time from when the first input frame enters the system (host + MX3 pipeline) until its output appears. This can be larger, but it does not set the FPS.</li>
 </ul>
-<p>In a streaming, pipelined accelerator like MX3, multiple frames are in‑flight simultaneously, so the pipeline “fills” once and then produces results at a steady cadence.</p>
+<p>In a streaming, pipelined accelerator like MX3, multiple frames are in-flight simultaneously, so the pipeline “fills” once and then produces results at a steady cadence.</p>
 </section>
 </section>
 <section id="building-an-inference-application" class="level2">
@@ -946,13 +1001,13 @@ window.Quarto = {
 </section>
 <section id="download-test-image" class="level3">
 <h3 class="anchored" data-anchor-id="download-test-image">Download Test Image</h3>
-<p>Load an image from the internet, for example, a cat (for comparison, it is the same as used on previous chapters):</p>
+<p>Load an image from the internet, for example, a cat (for comparison, it is the same one used in previous chapters):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="st">"https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg"</span> <span class="dt">\</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">-O</span> ./images/cat.jpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Here is the image:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/png/cat.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
+<p><img src="./images/png/cat.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
 </figure>
 </div>
 </section>
@@ -1138,7 +1193,7 @@ window.Quarto = {
 <span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the script in the terminal:</span></span>
 <span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> run_inference_comp_resnet50.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
-<p>The script can be found in the lab repo: <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/run_inference_comp_resnet50.py">run_inference_comp_resnet50.py</a> in the terminal:</p>
+<p>The script can be found in the lab repo: <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/run_inference_comp_resnet50.py">run_inference_comp_resnet50.py</a>.</p>
 </blockquote>
 <p><img src="./images/png/run_cpu_mxa_resnet.png" class="img-fluid"></p>
 <blockquote class="blockquote">
@@ -1149,7 +1204,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="clean-shutdown">Clean Shutdown</h3>
 <p>Always properly shut down the accelerator when done:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>accl.shutdown()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>BTW, to shut down the Raspberry Pi via SSH, we can use</p>
+<p>To shut down the Raspberry Pi via SSH, we can use:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> shutdown <span class="at">-h</span> now</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
@@ -1194,28 +1249,28 @@ window.Quarto = {
 <td>Raspberry Pi 5</td>
 <td>~110 ms</td>
 <td>~266 ms</td>
-<td>~</td>
+<td>not measured</td>
 </tr>
 <tr class="even">
 <td>ExecuTorch/XNNPACK</td>
 <td>Raspberry Pi 5</td>
 <td>~20 ms</td>
 <td>NA</td>
-<td>~</td>
+<td>not measured</td>
 </tr>
 <tr class="odd">
 <td><strong>MemryX MX3</strong></td>
 <td><strong>Dedicated accelerator</strong></td>
 <td><strong>~10 ms</strong></td>
 <td><strong>~10 ms</strong></td>
-<td><strong>~</strong></td>
+<td>not measured</td>
 </tr>
 </tbody>
 </table>
 <section id="key-observations" class="level3">
 <h3 class="anchored" data-anchor-id="key-observations">Key Observations</h3>
 <ul>
-<li><strong>25x faster</strong> than unoptimized TFLite on CPU (Resnet50)</li>
+<li><strong>25x faster</strong> than unoptimized TFLite on CPU (ResNet50)</li>
 <li><strong>2x faster</strong> than highly optimized ExecuTorch with XNNPACK (MobileNetV2)</li>
 <li><strong>Minimal CPU load</strong>: The host CPU is free for preprocessing, postprocessing, and application logic</li>
 <li><strong>Consistent latency</strong>: Hardware acceleration provides deterministic performance</li>
@@ -1244,22 +1299,22 @@ window.Quarto = {
 <section id="yolov8-object-detection-with-mx3-hardware-acceleration" class="level2">
 <h2 class="anchored" data-anchor-id="yolov8-object-detection-with-mx3-hardware-acceleration">YOLOv8 Object Detection with MX3 Hardware Acceleration</h2>
 <p>In this part of the lab, we’ll deploy YOLOv8n (nano) for real-time object detection on the Raspberry Pi 5 using the MemryX MX3 AI accelerator. We’ll cover the complete workflow from model export to inference optimization.</p>
-<p><img src="./images/png/flow-yolo.png" class="img-fluid"></p>
-<p>But first, we should install ULTRALYTICS</p>
-<p>The MemoryX team suggested:</p>
+<p><img src="./images/png/flow-yolo.jpg" class="img-fluid"></p>
+<p>But first, we should install Ultralytics.</p>
+<p>The MemryX team suggested:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ultralytics==8.3.161</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>If you face issues, try it with:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ultralytics<span class="pp">[</span><span class="ss">export</span><span class="pp">]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If you still have issues, reinstall memryx</p>
+<p>If you still have issues, reinstall <code>memryx</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install <span class="at">--extra-index-url</span> https://developer.memryx.com/pip memryx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Now, download the YOLOv8.pt model and test it:</p>
+<p>Now, download the YOLOv8 <code>.pt</code> model and test it:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> predict model=<span class="st">'yolov8n'</span> source=<span class="st">'https://ultralytics.com/images/bus.jpg'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The model and the image <code>bus.jpg</code> will be download and tested with the YOLOV8n:</p>
+<p>The model and the image <code>bus.jpg</code> will be downloaded and tested with YOLOv8n:</p>
 <p><img src="./images/png/yolov8n-test.png" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p>4 persons, 1 bus, and one stop signal were detected in 522 ms.</p>
+<p>4 persons, 1 bus, and one stop sign were detected in 522 ms.</p>
 </blockquote>
-<p>Under <code>./runs/detect</code>, the output processed image can be analysed:</p>
+<p>Under <code>./runs/detect</code>, the output processed image can be analyzed:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./images/jpeg/yolov8-1st-infer.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
@@ -1432,11 +1487,11 @@ window.Quarto = {
 </li>
 <li>Prints the inference time, which is useful to talk about performance (e.g., model size vs.&nbsp;speed, hardware differences).</li>
 </ul>
-<p>Run the script <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/yolov8_mx3_detect.py">yolov8_m3_detect.py</a></p>
+<p>Run the script <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/yolov8_mx3_detect.py">yolov8_mx3_detect.py</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> yolov8_m3_detect.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>As a result, we can see that the models found 4 persons and 1 bus, missing only the stop signal. Regarding latency, the <strong>MX3 runs inference about 11 times faster than a CPU-only</strong> system.</p>
+<p>As a result, we can see that the models found 4 persons and 1 bus, missing only the stop sign. Regarding latency, the <strong>MX3 runs inference about 11 times faster than a CPU-only</strong> system.</p>
 <blockquote class="blockquote">
-<p>Basically, the same accuracy result that we got on the YOLO chapter running yolov11</p>
+<p>This is essentially the same accuracy we got in the YOLO chapter with YOLO11.</p>
 </blockquote>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1465,7 +1520,7 @@ window.Quarto = {
 </ul></li>
 <li>Tensor conversion:
 <ul>
-<li>Convert to <code>numpy</code>, normalize to <code>[0,1]</code>, permute from HWC to CHW, and add a batch dimension to get shape <code>[1, 3, 640, 640]</code>, which matches YOLOv8’s expected input.[1][2]</li>
+<li>Convert to <code>numpy</code>, normalize to <code>[0,1]</code>, permute from HWC to CHW, and add a batch dimension to get shape <code>[1, 3, 640, 640]</code>, which matches YOLOv8’s expected input.</li>
 </ul></li>
 </ul>
 </section>
@@ -1551,13 +1606,13 @@ window.Quarto = {
 </ul>
 </section>
 <section id="the-memryx-pipeline-detect_objects-and-asyncaccl-usage" class="level4">
-<h4 class="anchored" data-anchor-id="the-memryx-pipeline-detect_objects-and-asyncaccl-usage">6. The Memryx pipeline (<code>detect_objects</code> and <code>AsyncAccl</code> usage)</h4>
-<p><em>How to integrate Memryx’s async accelerator into a typical vision pipeline</em></p>
+<h4 class="anchored" data-anchor-id="the-memryx-pipeline-detect_objects-and-asyncaccl-usage">6. The MemryX pipeline (<code>detect_objects</code> and <code>AsyncAccl</code> usage)</h4>
+<p><em>How to integrate MemryX’s async accelerator into a typical vision pipeline</em></p>
 <ul>
 <li>Preprocess once: call <code>preprocess_image</code> to get the model-ready tensor and the info needed for rescaling.</li>
 <li>Create the accelerator:
 <ul>
-<li><code>accl = AsyncAccl(dfp_path)</code> loads the compiled Memryx DFP model.</li>
+<li><code>accl = AsyncAccl(dfp_path)</code> loads the compiled MemryX DFP model.</li>
 <li><code>accl.set_postprocessing_model(post_model_path, model_idx=0)</code> attaches the ONNX post-processing graph.</li>
 </ul></li>
 <li>Streaming-style design:
@@ -1576,7 +1631,7 @@ window.Quarto = {
 </section>
 <section id="making-inferences" class="level3">
 <h3 class="anchored" data-anchor-id="making-inferences">Making Inferences</h3>
-<p>Let’s change the script to easily handle different images and confidence threshold (<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/yolov8_mx3_detect_v2.py">yolov8_m3_detect_v2.py</a>). We should replace the hardcoded <code>IMAGE_PATH</code> with a command-line argument:</p>
+<p>Let’s change the script to easily handle different images and confidence threshold (<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/yolov8_mx3_detect_v2.py">yolov8_mx3_detect_v2.py</a>). We should replace the hardcoded <code>IMAGE_PATH</code> with a command-line argument:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> argparse</span>
 <span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
@@ -1639,7 +1694,7 @@ window.Quarto = {
 <p>As we saw in the YOLO chapter, we are assuming we are in an industrial facility that must sort and count <strong>wheels</strong> and special <strong>boxes</strong>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/png/factore.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
+<p><img src="./images/png/factore.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
 </figure>
 </div>
 <p>Each image can have three classes:</p>
@@ -1648,29 +1703,28 @@ window.Quarto = {
 <li>Box</li>
 <li>Wheel</li>
 </ul>
-<p>We have captured a raw dataset using the Raspberry Pi Camera and labeled it with the ROBOFLOW. The Yolo model was trained on a Google Colab using Ultralytics.</p>
-<p><img src="./images/png/yolo-custom-dataset-flow.png" class="img-fluid"></p>
+<p>We have captured a raw dataset using the Raspberry Pi Camera and labeled it with Roboflow. The YOLO model was trained on a Google Colab using Ultralytics.</p>
+<p><img src="./images/png/yolo-custom-dataset-flow.jpg" class="img-fluid"></p>
 <p>After training, we download the trained model from <code>/runs/detect/train/weights/best.pt</code> to our computer, renaming it to <code>box_wheel_320_yolo.pt</code>.</p>
 <blockquote class="blockquote">
-<p>Using the FileZilla FTP, transfer a few images from the test dataset to <code>.\images</code>:</p>
+<p>Using the FileZilla FTP, transfer a few images from the test dataset to <code>./images</code>:</p>
 </blockquote>
-<p>Let’s return to the <code>./MEMRYX/YOLO</code> folder and using the Python Interpreter, to quickly do some inferences:</p>
+<p>Let’s return to the <code>./MEMRYX/YOLO</code> folder and use the Python interpreter to quickly run some inferences:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>We will import the YOLO library and define the model to use:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> model <span class="op">=</span> YOLO(<span class="st">'./models/box_wheel_320_yolo.pt'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Now, let’s define an image and call the inference (we will save the image result this time to external verification):</p>
+<p>Now, let’s define an image and call the inference (we will save the image result this time for external verification):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> img <span class="op">=</span> <span class="st">'./images/box_3_wheel_4.jpg'</span></span>
 <span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">320</span>, conf<span class="op">=</span><span class="fl">0.5</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="./images/png/test-custon_model-1.png" class="img-fluid"></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./images/png/custon-img-1st-infer.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
+<p><img src="./images/png/custon-img-1st-infer.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:65.0%"></p>
 </figure>
 </div>
 <p>We can see that the model is working and that the latency was 168 ms.</p>
-<p>Let’s now export the model first to ONNX and after to FFPls</p>
-<p>, to run it in the MX3 device:</p>
+<p>Let’s now export the model first to ONNX and then to DFP, to run it on the MX3 device:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ./models</span>
 <span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=box_wheel_320_yolo.pt format=onnx</span>
 <span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="ex">mx_nc</span> <span class="at">-v</span> <span class="at">--autocrop</span> <span class="at">-m</span> box_wheel_320_yolo.onnx</span>
@@ -1678,12 +1732,12 @@ window.Quarto = {
 <p>In the models folder, we will have <code>box_wheel_320_yolo.dfp</code> and <code>box_wheel_320_yolo_post.onnx</code></p>
 <p>Let’s adapt the previous script to be more generic in terms of models (<a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/Hardware_Acceleration/box_wheel_mx3_detect_v2.py">box_wheel_mx3_detect_v2.py</a>):</p>
 <blockquote class="blockquote">
-<p>Naturally we should enter with the new models ’names and instead of COCO_LABELS, the script was changed to:</p>
+<p>Naturally, we should enter the new model names, and instead of <code>COCO_LABELS</code>, the script was changed to:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dataset class names </span></span>
 <span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>CLASSES <span class="op">=</span> [</span>
 <span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Box'</span>, <span class="st">'Wheel'</span></span>
 <span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Thant’s all!</p>
+<p>That’s all!</p>
 </blockquote>
 <p>Run it with:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> box_wheel_mx3_detect_v2.py <span class="at">--image</span> ./images/box_3_wheel_4.jpg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1692,7 +1746,7 @@ window.Quarto = {
 <p><img src="./images/jpeg/infer-mx3-custom-yolo.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
 </figure>
 </div>
-<p>The Result was great! <strong>And the latency (~38 ms) was 4 times lower than with the CPU-only</strong> approach (even smaller than the model exported to NCNN, runing 100% at CPU - 80 ms).</p>
+<p>The result was great! <strong>And the latency (~38 ms) was 4 times lower than with the CPU-only</strong> approach (even smaller than the model exported to NCNN, running 100% on the CPU: 80 ms).</p>
 <section id="adjusting-confidence-threshold" class="level3">
 <h3 class="anchored" data-anchor-id="adjusting-confidence-threshold">Adjusting Confidence Threshold</h3>
 <p>Lower confidence for more detections (may include false positives):</p>
@@ -1701,7 +1755,7 @@ window.Quarto = {
 </section>
 </section>
 <section id="advanced-topics" class="level2">
-<h2 class="anchored" data-anchor-id="advanced-topics"><strong>Advanced Topics</strong></h2>
+<h2 class="anchored" data-anchor-id="advanced-topics">Advanced Topics</h2>
 <section id="batch-processing-optimization" class="level3">
 <h3 class="anchored" data-anchor-id="batch-processing-optimization">Batch Processing (Optimization)</h3>
 <p>For multiple images, reuse the accelerator instance:</p>
@@ -1784,7 +1838,8 @@ window.Quarto = {
 <span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-i</span> memryx</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="./images/png/check1.png" class="img-fluid"></p>
 <ul>
-<li><strong>Ensure sufficient power</strong>: Use the official Raspberry Pi 27W power supply<strong>Check HAT installation</strong>: Ensure the M.2 HAT is properly seated.</li>
+<li><strong>Ensure sufficient power</strong>: Use the official Raspberry Pi 27W power supply.</li>
+<li><strong>Check HAT installation</strong>: Ensure the M.2 HAT is properly seated.</li>
 <li><strong>Lower Frequency</strong>: Try running <code>sudo mx_set_powermode</code> with a lower frequency, such as 200 or 300 MHz. Then restart mxa-manager for good measure with <code>sudo service mxa-manager restart</code></li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mx_set_powermode</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1801,8 +1856,9 @@ window.Quarto = {
 <section id="compilation-errors" class="level3">
 <h3 class="anchored" data-anchor-id="compilation-errors">Compilation Errors</h3>
 <p><strong>Symptom</strong>: <code>mx_nc</code> fails with “Unsupported operator” error</p>
-<p><strong>Solutions</strong>: - Check the <a href="https://developer.memryx.com/specs/supported_ops.html">supported operators</a></p>
+<p><strong>Solutions</strong>:</p>
 <ul>
+<li><p>Check the <a href="https://developer.memryx.com/specs/operators/operators.html">supported operators</a></p></li>
 <li><p>Some custom layers may need reformulation</p></li>
 <li><p>Try exporting to ONNX first for better compatibility:</p></li>
 </ul>
@@ -1828,7 +1884,9 @@ window.Quarto = {
 <li><strong>Monitor continuously</strong>:</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb79"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="ex">watch</span> <span class="at">-n</span> 1 cat /sys/memx0/temperature</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>= <strong>Consider additional cooling</strong>: Add a small fan directed at the heatsink</p>
+<ul>
+<li><strong>Consider additional cooling</strong>: Add a small fan directed at the heatsink</li>
+</ul>
 </section>
 <section id="python-version-conflicts" class="level3">
 <h3 class="anchored" data-anchor-id="python-version-conflicts">Python Version Conflicts</h3>
@@ -1876,9 +1934,9 @@ window.Quarto = {
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb86"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="ex">apt</span> policy memx-drivers</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li><strong>Verify Frequency</strong></li>
+<li><p><strong>Verify Frequency</strong></p>
+<p>By default, the frequency should be at 500 MHz. Smaller frequencies will reduce the FPS (increase the latency)</p></li>
 </ul>
-<p>​ By default, the frequency should be at 500 MHz. Smaller frequencies will reduce the FPS (increase the latency)</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb87"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /etc/memryx/power.conf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="import-errors" class="level3">
@@ -1903,8 +1961,9 @@ window.Quarto = {
 <section id="model-accuracy-issues" class="level3">
 <h3 class="anchored" data-anchor-id="model-accuracy-issues">Model Accuracy Issues</h3>
 <p><strong>Symptom</strong>: Inference results are incorrect or significantly different from CPU</p>
-<p><strong>Solutions</strong>: - <strong>Verify preprocessing</strong>: Ensure the same preprocessing is applied as during training</p>
+<p><strong>Solutions</strong>:</p>
 <ul>
+<li><p><strong>Verify preprocessing</strong>: Ensure the same preprocessing is applied as during training</p></li>
 <li><p><strong>Check input normalization</strong>: Confirm the value range matches training (e.g., [0, 1] vs [-1, 1])</p></li>
 <li><p><strong>Test with known inputs</strong>: Use the validation dataset to verify accuracy</p></li>
 <li><p><strong>Compare outputs numerically</strong>: Print raw logits/probabilities to identify differences</p></li>
@@ -2003,7 +2062,7 @@ window.Quarto = {
 <section id="community-and-support" class="level3">
 <h3 class="anchored" data-anchor-id="community-and-support">Community and Support</h3>
 <ol start="11" type="1">
-<li><a href="https://www.youtube.com/@MemryxInc">MemryX YouTube Channel</a></li>
+<li><a href="https://www.youtube.com/@MemryXInc">MemryX YouTube Channel</a></li>
 <li><a href="https://developer.memryx.com/support/index.html">MemryX Support Portal</a></li>
 </ol>
 
@@ -2439,7 +2498,7 @@ window.Quarto = {
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/hw_acceleration/hw_acceleration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/hw_acceleration/hw_acceleration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    </div>
     <div class="nav-footer-right">
 <p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>

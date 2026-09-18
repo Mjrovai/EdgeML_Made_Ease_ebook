@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>From Ollama to llama.cpp – Edge AI Engineering</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/mtp/mtp.html" rel="next">
+<link href="../../raspi/litert-lm/litert-lm.html" rel="prev">
+<link href="../../images/unifei-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-daec65ff3ba034f51daec66ecad3ce27.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/Mjrovai/EdgeML_Made_Ease_ebook/releases/latest/download/Edge-AI-Engineering.pdf"> <i class="bi bi-file-earmark-pdf" role="img">
+</i> 
+<span class="menu-text">Download PDF</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/llama_cpp/llama_cpp.html">From Ollama to llama.cpp</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Fixed Function AI (Reactive)</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/cv_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Computer Vision Applications with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting Objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Generative AI (Proactive)</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/rnn-verne/rnn-verne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text Generation with RNNs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/local_inference/local_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLMs at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_opt_tech.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLM: Basic Optimization Techniques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/audio_pipeline/audio_pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Audio and Vision AI Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/litert-lm/litert-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llama_cpp/llama_cpp.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">From Ollama to llama.cpp</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/mtp/mtp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multi-Token Prediction on the Raspberry Pi 5</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Weekly Labs</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">References &amp; Author</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#why-llama.cpp-after-ollama" id="toc-why-llama.cpp-after-ollama" class="nav-link active" data-scroll-target="#why-llama.cpp-after-ollama">Why llama.cpp, after Ollama</a></li>
+  <li><a href="#what-you-need" id="toc-what-you-need" class="nav-link" data-scroll-target="#what-you-need">What you need</a></li>
+  <li><a href="#build-llama.cpp-from-source" id="toc-build-llama.cpp-from-source" class="nav-link" data-scroll-target="#build-llama.cpp-from-source">Build llama.cpp from source</a></li>
+  <li><a href="#download-the-models" id="toc-download-the-models" class="nav-link" data-scroll-target="#download-the-models">Download the models</a>
+  <ul>
+  <li><a href="#quantization-q4-vs-q8-for-sub-1b-models" id="toc-quantization-q4-vs-q8-for-sub-1b-models" class="nav-link" data-scroll-target="#quantization-q4-vs-q8-for-sub-1b-models">Quantization: Q4 vs Q8 for sub-1B models</a></li>
+  <li><a href="#downloading-with-wget" id="toc-downloading-with-wget" class="nav-link" data-scroll-target="#downloading-with-wget">Downloading with <code>wget</code></a>
+  <ul class="collapse">
+  <li><a href="#qwen-3.5" id="toc-qwen-3.5" class="nav-link" data-scroll-target="#qwen-3.5">Qwen 3.5</a></li>
+  <li><a href="#gemma-4" id="toc-gemma-4" class="nav-link" data-scroll-target="#gemma-4">Gemma 4</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#qwen-3.5-start-the-server" id="toc-qwen-3.5-start-the-server" class="nav-link" data-scroll-target="#qwen-3.5-start-the-server">Qwen 3.5: start the server</a></li>
+  <li><a href="#gemma-4-start-the-server" id="toc-gemma-4-start-the-server" class="nav-link" data-scroll-target="#gemma-4-start-the-server">Gemma 4: start the server</a>
+  <ul>
+  <li><a href="#images" id="toc-images" class="nav-link" data-scroll-target="#images">Images</a></li>
+  <li><a href="#audio" id="toc-audio" class="nav-link" data-scroll-target="#audio">Audio</a></li>
+  </ul></li>
+  <li><a href="#using-the-command-line-interface-cli" id="toc-using-the-command-line-interface-cli" class="nav-link" data-scroll-target="#using-the-command-line-interface-cli">Using the Command Line Interface (CLI)</a>
+  <ul>
+  <li><a href="#llama-cli" id="toc-llama-cli" class="nav-link" data-scroll-target="#llama-cli"><code>llama-cli</code></a></li>
+  <li><a href="#llama-mtmd-cli" id="toc-llama-mtmd-cli" class="nav-link" data-scroll-target="#llama-mtmd-cli"><code>llama-mtmd-cli</code></a></li>
+  </ul></li>
+  <li><a href="#talking-to-the-server-from-python" id="toc-talking-to-the-server-from-python" class="nav-link" data-scroll-target="#talking-to-the-server-from-python">Talking to the server from Python</a>
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#first-call-text" id="toc-first-call-text" class="nav-link" data-scroll-target="#first-call-text">First call: text</a></li>
+  <li><a href="#streaming" id="toc-streaming" class="nav-link" data-scroll-target="#streaming">Streaming</a></li>
+  <li><a href="#system-prompt-and-sampling" id="toc-system-prompt-and-sampling" class="nav-link" data-scroll-target="#system-prompt-and-sampling">System prompt and sampling</a></li>
+  <li><a href="#images-1" id="toc-images-1" class="nav-link" data-scroll-target="#images-1">Images</a></li>
+  <li><a href="#audio-gemma-4" id="toc-audio-gemma-4" class="nav-link" data-scroll-target="#audio-gemma-4">Audio (Gemma 4)</a></li>
+  <li><a href="#one-small-reusable-client" id="toc-one-small-reusable-client" class="nav-link" data-scroll-target="#one-small-reusable-client">One small reusable client</a></li>
+  <li><a href="#which-path-to-use" id="toc-which-path-to-use" class="nav-link" data-scroll-target="#which-path-to-use">Which path to use</a></li>
+  </ul></li>
+  <li><a href="#going-further" id="toc-going-further" class="nav-link" data-scroll-target="#going-further">Going further</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">From Ollama to llama.cpp</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>Multimodal Inference on the Edge</strong></p>
+<p><img src="./images/jpeg/cover-2.jpg" class="img-fluid"></p>
+<p>This chapter builds <code>llama.cpp</code> from source on a Raspberry Pi 5, starts <code>llama-server</code>, and sends text prompts, images, videos, and audio clips to it via a single OpenAI-compatible API. Two small mixed-modality models make this possible on the board: <strong>Qwen 3.5 0.8B</strong> (text, image, video) and <strong>Gemma 4 E2B</strong> (text, image, audio). Both fit in the Pi’s RAM alongside their vision/audio projector and a growing KV cache.</p>
+<p><img src="./images/png/models.png" class="img-fluid"></p>
+<p>Everything runs on the CPU. The Pi 5 has no GPU that <code>llama.cpp</code> can offload to in any useful way, so the four Cortex-A76 cores do all the work.</p>
+<section id="why-llama.cpp-after-ollama" class="level2">
+<h2 class="anchored" data-anchor-id="why-llama.cpp-after-ollama">Why llama.cpp, after Ollama</h2>
+<p>In the <a href="../../raspi/llm/slm_intro.html">Small Language Models chapter</a>, we ran everything through Ollama: install, <code>ollama run</code>, and a clean Python library on top of it. Ollama is the right starting point, and we said there that it runs <code>llama.cpp</code> under the hood. This chapter goes down that one layer and drives <code>llama.cpp</code> directly.</p>
+<p><strong>The reason is control</strong>. When we build from source, we pick the flags that matter on a Pi 5 — KleidiAI microkernels, native AArch64/NEON, CURL for <code>-hf</code> model pulls — and we get the four binaries Ollama hides from us, including <code>llama-bench</code> for honest tokens-per-second and <code>llama-mtmd-cli</code> for terminal multimodal tests. We also get the multimodal projector (<code>mmproj</code>) path, which is how the newest mixed-modality models reach the board. Ollama can’t run Gemma 4 E2B with audio data on the Pi yet; <code>llama.cpp</code> can.</p>
+<p>The other reason is the API. <code>llama-server</code> speaks the OpenAI Chat Completions format, so the Python we write at the end of this chapter is the same Python that talks to GPT or Claude — only the <code>base_url</code> changes.</p>
+<p>If you only need text and the friendliest possible setup, stay with Ollama. If you want multimodal on the latest small models, measured performance, and an OpenAI-compatible endpoint you can point any client at, build <code>llama.cpp</code>.</p>
+</section>
+<section id="what-you-need" class="level2">
+<h2 class="anchored" data-anchor-id="what-you-need">What you need</h2>
+<p>Hardware:</p>
+<ul>
+<li>Raspberry Pi 5 — <strong>4 GB possible, 8 GB comfortable</strong>. Multimodal models hold the language weights, the vision/audio projector, and a growing KV cache all at once. 4 GB will fight you.</li>
+<li>Active cooling. Not optional. <code>llama.cpp</code> pins all four cores at 100%, and a Pi 5 under sustained load throttles hard above ~80 °C. A passive heatsink alone will cost you tokens per second.</li>
+<li>An NVMe SSD, if you have one. Models load from disk on every server start, and a 2–3 GB file from a microSD card results in a noticeably slower cold start than from an NVMe drive.</li>
+<li>A camera and a microphone (if you do not have them, use .wav/.mp4 files to test audio and video).</li>
+</ul>
+<p>Software:</p>
+<ul>
+<li>Raspberry Pi OS 64-bit (Trixie). The 64-bit build matters — the 32-bit OS won’t give you the ARM features the build relies on.</li>
+</ul>
+</section>
+<section id="build-llama.cpp-from-source" class="level2">
+<h2 class="anchored" data-anchor-id="build-llama.cpp-from-source">Build llama.cpp from source</h2>
+<p>Check the architecture of your device, SSD space, and available RAM first:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uname</span> <span class="at">-m</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">free</span> <span class="at">-h</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span> /home</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="./images/png/resourses.png" class="img-fluid"></p>
+<p>Install the build dependencies:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt upgrade <span class="at">-y</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> git build-essential cmake pkg-config libcurl4-openssl-dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>libcurl</code> is the one people forget. Without it, the <code>-hf</code> flag that pulls models straight from Hugging Face won’t compile in, and you’ll be downloading GGUF files by hand.</p>
+<p>Clone and build:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/ggml-org/llama.cpp</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> llama.cpp</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-B</span> build <span class="dt">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DGGML_CPU_KLEIDIAI</span><span class="op">=</span>ON <span class="dt">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DGGML_NATIVE</span><span class="op">=</span>ON <span class="dt">\</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DLLAMA_CURL</span><span class="op">=</span>ON <span class="dt">\</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DCMAKE_BUILD_TYPE</span><span class="op">=</span>Release <span class="dt">\</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">-DCMAKE_EXPORT_COMPILE_COMMANDS</span><span class="op">=</span>ON</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">--config</span> Release <span class="at">-j</span><span class="va">$(</span><span class="fu">nproc</span><span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>What each flag does:</p>
+<ul>
+<li><code>-DGGML_CPU_KLEIDIAI=ON</code>: a library of optimized microkernels for AI workloads, built specifically for Arm CPUs.</li>
+<li><code>-DGGML_NATIVE=ON</code>: turns on the Pi’s CPU-specific optimizations (AArch64/NEON), which improves tok/s.</li>
+<li><code>-DLLAMA_CURL=ON</code>: enables the HTTP features in <code>llama-server</code>, including <code>-hf</code> model pulls and web tools.</li>
+<li><code>-DCMAKE_BUILD_TYPE=Release</code>: compiles with maximum optimizations.</li>
+<li><code>-DCMAKE_EXPORT_COMPILE_COMMANDS=ON</code>: generates <code>build/compile_commands.json</code> for clangd / VS Code.</li>
+</ul>
+<p>The build takes roughly 10 to 20 minutes on a Pi 5, depending on cooling and whether you’re using an SSD or an SD card. Make a coffee. When it finishes, the binaries you care about are in <code>build/bin/</code>:</p>
+<ul>
+<li><code>llama-cli</code> — interactive text inference</li>
+<li><code>llama-server</code> — the HTTP server with the OpenAI-compatible API and a built-in web UI</li>
+<li><code>llama-bench</code> — the official benchmark for measuring model performance on specific hardware</li>
+<li><code>llama-mtmd-cli</code> — the multimodal command-line tool, for testing from the terminal instead of over HTTP</li>
+</ul>
+<p>Sanity check that the server binary runs:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-cli</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="./images/png/version.png" class="img-fluid"></p>
+</section>
+<section id="download-the-models" class="level2">
+<h2 class="anchored" data-anchor-id="download-the-models">Download the models</h2>
+<p>For text alone, almost any small GGUF works. The constraint here is the need for a <strong>model that handles multimodal inputs</strong>. In <code>llama.cpp</code> terms, that means a model listed under “mixed modalities” — it ships with a multimodal projector (<code>mmproj</code>) that encodes images and audio (Gemma 4) or images and video (Qwen 3.5) into the language model’s embedding space.</p>
+<p>In this tutorial, we will test the smallest multimodal model available (June 2026), the Qwen 3.5 0.8B, and the newer <a href="https://blog.google/innovation-and-ai/technology/developers-tools/quantization-aware-training-gemma-4/">Quantization-Aware Training (QAT) model from the Gemma family</a>, Gemma 4 E2B.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Repo</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gemma 4 E2B</td>
+<td><a href="https://huggingface.co/prithivMLmods/gemma-4-E2B-it-qat-GGUF/tree/main">prithivMLmods/gemma-4-E2B-it-qat-GGUF</a></td>
+<td>3.2 GB (model) + 1 GB (mmproj) [image + audio]</td>
+</tr>
+<tr class="even">
+<td>Qwen 3.5 0.8B</td>
+<td><a href="https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/tree/main">unsloth/Qwen3.5-0.8B-GGUF</a></td>
+<td>800 MB (model) + 200 MB (mmproj) [image + video]</td>
+</tr>
+</tbody>
+</table>
+<section id="quantization-q4-vs-q8-for-sub-1b-models" class="level3">
+<h3 class="anchored" data-anchor-id="quantization-q4-vs-q8-for-sub-1b-models">Quantization: Q4 vs Q8 for sub-1B models</h3>
+<p>Q4_K_M produced noticeably lower output quality for sub-1B models than Q8_0. The aggressive 4-bit compression loses too much when the model has only 800M parameters to begin with — there’s less redundancy to exploit than in bigger models.</p>
+<blockquote class="blockquote">
+<p>At the sub-1B scale, Q4 is aggressive. The quantization error compounds more in smaller models because there’s less redundancy in the weights to absorb the loss of precision. Q6 or Q8 helps a lot.</p>
+<p>Also, prefer <code>min_p</code> over <code>top_p</code> for sampling. Something like <code>min_p=0.05</code> with <code>temp=0.7</code> works better for small models because it adjusts the candidate pool dynamically based on the probability distribution rather than using a fixed cutoff. <code>top_p</code> at low temperatures produces a very narrow beam, and repetition becomes almost inevitable at these model sizes.</p>
+</blockquote>
+<p>The rule of thumb:</p>
+<ul>
+<li><strong>Use Q8_0</strong> for sub-1B models such as Qwen 3.5 0.8B (~800 MB). Quality is meaningfully better.</li>
+<li><strong>Use Q4_K_M</strong> for bigger models. Google launched new <strong>Quantization-Aware Training (QAT)</strong> Gemma 4 models in June 2026; Gemma 4 E2B (a 5B model with 2B active) runs fast and reliably on the Pi 5 at Q4_K_M.</li>
+</ul>
+</section>
+<section id="downloading-with-wget" class="level3">
+<h3 class="anchored" data-anchor-id="downloading-with-wget">Downloading with <code>wget</code></h3>
+<section id="qwen-3.5" class="level4">
+<h4 class="anchored" data-anchor-id="qwen-3.5">Qwen 3.5</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/models</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/models</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/main/Qwen3.5-0.8B-Q8_0.gguf</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF/resolve/main/mmproj-F16.gguf <span class="dt">\</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-O</span> Qwen3.5-0.8B-mmproj-F16.gguf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>-O</code> (capital O) renames the downloaded file. Watch this — lowercase <code>-o</code> is wget’s <em>log-file</em> flag, which saves the projector under its original name and writes wget’s log to the file you meant to create.</p>
+<p>Expected tokens/s from <code>llama-bench</code>:</p>
+<p><img src="./images/png/bench-qwen.png" class="img-fluid"></p>
+<ul>
+<li>Reading (prompt processing): ~134 tk/s</li>
+<li>Generation (token output): ~10 tk/s</li>
+</ul>
+</section>
+<section id="gemma-4" class="level4">
+<h4 class="anchored" data-anchor-id="gemma-4">Gemma 4</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/models</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://huggingface.co/prithivMLmods/gemma-4-E2B-it-qat-GGUF/resolve/main/gemma-4-E2B-it-qat.Q4_K_M.gguf</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://huggingface.co/prithivMLmods/gemma-4-E2B-it-qat-GGUF/resolve/main/gemma-4-E2B-it-qat.mmproj-f16.gguf <span class="dt">\</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-O</span> gemma-4-E2B-it-qat-mmproj-F16.gguf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Expected tokens/s from <code>llama-bench</code>:</p>
+<p><img src="./images/png/image-20260611122206944.png" class="img-fluid"></p>
+<ul>
+<li>Reading (prompt processing): ~37 tk/s</li>
+<li>Generation (token output): ~7 tk/s</li>
+</ul>
+<blockquote class="blockquote">
+<p>Because the build has <code>-DLLAMA_CURL=ON</code>, you can skip manual downloads and let the server pull model and projector together. The official repo handles both: <code>./build/bin/llama-server -hf ggml-org/gemma-4-E2B-it-GGUF</code>. The <code>wget</code> route above is the one to keep for an offline Pi.</p>
+</blockquote>
+</section>
+</section>
+</section>
+<section id="qwen-3.5-start-the-server" class="level2">
+<h2 class="anchored" data-anchor-id="qwen-3.5-start-the-server">Qwen 3.5: start the server</h2>
+<p>On a terminal, run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/llama.cpp</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-server</span> <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-m</span>       ~/models/Qwen3.5-0.8B-Q8_0.gguf <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--mmproj</span> ~/models/Qwen3.5-0.8B-mmproj-F16.gguf <span class="dt">\</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--host</span> 0.0.0.0 <span class="at">--port</span> 8081 <span class="dt">\</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-c</span> 4096 <span class="at">-t</span> 4 <span class="dt">\</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-n</span> 1024 <span class="dt">\</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--jinja</span> <span class="dt">\</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--image-max-tokens</span> 256</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>What the flags do:</p>
+<ul>
+<li><code>--host 0.0.0.0</code> exposes the server to your LAN so you can hit it from a laptop or phone. Drop it to <code>127.0.0.1</code> for local-only access.</li>
+<li><code>-c 4096</code> sets the total context window — the KV-cache budget in tokens, shared by text and images. A single image can consume a few hundred. Raise it to <code>-c 8192</code> if a model complains, at the cost of more RAM. For video, you’ll need something like <code>-c 32768</code>.</li>
+<li><code>-t 4</code> uses all four cores.</li>
+<li><code>--jinja</code> turns on the model’s own chat template. Skip it, and you can hit a nasty failure mode where generation never stops, because the generic fallback template doesn’t register Qwen’s end-of-turn token as a stop string. The model keeps going until it fills the context.</li>
+</ul>
+<p>The first start downloads nothing extra if you already pulled the files; otherwise, it’s slow while the GGUF lands. Once you see the server listening, open the web UI:</p>
+<pre><code>http://&lt;your-pi-ip&gt;:8081</code></pre>
+<p>The built-in UI has an attachment button (<code>+</code>) that accepts images and video, the fastest way to confirm the modalities work before you write a line of API code. Drag in a photo, ask a question, and watch the logs. You can also turn on reasoning mode (💡), which is off by default.</p>
+<p><img src="./images/png/gui.png" class="img-fluid"></p>
+<p>Type a text question and the model answers directly at around 10 tk/s. Turn on <code>Reasoning</code>, and the answers improve. This is a very small model, so its answers often aren’t correct.</p>
+<p>Now an image. Ask the model to describe it. Captioning is where this model shines — from start to finish in about 20 seconds, with the image itself processed in roughly 5 seconds.</p>
+<p><img src="./images/png/image-description-qwen.jpg" class="img-fluid"></p>
+<p>The video takes longer. The clip is split into frames (2 FPS by default) and analyzed; the audio track is dropped before the model ever sees it.</p>
+<p>Here’s a <a href="https://youtu.be/zgLMYdMWFjg">video</a> from the <a href="../../raspi/audio_pipeline/audio_pipeline.html">audio pipeline chapter</a> of this book:</p>
+<p><img src="./images/png/video-transcript.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>Qwen 3.5 is fast for image and video description. Turning on reasoning improves accuracy and lengthens the answer, but it doesn’t change the image-processing time.</p>
+</blockquote>
+</section>
+<section id="gemma-4-start-the-server" class="level2">
+<h2 class="anchored" data-anchor-id="gemma-4-start-the-server">Gemma 4: start the server</h2>
+<p>For sharper answers, and for audio, stop the server with <code>[Ctrl]+[C]</code> and start it again with the Gemma 4 model. The flags are the same:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/llama.cpp</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-server</span> <span class="dt">\</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-m</span>       ~/models/gemma-4-E2B-it-qat.Q4_K_M.gguf <span class="dt">\</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--mmproj</span> ~/models/gemma-4-E2B-it-qat-mmproj-F16.gguf <span class="dt">\</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--host</span> 0.0.0.0 <span class="at">--port</span> 8081 <span class="dt">\</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-c</span> 4096 <span class="at">-t</span> 4 <span class="dt">\</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-n</span> 1024 <span class="dt">\</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--jinja</span> <span class="dt">\</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--image-max-tokens</span> 256</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Open a new browser tab or refresh the old one. The model name in the bottom-right of the chat window changes to Gemma. Click the new conversation icon (📝) and ask something. Note that the answers are more accurate and less verbose than the small Qwen 3.5 0.8B model.</p>
+<section id="images" class="level3">
+<h3 class="anchored" data-anchor-id="images">Images</h3>
+<p>Describe the same image with the same prompt as before. The result is similar:</p>
+<pre class="text"><code>This is an outdoor photograph featuring a large, mature tree with a sprawling
+canopy, situated in a grassy field under a bright, sunny sky. A wooden platform
+or deck is built around the base of the tree, with a few children standing on
+it, suggesting a relaxed, family-friendly setting. The field itself is green and
+stretches into the distance, with a dirt path visible in the foreground. In the
+background, there are rolling hills or mountains, and further back, a small
+building with a red roof is visible. The overall impression is one of a peaceful,
+rural, or park-like natural environment.</code></pre>
+<p>But the full pass took about 100 seconds, with the image processing alone around 83 seconds. That’s the trade for Gemma’s better captions.</p>
+</section>
+<section id="audio" class="level3">
+<h3 class="anchored" data-anchor-id="audio">Audio</h3>
+<p>Use the Apollo 8 clip — astronauts Frank Borman, Jim Lovell, and William Anders reading from Genesis while orbiting the Moon on Christmas Eve 1968 — from <a href="https://archive.org/details/Greatest_Speeches_of_the_20th_Century">Greatest Speeches of the 20th Century</a>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/png/apollo08_earthrise.jpg" class="img-fluid figure-img"></p>
+<figcaption>Earthrise from Apollo 8</figcaption>
+</figure>
+</div>
+<p><img src="./images/png/moon.png" class="img-fluid"></p>
+<p>The clip quality was rough (a real transmission from space), but the Pi handled the 30-second MP3 in a little over two minutes. In a second test with my own voice in Portuguese — a 12-second WAV from a microphone — the job took 53 seconds, and the transcription was perfect.</p>
+<blockquote class="blockquote">
+<p>Audio input is still marked experimental upstream, with a warning about reduced quality. A rough transcription on a noisy clip is the pipeline talking, not your microphone.</p>
+</blockquote>
+</section>
+</section>
+<section id="using-the-command-line-interface-cli" class="level2">
+<h2 class="anchored" data-anchor-id="using-the-command-line-interface-cli">Using the Command Line Interface (CLI)</h2>
+<p>Besides the server, we can test the models directly on the terminal, as we did with Ollama. The <code>llama-cli</code> is the “normal” llama.cpp CLI for <strong>text-only</strong> models, while <code>llama-mtmd-cli</code> is the newer <strong>multimodal</strong> CLI that unifies image/audio models and MTMD features behind a single tool.</p>
+<section id="llama-cli" class="level3">
+<h3 class="anchored" data-anchor-id="llama-cli"><code>llama-cli</code></h3>
+<ul>
+<li>Classic command-line frontend that exposes most llama.cpp functionality for LLMs: chat, completion, sampling options, etc.</li>
+<li>Designed primarily for <strong>text input/output</strong>; you point it at a GGUF model and run prompts or chat sessions.</li>
+<li>Does not, by itself, handle multimodal pre-/post-processing (vision, audio) or the newer libmtmd abstractions.</li>
+</ul>
+</section>
+<section id="llama-mtmd-cli" class="level3">
+<h3 class="anchored" data-anchor-id="llama-mtmd-cli"><code>llama-mtmd-cli</code></h3>
+<ul>
+<li>Newer CLI built on <strong>libmtmd</strong>, introduced to replace the older, model-specific multimodal CLIs such as <code>llama-llava-cli</code> and <code>llama-gemma3-cli</code>.</li>
+<li>Provides a <strong>single unified interface</strong> for multimodal models (text + images, and is designed to handle audio as well), so you don’t need a different binary per architecture.</li>
+</ul>
+<p>Let’s try an example. In a terminal, run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-mtmd-cli</span> <span class="dt">\</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-m</span>       ~/models/Qwen3.5-0.8B-Q8_0.gguf <span class="dt">\</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--mmproj</span> ~/models/Qwen3.5-0.8B-mmproj-F16.gguf <span class="dt">\</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-c</span> 4096 <span class="at">-t</span> 4 <span class="dt">\</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-n</span> 1024 <span class="dt">\</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--jinja</span> <span class="dt">\</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--image-max-tokens</span> 256</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When the prompt (<code>&gt;</code>) appears, load the image by entering its path:</p>
+<p><code>&gt; /image /home/mjrovai/Pictures/man_cat_dog.jpg</code></p>
+<p>and, once the image is loaded, enter your prompt:</p>
+<p><code>&gt; Describe the image</code></p>
+<p><img src="./images/png/cli.png" class="img-fluid"></p>
+<p>The model starts its thinking process and then prints the answer:</p>
+<p><img src="./images/png/cli-image.jpg" class="img-fluid"></p>
+<p>Type <code>/exit</code> to leave the CLI.</p>
+</section>
+</section>
+<section id="talking-to-the-server-from-python" class="level2">
+<h2 class="anchored" data-anchor-id="talking-to-the-server-from-python">Talking to the server from Python</h2>
+<p>So far, we’ve mainly used the web UI to confirm that text, images, audio, and video all work. That UI is just a client hitting <code>llama-server</code>’s HTTP API — the same API we’ll now call from Python to put these models inside a project.</p>
+<p><code>llama-server</code> exposes the OpenAI Chat Completions format at <code>/v1/chat/completions</code>. That gives us two clean paths, the same split we saw in the Ollama chapter:</p>
+<ul>
+<li>The <strong><code>openai</code> client</strong> — a drop-in library, the same one used for GPT, pointed at the Pi instead of OpenAI’s servers</li>
+<li><strong>Plain <code>requests</code></strong> — raw HTTP when we want the server’s own timing fields or zero extra dependencies</li>
+</ul>
+<p>Let’s run the server again with one of the models, for example, the Gemma 4:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/llama.cpp</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-server</span> <span class="dt">\</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-m</span>       ~/models/gemma-4-E2B-it-qat.Q4_K_M.gguf <span class="dt">\</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--mmproj</span> ~/models/gemma-4-E2B-it-qat-mmproj-F16.gguf <span class="dt">\</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--host</span> 0.0.0.0 <span class="at">--port</span> 8081 <span class="dt">\</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-c</span> 4096 <span class="at">-t</span> 4 <span class="dt">\</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-n</span> 2048 <span class="dt">\</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--jinja</span> <span class="dt">\</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--image-max-tokens</span> 256</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The examples assume <code>http://localhost:8081</code>; swap in the Pi’s LAN address if you’re calling from a laptop.</p>
+<p>If you want the model running without reasoning, you can add two flags to the above command as shown below:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-server</span> <span class="dt">\</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-m</span>       ~/models/gemma-4-E2B-it-qat.Q4_K_M.gguf <span class="dt">\</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--mmproj</span> ~/models/gemma-4-E2B-it-qat-mmproj-F16.gguf <span class="dt">\</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--host</span> 0.0.0.0 <span class="at">--port</span> 8081 <span class="dt">\</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-c</span> 4096 <span class="at">-t</span> 4 <span class="dt">\</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-n</span> 2048 <span class="dt">\</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--jinja</span> <span class="dt">\</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--image-max-tokens</span> 256 <span class="dt">\</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--reasoning</span> off <span class="dt">\</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--reasoning-budget</span> 0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="setup" class="level3">
+<h3 class="anchored" data-anchor-id="setup">Setup</h3>
+<p>Opening another terminal, we should create a virtual environment:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv ~/llamacpp</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/llamacpp/bin/activate</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install openai requests</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A quick check that the server is up and which model it has loaded:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://localhost:8081/v1/models <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-m</span> json.tool</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>id</code> it returns is the model name the server reports. <code>llama-server</code> ignores the <code>model</code> field we send in requests — it serves whatever was loaded at startup — so we can pass any string there.</p>
+<p><img src="./images/png/model-python.png" class="img-fluid"></p>
+</section>
+<section id="first-call-text" class="level3">
+<h3 class="anchored" data-anchor-id="first-call-text">First call: text</h3>
+<p><strong>1. <code>openai</code> client version</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI(</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    base_url<span class="op">=</span><span class="st">"http://localhost:8081/v1"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    api_key<span class="op">=</span><span class="st">"not-needed"</span>,          <span class="co"># llama-server doesn't check it</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> time.perf_counter()</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>resp <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"Gemma4"</span>,               <span class="co"># ignored by llama-server, kept for readability</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is the capital of Brazil?"</span>}],</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>dt <span class="op">=</span> time.perf_counter() <span class="op">-</span> t0</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resp.choices[<span class="dv">0</span>].message.content)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>out_tokens <span class="op">=</span> resp.usage.completion_tokens</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">[INFO] </span><span class="sc">{</span>out_tokens<span class="sc">}</span><span class="ss"> tokens in </span><span class="sc">{</span>dt<span class="sc">:.2f}</span><span class="ss">s "</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"= </span><span class="sc">{</span>out_tokens <span class="op">/</span> dt<span class="sc">:.1f}</span><span class="ss"> tok/s"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>resp.usage</code> carries <code>prompt_tokens</code>, <code>completion_tokens</code>, and <code>total_tokens</code>. Dividing output tokens by wall-clock time gives the generation rate — should be near the value reported by llama-bench, minus a little for HTTP overhead. Note the full time (or “wall-clock time”): <code>20.22s</code>, it includes the reasoning time, which was not printed.</p>
+<p><img src="./images/png/infer-python.png" class="img-fluid"></p>
+<p><strong>2. Plain <code>requests</code> version</strong></p>
+<p>For the server’s <em>own</em> measurement, instead of wall-clock, drop to <code>requests</code>. <code>llama.cpp</code> adds a <code>timings</code> block that the OpenAI client schema discards:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> requests.post(</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"http://localhost:8081/v1/chat/completions"</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    json<span class="op">=</span>{<span class="st">"messages"</span>: [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is the capital of Brazil?"</span>}]},</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> r.json()</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data[<span class="st">"choices"</span>][<span class="dv">0</span>][<span class="st">"message"</span>][<span class="st">"content"</span>])</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data[<span class="st">"timings"</span>][<span class="st">"predicted_per_second"</span>], <span class="st">"tok/s (server-measured)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="./images/png/infer-python-2.png" class="img-fluid"></p>
+<p>We can see different per-second token counts with the above, but both numbers are correct — they’re just measuring different time intervals.</p>
+<p>The <strong>client version</strong> (1) divides by wall-clock: 117 tokens ÷ 20.22 s = 5.8. That 20.22 s is everything — the HTTP round trip, JSON serialization, the server’s prompt-processing (prefill) pass, <em>and</em> the token generation. In the <strong>plain version</strong> (2), the server’s <code>predicted_per_second</code> (6.36) applies only to the generation phase. <code>llama.cpp</code> times the decode loop in isolation, excluding prefill and all HTTP overhead. Same ~117 tokens on top, smaller number on the bottom, so the rate comes out higher. That gap between 5.8 and 6.36 is essentially the prompt-processing plus transport cost.</p>
+<blockquote class="blockquote">
+<p>On top of that, these were two separate requests, so they’re not the same generation. With sampling on, the token count and timing vary run to run, which adds a little noise to the comparison.</p>
+</blockquote>
+<p>The thing actually worth your attention is the <strong>117 tokens</strong>. The visible answer — “The capital of Brazil is <strong>Brasília</strong>.” — is maybe 10 tokens. The other ~107 are a hidden <code>&lt;think&gt;</code> block: Gemma4 (and also the Qwen 3.5) is reasoning before it answers, the parser strips the thinking out of the <code>message.content</code>, but every one of those tokens still counts in <code>usage.completion_tokens</code>, and still costs decode time. That’s why a one-line answer took 20 seconds. This is exactly the reasoning-mode behavior from earlier — turn it off, and you’ll watch both the token count and the wall-clock drop hard.</p>
+<p><strong>NOTES:</strong> If you want a clean apples-to-apples reading, pull both numbers from the <em>same</em> request — the <code>requests</code> version already has the raw JSON, so read <code>data["usage"]</code> and <code>data["timings"]</code> together instead of comparing across two scripts. And 6.36 sitting below the ~6.63 tok/s <code>llama-bench</code> showed is normal: bench measures an idealized decode with an empty context, while real serving runs with the chat template and a populated KV cache, and if you use an SD-card Pi under sustained load, it is a prime throttling candidate — keep an eye on <code>vcgencmd measure_temp</code> while it generates.</p>
+<p>In short, use the server-measured <code>predicted_per_second</code> as “generation speed” since it’s the hardware-honest figure and aligns with how <code>llama-bench</code> reports. The wall-clock rate is the better number only when you want to show <em>end-to-end</em> latency the user actually feels, so both have a place — just label which is which.</p>
+</section>
+<section id="streaming" class="level3">
+<h3 class="anchored" data-anchor-id="streaming">Streaming</h3>
+<p>For anything longer than a sentence, stream the tokens so the answer appears as it’s generated instead of after a long pause:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI(</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    base_url<span class="op">=</span><span class="st">"http://localhost:8081/v1"</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    api_key<span class="op">=</span><span class="st">"not-needed"</span>,          <span class="co"># llama-server doesn't check it</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>stream <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"Gemma4"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"Tell me an interesting fact about Brazil. Keep it in one paragraph."</span>}],</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    stream<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    stream_options<span class="op">=</span>{<span class="st">"include_usage"</span>: <span class="va">True</span>},   <span class="co"># usage arrives in the final chunk</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> chunk <span class="kw">in</span> stream:</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> chunk.choices <span class="kw">and</span> chunk.choices[<span class="dv">0</span>].delta.content:</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(chunk.choices[<span class="dv">0</span>].delta.content, end<span class="op">=</span><span class="st">""</span>, flush<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>On a 5B (with 2B effective) model running on a CPU, streaming at 6 tokens/s is the difference between an app that feels responsive and one that feels broken. Note that the above code will stream only the final answer, not the reasoning phase if it is enabled.</p>
+</blockquote>
+</section>
+<section id="system-prompt-and-sampling" class="level3">
+<h3 class="anchored" data-anchor-id="system-prompt-and-sampling">System prompt and sampling</h3>
+<p>A system message sets the model’s role and tone. The sampling knobs are where small models need attention, and where the OpenAI client needs a small trick. For example, if you are using the Qwen 3.5 as the server:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>resp <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"qwen3.5"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"You are a concise assistant. One short paragraph."</span>},</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"Why is the sky blue?"</span>},</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    temperature<span class="op">=</span><span class="fl">0.7</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    extra_body<span class="op">=</span>{<span class="st">"min_p"</span>: <span class="fl">0.05</span>},     <span class="co"># llama.cpp param, not in the OpenAI schema</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resp.choices[<span class="dv">0</span>].message.content)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>temperature</code> and <code>top_p</code> pass straight through. <code>min_p</code> does not — it isn’t part of OpenAI’s spec, so the client drops it unless we tuck it into <code>extra_body</code>. This matters because, as the quantization section noted, <code>min_p=0.05</code> with <code>temp=0.7</code> holds up far better than <code>top_p</code> on sub-1B models, where a narrow <code>top_p</code> beam slides into repetition. Anything in <code>extra_body</code> is forwarded verbatim to <code>llama-server</code>, which is also how you’d pass <code>repeat_penalty</code>, <code>seed</code>, or <code>n_predict</code>.</p>
+<p>If Qwen starts emitting <code>&lt;think&gt;</code> blocks you don’t want, disable reasoning at the server (<code>--reasoning-budget 0</code>) or per request with <code>extra_body={"chat_template_kwargs": {"enable_thinking": False}}</code>.</p>
+</section>
+<section id="images-1" class="level3">
+<h3 class="anchored" data-anchor-id="images-1">Images</h3>
+<p>The OpenAI format carries an image as an <code>image_url</code> content part. <code>llama-server</code> accepts both a remote URL and a base64 data URI; on an offline Pi, base64 is the one to use:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> base64</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI(</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    base_url<span class="op">=</span><span class="st">"http://localhost:8081/v1"</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    api_key<span class="op">=</span><span class="st">"not-needed"</span>,          <span class="co"># llama-server doesn't check it</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>IMG_PATH <span class="op">=</span> <span class="st">"/home/mjrovai/Pictures/man_cat_dog.jpg"</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_data_uri(path, mime<span class="op">=</span><span class="st">"image/jpeg"</span>):</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path, <span class="st">"rb"</span>) <span class="im">as</span> f:</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        b64 <span class="op">=</span> base64.b64encode(f.read()).decode()</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"data:</span><span class="sc">{</span>mime<span class="sc">}</span><span class="ss">;base64,</span><span class="sc">{</span>b64<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>resp <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"Gemma4"</span>,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"content"</span>: [</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"Describe this image."</span>},</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"type"</span>: <span class="st">"image_url"</span>, <span class="st">"image_url"</span>: {<span class="st">"url"</span>: to_data_uri(IMG_PATH)}},</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    }],</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resp.choices[<span class="dv">0</span>].message.content)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="./images/png/caption-python-reasoning.png" class="img-fluid"></p>
+<p>This is the same captioning we did through the CLI and the Qwen model. The model never sees a file path, only the bytes we hand it, so the script runs identically whether the image came from disk or a camera.</p>
+<p>To caption a live frame, reuse the <code>capture_image()</code> helper from the Ollama chapter (Picamera2, 520×520 still) and feed its output straight into <code>to_data_uri()</code>.</p>
+<p><strong>Testing with reasoning disabled:</strong></p>
+<p>If we disable reasoning, the model will perform worse. When running the same image, we now observe that the model sees 3 cats instead of 1 cat and 1 dog.</p>
+<p><img src="./images/png/caption-python.png" class="img-fluid"></p>
+<p><strong>NOTE:</strong> This image is 980 x 800 pixels and was processed in 181,299 ms (around 3 minutes). Large images are split into multiple crops (pan-and-scan), and each crop is encoded separately — so a full-res photo can easily take two or three times longer to process than a downsized version. For most scenes, 768 pixels is a fine balance, and small images barely lose anything at 512.</p>
+<p>Let’s create a new script (using plain <code>requests</code> now) for testing with a smaller version of the same image:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> base64, io, time, requests</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> encode_image(path, max_side<span class="op">=</span><span class="dv">896</span>, quality<span class="op">=</span><span class="dv">85</span>):</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> Image.<span class="bu">open</span>(path).convert(<span class="st">"RGB"</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    w, h <span class="op">=</span> img.size</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    scale <span class="op">=</span> max_side <span class="op">/</span> <span class="bu">max</span>(w, h)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> scale <span class="op">&lt;</span> <span class="dv">1</span>:                          <span class="co"># shrink only, never upscale</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> img.resize((<span class="bu">int</span>(w <span class="op">*</span> scale), <span class="bu">int</span>(h <span class="op">*</span> scale)))</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    buf <span class="op">=</span> io.BytesIO()</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    img.save(buf, <span class="bu">format</span><span class="op">=</span><span class="st">"JPEG"</span>, quality<span class="op">=</span>quality)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    b64 <span class="op">=</span> base64.b64encode(buf.getvalue()).decode()</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"data:image/jpeg;base64,</span><span class="sc">{</span>b64<span class="sc">}</span><span class="ss">"</span>, img.size</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>IMG_PATH <span class="op">=</span> <span class="st">"/home/mjrovai/Pictures/man_cat_dog.jpg"</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>MAX_SIZE <span class="op">=</span> <span class="dv">512</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>uri, size <span class="op">=</span> encode_image(IMG_PATH, max_side<span class="op">=</span>MAX_SIZE)</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"sending image at </span><span class="sc">{</span>size[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">x</span><span class="sc">{</span>size[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> time.perf_counter()</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> requests.post(</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"http://localhost:8081/v1/chat/completions"</span>,</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>    json<span class="op">=</span>{<span class="st">"messages"</span>: [{</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"content"</span>: [</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"Describe this image."</span>},</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"type"</span>: <span class="st">"image_url"</span>, <span class="st">"image_url"</span>: {<span class="st">"url"</span>: uri}},</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>    }]},</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>    timeout<span class="op">=</span><span class="dv">600</span>,                           <span class="co"># don't give up during the long encode</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>dt <span class="op">=</span> time.perf_counter() <span class="op">-</span> t0</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> r.json()</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> d[<span class="st">"timings"</span>]</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(d[<span class="st">"choices"</span>][<span class="dv">0</span>][<span class="st">"message"</span>][<span class="st">"content"</span>])</span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">image+prompt : </span><span class="sc">{</span>t[<span class="st">'prompt_n'</span>]<span class="sc">:4d}</span><span class="ss"> tok in </span><span class="sc">{</span>t[<span class="st">'prompt_ms'</span>]<span class="op">/</span><span class="dv">1000</span><span class="sc">:6.1f}</span><span class="ss">s"</span>)</span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"generation   : </span><span class="sc">{</span>t[<span class="st">'predicted_n'</span>]<span class="sc">:4d}</span><span class="ss"> tok in </span><span class="sc">{</span>t[<span class="st">'predicted_ms'</span>]<span class="op">/</span><span class="dv">1000</span><span class="sc">:6.1f}</span><span class="ss">s = </span><span class="sc">{</span>t[<span class="st">'predicted_per_second'</span>]<span class="sc">:.1f}</span><span class="ss"> tok/s"</span>)</span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"wall         : </span><span class="sc">{</span>dt<span class="sc">:.1f}</span><span class="ss">s total"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="./images/png/size-test.png" class="img-fluid"></p>
+<p>Note that the same image, now 512x417, was processed in around 75s, which is under half the time it took at the original size.</p>
+<p>If you want to push further, lowering <code>--image-max-tokens</code> on the server (try 128 instead of 256) caps how many tokens the image is compressed into, which speeds both encoding and the attention over those tokens, at some loss of fine detail.</p>
+</section>
+<section id="audio-gemma-4" class="level3">
+<h3 class="anchored" data-anchor-id="audio-gemma-4">Audio (Gemma 4)</h3>
+<p>Audio rides in an <code>input_audio</code> part: raw base64 (no <code>data:</code> prefix here, unlike images) plus a <code>format</code> field. This works only when the <strong>Gemma 4</strong> server is running — Qwen 3.5 in our setup handles images and videos, not audio.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> base64</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI(</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    base_url<span class="op">=</span><span class="st">"http://localhost:8081/v1"</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    api_key<span class="op">=</span><span class="st">"not-needed"</span>,          <span class="co"># llama-server doesn't check it</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>SOUND_PATH <span class="op">=</span> <span class="st">"christmas_space_30s.mp3"</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> b64_audio(path):</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path, <span class="st">"rb"</span>) <span class="im">as</span> f:</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> base64.b64encode(f.read()).decode()</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>resp <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gemma-4"</span>,</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"content"</span>: [</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"Transcribe this clip."</span>},</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>            {<span class="st">"type"</span>: <span class="st">"input_audio"</span>,</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>             <span class="st">"input_audio"</span>: {<span class="st">"data"</span>: b64_audio(SOUND_PATH), <span class="st">"format"</span>: <span class="st">"mp3"</span>}},</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>    }],</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resp.choices[<span class="dv">0</span>].message.content)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Let’s try the Apollo 8 1968 Christmas message again:</p>
+<p><img src="./images/png/apollo8.png" class="img-fluid"></p>
+<p>Note that <code>format</code> takes <code>wav</code> or <code>mp3</code>. The numbers match the UI run: a 12-second WAV transcribed in about 53 seconds, a 30-second MP3 in a little over two minutes.</p>
+</section>
+<section id="one-small-reusable-client" class="level3">
+<h3 class="anchored" data-anchor-id="one-small-reusable-client">One small reusable client</h3>
+<p>Wrapping all of this into a helper keeps project code readable — the equivalent of the <code>simple_query()</code> and <code>image_description()</code> functions from the Ollama chapter. It reuses the <code>to_data_uri()</code> and <code>b64_audio()</code> helpers defined above:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EdgeChat:</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, host<span class="op">=</span><span class="st">"http://localhost:8081/v1"</span>):</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.client <span class="op">=</span> OpenAI(base_url<span class="op">=</span>host, api_key<span class="op">=</span><span class="st">"not-needed"</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ask(<span class="va">self</span>, text, image<span class="op">=</span><span class="va">None</span>, audio<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>opts):</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        content <span class="op">=</span> [{<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: text}]</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> image:</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>            content.append({<span class="st">"type"</span>: <span class="st">"image_url"</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"image_url"</span>: {<span class="st">"url"</span>: to_data_uri(image)}})</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> audio:</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>            content.append({<span class="st">"type"</span>: <span class="st">"input_audio"</span>,</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"input_audio"</span>: {<span class="st">"data"</span>: b64_audio(audio), <span class="st">"format"</span>: <span class="st">"wav"</span>}})</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        t0 <span class="op">=</span> time.perf_counter()</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>        resp <span class="op">=</span> <span class="va">self</span>.client.chat.completions.create(</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>            model<span class="op">=</span><span class="st">"local"</span>,</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>            messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: content}],</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>            <span class="op">**</span>opts,</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>        dt <span class="op">=</span> time.perf_counter() <span class="op">-</span> t0</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> resp.choices[<span class="dv">0</span>].message.content, dt</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a><span class="co"># usage</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>bot <span class="op">=</span> EdgeChat()</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>answer, secs <span class="op">=</span> bot.ask(<span class="st">"What's in this picture?"</span>, image<span class="op">=</span><span class="st">"tree.jpg"</span>,</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>                       temperature<span class="op">=</span><span class="fl">0.7</span>, extra_body<span class="op">=</span>{<span class="st">"min_p"</span>: <span class="fl">0.05</span>})</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(answer, <span class="ss">f"</span><span class="ch">\n</span><span class="ss">[</span><span class="sc">{</span>secs<span class="sc">:.1f}</span><span class="ss">s]"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="which-path-to-use" class="level3">
+<h3 class="anchored" data-anchor-id="which-path-to-use">Which path to use</h3>
+<p>The <code>openai</code> client is the default: it handles request shaping and parsing, streams cleanly, and lets you swap the Pi for any other OpenAI-compatible endpoint by changing one line. Reach for <code>requests</code> when you want the server’s <code>timings</code> block, need a non-OpenAI route like <code>/props</code> or <code>/health</code>, or want to keep the dependency list to a single library. Both make the identical HTTP call underneath, so there’s no speed difference — only ergonomics.</p>
+<hr>
+</section>
+</section>
+<section id="going-further" class="level2">
+<h2 class="anchored" data-anchor-id="going-further">Going further</h2>
+<p>The interesting projects come from combining these models with the rest of the board. The same Python client that captions a photo can take a frame from Picamera2, ask Gemma or the Qwen whether a tire or a bucket in the yard is holding standing water, and trigger a GPIO alert, for example.</p>
+<p>Pairing models also pays off. A fast object detector like YOLO can count and locate objects in a frame, then hand a short structured summary to the SLM for reasoning or a natural-language report. The detector does what it’s good at, the language model does what it’s good at, and neither waits on the other longer than it has to.</p>
+<p>The limit is latency. Text and image captioning are usable in the seconds range; Qwen’s image passes in seconds, but the model is not that good for general tasks. Gemma’s image passes at ~83 seconds, and audio at two-plus minutes is batch-grade, not interactive. Design around that — queue the slow jobs, stream the fast ones, and keep the user looking at something while the Pi works.</p>
+<p>For example, in this video, Xavier Plantaz, Partner Solutions Engineer at Google, brings two <a href="https://robotics.growbotics.ai/projects/hardware/open-duck-mini-v2">Open Duck Mini v2 robots</a>, built by Antoine Pirrone, on-device with Gemma 4. One runs <strong>Gemma 4 E2B on LiteRT on a Raspberry Pi 5</strong> (see the <a href="../../raspi/litert-lm/litert-lm.html">LiteRT-LM chapter</a>). The other runs Gemma 4 E2B on a Jetson Orin Nano: <a href="https://youtu.be/pLwB_63yUBY">watch the video</a>.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>A Raspberry Pi 5 with <code>llama.cpp</code> built from source runs inference on text, images, videos, and audio on the CPU, served behind a single OpenAI-compatible API. Qwen 3.5 0.8B is the fast generalist for text and quick captions; Gemma 4 E2B is the more accurate model and the one that hears. Building from source instead of reaching for Ollama buys three things that matter at the edge: the Arm-tuned build flags, the multimodal projector path to the newest models, and an endpoint your existing OpenAI code already knows how to call.</p>
+<p>The Python here is deliberately plain — <code>pip install openai</code>, change the <code>base_url</code>, and the Pi answers like any frontier model would, only locally, privately, and offline.</p>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<ul>
+<li><a href="https://github.com/ggml-org/llama.cpp">llama.cpp on GitHub</a></li>
+<li><a href="https://github.com/ggml-org/llama.cpp/blob/master/docs/multimodal.md">llama.cpp multimodal documentation</a></li>
+<li><a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md">llama-server README</a></li>
+<li><a href="../../raspi/llm/slm_intro.html">Small Language Models (Ollama) chapter</a></li>
+<li><a href="../../raspi/audio_pipeline/audio_pipeline.html">Audio and Vision AI Pipeline chapter</a></li>
+<li><a href="https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF">Qwen 3.5 0.8B GGUF (unsloth)</a></li>
+<li><a href="https://huggingface.co/prithivMLmods/gemma-4-E2B-it-qat-GGUF">Gemma 4 E2B GGUF (prithivMLmods, QAT)</a></li>
+<li><a href="https://huggingface.co/ggml-org/gemma-4-E2B-it-GGUF">Gemma 4 E2B GGUF (ggml-org, for <code>-hf</code>)</a></li>
+<li><a href="https://archive.org/details/Greatest_Speeches_of_the_20th_Century">Greatest Speeches of the 20th Century (Apollo 8 clip)</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/litert-lm/litert-lm.html" class="pagination-link" aria-label="LiteRT-LM: Production-Ready LLM Inference at the Edge">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/mtp/mtp.html" class="pagination-link" aria-label="Multi-Token Prediction on the Raspberry Pi 5">
+        <span class="nav-page-text">Multi-Token Prediction on the Raspberry Pi 5</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Counting objects with YOLO – Edge AI Engineering</title>
+<title>Counting Objects with YOLO – Edge AI Engineering</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -123,9 +123,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">Edge AI Engineering</span>
     </a>
   </div>
-        <div class="quarto-navbar-tools tools-wide tools-end">
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/Mjrovai/EdgeML_Made_Ease_ebook/releases/latest/download/Edge-AI-Engineering.pdf"> <i class="bi bi-file-earmark-pdf" role="img">
+</i> 
+<span class="menu-text">Download PDF</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
     <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="../../Edge-AI-Engineering.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
@@ -133,7 +145,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </a>
 </div>
-          <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
   <nav class="quarto-secondary-nav">
@@ -141,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html">Counting objects with YOLO</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html">Counting Objects with YOLO</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -195,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">Fixed Function AI (Reactive)</div></span></span>
+ <span class="menu-text">Fixed Function AI (Reactive)</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -236,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Counting objects with YOLO</span></a>
+ <span class="menu-text">Counting Objects with YOLO</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -253,7 +264,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">Generative AI (Proactive)</div></span></span>
+ <span class="menu-text">Generative AI (Proactive)</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -265,6 +276,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/local_inference/local_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLMs at the Edge</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -315,10 +332,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llama_cpp/llama_cpp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">From Ollama to llama.cpp</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/mtp/mtp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multi-Token Prediction on the Raspberry Pi 5</span></a>
+  </div>
+</li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">Weekly Labs</div></span></span>
+ <span class="menu-text">Weekly Labs</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -329,7 +358,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text"><div class="part">References &amp; Author</div></span></span>
+ <span class="menu-text">References &amp; Author</span></span>
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
@@ -360,10 +389,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#pre-processing" id="toc-pre-processing" class="nav-link" data-scroll-target="#pre-processing">Pre-Processing</a></li>
   <li><a href="#training-yolov8-on-a-customized-dataset" id="toc-training-yolov8-on-a-customized-dataset" class="nav-link" data-scroll-target="#training-yolov8-on-a-customized-dataset">Training YOLOv8 on a Customized Dataset</a>
   <ul class="collapse">
-  <li><a href="#critical-points-on-the-notebook" id="toc-critical-points-on-the-notebook" class="nav-link" data-scroll-target="#critical-points-on-the-notebook">Critical points on the Notebook:</a></li>
+  <li><a href="#critical-points-on-the-notebook" id="toc-critical-points-on-the-notebook" class="nav-link" data-scroll-target="#critical-points-on-the-notebook">Critical points on the Notebook</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#inference-with-the-trained-model-using-the-rasp-zero" id="toc-inference-with-the-trained-model-using-the-rasp-zero" class="nav-link" data-scroll-target="#inference-with-the-trained-model-using-the-rasp-zero">Inference with the trained model, using the Rasp-Zero</a></li>
+  <li><a href="#inference-with-the-trained-model-using-the-raspi-zero" id="toc-inference-with-the-trained-model-using-the-raspi-zero" class="nav-link" data-scroll-target="#inference-with-the-trained-model-using-the-raspi-zero">Inference with the trained model, using the Raspi-Zero</a></li>
   <li><a href="#considerations-about-the-post-processing" id="toc-considerations-about-the-post-processing" class="nav-link" data-scroll-target="#considerations-about-the-post-processing">Considerations about the Post-Processing</a>
   <ul>
   <li><a href="#setting-up-the-image-capture-with-cron" id="toc-setting-up-the-image-capture-with-cron" class="nav-link" data-scroll-target="#setting-up-the-image-capture-with-cron">Setting Up the Image Capture with <code>cron</code></a></li>
@@ -374,14 +403,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/counting_objects_yolo/counting_objects_yolo.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/counting_objects_yolo/counting_objects_yolo.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Counting objects with YOLO</h1>
+<h1 class="title">Counting Objects with YOLO</h1>
 </div>
 
 
@@ -398,34 +427,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><strong>Deploying YOLOv8 on Raspberry Pi Zero 2W for Real-Time Bee Counting at the Hive Entrance.”</strong></p>
+<p><strong>Deploying YOLOv8 on Raspberry Pi Zero 2W for Real-Time Bee Counting at the Hive Entrance</strong></p>
 <p><img src="images/portada.jpeg" class="img-fluid"></p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>At the <a href="https://unifei.edu.br/">Federal University of Itajuba in Brazil</a>, with the master’s student José Anderson Reis and Professor José Alberto Ferreira Filho, we are exploring a project that delves into the intersection of technology and nature. This tutorial will review our first steps and share our observations on deploying YOLOv8, a cutting-edge machine learning model, on the compact and efficient Raspberry Pi Zero 2W (<em>Raspi-Zero</em>). We aim to estimate the number of bees entering and exiting their hive—a task crucial for beekeeping and ecological studies.</p>
+<p>At the <a href="https://unifei.edu.br/">Federal University of Itajubá in Brazil</a>, with the master’s student José Anderson Reis and Professor José Alberto Ferreira Filho, we are exploring a project that delves into the intersection of technology and nature. This tutorial will review our first steps and share our observations on deploying YOLOv8, a cutting-edge machine learning model, on the compact and efficient Raspberry Pi Zero 2W (<em>Raspi-Zero</em>). We aim to estimate the number of bees entering and exiting their hive—a task crucial for beekeeping and ecological studies.</p>
 <p>Why is this important? Bee populations are vital indicators of environmental health, and their monitoring can provide essential data for ecological research and conservation efforts. However, manual counting is labor-intensive and prone to errors. By leveraging the power of embedded machine learning, or tinyML, we automate this process, enhancing accuracy and efficiency.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/counting_bees.png" class="img-fluid figure-img"></p>
-<figcaption>img</figcaption>
-</figure>
-</div>
+<p><img src="images/counting_bees.png" class="img-fluid"></p>
 <p>This tutorial will cover setting up the Raspberry Pi, integrating a camera module, optimizing and deploying YOLOv8 for real-time image processing, and analyzing the data gathered.</p>
 </section>
 <section id="estimating-the-number-of-bees" class="level2">
 <h2 class="anchored" data-anchor-id="estimating-the-number-of-bees">Estimating the number of Bees</h2>
-<p>For our project at the university, we are preparing to collect a dataset of bees at the entrance of a beehive using the same camera connected to the Raspberry Pi. The images should be collected every 10 seconds. With the Arducam OV5647, the horizontal Field of View (FoV) is 53.5<sup>o</sup>, which means that a camera positioned at the top of a standard Hive (46 cm) will capture all of its entrance (about 47 cm).</p>
+<p>For our project at the university, we are preparing to collect a dataset of bees at the entrance of a beehive using the same camera connected to the Raspberry Pi. The images should be collected every 10 seconds. With the Arducam OV5647, the horizontal Field of View (FoV) is 53.5°, which means that a camera positioned at the top of a standard Hive (46 cm) will capture all of its entrance (about 47 cm).</p>
 <p><img src="images/camera_pos.png" class="img-fluid"></p>
 <section id="dataset" class="level3">
 <h3 class="anchored" data-anchor-id="dataset">Dataset</h3>
-<p>The dataset collection is the most critical phase of the project and should take several weeks or months. For this tutorial, we will use a public dataset: “Sledevic, Tomyslav (2023), “[Labeled dataset for bee detection and direction estimation on beehive landing boards,” Mendeley Data, V5, doi: 10.17632/8gb9r2yhfc.5”</p>
+<p>The dataset collection is the most critical phase of the project and should take several weeks or months. For this tutorial, we will use a public dataset: Sledevic, Tomyslav (2023), “Labeled dataset for bee detection and direction estimation on beehive landing boards,” Mendeley Data, V5, <a href="https://doi.org/10.17632/8gb9r2yhfc.5">doi: 10.17632/8gb9r2yhfc.5</a>.</p>
 <p>The original dataset contains 6,762 images (1920 x 1080), and around 8% (518) of them have no bees (only background). This is very important in Object Detection, where we should keep around 10% of the dataset with only background (no objects to be detected).</p>
 <p>The images contain from zero to up to 61 bees:</p>
-<p><img src="images/bee_distr.jpeg" class="img-fluid"></p>
+<p><img src="images/bee_distr.png" class="img-fluid"></p>
 <p>We downloaded the dataset (images and annotations) and uploaded it to <a href="https://roboflow.com/">Roboflow</a>. There, you should create a free account and start a new project, for example, (“Bees_on_Hive_landing_boards”):</p>
 <p><img src="images/roboflow_proj.jpeg" class="img-fluid"></p>
 <blockquote class="blockquote">
-<p>We will not enter details about the Roboflow process once many tutorials are available.</p>
+<p>We will not go into detail about the Roboflow process, since many tutorials are available.</p>
 </blockquote>
 <p>Once the project is created and the dataset is uploaded, you should review the annotations using the “Auto-Label” Tool. Note that all images with only a background should be saved w/o any annotations. At this step, you can also add additional images.</p>
 <p><img src="images/annotate.jpeg" class="img-fluid"></p>
@@ -434,13 +458,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="pre-processing" class="level3">
 <h3 class="anchored" data-anchor-id="pre-processing">Pre-Processing</h3>
-<p>The last step with the dataset is preprocessing to generate a final version for training. The Yolov8 model can be trained with 640 x 640 pixels (RGB) images. Let’s resize all images and generate augmented versions of each image (augmentation) to create new training examples from which our model can learn.</p>
-<p>For augmentation, we will rotate the images (+/-15<sup>o</sup>) and vary the brightness and exposure.</p>
-<p><img src="images/preprocess.jpeg" class="img-fluid"></p>
+<p>The last step with the dataset is preprocessing to generate a final version for training. The YOLOv8 model can be trained with 640 x 640 pixels (RGB) images. Let’s resize all images and generate augmented versions of each image (augmentation) to create new training examples from which our model can learn.</p>
+<p>For augmentation, we will rotate the images (±15°) and vary the brightness and exposure.</p>
+<p><img src="images/preprocess.png" class="img-fluid"></p>
 <p>This will create a final dataset of 16,228 images.</p>
 <p><img src="images/final-dataset.jpeg" class="img-fluid"></p>
-<p>Now, you should export the annotateddataset in a YOLOv8 format. You can download a zipped version of the dataset to your desktop or get a downloaded code to be used with a Jupyter Notebook:</p>
-<p><img src="images/download_code.jpeg" class="img-fluid"></p>
+<p>Now, you should export the annotated dataset in a YOLOv8 format. You can download a zipped version of the dataset to your desktop or get the download code to be used with a Jupyter Notebook:</p>
+<p><img src="images/download_code.png" class="img-fluid"></p>
 <p>And that is it! We are prepared to start our training using Google Colab.</p>
 <blockquote class="blockquote">
 <p>The pre-processed dataset can be found at the <a href="https://universe.roboflow.com/marcelo-rovai-riila/bees_on_hive_landing_boards">Roboflow site</a>.</p>
@@ -448,14 +472,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="training-yolov8-on-a-customized-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="training-yolov8-on-a-customized-dataset">Training YOLOv8 on a Customized Dataset</h3>
-<p>For training, let’s adapt one of the public examples available from Ultralitytics and run it on Google Colab:</p>
+<p>For training, let’s adapt one of the public examples available from Ultralytics and run it on Google Colab:</p>
 <ul>
 <li>yolov8_bees_on_hive_landing_board.ipynb <a href="https://colab.research.google.com/github/Mjrovai/Bee-Counting/blob/main/yolov8_bees_on_hive_landing_board.ipynb">[Open In Colab]</a></li>
 </ul>
 <section id="critical-points-on-the-notebook" class="level4">
-<h4 class="anchored" data-anchor-id="critical-points-on-the-notebook">Critical points on the Notebook:</h4>
+<h4 class="anchored" data-anchor-id="critical-points-on-the-notebook">Critical points on the Notebook</h4>
 <ol type="1">
-<li><p>Run it with GPU (the NVidia T4 is free)</p></li>
+<li><p>Run it with GPU (the NVIDIA T4 is free)</p></li>
 <li><p>Install Ultralytics using PIP.</p>
 <p><img src="images/inst_Ultralytics.jpeg" class="img-fluid"></p></li>
 <li><p>Now, you can import the YOLO and upload your dataset to the CoLab, pasting the Download code that you get from Roboflow. Note that your dataset will be mounted under <code>/content/datasets/</code>:</p></li>
@@ -483,58 +507,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">EPOCHS</span> = 25 <span class="co"># For a final project, you should consider at least 100 epochs </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>Run the training (using CLI):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=train model={MODEL} data={dataset.location}/data.yaml epochs={EPOCHS} imgsz={IMG_SIZE} plots=True </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><img src="images/train_result.jpeg" class="img-fluid"></p></li>
+<p><img src="images/train_result.jpeg" class="img-fluid"></p>
+<p>The model took 2.7 hours to train and has an excellent result (mAP50 of 0.984). At the end of the training, all results are saved in the folder listed, for example: <code>/runs/detect/train3/</code>. There, you can find, for example, the confusion matrix and the metrics curves per epoch.</p></li>
 </ol>
-<p>​ The model took 2.7 hours to train and has an excellent result (mAP50 of 0.984). At the end of the training, all results are saved in the folder listed, for example: <code>/runs/detect/train3/</code>. There, you can find, for example, the confusion matrix and the metrics curves per epoch.</p>
-<p><img src="images/train_perf.jpeg" class="img-fluid"></p>
+<p><img src="images/train_perf.png" class="img-fluid"></p>
 <ol start="7" type="1">
-<li>Note that the trained model (<code>best.pt</code>) is saved in the folder <code>/runs/detect/train3/weights/</code>. Now, you should validade the trained model with the <code>valid/images</code>.</li>
+<li>Note that the trained model (<code>best.pt</code>) is saved in the folder <code>/runs/detect/train3/weights/</code>. Now, you should validate the trained model with the <code>valid/images</code>.</li>
 </ol>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=val model={HOME}/runs/detect/train3/weights/best.pt data={dataset.location}/data.yaml</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>​ The results were similar to training.</p>
+<pre><code>The results were similar to training. </code></pre>
 <ol start="8" type="1">
 <li>Now, we should perform inference on the images left aside for testing</li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=predict model={HOME}/runs/detect/train3/weights/best.pt conf=0.25 source={dataset.location}/test/images save=True</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!yolo</span> task=detect mode=predict model={HOME}/runs/detect/train3/weights/best.pt conf=0.25 source={dataset.location}/test/images save=True</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The inference results are saved in the folder <code>runs/detect/predict</code>. Let’s see some of them:</p>
 <p><img src="images/inf_colab.jpeg" class="img-fluid"></p>
 <p>We can also perform inference with a completely new and complex image from another beehive with a different background (the beehive of Professor Maurilio of our University). The results were great (but not perfect and with a lower confidence score). The model found 41 bees.</p>
 <p><img src="images/maurilio_bees_tEXbFzkpEf.jpg" class="img-fluid"></p>
 <ol start="9" type="1">
-<li><p>The last thing to do is export the train, validation, and test results for your Drive at Google. To do so, you should mount your drive.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">'/content/gdrive'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<li><p>The last thing to do is export the train, validation, and test results to your Google Drive. To do so, you should mount your drive.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.colab <span class="im">import</span> drive</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>drive.mount(<span class="st">'/content/gdrive'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>and copy the content of <code>/runs</code> folder to a folder that you should create in your Drive, for example:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!scp</span> <span class="at">-r</span> /content/runs <span class="st">'/content/gdrive/MyDrive/10_UNIFEI/Bee_Project/YOLO/bees_on_hive_landing'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">!scp</span> <span class="at">-r</span> /content/runs <span class="st">'/content/gdrive/MyDrive/10_UNIFEI/Bee_Project/YOLO/bees_on_hive_landing'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 </ol>
 </section>
 </section>
 </section>
-<section id="inference-with-the-trained-model-using-the-rasp-zero" class="level2">
-<h2 class="anchored" data-anchor-id="inference-with-the-trained-model-using-the-rasp-zero">Inference with the trained model, using the Rasp-Zero</h2>
-<p>Using the FileZilla FTP, let’s transfer the <code>best.pt</code> to our Rasp-Zero (before the transfer, you may change the model name, for example, <code>bee_landing_640_best.pt</code>).</p>
+<section id="inference-with-the-trained-model-using-the-raspi-zero" class="level2">
+<h2 class="anchored" data-anchor-id="inference-with-the-trained-model-using-the-raspi-zero">Inference with the trained model, using the Raspi-Zero</h2>
+<p>Using the FileZilla FTP, let’s transfer the <code>best.pt</code> to our Raspi-Zero (before the transfer, you may change the model name, for example, <code>bee_landing_640_best.pt</code>).</p>
 <p>The first thing to do is convert the model to an NCNN format:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=bee_landing_640_best.pt format=ncnn </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yolo</span> export model=bee_landing_640_best.pt format=ncnn </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>As a result, a new converted model, <code>bee_landing_640_best_ncnn_model</code> is created in the same directory.</p>
-<p>Let’s create a folder to receive some test images (under <code>Documents/YOLO/</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> test_images</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Using the FileZilla FTP, let’s transfer a few images from the test dataset to our Rasp-Zero:</p>
+<p>Let’s create a folder to receive some test images (under <code>Documents/YOLO/</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> test_images</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Using the FileZilla FTP, let’s transfer a few images from the test dataset to our Raspi-Zero:</p>
 <p><img src="images/image_test_.png" class="img-fluid"></p>
 <p>Let’s use the Python Interpreter:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>As before, we will import the YOLO library and define our converted model to detect bees:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'bee_landing_640_best_ncnn_model'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Now, let’s define an image and call the inference (we will save the image result this time to external verification):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'test_images/15_bees.jpg'</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.2</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The inference result is saved on the variable <code>result,</code> and the processed image on <code>runs/detect/predict9</code></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'bee_landing_640_best_ncnn_model'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now, let’s define an image and call the inference (we will save the image result this time for external verification):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> <span class="st">'test_images/15_bees.jpg'</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> model.predict(img, save<span class="op">=</span><span class="va">True</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.2</span>, iou<span class="op">=</span><span class="fl">0.3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The inference result is saved in the variable <code>result</code>, and the processed image on <code>runs/detect/predict9</code></p>
 <p><img src="images/inf_bees_15.png" class="img-fluid"></p>
 <p>Using FileZilla FTP, we can send the inference result to our Desktop for verification:</p>
-<p><img src="images/inf_img_15_bees.png" class="img-fluid"></p>
-<p>let’s go over the other images, analyzing the number of objects (bees) found:</p>
+<p><img src="images/inf_img_15_bees.jpg" class="img-fluid"></p>
+<p>Let’s go over the other images, analyzing the number of objects (bees) found:</p>
 <p><img src="images/multiple_infer.png" class="img-fluid"></p>
-<p>Depending on the confidence level, we may see some false positives or negatives. But in general, with a model trained on a smaller base model in the YOLOv8 family (YOLOv8n) and converted to NCNN, the results are pretty good, running on an Edge device such as the Rasp-Zero. Also, note that the inference latency is around 730ms.</p>
+<p>Depending on the confidence level, we may see some false positives or negatives. But in general, with a model trained on a smaller base model in the YOLOv8 family (YOLOv8n) and converted to NCNN, the results are pretty good, running on an Edge device such as the Raspi-Zero. Also, note that the inference latency is around 730ms.</p>
 <p>For example, by running the inference on <code>Maurilio-bee.jpeg</code>, we can find <code>40 bees</code>. During the test phase on Colab, 41 bees were found (we only missed one here).</p>
 <p><img src="images/maurilio-bee-rasp.png" class="img-fluid"></p>
 </section>
@@ -553,17 +577,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 <li><p><strong>Create a Bash Script (<code>capture.sh</code>)</strong>:</p>
 <ul>
-<li><strong>Image Capture</strong>: This bash script captures images every 10 seconds using <code>rpicam-jpeg</code>, a command in the <code>raspijpeg</code> tool. This command lets us control the camera and capture JPEG images directly from the command line. This is especially useful because we are looking for a lightweight, straightforward method to capture images without requiring additional libraries like <code>Picamera</code> or external software. The script also saves the captured image with a timestamp.</li>
+<li><strong>Image Capture</strong>: This bash script captures images every 10 seconds using <code>rpicam-jpeg</code>, one of the <code>rpicam-apps</code> camera tools. This command lets us control the camera and capture JPEG images directly from the command line. This is especially useful because we are looking for a lightweight, straightforward method to capture images without requiring additional libraries like <code>Picamera</code> or external software. The script also saves the captured image with a timestamp.</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Script to capture an image every 10 seconds</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> true</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>do</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  DATE<span class="op">=</span>$(date <span class="op">+</span><span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st">_%H%M%S"</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  rpicam<span class="op">-</span>jpeg <span class="op">--</span>output test_images<span class="op">/</span>$DATE.jpg <span class="op">--</span>width <span class="dv">640</span> <span class="op">--</span>height <span class="dv">640</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  sleep <span class="dv">10</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>done</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Script to capture an image every 10 seconds</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> true</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>do</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  DATE<span class="op">=</span>$(date <span class="op">+</span><span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st">_%H%M%S"</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  rpicam<span class="op">-</span>jpeg <span class="op">--</span>output test_images<span class="op">/</span>$DATE.jpg <span class="op">--</span>width <span class="dv">640</span> <span class="op">--</span>height <span class="dv">640</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  sleep <span class="dv">10</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>done</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>We should make the script executable with <code>chmod +x capture.sh</code>.</li>
 <li>The script must start at boot or use a <code>@reboot</code> entry in <code>cron</code> to start it automatically.</li>
@@ -575,88 +599,88 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Image Processing</strong>: The Python script continuously monitors the designated directory for new images, processes each new image using the YOLOv8 model, updates the database with the count of detected bees, and optionally deletes the image to conserve disk space.</p>
 <p><strong>Database Updates</strong>: The results, along with the timestamps, are saved in an SQLite database. For that, a simple option is to use <a href="https://docs.python.org/3/library/sqlite3.html">sqlite3</a>.</p>
 <p>In short, we need to write a script that continuously monitors the directory for new images, processes them using a YOLO model, and then saves the results to a SQLite database. Here’s how we can create and make the script executable:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Constants and paths</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>IMAGES_DIR <span class="op">=</span> <span class="st">'test_images/'</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>MODEL_PATH <span class="op">=</span> <span class="st">'bee_landing_640_best_ncnn_model'</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>DB_PATH <span class="op">=</span> <span class="st">'bee_count.db'</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> setup_database():</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" </span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">      Establishes a database connection and creates the table </span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">      if it doesn't exist. </span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(DB_PATH)</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> conn.cursor()</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    cursor.execute(<span class="st">'''</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="st">        CREATE TABLE IF NOT EXISTS bee_counts</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="st">        (timestamp TEXT, count INTEGER)</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="st">    '''</span>)</span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    conn.commit()</span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> conn</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_image(image_path, model, conn):</span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" </span></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co">      Processes an image to detect objects and logs </span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co">      the count to the database. </span></span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> model.predict(image_path, save<span class="op">=</span><span class="va">False</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.2</span>, iou<span class="op">=</span><span class="fl">0.3</span>, verbose<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    num_bees <span class="op">=</span> <span class="bu">len</span>(result[<span class="dv">0</span>].boxes.cls) </span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>    timestamp <span class="op">=</span> datetime.now().strftime(<span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st"> %H:%M:%S'</span>)</span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> conn.cursor()</span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>    cursor.execute(<span class="st">"INSERT INTO bee_counts (timestamp, count) VALUES (?, ?)"</span>, </span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>                   (timestamp, num_bees)</span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>                  )</span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    conn.commit()</span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Processed </span><span class="sc">{</span>image_path<span class="sc">}</span><span class="ss">: Number of bees detected = </span><span class="sc">{</span>num_bees<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> monitor_directory(model, conn):</span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" </span></span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co">      Monitors the directory for new images and processes </span></span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="co">      them as they appear. </span></span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>    processed_files <span class="op">=</span> <span class="bu">set</span>()</span>
-<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
-<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>            files <span class="op">=</span> <span class="bu">set</span>(os.listdir(IMAGES_DIR))</span>
-<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>            new_files <span class="op">=</span> files <span class="op">-</span> processed_files</span>
-<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> new_files:</span>
-<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="bu">file</span>.endswith(<span class="st">'.jpg'</span>):</span>
-<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>                    full_path <span class="op">=</span> os.path.join(IMAGES_DIR, <span class="bu">file</span>)</span>
-<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>                    process_image(full_path, model, conn)</span>
-<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>                    processed_files.add(<span class="bu">file</span>)</span>
-<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="dv">1</span>)  <span class="co"># Check every second</span></span>
-<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
-<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Stopping..."</span>)</span>
-<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
-<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
-<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a>    conn <span class="op">=</span> setup_database()</span>
-<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> YOLO(MODEL_PATH)</span>
-<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>    monitor_directory(model, conn)</span>
-<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a>    conn.close()</span>
-<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
-<span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Constants and paths</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>IMAGES_DIR <span class="op">=</span> <span class="st">'test_images/'</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>MODEL_PATH <span class="op">=</span> <span class="st">'bee_landing_640_best_ncnn_model'</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>DB_PATH <span class="op">=</span> <span class="st">'bee_count.db'</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> setup_database():</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" </span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">      Establishes a database connection and creates the table </span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">      if it doesn't exist. </span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(DB_PATH)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> conn.cursor()</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    cursor.execute(<span class="st">'''</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="st">        CREATE TABLE IF NOT EXISTS bee_counts</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="st">        (timestamp TEXT, count INTEGER)</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="st">    '''</span>)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    conn.commit()</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> conn</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_image(image_path, model, conn):</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" </span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="co">      Processes an image to detect objects and logs </span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="co">      the count to the database. </span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> model.predict(image_path, save<span class="op">=</span><span class="va">False</span>, imgsz<span class="op">=</span><span class="dv">640</span>, conf<span class="op">=</span><span class="fl">0.2</span>, iou<span class="op">=</span><span class="fl">0.3</span>, verbose<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>    num_bees <span class="op">=</span> <span class="bu">len</span>(result[<span class="dv">0</span>].boxes.cls) </span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    timestamp <span class="op">=</span> datetime.now().strftime(<span class="st">'%Y-%m-</span><span class="sc">%d</span><span class="st"> %H:%M:%S'</span>)</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> conn.cursor()</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    cursor.execute(<span class="st">"INSERT INTO bee_counts (timestamp, count) VALUES (?, ?)"</span>, </span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>                   (timestamp, num_bees)</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>                  )</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>    conn.commit()</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Processed </span><span class="sc">{</span>image_path<span class="sc">}</span><span class="ss">: Number of bees detected = </span><span class="sc">{</span>num_bees<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> monitor_directory(model, conn):</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>    <span class="co">""" </span></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="co">      Monitors the directory for new images and processes </span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="co">      them as they appear. </span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>    processed_files <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>            files <span class="op">=</span> <span class="bu">set</span>(os.listdir(IMAGES_DIR))</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>            new_files <span class="op">=</span> files <span class="op">-</span> processed_files</span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> new_files:</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="bu">file</span>.endswith(<span class="st">'.jpg'</span>):</span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>                    full_path <span class="op">=</span> os.path.join(IMAGES_DIR, <span class="bu">file</span>)</span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>                    process_image(full_path, model, conn)</span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a>                    processed_files.add(<span class="bu">file</span>)</span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="dv">1</span>)  <span class="co"># Check every second</span></span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Stopping..."</span>)</span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a>    conn <span class="op">=</span> setup_database()</span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> YOLO(MODEL_PATH)</span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a>    monitor_directory(model, conn)</span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a>    conn.close()</span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The Python script must be executable, for that:</p>
 <ol type="1">
 <li><p><strong>Save the script</strong>: For example, as <code>process_images.py</code>.</p></li>
 <li><p><strong>Change file permissions</strong> to make it executable:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x process_images.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x process_images.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p><strong>Run the script</strong> directly from the command line:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./process_images.py</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./process_images.py</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 </ol>
 <p>We should consider keeping the script running even after closing the terminal; for that, we can use <code>nohup</code> or <code>screen</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nohup</span> ./process_images.py <span class="kw">&amp;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nohup</span> ./process_images.py <span class="kw">&amp;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>or</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">screen</span> <span class="at">-S</span> bee_monitor</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./process_images.py</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">screen</span> <span class="at">-S</span> bee_monitor</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./process_images.py</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Note that we capture images with their own timestamps and log a separate timestamp when the inference results are saved to the database. This approach can be beneficial for the following reasons:</p>
 <ol type="1">
 <li><strong>Accuracy in Data Logging</strong>:
@@ -666,7 +690,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 <li><strong>Performance Monitoring</strong>:
 <ul>
-<li>Separate timestamps enable us to monitor the performance and efficiency of your image processing pipeline. We can measure the delay between image capture and result logging, which helps optimize the system for real-time processing needs.</li>
+<li>Separate timestamps enable us to monitor the performance and efficiency of our image processing pipeline. We can measure the delay between image capture and result logging, which helps optimize the system for real-time processing needs.</li>
 </ul></li>
 <li><strong>Troubleshooting and Audit</strong>:
 <ul>
@@ -677,26 +701,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="script-for-reading-the-sqlite-database" class="level3">
 <h3 class="anchored" data-anchor-id="script-for-reading-the-sqlite-database">Script For Reading the SQLite Database</h3>
 <p>Here is an example of a code to retrieve the data from the database:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    db_path <span class="op">=</span> <span class="st">'bee_count.db'</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(db_path)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> conn.cursor()</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    query <span class="op">=</span> <span class="st">"SELECT * FROM bee_counts"</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    cursor.execute(query)</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> cursor.fetchall()</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> data:</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Timestamp: </span><span class="sc">{</span>row[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">, Number of bees: </span><span class="sc">{</span>row[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    conn.close()</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    db_path <span class="op">=</span> <span class="st">'bee_count.db'</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(db_path)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> conn.cursor()</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    query <span class="op">=</span> <span class="st">"SELECT * FROM bee_counts"</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    cursor.execute(query)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> cursor.fetchall()</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row <span class="kw">in</span> data:</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Timestamp: </span><span class="sc">{</span>row[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">, Number of bees: </span><span class="sc">{</span>row[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    conn.close()</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="adding-environment-data" class="level3">
 <h3 class="anchored" data-anchor-id="adding-environment-data">Adding Environment data</h3>
-<p>Besides bee counting, environmental data, such as temperature and humidity, are essential for monitoring the bee-have health. Using a Rasp-Zero, it is straightforward to add a digital sensor such as the DHT-22 to get this data.</p>
+<p>Besides bee counting, environmental data, such as temperature and humidity, are essential for monitoring the beehive health. Using a Raspi-Zero, it is straightforward to add a digital sensor such as the DHT-22 to get this data.</p>
 <p><img src="images/dat_env.jpg" class="img-fluid"></p>
 <p>Environmental data will be part of our final project. If you want to know more about connecting sensors to a Raspberry Pi and, even more, how to save the data to a local database and send it to the web, follow this tutorial: <a href="https://www.hackster.io/mjrobot/from-data-to-graph-a-web-journey-with-flask-and-sqlite-4dba35">From Data to Graph: A Web Journey With Flask and SQLite</a>.</p>
 <p><img src="images/tutorial_flask.jpg" class="img-fluid"></p>
@@ -1143,7 +1167,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/edit/main/raspi/counting_objects_yolo/counting_objects_yolo.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi/blob/main/raspi/counting_objects_yolo/counting_objects_yolo.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    </div>
     <div class="nav-footer-right">
 <p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
 </div>

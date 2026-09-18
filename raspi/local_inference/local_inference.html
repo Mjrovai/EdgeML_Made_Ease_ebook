@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>SLMs at the Edge – Edge AI Engineering</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/llm/slm_intro.html" rel="next">
+<link href="../../raspi/kd_intro/kd_intro.html" rel="prev">
+<link href="../../images/unifei-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-daec65ff3ba034f51daec66ecad3ce27.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="mermaid-theme" content="neutral">
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/Mjrovai/EdgeML_Made_Ease_ebook/releases/latest/download/Edge-AI-Engineering.pdf"> <i class="bi bi-file-earmark-pdf" role="img">
+</i> 
+<span class="menu-text">Download PDF</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/local_inference/local_inference.html">SLMs at the Edge</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Fixed Function AI (Reactive)</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/cv_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Computer Vision Applications with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting Objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Generative AI (Proactive)</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/rnn-verne/rnn-verne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text Generation with RNNs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/local_inference/local_inference.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">SLMs at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_opt_tech.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLM: Basic Optimization Techniques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/audio_pipeline/audio_pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Audio and Vision AI Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/litert-lm/litert-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llama_cpp/llama_cpp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">From Ollama to llama.cpp</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/mtp/mtp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multi-Token Prediction on the Raspberry Pi 5</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Weekly Labs</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">References &amp; Author</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#why-run-a-language-model-locally" id="toc-why-run-a-language-model-locally" class="nav-link active" data-scroll-target="#why-run-a-language-model-locally">1. Why run a language model locally?</a></li>
+  <li><a href="#the-theory-you-actually-need" id="toc-the-theory-you-actually-need" class="nav-link" data-scroll-target="#the-theory-you-actually-need">2. The theory you actually need</a>
+  <ul>
+  <li><a href="#parameters-precision-and-disk-size" id="toc-parameters-precision-and-disk-size" class="nav-link" data-scroll-target="#parameters-precision-and-disk-size">2.1 Parameters, precision, and disk size</a></li>
+  <li><a href="#quantization" id="toc-quantization" class="nav-link" data-scroll-target="#quantization">2.2 Quantization</a></li>
+  <li><a href="#gguf-the-file-format-everyone-converged-on" id="toc-gguf-the-file-format-everyone-converged-on" class="nav-link" data-scroll-target="#gguf-the-file-format-everyone-converged-on">2.3 GGUF: the file format everyone converged on</a></li>
+  <li><a href="#the-ram-budget-weights-kv-cache-everything-else" id="toc-the-ram-budget-weights-kv-cache-everything-else" class="nav-link" data-scroll-target="#the-ram-budget-weights-kv-cache-everything-else">2.4 The RAM budget: weights + KV cache + everything else</a></li>
+  <li><a href="#distillation-or-why-small-models-got-good" id="toc-distillation-or-why-small-models-got-good" class="nav-link" data-scroll-target="#distillation-or-why-small-models-got-good">2.5 Distillation, or why small models got good</a></li>
+  <li><a href="#tokens-per-second-whats-usable" id="toc-tokens-per-second-whats-usable" class="nav-link" data-scroll-target="#tokens-per-second-whats-usable">2.6 Tokens per second: what’s usable?</a></li>
+  </ul></li>
+  <li><a href="#the-three-tools" id="toc-the-three-tools" class="nav-link" data-scroll-target="#the-three-tools">3. The three tools</a>
+  <ul>
+  <li><a href="#llama.cpp-the-engine" id="toc-llama.cpp-the-engine" class="nav-link" data-scroll-target="#llama.cpp-the-engine">llama.cpp — the engine</a></li>
+  <li><a href="#ollama-the-package-manager" id="toc-ollama-the-package-manager" class="nav-link" data-scroll-target="#ollama-the-package-manager">Ollama — the package manager</a></li>
+  <li><a href="#lm-studio-the-desktop-app" id="toc-lm-studio-the-desktop-app" class="nav-link" data-scroll-target="#lm-studio-the-desktop-app">LM Studio — the desktop app</a></li>
+  <li><a href="#which-one-quickly" id="toc-which-one-quickly" class="nav-link" data-scroll-target="#which-one-quickly">Which one, quickly</a></li>
+  </ul></li>
+  <li><a href="#target-1-the-pc" id="toc-target-1-the-pc" class="nav-link" data-scroll-target="#target-1-the-pc">4. Target 1: the PC</a>
+  <ul>
+  <li><a href="#ollama" id="toc-ollama" class="nav-link" data-scroll-target="#ollama">4.1 Ollama</a></li>
+  <li><a href="#lm-studio" id="toc-lm-studio" class="nav-link" data-scroll-target="#lm-studio">4.2 LM Studio</a></li>
+  <li><a href="#llama.cpp" id="toc-llama.cpp" class="nav-link" data-scroll-target="#llama.cpp">4.3 llama.cpp</a></li>
+  <li><a href="#what-to-run-on-a-pc-in-2026" id="toc-what-to-run-on-a-pc-in-2026" class="nav-link" data-scroll-target="#what-to-run-on-a-pc-in-2026">4.4 What to run on a PC in 2026</a></li>
+  </ul></li>
+  <li><a href="#target-2-raspberry-pi-5" id="toc-target-2-raspberry-pi-5" class="nav-link" data-scroll-target="#target-2-raspberry-pi-5">5. Target 2: Raspberry Pi 5</a>
+  <ul>
+  <li><a href="#ollama-on-the-pi" id="toc-ollama-on-the-pi" class="nav-link" data-scroll-target="#ollama-on-the-pi">5.1 Ollama on the Pi</a></li>
+  <li><a href="#llama.cpp-on-the-pi" id="toc-llama.cpp-on-the-pi" class="nav-link" data-scroll-target="#llama.cpp-on-the-pi">5.2 llama.cpp on the Pi</a></li>
+  <li><a href="#field-notes-tuning-a-1b-model-on-the-pi-5" id="toc-field-notes-tuning-a-1b-model-on-the-pi-5" class="nav-link" data-scroll-target="#field-notes-tuning-a-1b-model-on-the-pi-5">5.3 Field notes: tuning a 1B model on the Pi 5</a></li>
+  </ul></li>
+  <li><a href="#target-3-arduino-uno-q-4-gb" id="toc-target-3-arduino-uno-q-4-gb" class="nav-link" data-scroll-target="#target-3-arduino-uno-q-4-gb">6. Target 3: Arduino UNO Q (4 GB)</a>
+  <ul>
+  <li><a href="#what-fits-in-4-gb" id="toc-what-fits-in-4-gb" class="nav-link" data-scroll-target="#what-fits-in-4-gb">6.1 What fits in 4 GB</a></li>
+  <li><a href="#llama.cpp-on-the-uno-q-recommended-path" id="toc-llama.cpp-on-the-uno-q-recommended-path" class="nav-link" data-scroll-target="#llama.cpp-on-the-uno-q-recommended-path">6.2 llama.cpp on the UNO Q (recommended path)</a></li>
+  <li><a href="#ollama-on-the-uno-q-with-a-workaround" id="toc-ollama-on-the-uno-q-with-a-workaround" class="nav-link" data-scroll-target="#ollama-on-the-uno-q-with-a-workaround">6.3 Ollama on the UNO Q (with a workaround)</a></li>
+  <li><a href="#lm-studio-on-the-uno-q" id="toc-lm-studio-on-the-uno-q" class="nav-link" data-scroll-target="#lm-studio-on-the-uno-q">6.4 LM Studio on the UNO Q</a></li>
+  </ul></li>
+  <li><a href="#choosing-a-model-in-2026" id="toc-choosing-a-model-in-2026" class="nav-link" data-scroll-target="#choosing-a-model-in-2026">7. Choosing a model in 2026</a></li>
+  <li><a href="#measuring-and-a-checklist" id="toc-measuring-and-a-checklist" class="nav-link" data-scroll-target="#measuring-and-a-checklist">8. Measuring and a checklist</a></li>
+  <li><a href="#quick-comparison-summary" id="toc-quick-comparison-summary" class="nav-link" data-scroll-target="#quick-comparison-summary">Quick Comparison Summary</a>
+  <ul>
+  <li><a href="#uno-q-breakdown" id="toc-uno-q-breakdown" class="nav-link" data-scroll-target="#uno-q-breakdown">UNO Q Breakdown</a></li>
+  <li><a href="#raspberry-pi-breakdown" id="toc-raspberry-pi-breakdown" class="nav-link" data-scroll-target="#raspberry-pi-breakdown">Raspberry Pi Breakdown</a></li>
+  <li><a href="#bottom-line" id="toc-bottom-line" class="nav-link" data-scroll-target="#bottom-line">Bottom Line</a></li>
+  </ul></li>
+  <li><a href="#sources-and-further-reading" id="toc-sources-and-further-reading" class="nav-link" data-scroll-target="#sources-and-further-reading">Sources and further reading</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">SLMs at the Edge</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>A Guide to Local Inference on PC, Raspberry Pi, and Arduino UNO Q</p>
+<p><img src="./images/png/cover.jpg" class="img-fluid"></p>
+<p><em>A hands-on tutorial for makers and students. Covers the principles (quantization, GGUF, memory budgeting), the three main tools (llama.cpp, Ollama, LM Studio), and step-by-step setup on three very different machines: a desktop PC, a Raspberry Pi 5, and the Arduino UNO Q with 4 GB of RAM.</em></p>
+<hr>
+<section id="why-run-a-language-model-locally" class="level2">
+<h2 class="anchored" data-anchor-id="why-run-a-language-model-locally">1. Why run a language model locally?</h2>
+<p>Everything you type into ChatGPT travels to a data center, gets processed on a rack of GPUs, and comes back. That works, but it has costs: your data leaves the device, you pay per token or per month, you need a network connection, and latency depends on someone else’s infrastructure.</p>
+<p>Running the model on your own hardware flips all four. Your prompts never leave the machine. Inference is free after the hardware purchase. It works on a bench in a basement with no Wi-Fi. And for embedded projects, it means a robot or a sensor node can “understand” language without phoning home.</p>
+<p>The catch is size. GPT-class models have hundreds of billions of parameters and won’t fit on anything you own. What fits are Small Language Models (SLMs), roughly 100 million to 9 billion parameters, usually compressed with quantization. The last two years have been good to this category: a 1B model in 2026 is noticeably more capable than a 7B model was in 2023, mostly thanks to better training data and distillation from larger teachers.</p>
+<p><strong>Important:</strong> a 1B model will not reason like a frontier model. It will summarize text, classify intents, answer questions about a narrow domain, extract structure from messy input, and hold a basic conversation. Scope your expectations (and your project) accordingly. On the edge, the interesting question isn’t “how big a model can I force onto this board” but “how small a model still does the job.”</p>
+</section>
+<section id="the-theory-you-actually-need" class="level2">
+<h2 class="anchored" data-anchor-id="the-theory-you-actually-need">2. The theory you actually need</h2>
+<p>You can skip this section and go straight to the commands, but ten minutes here will save you hours of “why is it swapping?” later.</p>
+<section id="parameters-precision-and-disk-size" class="level3">
+<h3 class="anchored" data-anchor-id="parameters-precision-and-disk-size">2.1 Parameters, precision, and disk size</h3>
+<p>A model is a big pile of numbers (weights). Training produces them in 16-bit or 32-bit floating point. At 16 bits (2 bytes) per weight, sizes look like this:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 16%">
+<col style="width: 15%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Parameters</th>
+<th>FP16 size</th>
+<th>Q4 size (approx.)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SmolLM2-135M</td>
+<td>135 M</td>
+<td>~270 MB</td>
+<td>~100 MB</td>
+</tr>
+<tr class="even">
+<td>Qwen3.5 0.8B</td>
+<td>0.8 B</td>
+<td>~1.6 GB</td>
+<td>~0.56 GB</td>
+</tr>
+<tr class="odd">
+<td>Llama 3.2 1B</td>
+<td>1.2 B</td>
+<td>~2.5 GB</td>
+<td>~0.7 GB</td>
+</tr>
+<tr class="even">
+<td>Qwen3.5 2B</td>
+<td>2 B</td>
+<td>~4 GB</td>
+<td>~1.3 GB</td>
+</tr>
+<tr class="odd">
+<td>Phi-4-mini</td>
+<td>3.8 B</td>
+<td>~7.6 GB</td>
+<td>~2.4 GB</td>
+</tr>
+<tr class="even">
+<td>Llama 3.1 8B / Ornith 9B</td>
+<td>8–9 B</td>
+<td>~16–19 GB</td>
+<td>~4.7–5.5 GB</td>
+</tr>
+</tbody>
+</table>
+<p>The FP16 column is why you can’t run an 8B model on a Raspberry Pi with 8 GB of RAM at full precision. The Q4 column is why you can.</p>
+</section>
+<section id="quantization" class="level3">
+<h3 class="anchored" data-anchor-id="quantization">2.2 Quantization</h3>
+<p>Quantization stores each weight with fewer bits. Instead of 16-bit floats, you use 8-, 5-, or 4-bit integers, plus some scaling metadata. A 4-bit quantized model is roughly a quarter the size of the FP16 original, and on CPUs it’s also faster, because inference on these machines is limited by memory bandwidth: fewer bytes to move per token means more tokens per second.</p>
+<p>You’ll see names like <code>Q4_K_M</code>, <code>Q5_K_M</code>, <code>Q8_0</code> on model files. Decoding the name: the number after Q is the number of bits per weight, K denotes the “k-quant” scheme (weights grouped into blocks, each block with its own scale), and S/M/L denotes a small/medium/large variant that keeps certain sensitive layers at higher precision.</p>
+<p>Practical guidance, learned the usual way:</p>
+<ul>
+<li><code>Q4_K_M</code> is the default choice. Best size/quality balance: what Ollama serves when you don’t specify a tag.</li>
+<li><code>Q8_0</code> is nearly lossless but twice the size of Q4. Use it when RAM allows and the model is small — sub-1B models suffer the most from aggressive quantization, so running a 0.8B at Q8_0 is often the right trade.</li>
+<li><code>Q5_K_M</code> is the middle ground worth remembering for the ~1B tier. One documented field test of LFM2.5-1.2B on a Pi 5 (section 5.3) found Q5_K_M clearly better than Q4 at instruction following and structured output like tool-call formats, for only ~130 MB extra.</li>
+<li>Below 4 bits (<code>Q3</code>, <code>Q2</code>), quality degrades fast on standard quants. A 1B model at Q2 is usually worse than a 360M model at Q8.</li>
+</ul>
+<blockquote class="blockquote">
+<p>On small models (≤1B), use Q8. Around 1B, Q5_K_M is a strong compromise. From 2B up, use Q4 variants.</p>
+</blockquote>
+<p>Two newer variants deserve their own paragraph, because they change the defaults above.</p>
+<p><strong>Unsloth Dynamic quants</strong> (files tagged <code>UD-Q4_K_XL</code>, <code>UD-Q2_K_XL</code>, …) don’t quantize uniformly: sensitive layers are upcast to 8 or 16 bits, while the rest are dropped to 4 (or lower), and in practice, a UD-Q4 file behaves closer to Q5/Q6 at nearly Q4 size. When a model repo offers a UD variant, prefer it over the plain quant. A concrete data point: Qwen3.5-2B-UD-Q4_K_XL runs well on 4 GB-class boards where a 3B standard Q4 would be marginal.</p>
+<p><strong>QAT (quantization-aware training)</strong> checkpoints, like Google’s Gemma 4 QAT releases (June 2026), are trained with quantization simulated in the loop, so the Q4_0 file loses far less quality than post-hoc quantization of the same weights — Google reports roughly 3× memory reduction at near-original quality, putting Gemma 4 E2B in ~3 GB of RAM, E4B in ~5 GB, and 12B in ~7 GB. Same GGUF format, same tools; you just pick the <code>-qat</code> file.</p>
+</section>
+<section id="gguf-the-file-format-everyone-converged-on" class="level3">
+<h3 class="anchored" data-anchor-id="gguf-the-file-format-everyone-converged-on">2.3 GGUF: the file format everyone converged on</h3>
+<p>GGUF is the model file format used by llama.cpp, and since Ollama and LM Studio are both built on llama.cpp’s inference code, it is effectively the standard for local inference. A single <code>.gguf</code> file contains the weights (already quantized), the tokenizer, and metadata like the chat template. Hugging Face hosts thousands of them; search for any model name plus “GGUF,” and you’ll typically find both official and community conversions (the <code>unsloth</code>, <code>bartowski</code>, and <code>ggml-org</code> accounts are reliable sources, and Google publishes its own QAT GGUFs).</p>
+</section>
+<section id="the-ram-budget-weights-kv-cache-everything-else" class="level3">
+<h3 class="anchored" data-anchor-id="the-ram-budget-weights-kv-cache-everything-else">2.4 The RAM budget: weights + KV cache + everything else</h3>
+<p>Disk size is not RAM usage. At runtime, you need:</p>
+<ol type="1">
+<li>The model weights are loaded (or memory-mapped) into RAM.</li>
+<li>The KV cache: transformers store a key/value pair for every token in the context, for every layer. It grows linearly with context length. For a 1B model with a 4K context, this is a few hundred MB; with a 32K context, it can exceed the weights themselves. (Recent models advertise 256K contexts — on an edge board, treat that as a spec-sheet number, not a plan.)</li>
+<li>The runtime, OS, and your application.</li>
+</ol>
+<p>How a fixed RAM budget gets divided, using the smallest target as the example:</p>
+<div class="cell" data-fig-width="6" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    subgraph RAM["UNO Q, 4 GB RAM"]
+        direction LR
+        OS["OS + services&lt;br&gt;~1–1.5 GB"] --- W["model weights&lt;br&gt;0.8B @ Q8 ≈ 1 GB"] --- KV["KV cache + buffers&lt;br&gt;grows with context"] --- APP["headroom for&lt;br&gt;your application"]
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>A worked example for the Arduino UNO Q (4 GB): Debian plus desktop services eat 1–1.5 GB. A Qwen3.5 2B at UD-Q4_K_XL needs ~1.3 GB for weights plus a few hundred MB of cache and buffers at modest context. Total under 2 GB for inference — tight but workable. A standard 3B at Q4 needs 2+ GB for weights alone, and now you’re one browser tab away from the OOM (Out-Of-Memory) killer. This is why the model tables later in this tutorial look the way they do.</p>
+<blockquote class="blockquote">
+<p>Rule of thumb: <strong>usable model size ≈ (total RAM − OS and apps) × 0.7</strong>, with the remainder going to the KV cache and buffers.</p>
+</blockquote>
+</section>
+<section id="distillation-or-why-small-models-got-good" class="level3">
+<h3 class="anchored" data-anchor-id="distillation-or-why-small-models-got-good">2.5 Distillation, or why small models got good</h3>
+<p>Most competitive SLMs today are distilled: a small “student” model is trained to imitate a large “teacher.” The student never matches the teacher’s breadth, but it keeps a surprising fraction of its competence on focused tasks. This is why Llama 3.2 1B (distilled from the 8B/70B family), the Qwen small series, and SmolLM punch above their parameter count, and why the “smaller model, better data” trend keeps paying off at the edge.</p>
+</section>
+<section id="tokens-per-second-whats-usable" class="level3">
+<h3 class="anchored" data-anchor-id="tokens-per-second-whats-usable">2.6 Tokens per second: what’s usable?</h3>
+<p>Reading speed is roughly 5–7 words per second, or 8–10 tokens per second. Above that, interactive chat feels fine. For non-interactive jobs (summarize a log file, classify a message), even 2 tokens/s may be acceptable, since nobody is watching the cursor blink. One more wrinkle: reasoning models (Qwen3.5 in thinking mode, Ornith) generate a <code>&lt;think&gt;</code> block before the answer, so the <em>felt</em> latency is much higher than the tokens/s suggests. On slow hardware, disable thinking mode or pick a non-reasoning model.</p>
+</section>
+</section>
+<section id="the-three-tools" class="level2">
+<h2 class="anchored" data-anchor-id="the-three-tools">3. The three tools</h2>
+<p>All three tools in this tutorial run the same GGUF models and, underneath, share the same inference engine. They differ in packaging:</p>
+<div class="cell" data-fig-width="6" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+    APP["your application&lt;br&gt;(Python / Node / curl — OpenAI-compatible client)"]
+    subgraph PKG["packaging layer"]
+        OL["Ollama&lt;br&gt;registry + REST API :11434"]
+        LMS["LM Studio&lt;br&gt;GUI + server :1234"]
+        LSV["llama-server&lt;br&gt;plain HTTP :8080"]
+    end
+    ENG["llama.cpp engine (GGML)"]
+    GGUF[("GGUF file&lt;br&gt;weights + tokenizer + chat template")]
+    APP --&gt; OL
+    APP --&gt; LMS
+    APP --&gt; LSV
+    OL --&gt; ENG
+    LMS --&gt; ENG
+    LSV --&gt; ENG
+    ENG --&gt; GGUF
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="llama.cpp-the-engine" class="level3">
+<h3 class="anchored" data-anchor-id="llama.cpp-the-engine">llama.cpp — the engine</h3>
+<p><img src="./images/png/llamacpp.png" class="img-fluid"></p>
+<p>The C/C++ project by Georgi Gerganov that started local inference on consumer hardware. Everything else here builds on it. You compile it (or download a release), and you get command-line programs: <code>llama-cli</code> for direct prompting, <code>llama-server</code> for an OpenAI-compatible HTTP server, <code>llama-bench</code> for benchmarking. No background service, no model manager: you download GGUF files yourself and point the binary at them.</p>
+<p>Choose it when you want maximum control and minimum overhead, when you’re on a constrained or unusual platform, or when you want to embed inference inside your own C/C++/Python/Go application.</p>
+<blockquote class="blockquote">
+<p>Runs well on PC, Raspberry Pi, and UNO Q</p>
+</blockquote>
+</section>
+<section id="ollama-the-package-manager" class="level3">
+<h3 class="anchored" data-anchor-id="ollama-the-package-manager">Ollama — the package manager</h3>
+<p>Ollama wraps llama.cpp’s engine in a Go service with a model registry. <code>ollama run llama3.2:1b</code> downloads, configures, and runs the model with one command, the way <code>docker run</code> does for containers. It exposes a REST API on port 11434, keeps models loaded between requests, and unloads them after an idle timeout. Runs on Linux, macOS, and Windows, including ARM, making it a comfortable option for starting on a Raspberry Pi. It can also pull GGUFs straight from Hugging Face (<code>ollama run hf.co/&lt;org&gt;/&lt;repo&gt;</code>), which matters when you want a specific UD or QAT file rather than the registry default.</p>
+<p>Choose it when you want the shortest path from zero to a working model, or a clean API for your Python/Node application.</p>
+<blockquote class="blockquote">
+<p>Runs well on PC and Raspberry Pi</p>
+</blockquote>
+</section>
+<section id="lm-studio-the-desktop-app" class="level3">
+<h3 class="anchored" data-anchor-id="lm-studio-the-desktop-app">LM Studio — the desktop app</h3>
+<p><img src="./images/png/lmstudio.png" class="img-fluid"></p>
+<p>A GUI application for browsing, downloading, and chatting with models, with sliders for every inference parameter and a built-in OpenAI-compatible server. It uses llama.cpp as one backend and Apple MLX as another (faster on M-series Macs). Since v0.4, it also has a headless daemon (<code>llmster</code>) and a CLI (<code>lms</code>), so it’s no longer GUI-only, and ARM Linux builds exist as of 2026 (introduced alongside NVIDIA’s DGX Spark). In practice, though, it targets desktops with a screen: for a Pi or an UNO Q, llama.cpp and Ollama are the practical choices.</p>
+<p>Choose it when you want to <em>explore</em> — compare models side by side, tweak sampling parameters with instant feedback, inspect token probabilities — before committing to one for a project.</p>
+<blockquote class="blockquote">
+<p>Runs well only on PC</p>
+</blockquote>
+</section>
+<section id="which-one-quickly" class="level3">
+<h3 class="anchored" data-anchor-id="which-one-quickly">Which one, quickly</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>llama.cpp</th>
+<th>Ollama</th>
+<th>LM Studio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Interface</td>
+<td>CLI / C API</td>
+<td>CLI + REST API</td>
+<td>GUI + CLI + API</td>
+</tr>
+<tr class="even">
+<td>Model management</td>
+<td>manual (GGUF files)</td>
+<td>registry, one command</td>
+<td>built-in browser</td>
+</tr>
+<tr class="odd">
+<td>OpenAI-compatible server</td>
+<td>yes (<code>llama-server</code>)</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td>PC (Win/macOS/Linux)</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="odd">
+<td>Raspberry Pi</td>
+<td>yes</td>
+<td>yes</td>
+<td>not practical</td>
+</tr>
+<tr class="even">
+<td>Arduino UNO Q</td>
+<td>yes</td>
+<td>yes, with a workaround</td>
+<td>no</td>
+</tr>
+<tr class="odd">
+<td>Best for</td>
+<td>control, embedding, constrained targets</td>
+<td>fast setup, app backends</td>
+<td>exploration, prototyping</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>A common workflow uses all three: prototype and pick a model in LM Studio on your PC, serve it with Ollama during application development, and deploy with plain llama.cpp on the edge device.</p>
+</blockquote>
+</section>
+</section>
+<section id="target-1-the-pc" class="level2">
+<h2 class="anchored" data-anchor-id="target-1-the-pc">4. Target 1: the PC</h2>
+<p><img src="./images/png/pc.jpg" class="img-fluid"></p>
+<p>Any reasonably recent machine works. What matters is RAM (or VRAM, if you have a discrete GPU): 8 GB runs 3–4B models comfortably; 16 GB runs 8–12B models; 32 GB runs the 26B+ tier. A GPU with the model fully in VRAM gives you 5–20× the speed of CPU inference; an Apple Silicon Mac sits in between thanks to unified memory.</p>
+<section id="ollama" class="level3">
+<h3 class="anchored" data-anchor-id="ollama">4.1 Ollama</h3>
+<p>Linux:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://ollama.com/install.sh <span class="kw">|</span> <span class="fu">sh</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>macOS and Windows: download the installer from <a href="https://ollama.com">ollama.com</a>. Then:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> run llama3.2:3b</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>First run downloads ~2 GB; after that, you’re at a chat prompt. Useful commands:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> list                      <span class="co"># installed models</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> ps                        <span class="co"># what's loaded, CPU or GPU</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> pull qwen3.5:2b           <span class="co"># download without running</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> run llama3.2:3b <span class="at">--verbose</span> <span class="co"># prints tokens/s after each reply</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># pull a specific GGUF straight from Hugging Face:</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> run hf.co/unsloth/Qwen3.5-2B-GGUF:UD-Q4_K_XL</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Every model also becomes an API:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:11434/api/generate <span class="at">-d</span> <span class="st">'{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="st">  "model": "llama3.2:3b",</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="st">  "prompt": "Explain quantization in two sentences.",</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">  "stream": false</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="st">}'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>And because the API is OpenAI-compatible, the standard <code>openai</code> Python client works unchanged:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI(base_url<span class="op">=</span><span class="st">"http://localhost:11434/v1"</span>, api_key<span class="op">=</span><span class="st">"ollama"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>resp <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"llama3.2:3b"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"Write a haiku about GPIO pins."</span>}],</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resp.choices[<span class="dv">0</span>].message.content)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>Swap the <code>base_url</code>, and this same script talks to LM Studio (port 1234) or llama-server (port 8080). Code you write against one tool runs against all three — worth internalizing, because it means your application doesn’t care which runtime is behind it.</p>
+</blockquote>
+</section>
+<section id="lm-studio" class="level3">
+<h3 class="anchored" data-anchor-id="lm-studio">4.2 LM Studio</h3>
+<p>Download from <a href="https://lmstudio.ai">lmstudio.ai</a>, open the app, and use the search tab to grab a model — it shows which quantizations fit your RAM before you download, which is a genuinely useful guardrail. Chat in the GUI, then enable the local server (Developer tab) to get the same OpenAI-compatible API on port 1234.</p>
+<p>The CLI mirrors most of it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lms</span> get gemma-4-12b-it-qat   <span class="co"># download</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lms</span> load gemma-4-12b-it-qat  <span class="co"># load into memory</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">lms</span> server start             <span class="co"># API on :1234</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Spend some time in the model settings: temperature, top-p, context length, system prompt. Watching how a 2B model’s output changes between temperatures 0.2 and 1.2 teaches you more about sampling than any blog post.</p>
+</section>
+<section id="llama.cpp" class="level3">
+<h3 class="anchored" data-anchor-id="llama.cpp">4.3 llama.cpp</h3>
+<p>Prebuilt binaries exist on the <a href="https://github.com/ggml-org/llama.cpp/releases">GitHub releases page</a>, or build from source (2–5 minutes on a modern PC):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/ggml-org/llama.cpp</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> llama.cpp</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-B</span> build</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">--config</span> Release <span class="at">-j</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Download a GGUF and run it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># llama.cpp can pull directly from Hugging Face:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-cli</span> <span class="at">-hf</span> unsloth/Qwen3.5-2B-GGUF:UD-Q4_K_XL <span class="at">-p</span> <span class="st">"What is a KV cache?"</span> <span class="at">-n</span> 200</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># or with a local file, interactive chat:</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-cli</span> <span class="at">-m</span> models/qwen3.5-0.8b-q8_0.gguf <span class="at">-cnv</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The flags you’ll actually use: <code>-c 4096</code> sets context length (bigger = more RAM), <code>-t 4</code> sets CPU threads (match your physical core count), <code>-ngl 99</code> offloads all layers to GPU if you built with CUDA/Metal/Vulkan support, and <code>-n</code> caps the number of generated tokens.</p>
+<p>For serving:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-server</span> <span class="at">-m</span> models/gemma-4-E4B-it-qat-Q4_0.gguf <span class="at">--port</span> 8080</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>And for honest numbers, <code>llama-bench</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-bench</span> <span class="at">-m</span> models/qwen3.5-2b-UD-Q4_K_XL.gguf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>It reports <code>pp</code> (prompt processing) and <code>tg</code> (token generation) rates separately.</p>
+<blockquote class="blockquote">
+<p>Generation speed is what you feel in chat; prompt speed is what you feel when you paste a long document.</p>
+</blockquote>
+</section>
+<section id="what-to-run-on-a-pc-in-2026" class="level3">
+<h3 class="anchored" data-anchor-id="what-to-run-on-a-pc-in-2026">4.4 What to run on a PC in 2026</h3>
+<p>With 16 GB of RAM (or 8+ GB of VRAM), the interesting tier opens up. Gemma 4 E4B QAT (~5 GB) and Gemma 4 12B QAT (~7 GB) are strong general assistants with vision input; the QAT files fit them into RAM where the full-precision versions wouldn’t. For coding and agentic work, Ornith-1.0-9B (Q4_K_M, ~5.5 GB) is a 2026 standout: a dense 9B reasoning model, MIT-licensed, 256K context, that leads open models of its size on SWE-Bench and Terminal-Bench. Expect the <code>&lt;think&gt;</code> preamble; it’s part of the deal.</p>
+</section>
+</section>
+<section id="target-2-raspberry-pi-5" class="level2">
+<h2 class="anchored" data-anchor-id="target-2-raspberry-pi-5">5. Target 2: Raspberry Pi 5</h2>
+<p><img src="./images/png/raspi.jpg" class="img-fluid"></p>
+<p>The Pi 5 (quad Cortex-A76 @ 2.4 GHz) is a legitimate SLM machine. The 8 GB or 16 GB variants are strongly recommended; on the 4 GB model, follow the UNO Q guidance in section 6 instead. Use a 64-bit Raspberry Pi OS (or Ubuntu Server) — 32-bit OSes disqualify you immediately — and fit the active cooler, because sustained inference pins all four cores and a throttled Pi loses 20–30% of its speed.</p>
+<p>An SSD via the M.2/PCIe HAT instead of a microSD card doesn’t change tokens/s, but it turns model loading from a coffee break into a few seconds.</p>
+<section id="ollama-on-the-pi" class="level3">
+<h3 class="anchored" data-anchor-id="ollama-on-the-pi">5.1 Ollama on the Pi</h3>
+<p>Same one-liner as the PC — Ollama ships ARM64 builds:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://ollama.com/install.sh <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> run llama3.2:1b <span class="at">--verbose</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>That’s the whole setup. What to expect, CPU-only, short context (speed figures compiled from published Pi 5 benchmarks; your exact numbers will vary with cooling, RAM speed, and context length):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 20%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Quant</th>
+<th>RAM need</th>
+<th>Pi 5 generation speed</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SmolLM2-360M</td>
+<td>Q8_0</td>
+<td>~0.5 GB</td>
+<td>30+ tok/s</td>
+<td>instant, limited depth</td>
+</tr>
+<tr class="even">
+<td>Qwen3.5 0.8B</td>
+<td>Q8_0</td>
+<td>~1 GB</td>
+<td>~15–25 tok/s</td>
+<td>fast and coherent; a proven Pi workhorse</td>
+</tr>
+<tr class="odd">
+<td>Llama 3.2 1B / Gemma 3 1B</td>
+<td>Q4_K_M</td>
+<td>~1 GB</td>
+<td>8–20 tok/s</td>
+<td>the classic chat tier</td>
+</tr>
+<tr class="even">
+<td>LFM2.5-1.2B</td>
+<td>Q5_K_M</td>
+<td>~1 GB</td>
+<td>~10–20 tok/s</td>
+<td>hybrid conv+attention: fast CPU decode, lean KV cache (see 5.3)</td>
+</tr>
+<tr class="odd">
+<td>Qwen3.5 2B</td>
+<td>UD-Q4_K_XL</td>
+<td>~1.6 GB</td>
+<td>~5–10 tok/s</td>
+<td>noticeably smarter, still usable</td>
+</tr>
+<tr class="even">
+<td>Gemma 4 E2B QAT</td>
+<td>Q4_K_M</td>
+<td>~3 GB</td>
+<td>~4–8 tok/s</td>
+<td>multimodal-capable, QAT quality</td>
+</tr>
+<tr class="odd">
+<td>Llama 3.2 3B</td>
+<td>Q4_K_M</td>
+<td>~2.2 GB</td>
+<td>2–5 tok/s</td>
+<td>fine for batch jobs, slow for chat</td>
+</tr>
+<tr class="even">
+<td>8–9B models</td>
+<td>Q4_K_M</td>
+<td>~5 GB</td>
+<td>1–2 tok/s</td>
+<td>possible on 8 GB, painful</td>
+</tr>
+</tbody>
+</table>
+<p>Compare against the 8–10 tok/s readability threshold: the 1B-and-under tier feels interactive, 3B doesn’t, and the 2B tier (Qwen3.5 2B UD, Gemma 4 E2B QAT) is the compromise worth testing first — the quality jump over 1B models is larger than the speed penalty suggests. Gemma 4 E2B is an interesting special case: it’s a MatFormer-style “effective 2B” model, and the QAT file brings what is architecturally a larger model into a 3 GB footprint.</p>
+<p>The next chapter, <a href="../../raspi/llm/slm_intro.html">Small Language Models (SLM)</a>, takes Ollama on the Pi much further: installation, model selection, the Python library, and multimodal models.</p>
+</section>
+<section id="llama.cpp-on-the-pi" class="level3">
+<h3 class="anchored" data-anchor-id="llama.cpp-on-the-pi">5.2 llama.cpp on the Pi</h3>
+<p>Build exactly as on the PC (the ARM NEON optimizations are detected automatically; add <code>-j4</code> and expect ~10 minutes):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/ggml-org/llama.cpp</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> llama.cpp</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-B</span> build <span class="kw">&amp;&amp;</span> <span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">--config</span> Release <span class="at">-j4</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-cli</span> <span class="at">-hf</span> unsloth/Qwen3.5-0.8B-GGUF:Q8_0 <span class="at">-cnv</span> <span class="at">-t</span> 4</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Head-to-head tests on the Pi 5 consistently show llama.cpp to be a touch faster than Ollama (one published TinyLlama-1.1B comparison: 14.4 vs 13.8 tok/s) and lighter on RAM, at the cost of managing model files yourself. On an 8 GB Pi, the difference rarely matters; on a 4 GB device, it does.</p>
+<p>Two Pi-specific notes. First, if you need more headroom, zram swap compresses memory pages and postpones the OOM killer, though once weights actually swap to disk, performance is dead anyway. Second, the AI HAT+ 2 accelerator (Hailo-10H, 40 TOPS, released January 2026) can offload LLM inference from the CPU; it’s a $130 add-on with its own toolchain, and it’s beyond the scope here, but it’s worth knowing it exists if the CPU numbers above aren’t enough. Do not expect a model to run faster. What you get with the hat is only offloaded LLM inference from the CPU, not speed.</p>
+<blockquote class="blockquote">
+<p>A realistic project shape for the Pi: an offline home assistant. Whisper (small) for speech-to-text, Qwen3.5 0.8B or a 1B instruct model for intent parsing and replies, Piper for text-to-speech. All three fit simultaneously in 8 GB, and nothing leaves the room.</p>
+</blockquote>
+<p>Later in this book, <a href="../../raspi/llama_cpp/llama_cpp.html">From Ollama to llama.cpp</a> builds llama.cpp on the Pi 5 with the Arm-tuned flags and runs text, image, video, and audio models through its OpenAI-compatible server, and <a href="../../raspi/mtp/mtp.html">Multi-Token Prediction on the Pi 5</a> tunes it for the last bit of speed.</p>
+</section>
+<section id="field-notes-tuning-a-1b-model-on-the-pi-5" class="level3">
+<h3 class="anchored" data-anchor-id="field-notes-tuning-a-1b-model-on-the-pi-5">5.3 Field notes: tuning a 1B model on the Pi 5</h3>
+<p>A worked example worth studying is Winston Bandong’s optimization guide for LFM2.5-1.2B on a Pi 5 8 GB (linked below), the model behind a fully offline voice assistant. The model itself is an interesting pick. Liquid AI built LFM2.5 as a hybrid of gated convolution blocks and grouped-query attention rather than a standard transformer, which buys fast CPU decode (~239 tok/s on a desktop AMD CPU; 10–20 tok/s on the Pi) and a KV cache that grows more slowly at long context. The Thinking variant fits in ~900 MB and matches Qwen3-1.7B on reasoning benchmarks with 40% fewer parameters.</p>
+<p>His llama.cpp settings transfer to almost any 1B-class model on a Pi:</p>
+<ul>
+<li><strong>Q5_K_M, not Q4.</strong> Measurably better instruction following and structured output (tool-call formats) for ~130 MB extra. At 1B scale, those bits matter.</li>
+<li><strong>Cap the context at what you actually use.</strong> He runs a 128K-trained model at 65K (KV cache ≈ 1–2 GB on 8 GB); on a 4 GB board he’d drop to 16–32K. After quantization, context length is your biggest memory lever.</li>
+<li><strong><code>n_threads</code> = physical cores.</strong> 4 on a Pi 5; fewer is slower, more just adds scheduling overhead.</li>
+<li><strong>Always set stop tokens</strong> (<code>&lt;|im_end|&gt;</code> for ChatML models). Without them, small models hallucinate fake user turns and answer themselves.</li>
+<li><strong>Reset the KV cache when the system prompt changes; keep it between conversation turns.</strong></li>
+<li><strong>Stream everything.</strong> At 10–20 tok/s, the first word appearing in under a second beats staring at a blank screen for ten.</li>
+<li><strong>Low temperature (0.1) and tight top_p</strong> for tool routing and structured output; small models have less headroom for randomness than large ones.</li>
+</ul>
+<p>One caveat before you standardize on it: LFM models ship under Liquid AI’s own license rather than Apache or MIT, so check the terms for commercial deployments.</p>
+</section>
+</section>
+<section id="target-3-arduino-uno-q-4-gb" class="level2">
+<h2 class="anchored" data-anchor-id="target-3-arduino-uno-q-4-gb">6. Target 3: Arduino UNO Q (4 GB)</h2>
+<p><img src="./images/png/unoq.jpg" class="img-fluid"></p>
+<p>The UNO Q is a different animal: a “dual brain” board in the classic UNO form factor. One brain is a Qualcomm Dragonwing QRB2210 (quad Cortex-A53 @ 2.0 GHz) running Debian Linux from 4 GB RAM / 32 GB eMMC; the other is an STM32U585 microcontroller handling real-time I/O. The Linux side runs your language model; the MCU side blinks, senses, and actuates. Arduino’s App Lab environment ties the two together, and boards typically ship ready to use — you work on it via App Lab, SSH, or a USB-C monitor/keyboard setup.</p>
+<p>Set expectations first. The A53 is an efficiency core, but still behind the Pi 5’s A76, and 4 GB is shared with the whole OS. UNO Q experiments put a 0.8B model at roughly 5–6 tok/s — a “slow reader” pace. But the point of an LLM here isn’t speed; it’s that language understanding and hardware control live on the same $59 board with no network dependency. Think “summarize the last hour of sensor logs into one status sentence,” not “chatbot.”</p>
+<section id="what-fits-in-4-gb" class="level3">
+<h3 class="anchored" data-anchor-id="what-fits-in-4-gb">6.1 What fits in 4 GB</h3>
+<blockquote class="blockquote">
+<p>The UNO Q also ships in a 2 GB variant, and everything below assumes 4 GB. On the 2 GB board, Debian leaves so little headroom that even a 0.8B model is a squeeze; you are realistically limited to SmolLM2-360M and smaller, which is enough to prove the idea but not to build on. If you are buying a board for generative AI, buy the 4 GB one.</p>
+</blockquote>
+<p>Debian and its services take 1–1.5 GB, leaving roughly 2.5 GB. Applying the budget rule from section 2.4:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 56%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Quant</th>
+<th>RAM need</th>
+<th>On UNO Q</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SmolLM2-135M / 360M</td>
+<td>Q8_0</td>
+<td>0.2–0.5 GB</td>
+<td>comfortable, fast</td>
+</tr>
+<tr class="even">
+<td>Qwen3.5 0.8B</td>
+<td>Q8_0</td>
+<td>~1 GB</td>
+<td>comfortable; best quality-per-MB in its class</td>
+</tr>
+<tr class="odd">
+<td>Llama 3.2 1B / Gemma 3 1B</td>
+<td>Q4_K_M</td>
+<td>~1 GB</td>
+<td>works well</td>
+</tr>
+<tr class="even">
+<td>LFM2.5-1.2B</td>
+<td>Q5_K_M</td>
+<td>~1 GB</td>
+<td>works well; the lean KV cache helps if you need more context</td>
+</tr>
+<tr class="odd">
+<td>Qwen3.5 2B</td>
+<td>UD-Q4_K_XL</td>
+<td>~1.6–1.8 GB</td>
+<td>the practical ceiling — works, keep context short and the system lean</td>
+</tr>
+<tr class="even">
+<td>Standard 3B models</td>
+<td>Q4_K_M</td>
+<td>2+ GB</td>
+<td>marginal; expect OOM under load</td>
+</tr>
+</tbody>
+</table>
+<p>The 2B UD entry is worth dwelling on: this is exactly where Unsloth’s dynamic quantization earns its keep. A plain 3B Q4 doesn’t reliably fit next to Debian, but a 2B with UD-Q4_K_XL quality does — and it’s a meaningfully smarter model than anything in the 1B tier. Keep context at 512–1024 tokens regardless: on this board, KV-cache growth is real money.</p>
+</section>
+<section id="llama.cpp-on-the-uno-q-recommended-path" class="level3">
+<h3 class="anchored" data-anchor-id="llama.cpp-on-the-uno-q-recommended-path">6.2 llama.cpp on the UNO Q (recommended path)</h3>
+<p>SSH into the board and build as usual — expect 15–20 minutes on the A53:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install <span class="at">-y</span> git cmake build-essential</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/ggml-org/llama.cpp</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> llama.cpp</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-B</span> build <span class="kw">&amp;&amp;</span> <span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">--config</span> Release <span class="at">-j4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Pull a small model and test:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-cli</span> <span class="at">-hf</span> unsloth/Qwen3.5-0.8B-GGUF:Q8_0 <span class="dt">\</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">-t</span> 4 <span class="at">-c</span> 1024 <span class="at">-cnv</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>(Q8_0 is the right call at this size: the file is still under 1 GB, and sub-1B models suffer most from aggressive quantization. For the smarter option, swap in <code>unsloth/Qwen3.5-2B-GGUF:UD-Q4_K_XL</code> — and close everything else first.)</p>
+<p>Then make it a service your project can call:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-server</span> <span class="at">-m</span> qwen3.5-0.8b-q8_0.gguf <span class="dt">\</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">-t</span> 4 <span class="at">-c</span> 1024 <span class="at">--host</span> 127.0.0.1 <span class="at">--port</span> 8080</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Now the Python side of an App Lab sketch can send local data to <code>http://127.0.0.1:8080/v1/chat/completions</code> — same OpenAI-style API as everywhere else in this tutorial — and forward the result to the STM32 side. A concrete example loop: the MCU streams temperature and vibration readings; a Python script accumulates them; every 10 minutes it asks the model for a one-line plain-English status; the MCU scrolls that line on a display. Deterministic control stays on the microcontroller; the model is an occasional reasoning layer, which is exactly how Arduino’s own guidance frames it.</p>
+<div class="cell" data-fig-width="5.5" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+    subgraph MCU["STM32U585 (real-time)"]
+        SEN["sensors&lt;br&gt;temp, vibration, ..."] --&gt; SK["Arduino sketch"]
+        SK --&gt; ACT["display / actuators"]
+    end
+    subgraph MPU["QRB2210 (Linux)"]
+        PY["Python app&lt;br&gt;accumulates readings"] --&gt;|"POST /v1/chat/completions"| LS["llama-server :8080&lt;br&gt;Qwen3.5 0.8B Q8"]
+        LS --&gt;|"one-line status"| PY
+    end
+    SK -- "readings (bridge)" --&gt; PY
+    PY -- "summary text" --&gt; SK
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>If you’d rather work in Go, the <code>yzma</code> wrapper (<a href="https://projecthub.arduino.cc/marc-edgeimpulse/running-local-llms-and-vlms-on-the-arduino-uno-q-with-yzma-74e288">by Ron Evans</a>) rides on llama.cpp and has a documented UNO Q workflow using SmolLM2-135M — including vision models, via LLaVA-style VLMs.</p>
+<p>For complete UNO Q projects, see the companion book <a href="https://mjrovai.github.io/genai-uno-q/">Generative AI at the Edge</a>, which builds on this setup.</p>
+</section>
+<section id="ollama-on-the-uno-q-with-a-workaround" class="level3">
+<h3 class="anchored" data-anchor-id="ollama-on-the-uno-q-with-a-workaround">6.3 Ollama on the UNO Q (with a workaround)</h3>
+<p>The standard installer fails on this board: Ollama’s install script unpacks a multi-hundred-MB bundle into <code>/usr</code>, and the UNO Q’s root partition doesn’t have the space. The fix is to install the tarball onto the larger data partition and symlink it, then point model storage there too:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install location with space (adjust to your partition layout)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> mkdir <span class="at">-p</span> /home/arduino/ollama</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-L</span> https://ollama.com/download/ollama-linux-arm64.tgz <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sudo</span> tar <span class="at">-xz</span> <span class="at">-C</span> /home/arduino/ollama</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ln <span class="at">-s</span> /home/arduino/ollama/bin/ollama /usr/local/bin/ollama</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># keep models off the root partition as well</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">OLLAMA_MODELS</span><span class="op">=</span>/home/arduino/ollama/models</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> serve <span class="kw">&amp;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> run qwen3.5:0.8b</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Alessandro Tinivelli’s write-up “<a href="https://blog.tinivelli.com/installing-ollama-on-arduino-uno-q/">Installing Ollama on Arduino Uno Q</a>” (linked below) walks through this in detail, including systemd setup. Once running, you get the same registry convenience and API as on any other machine. It costs a few hundred MB more RAM than bare llama.cpp, which is why llama.cpp remains the recommendation when you’re pushing the 2B ceiling.</p>
+</section>
+<section id="lm-studio-on-the-uno-q" class="level3">
+<h3 class="anchored" data-anchor-id="lm-studio-on-the-uno-q">6.4 LM Studio on the UNO Q</h3>
+<p>No.&nbsp;There’s no build for this platform, and a GUI model manager is the wrong tool for a 4 GB embedded board anyway. Use LM Studio on your PC to <em>choose</em> the model, then deploy the same GGUF here with llama.cpp.</p>
+</section>
+</section>
+<section id="choosing-a-model-in-2026" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-a-model-in-2026">7. Choosing a model in 2026</h2>
+<p>The small-model field moves fast; this table is a snapshot of the reliable citizens as of mid-2026, all available as GGUF:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 54%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Params</th>
+<th>Sweet spot</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SmolLM2-135M/360M</td>
+<td>0.1–0.4 B</td>
+<td>UNO Q, experiments</td>
+<td>fully open (data + recipes), from Hugging Face</td>
+</tr>
+<tr class="even">
+<td>Qwen3.5 0.8B</td>
+<td>0.8 B</td>
+<td>UNO Q, Pi</td>
+<td>multilingual (201 languages), thinking + non-thinking modes; run at Q8_0</td>
+</tr>
+<tr class="odd">
+<td>Llama 3.2 1B</td>
+<td>1.2 B</td>
+<td>UNO Q, Pi chat</td>
+<td>most-downloaded small model; permissive license</td>
+</tr>
+<tr class="even">
+<td>LFM2.5-1.2B</td>
+<td>1.2 B</td>
+<td>Pi, UNO Q</td>
+<td>hybrid conv+GQA, very fast CPU decode; Thinking variant in ~900 MB; check LFM license for commercial use</td>
+</tr>
+<tr class="odd">
+<td>Qwen3.5 2B</td>
+<td>2 B</td>
+<td>UNO Q ceiling, Pi</td>
+<td>the UD-Q4_K_XL file is the edge sweet spot right now</td>
+</tr>
+<tr class="even">
+<td>Gemma 4 E2B (QAT)</td>
+<td>~2 B effective</td>
+<td>Pi</td>
+<td>multimodal, ~3 GB with QAT; a mobile-format variant fits in ~1 GB</td>
+</tr>
+<tr class="odd">
+<td>Llama 3.2 3B</td>
+<td>3 B</td>
+<td>Pi (batch), 8 GB PCs</td>
+<td>solid general tier</td>
+</tr>
+<tr class="even">
+<td>Phi-4-mini</td>
+<td>3.8 B</td>
+<td>PC, reasoning/math</td>
+<td>leads its class on GSM8K</td>
+</tr>
+<tr class="odd">
+<td>Gemma 4 E4B (QAT)</td>
+<td>~4 B effective</td>
+<td>PC, 8 GB machines</td>
+<td>vision input, ~5 GB with QAT</td>
+</tr>
+<tr class="even">
+<td>Qwen3.5 4B / 9B</td>
+<td>4–9 B</td>
+<td>PC</td>
+<td>256K context; the 9B is a strong generalist</td>
+</tr>
+<tr class="odd">
+<td>Ornith-1.0-9B</td>
+<td>9 B</td>
+<td>PC, coding/agents</td>
+<td>MIT license, reasoning model, SOTA open coder at this size; Q4_K_M ≈ 5.5 GB</td>
+</tr>
+<tr class="even">
+<td>Gemma 4 12B (QAT)</td>
+<td>12 B</td>
+<td>16 GB PCs</td>
+<td>~7 GB with QAT; the “feels like a real assistant” tier</td>
+</tr>
+</tbody>
+</table>
+<p>Three selection rules that hold across all of them. Match the model to the task, not to the maximum your RAM allows — a 0.8B model that answers in one second often beats a 2B model that answers in ten. Always use the instruct/chat variant, not the base model, unless you’re doing raw completion. And test with <em>your</em> prompts: leaderboard rank and behavior on your actual task are correlated, not identical.</p>
+</section>
+<section id="measuring-and-a-checklist" class="level2">
+<h2 class="anchored" data-anchor-id="measuring-and-a-checklist">8. Measuring and a checklist</h2>
+<p>Whatever the platform, measure before you commit. With Ollama, <code>--verbose</code> prints eval rates per reply. With llama.cpp, <code>llama-bench</code> gives clean prompt-processing and generation numbers. Watch memory in a second terminal with <code>htop</code>; if you see swap activity during inference, drop one model size or one quantization level.</p>
+<p>The whole tutorial as a checklist:</p>
+<ol type="1">
+<li>Budget RAM: (total − OS) × 0.7 = maximum model+cache size.</li>
+<li>Pick the smallest model class that plausibly does the job; get the instruct variant. Defaults: Q8_0 for ≤1B models, UD-Q4_K_XL where available, QAT files for Gemma 4, Q4_K_M otherwise.</li>
+<li>PC → start with LM Studio or Ollama. Pi → Ollama for convenience, llama.cpp for the last 10%. UNO Q → llama.cpp (or Ollama with the partition workaround).</li>
+<li>Verify tokens/s against your use case: ≥8 tok/s for chat, anything for batch. If it’s a reasoning model, account for the <code>&lt;think&gt;</code> tokens too.</li>
+<li>Build your app against the OpenAI-compatible endpoint so you can swap runtimes and hardware later without touching application code.</li>
+</ol>
+<p>The same checklist as a decision flow:</p>
+<div class="cell" data-fig-width="6" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    START{"Where will it run?"} --&gt;|PC| PCQ{"Exploring models,&lt;br&gt;or building an app?"}
+    PCQ --&gt;|exploring| LMS["LM Studio"]
+    PCQ --&gt;|building| OLPC["Ollama"]
+    START --&gt;|"Raspberry Pi 5&lt;br&gt;(8/16 GB)"| PI["Ollama first;&lt;br&gt;llama.cpp for the last 10%"]
+    START --&gt;|"UNO Q (4 GB)"| UQ["llama.cpp&lt;br&gt;(or Ollama + partition workaround)"]
+    LMS &amp; OLPC --&gt; MPC["model: 4–12B Q4 tier&lt;br&gt;(Gemma4 E4B/12B QAT, Qwen3.5 4B/9B, Ornith 9B)"]
+    PI --&gt; MPI["model: 0.8–3B tier&lt;br&gt;(Qwen3.5 0.8B Q8, LFM2.5-1.2B Q5, Gemma4 E2B QAT)"]
+    UQ --&gt; MUQ["model: ≤2B, short context&lt;br&gt;(Qwen3.5 0.8B Q8 default, 2B UD ceiling)"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>The pattern behind all three targets is the same one driving edge AI generally: the model comes to the data, not the other way around. Once a $59 board with an ARM core can turn sensor logs into sentences offline, “do I really need the cloud for this?” becomes a question worth asking about every language task in your project.</p>
+</section>
+<section id="quick-comparison-summary" class="level2">
+<h2 class="anchored" data-anchor-id="quick-comparison-summary">Quick Comparison Summary</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 48%">
+<col style="width: 12%">
+<col style="width: 19%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Criterion</th>
+<th>Ollama</th>
+<th>LM Studio</th>
+<th>llama.cpp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ease of Use</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr class="even">
+<td>Performance</td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr class="odd">
+<td>Control &amp; Customization</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr class="even">
+<td>Installation Simplicity</td>
+<td>⭐⭐⭐⭐⭐</td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr class="odd">
+<td>Production/Serving</td>
+<td>⭐⭐⭐⭐</td>
+<td>⭐⭐</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr class="even">
+<td><strong>UNO Q</strong></td>
+<td>⭐⭐</td>
+<td>❌</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr class="odd">
+<td><strong>Raspberry Pi</strong></td>
+<td>⭐⭐⭐</td>
+<td>❌</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+</tbody>
+</table>
+<section id="uno-q-breakdown" class="level3">
+<h3 class="anchored" data-anchor-id="uno-q-breakdown">UNO Q Breakdown</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 16%">
+<col style="width: 68%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>Fits Embedded?</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Ollama</strong></td>
+<td>⚠️ Limited</td>
+<td>Works on ARM, but the runtime + model management overhead is heavy for constrained devices. No fine-grained memory control. Workaround needed for installation.</td>
+</tr>
+<tr class="even">
+<td><strong>LM Studio</strong></td>
+<td>❌ Not viable</td>
+<td>No build for this board, and a desktop model manager is the wrong tool for a 4 GB embedded system.</td>
+</tr>
+<tr class="odd">
+<td><strong>llama.cpp</strong></td>
+<td>✅ Excellent</td>
+<td>Full control over context size, quantization, and memory mapping. Can strip to &lt;100MB total with custom builds.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="raspberry-pi-breakdown" class="level3">
+<h3 class="anchored" data-anchor-id="raspberry-pi-breakdown">Raspberry Pi Breakdown</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 18%">
+<col style="width: 66%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>Fits RPi?</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Ollama</strong></td>
+<td>✅ Works (RPi 4/5)</td>
+<td>Official ARM64 support and a one-line install script, but heavier RAM usage and less control over memory limits. Best for RPi 4GB+.</td>
+</tr>
+<tr class="even">
+<td><strong>LM Studio</strong></td>
+<td>❌ No</td>
+<td>Desktop-oriented; its ARM Linux builds target workstations like the DGX Spark, not a Pi.</td>
+</tr>
+<tr class="odd">
+<td><strong>llama.cpp</strong></td>
+<td>✅ Excellent</td>
+<td>Pre-built ARM binaries available. Full control over context window and memory. Best for constrained environments.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bottom-line" class="level3">
+<h3 class="anchored" data-anchor-id="bottom-line">Bottom Line</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Use Case</th>
+<th>Best Pick</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Quick prototyping / getting started (PC)</td>
+<td><strong>Ollama</strong></td>
+</tr>
+<tr class="even">
+<td>Visual testing / non-developers (PC)</td>
+<td><strong>LM Studio</strong></td>
+</tr>
+<tr class="odd">
+<td>Production servers / CI/CD pipelines</td>
+<td><strong>llama.cpp</strong></td>
+</tr>
+<tr class="even">
+<td><strong>UNO Q</strong></td>
+<td><strong>llama.cpp</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Raspberry Pi 4GB+ (convenience)</strong></td>
+<td><strong>Ollama / llama.cpp</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Raspberry Pi low-RAM / edge deploy</strong></td>
+<td><strong>llama.cpp</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="sources-and-further-reading" class="level2">
+<h2 class="anchored" data-anchor-id="sources-and-further-reading">Sources and further reading</h2>
+<p><strong>Tools</strong></p>
+<ul>
+<li><a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a></li>
+<li><a href="https://ollama.com">Ollama</a></li>
+<li><a href="https://lmstudio.ai/docs/app">LM Studio docs</a> and <a href="https://lmstudio.ai/docs/developer/core/headless">LM Studio headless mode</a></li>
+</ul>
+<p><strong>Raspberry Pi</strong></p>
+<ul>
+<li><a href="https://tinyweights.dev/posts/run-llms-raspberry-pi-5/">Running LLMs on Raspberry Pi 5, with benchmarks</a></li>
+<li><a href="https://www.stratosphereips.org/blog/2025/6/5/how-well-do-llms-perform-on-a-raspberry-pi-5">How well do LLMs perform on a Raspberry Pi 5? (Stratosphere Lab)</a></li>
+<li><a href="https://medium.com/@omkar121212/ollama-vs-llama-cpp-on-raspberry-pi-5-8e7fbeb310de">Ollama vs llama.cpp on Raspberry Pi 5</a></li>
+<li><a href="https://dodatathings.dev/blog/llama-cpp-on-raspberry-pi-5-a-practical-optimization-guide">LFM2.5-1.2B on Raspberry Pi 5: llama.cpp optimization guide</a></li>
+</ul>
+<p><strong>Arduino UNO Q</strong></p>
+<ul>
+<li><a href="https://docs.arduino.cc/hardware/uno-q/">UNO Q hardware documentation</a></li>
+<li><a href="https://blog.arduino.cc/2026/06/18/running-local-llms-on-the-arduino-uno-q-board-a-practical-guide/">Running local LLMs on the Arduino UNO Q: a practical guide (Arduino blog, June 2026)</a></li>
+<li><a href="https://blog.tinivelli.com/installing-ollama-on-arduino-uno-q/">Installing Ollama on Arduino Uno Q (partition workaround)</a></li>
+<li><a href="https://projecthub.arduino.cc/marc-edgeimpulse/running-local-llms-and-vlms-on-the-arduino-uno-q-with-yzma-74e288">Local LLMs and VLMs on the UNO Q with yzma (Project Hub)</a></li>
+<li><a href="https://mjrovai.github.io/genai-uno-q/">Generative AI at the Edge: the UNO Q companion book</a></li>
+<li><a href="https://github.com/Mjrovai/ARDUINO-UNO-Q">Arduino UNO Q hands-on tutorials (source repository)</a></li>
+</ul>
+<p><strong>Models</strong></p>
+<ul>
+<li><a href="https://unsloth.ai/docs/models/qwen3.5">Qwen3.5 — how to run locally (Unsloth docs, incl.&nbsp;UD quants)</a></li>
+<li><a href="https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF">Qwen3.5 0.8B GGUF</a></li>
+<li><a href="https://blog.google/innovation-and-ai/technology/developers-tools/quantization-aware-training-gemma-4/">Gemma 4 QAT announcement (Google)</a></li>
+<li><a href="https://huggingface.co/google/gemma-4-E2B-it-qat-q4_0-gguf">Gemma 4 QAT GGUFs</a> and <a href="https://unsloth.ai/docs/models/gemma-4/qat">unsloth</a></li>
+<li><a href="https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B">Ornith-1.0-9B</a> and <a href="https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF">GGUF</a></li>
+<li><a href="https://www.liquid.ai/blog/introducing-lfm2-5-the-next-generation-of-on-device-ai">LFM2.5 announcement (Liquid AI)</a> and the <a href="https://www.liquid.ai/blog/lfm2-5-1-2b-thinking-on-device-reasoning-under-1gb">Thinking variant</a></li>
+<li><a href="https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct">LFM2.5-1.2B on Hugging Face</a> and the (<a href="https://huggingface.co/unsloth/LFM2.5-1.2B-Thinking-GGUF">GGUF</a>)</li>
+<li><a href="https://tinyweights.dev/posts/best-small-language-models-2026/">Best small language models in 2026, practical comparison</a></li>
+<li><a href="https://huggingface.co/HuggingFaceTB">SmolLM2 GGUF files</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/kd_intro/kd_intro.html" class="pagination-link" aria-label="Knowledge Distillation in Practice">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Knowledge Distillation in Practice</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/llm/slm_intro.html" class="pagination-link" aria-label="Small Language Models (SLM)">
+        <span class="nav-page-text">Small Language Models (SLM)</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

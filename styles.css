@@ -80,3 +80,17 @@
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
     
+
+/* Part headings in the sidebar. These used to be styled with an inline
+   <div class="part"> in _quarto.yml, but raw HTML in a part title leaks
+   into the PDF and EPUB as a stray "#" plus the title. Style the element
+   Quarto emits instead. */
+.sidebar-item.sidebar-item-section > .sidebar-item-text .menu-text {
+  display: inline-block;
+  background-color: #D8C3A5;
+  color: #3B2E2A;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-weight: oblique;
+  margin-bottom: 10px;
+}

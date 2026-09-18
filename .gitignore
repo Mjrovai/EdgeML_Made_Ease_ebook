@@ -1,0 +1,4 @@
+# The PDF ships as a GitHub Release asset, not in the repo.
+*.pdf
+*.epub
+.DS_Store

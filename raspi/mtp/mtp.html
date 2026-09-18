@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Multi-Token Prediction on the Raspberry Pi 5 – Edge AI Engineering</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/llama_cpp/llama_cpp.html" rel="prev">
+<link href="../../images/unifei-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-daec65ff3ba034f51daec66ecad3ce27.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/Mjrovai/EdgeML_Made_Ease_ebook/releases/latest/download/Edge-AI-Engineering.pdf"> <i class="bi bi-file-earmark-pdf" role="img">
+</i> 
+<span class="menu-text">Download PDF</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/mtp/mtp.html">Multi-Token Prediction on the Raspberry Pi 5</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Fixed Function AI (Reactive)</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/cv_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Computer Vision Applications with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting Objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Generative AI (Proactive)</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/rnn-verne/rnn-verne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text Generation with RNNs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/local_inference/local_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLMs at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_opt_tech.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLM: Basic Optimization Techniques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/audio_pipeline/audio_pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Audio and Vision AI Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/litert-lm/litert-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llama_cpp/llama_cpp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">From Ollama to llama.cpp</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/mtp/mtp.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Multi-Token Prediction on the Raspberry Pi 5</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Weekly Labs</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">References &amp; Author</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#which-model" id="toc-which-model" class="nav-link" data-scroll-target="#which-model">1. Which model</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">2. Setup</a>
+  <ul>
+  <li><a href="#build-llama.cpp" id="toc-build-llama.cpp" class="nav-link" data-scroll-target="#build-llama.cpp">Build llama.cpp</a></li>
+  <li><a href="#thermals" id="toc-thermals" class="nav-link" data-scroll-target="#thermals">Thermals</a></li>
+  <li><a href="#sd-card-or-ssd" id="toc-sd-card-or-ssd" class="nav-link" data-scroll-target="#sd-card-or-ssd">SD card or SSD</a></li>
+  </ul></li>
+  <li><a href="#gemma-4-e2b-the-fast-one" id="toc-gemma-4-e2b-the-fast-one" class="nav-link" data-scroll-target="#gemma-4-e2b-the-fast-one">3. Gemma 4 E2B — the fast one</a>
+  <ul>
+  <li><a href="#download" id="toc-download" class="nav-link" data-scroll-target="#download">Download</a></li>
+  <li><a href="#run-it" id="toc-run-it" class="nav-link" data-scroll-target="#run-it">Run it</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#reading-acceptance" id="toc-reading-acceptance" class="nav-link" data-scroll-target="#reading-acceptance">Reading acceptance</a></li>
+  <li><a href="#mtp-is-lossless-verified" id="toc-mtp-is-lossless-verified" class="nav-link" data-scroll-target="#mtp-is-lossless-verified">MTP is lossless — verified</a></li>
+  <li><a href="#vision" id="toc-vision" class="nav-link" data-scroll-target="#vision">Vision</a></li>
+  </ul></li>
+  <li><a href="#qwen3.5-4b-the-capable-one" id="toc-qwen3.5-4b-the-capable-one" class="nav-link" data-scroll-target="#qwen3.5-4b-the-capable-one">4. Qwen3.5 4B — the capable one</a>
+  <ul>
+  <li><a href="#download-1" id="toc-download-1" class="nav-link" data-scroll-target="#download-1">Download</a></li>
+  <li><a href="#run-it-1" id="toc-run-it-1" class="nav-link" data-scroll-target="#run-it-1">Run it</a></li>
+  <li><a href="#results-1" id="toc-results-1" class="nav-link" data-scroll-target="#results-1">Results</a></li>
+  <li><a href="#the-architecture-is-not-a-plain-transformer" id="toc-the-architecture-is-not-a-plain-transformer" class="nav-link" data-scroll-target="#the-architecture-is-not-a-plain-transformer">The architecture is not a plain transformer</a></li>
+  <li><a href="#context-depth" id="toc-context-depth" class="nav-link" data-scroll-target="#context-depth">Context depth</a></li>
+  <li><a href="#not-yet-supported-with-mtp" id="toc-not-yet-supported-with-mtp" class="nav-link" data-scroll-target="#not-yet-supported-with-mtp">Not yet supported with MTP</a></li>
+  </ul></li>
+  <li><a href="#three-rules-that-came-out-of-both-models" id="toc-three-rules-that-came-out-of-both-models" class="nav-link" data-scroll-target="#three-rules-that-came-out-of-both-models">5. Three rules that came out of both models</a>
+  <ul>
+  <li><a href="#rule-1-tune-the-verify-batch-not-the-draft-depth" id="toc-rule-1-tune-the-verify-batch-not-the-draft-depth" class="nav-link" data-scroll-target="#rule-1-tune-the-verify-batch-not-the-draft-depth">Rule 1 — tune the verify batch, not the draft depth</a></li>
+  <li><a href="#rule-2-measure-threads-at-the-batch-width-youll-deploy-at" id="toc-rule-2-measure-threads-at-the-batch-width-youll-deploy-at" class="nav-link" data-scroll-target="#rule-2-measure-threads-at-the-batch-width-youll-deploy-at">Rule 2 — measure threads at the batch width you’ll deploy at</a></li>
+  <li><a href="#rule-3-the-interface-is-not-a-benchmark" id="toc-rule-3-the-interface-is-not-a-benchmark" class="nav-link" data-scroll-target="#rule-3-the-interface-is-not-a-benchmark">Rule 3 — the interface is not a benchmark</a></li>
+  </ul></li>
+  <li><a href="#choosing-between-them" id="toc-choosing-between-them" class="nav-link" data-scroll-target="#choosing-between-them">6. Choosing between them</a>
+  <ul>
+  <li><a href="#a-measured-ceiling" id="toc-a-measured-ceiling" class="nav-link" data-scroll-target="#a-measured-ceiling">A measured ceiling</a></li>
+  </ul></li>
+  <li><a href="#how-this-was-measured" id="toc-how-this-was-measured" class="nav-link" data-scroll-target="#how-this-was-measured">7. How this was measured</a></li>
+  <li><a href="#what-to-take-away" id="toc-what-to-take-away" class="nav-link" data-scroll-target="#what-to-take-away">8. What to take away</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  <li><a href="#appendix-a-reproducing-the-headline-numbers" id="toc-appendix-a-reproducing-the-headline-numbers" class="nav-link" data-scroll-target="#appendix-a-reproducing-the-headline-numbers">Appendix A: reproducing the headline numbers</a></li>
+  <li><a href="#appendix-b-whats-still-open" id="toc-appendix-b-whats-still-open" class="nav-link" data-scroll-target="#appendix-b-whats-still-open">Appendix B: what’s still open</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Multi-Token Prediction on the Raspberry Pi 5</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>Running Gemma 4 E2B and Qwen3.5 4B with MTP</strong></p>
+<p><img src="./images/jpeg/cover.jpg" class="img-fluid"></p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>An 8 GB Raspberry Pi 5 will run a modern small language model offline, with no cloud call and no GPU. It will not run it quickly. The question this chapter answers is how close you can get to the hardware’s limit, and what you give up at each setting.</p>
+<p>Two models are worth your time on this board. <strong>Gemma 4 E2B</strong> is the fast one — around 13 tokens per second (MTP, vision and sound) once tuned. <strong>Qwen3.5 4B</strong> is the capable one, scoring more than twice as high on the Artificial Analysis index, and it runs at about 3 (no MTP, vision) or 5 (with MTP, no vision). Everything else in the current generation either doesn’t fit in 8 GB or decodes slowly enough that you close the terminal.</p>
+<p>Both ship with <strong>multi-token prediction</strong> (MTP): a small purpose-trained head that proposes the next few tokens so the base model can verify several at once instead of generating them one at a time. On a GPU this reliably buys 1.4× to 2×. <strong>On a Pi it buys about 1.5×</strong> — but only at one narrow setting, and the obvious knobs point the wrong way.</p>
+<p>The measurements matter more than the numbers. A Pi throttles, its chat interfaces report throughput that isn’t comparable across runs, and a single speculative-decoding measurement is far noisier than you’d expect. The method here transfers to any edge inference work you do next.</p>
+<p><strong>Hardware:</strong> Raspberry Pi 5 (8 GB), active cooler, Raspberry Pi OS Trixie 64-bit, llama.cpp build 10073 (<code>91d2fc387</code>).</p>
+<blockquote class="blockquote">
+<p>Every number below was measured on that setup, with repeats. Re-measure on yours — results move with the model, the thread count, and the llama.cpp build.</p>
+</blockquote>
+<hr>
+</section>
+<section id="which-model" class="level2">
+<h2 class="anchored" data-anchor-id="which-model">1. Which model</h2>
+<p>From the <a href="https://artificialanalysis.ai/leaderboards/models">Artificial Analysis leaderboard</a>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Creator</th>
+<th>Total params</th>
+<th>Active</th>
+<th>Context</th>
+<th>AAII</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gemma 4 12B</td>
+<td>Google</td>
+<td>12B</td>
+<td>12B</td>
+<td>256k</td>
+<td>22</td>
+</tr>
+<tr class="even">
+<td>Qwen3.5 9B</td>
+<td>Alibaba</td>
+<td>9B</td>
+<td>9B</td>
+<td>262k</td>
+<td>21</td>
+</tr>
+<tr class="odd">
+<td><strong>Qwen3.5 4B</strong></td>
+<td><strong>Alibaba</strong></td>
+<td><strong>4B</strong></td>
+<td><strong>4B</strong></td>
+<td><strong>262k</strong></td>
+<td><strong>20</strong></td>
+</tr>
+<tr class="even">
+<td>Gemma 4 E4B</td>
+<td>Google</td>
+<td>~8B (E4B)</td>
+<td>~4B eff.</td>
+<td>128k</td>
+<td>12</td>
+</tr>
+<tr class="odd">
+<td><strong>Gemma 4 E2B</strong></td>
+<td><strong>Google</strong></td>
+<td><strong>~5B (E2B)</strong></td>
+<td><strong>~2B eff.</strong></td>
+<td><strong>128k</strong></td>
+<td><strong>9</strong></td>
+</tr>
+<tr class="even">
+<td>Qwen3.5 2B</td>
+<td>Alibaba</td>
+<td>2B</td>
+<td>2B</td>
+<td>262k</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>Qwen3.5 0.8B</td>
+<td>Alibaba</td>
+<td>0.8B</td>
+<td>0.8B</td>
+<td>262k</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>The 12B and the 9B load on a 16 GB Pi and are unusable in practice. Gemma 4 E4B won’t fit in 8 GB at all. That leaves the two in bold, and here is what they actually do on this board:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Gemma 4 E2B</th>
+<th>Qwen3.5 4B</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AAII</td>
+<td>9</td>
+<td>20</td>
+</tr>
+<tr class="even">
+<td>File size (Q4_K_XL)</td>
+<td>2.43 GiB</td>
+<td>2.78 GiB</td>
+</tr>
+<tr class="odd">
+<td>Baseline</td>
+<td>9.03 tok/s</td>
+<td>3.12 tok/s</td>
+</tr>
+<tr class="even">
+<td>Tuned, with MTP</td>
+<td><strong>13.06 tok/s</strong></td>
+<td><strong>4.83 tok/s</strong></td>
+</tr>
+<tr class="odd">
+<td>MTP gain</td>
+<td>1.45×</td>
+<td>1.55×</td>
+</tr>
+<tr class="even">
+<td>Best config</td>
+<td>n=2, 3 threads</td>
+<td>n=3, 4 threads</td>
+</tr>
+<tr class="odd">
+<td>40-token tool call</td>
+<td>3.1 s</td>
+<td>8.3 s</td>
+</tr>
+</tbody>
+</table>
+<p><img src="./images/svg/fig6-choosing.svg" class="img-fluid"></p>
+<p>E2B is a model for narrow tasks — classify this reading, fill this schema, answer from this retrieved paragraph. Ask it to reason across a chain, and it produces something confident and wrong. Qwen3.5 4B holds a short chain of reasoning and picks tools more reliably. Section 6 has the decision in detail; if you want one sentence, it’s that the speed gap matters less than it looks once your workload stops being interactive.</p>
+<hr>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">2. Setup</h2>
+<section id="build-llama.cpp" class="level3">
+<h3 class="anchored" data-anchor-id="build-llama.cpp">Build llama.cpp</h3>
+<p>The <a href="../../raspi/llama_cpp/llama_cpp.html">From Ollama to llama.cpp</a> chapter walks through the full build. Already installed? Update:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/llama.cpp <span class="kw">&amp;&amp;</span> <span class="fu">git</span> pull</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-B</span> build <span class="at">-DCMAKE_BUILD_TYPE</span><span class="op">=</span>Release <span class="at">-DGGML_NATIVE</span><span class="op">=</span>ON</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>From scratch:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> build-essential cmake git libcurl4-openssl-dev</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/ggml-org/llama.cpp</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> llama.cpp</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-B</span> build <span class="at">-DCMAKE_BUILD_TYPE</span><span class="op">=</span>Release <span class="at">-DGGML_NATIVE</span><span class="op">=</span>ON</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> build <span class="at">-j4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>No CUDA, no Metal. The Pi 5’s VideoCore VII has a Vulkan backend in llama.cpp, but for LLM decode it has been slower than the CPU path in every report I’ve seen. <code>--n-gpu-layers 0</code> is the right setting, not a limitation you’re working around.</p>
+<p><code>-DGGML_NATIVE=ON</code> targets the Cortex-A76 directly and picks up NEON, dotprod, and fp16 arithmetic. The A76 has no SVE and no SME, so the log lines you’d see on Apple Silicon won’t appear here.</p>
+<p>Build takes 15–25 minutes. Use <code>-j4</code>, not <code>-j$(nproc)</code> with anything higher — four cores and 8 GB will start swapping on the heavier translation units.</p>
+<p>Check the build number:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/llama.cpp/build/bin/llama-server</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>MTP support for these architectures landed around build 10000. Anything near 10073 is current enough.</p>
+</section>
+<section id="thermals" class="level3">
+<h3 class="anchored" data-anchor-id="thermals">Thermals</h3>
+<p>A Pi 5 under sustained inference hits the throttle point without active cooling, and it does it silently — throughput decays over a couple of minutes with no error. Benchmark without watching temperature, and your numbers depend on how long ago you started.</p>
+<p>In a second SSH session:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">watch</span> <span class="at">-n</span> 2 <span class="st">'vcgencmd measure_temp; vcgencmd get_throttled'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Anything other than <code>0x0</code> from <code>get_throttled</code> means the run is invalid. Let it cool and start over.</p>
+<p>Before any measurement:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cpufreq-set <span class="at">-g</span> performance <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"using default governor"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">free</span> <span class="at">-h</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">swapon</span> <span class="at">--show</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If swap is being touched during inference, you’re measuring storage latency. Raspberry Pi OS defaults to zram — compressed RAM rather than disk — so the cost is CPU cycles spent compressing, competing with your inference threads. Both models fit in RAM on an 8 GB board. Check rather than assume.</p>
+</section>
+<section id="sd-card-or-ssd" class="level3">
+<h3 class="anchored" data-anchor-id="sd-card-or-ssd">SD card or SSD</h3>
+<p>llama.cpp mmaps the model, so weights land in page cache and stay there. Storage speed affects <strong>load time</strong>, not decode throughput. A 3 GB model off NVMe takes a few seconds, off an A2 card a minute or more, and the same tok/s afterward.</p>
+<p>That holds as long as the weights stay cached. Open a browser mid-benchmark, and the kernel starts evicting cached weight pages, which then get re-read during inference. On NVMe you barely notice; on a card, throughput collapses in a way that looks like random slowness. <strong>Run headless</strong>, and if you’re on a card, watch the <code>buff/cache</code> figure in <code>free -h</code> during a sweep.</p>
+<hr>
+</section>
+</section>
+<section id="gemma-4-e2b-the-fast-one" class="level2">
+<h2 class="anchored" data-anchor-id="gemma-4-e2b-the-fast-one">3. Gemma 4 E2B — the fast one</h2>
+<section id="download" class="level3">
+<h3 class="anchored" data-anchor-id="download">Download</h3>
+<p>Three files: the base model, the MTP head (59 MB), and the multimodal projector if you want vision.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-U</span> <span class="st">"huggingface_hub[cli]"</span> <span class="at">--break-system-packages</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">hf</span> download unsloth/gemma-4-E2B-it-qat-GGUF <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--local-dir</span> ~/models/gemma-4-E2B-qat-it-GGUF <span class="dt">\</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--include</span> <span class="st">"*mmproj-F16*"</span> <span class="at">--include</span> <span class="st">"mtp-*"</span> <span class="at">--include</span> <span class="st">"*UD-Q4_K_XL*"</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> ~/models/gemma-4-E2B-qat-it-GGUF</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <strong>QAT</strong> variant is quantization-aware trained, so 4-bit costs less accuracy than post-training quantization would. <strong>UD-Q4_K_XL</strong> is Unsloth’s dynamic quantization — better accuracy preservation than plain Q4_0, and sometimes smaller.</p>
+<p>You need at least the base GGUF and the <code>mtp-</code> prefixed file. If the MTP file isn’t there, check for a subfolder.</p>
+</section>
+<section id="run-it" class="level3">
+<h3 class="anchored" data-anchor-id="run-it">Run it</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">G</span><span class="op">=</span>~/models/gemma-4-E2B-qat-it-GGUF</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">~/llama.cpp/build/bin/llama-server</span> <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model</span>       <span class="va">$G</span>/gemma-4-E2B-it-qat-UD-Q4_K_XL.gguf <span class="dt">\</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-draft</span> <span class="va">$G</span>/mtp-gemma-4-E2B-it.gguf <span class="dt">\</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--spec-type</span> draft-mtp <span class="at">--spec-draft-n-max</span> 2 <span class="dt">\</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--threads</span> 3 <span class="at">--ctx-size</span> 8192 <span class="at">--parallel</span> 1 <span class="dt">\</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flash-attn</span> on <span class="at">--n-gpu-layers</span> 0 <span class="dt">\</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--temp</span> 1.0 <span class="at">--top-p</span> 0.95 <span class="at">--top-k</span> 64 <span class="dt">\</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--reasoning</span> off <span class="at">--reasoning-budget</span> 0 <span class="dt">\</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--tools</span> all <span class="at">--host</span> 0.0.0.0 <span class="at">--port</span> 8080 <span class="dt">\</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--alias</span> Gemma-4-E2B-n2-t3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>--threads 3</code>. Not 2, and not 4. Section 5 explains why, and why the answer is different without MTP.</p>
+<p><code>--spec-draft-n-max 2</code>. Draft depth 2, giving a verify batch of 3. n=3 is within 2%; both sit at the top of a plateau, and n=4 and beyond are <em>worse than not using MTP at all</em>.</p>
+<p><code>--tools all</code> enables function calling. Without it the <code>tools</code> array in a request is silently dropped.</p>
+<p><code>--host 0.0.0.0</code> so you can reach the WebUI from a laptop. llama-server’s own startup warning is worth heeding once tools are on: don’t expose it past a trusted LAN.</p>
+<p>Open <code>http://&lt;pi-address&gt;:8080</code>, and turn on <em>Show message generation statistics</em> under Settings.</p>
+</section>
+<section id="results" class="level3">
+<h3 class="anchored" data-anchor-id="results">Results</h3>
+<p>Draft depth <code>n</code> produces a verify batch of <code>n+1</code> — the drafts plus the model’s own next token. Three threads, three runs per row:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>n</th>
+<th>batch</th>
+<th>tok/s</th>
+<th>vs baseline</th>
+<th>mean accepted</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0 (no MTP)</td>
+<td>1</td>
+<td>9.03</td>
+<td>—</td>
+<td>1.00</td>
+</tr>
+<tr class="even">
+<td><strong>2</strong></td>
+<td>3</td>
+<td><strong>13.06</strong></td>
+<td><strong>1.45×</strong></td>
+<td>1.84</td>
+</tr>
+<tr class="odd">
+<td><strong>3</strong></td>
+<td>4</td>
+<td><strong>12.90</strong></td>
+<td>1.43×</td>
+<td>2.04</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>5</td>
+<td>~7.9</td>
+<td>0.87×</td>
+<td>2.22</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>8</td>
+<td>~7.4</td>
+<td>0.82×</td>
+<td>2.29</td>
+</tr>
+</tbody>
+</table>
+<p><img src="./images/svg/fig1-how-mtp-works.svg" class="img-fluid"></p>
+<p><strong>A plateau and a cliff.</strong> n=2 and n=3 sit together at the top. n=4 falls off a ledge and never recovers. The most useful result here is the negative one: past a threshold, more speculation is actively harmful.</p>
+<p>n=3 accepts 11% more tokens per cycle than n=2 and costs 12% more to run, which is why they tie. Use either. n=2 is marginally ahead, and one draft pass cheaper.</p>
+</section>
+<section id="reading-acceptance" class="level3">
+<h3 class="anchored" data-anchor-id="reading-acceptance">Reading acceptance</h3>
+<p>At <code>--log-verbosity 4</code>, llama.cpp prints the per-position breakdown:</p>
+<pre><code>draft acceptance = 0.37, mean len = 2.10
+     acc per pos = (0.68, 0.49, 0.24)</code></pre>
+<p>Position 1 is accepted 68% of the time, position 2 49%, position 3 24%. Mean accepted length is just the sum plus one: 1 + 0.68 + 0.49 + 0.24 ≈ 2.4.</p>
+<p>That identity is the clearest teaching artifact in the whole exercise. Each extra draft position contributes its own acceptance rate, and those rates decay fast — roughly halving each step — while the cost of the wider batch does not decay at all. You pay for positions that mostly get thrown away.</p>
+<p><img src="./images/svg/fig3-acceptance-by-position.svg" class="img-fluid"></p>
+</section>
+<section id="mtp-is-lossless-verified" class="level3">
+<h3 class="anchored" data-anchor-id="mtp-is-lossless-verified">MTP is lossless — verified</h3>
+<p>At <code>--temp 0</code>, n=0, n=2, and n=3 produced byte-identical output: same md5, same 239 tokens, all three running to EOS rather than hitting the length cap.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># same server, --temp 0 --top-k 1 --min-p 0 --top-p 1.0, md5 the content field</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">a23acfdf4c15715d82afc9fa75d34de6</span>   239 tokens   n=0   8.77 tok/s</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">a23acfdf4c15715d82afc9fa75d34de6</span>   239 tokens   n=2  12.83 tok/s</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">a23acfdf4c15715d82afc9fa75d34de6</span>   239 tokens   n=3  11.91 tok/s</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Same text, 46% faster. Worth being precise about what “lossless” means, though, because it differs by temperature:</p>
+<ul>
+<li><strong>Greedy (temp 0): output-identical.</strong> The verify step either accepts the draft token or replaces it with the target model’s own argmax.</li>
+<li><strong>Sampled (temp &gt; 0): distribution-preserving, not output-identical.</strong> Rejection sampling guarantees the same output distribution, but a rejected draft advances the random stream differently than a plain decode step. Same seed, different text, at different draft depths. That’s expected behavior, not a bug.</li>
+</ul>
+</section>
+<section id="vision" class="level3">
+<h3 class="anchored" data-anchor-id="vision">Vision</h3>
+<p>Add <code>--mmproj mmproj-F16.gguf</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="va">G</span><span class="op">=</span>~/models/gemma-4-E2B-qat-it-GGUF</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">~/llama.cpp/build/bin/llama-server</span> <span class="dt">\</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model</span>       <span class="va">$G</span>/gemma-4-E2B-it-qat-UD-Q4_K_XL.gguf <span class="dt">\</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--mmproj</span>      <span class="va">$G</span>/mmproj-F16.gguf <span class="dt">\</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model-draft</span> <span class="va">$G</span>/mtp-gemma-4-E2B-it.gguf <span class="dt">\</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--spec-type</span> draft-mtp <span class="at">--spec-draft-n-max</span> 2 <span class="dt">\</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--threads</span> 3 <span class="at">--ctx-size</span> 8192 <span class="at">--parallel</span> 1 <span class="dt">\</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flash-attn</span> on <span class="at">--n-gpu-layers</span> 0 <span class="dt">\</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--temp</span> 1.0 <span class="at">--top-p</span> 0.95 <span class="at">--top-k</span> 64 <span class="dt">\</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--reasoning</span> off <span class="at">--reasoning-budget</span> 0 <span class="dt">\</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--tools</span> all <span class="at">--host</span> 0.0.0.0 <span class="at">--port</span> 8080 <span class="dt">\</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">--alias</span> Gemma-4-E2B-n2-t3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>It works alongside MTP on Gemma. One image — a discarded tire holding standing water — with a short prompt, at n=2 and three threads:</p>
+<p><img src="./images/png/tire-infer.png" class="img-fluid"></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>phase</th>
+<th>tokens</th>
+<th>time</th>
+<th>rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>prompt (incl.&nbsp;169 image tokens)</td>
+<td>177</td>
+<td>15 s</td>
+<td>11.69 t/s</td>
+</tr>
+<tr class="even">
+<td>decode</td>
+<td>189</td>
+<td>17 s</td>
+<td>10.96 t/s</td>
+</tr>
+</tbody>
+</table>
+<p>Two things before you plan a vision workload.</p>
+<p><strong>The prompt phase is where the cost is.</strong> A vision prompt runs at 85.5 ms per token against 24.0 ms for text on the same server — 3.6× more expensive. And MTP does nothing for it; speculation only accelerates decode. A single tok/s figure for a vision request hides which half you sped up, so report the two phases separately.</p>
+<p><strong>Decode slows with accumulated context.</strong> 10.96 t/s here against 13.06 on a fresh prompt, at identical acceptance (mean accepted length 1.89 versus 1.84). The difference is 1,500 tokens of conversation history, not the image.</p>
+<hr>
+</section>
+</section>
+<section id="qwen3.5-4b-the-capable-one" class="level2">
+<h2 class="anchored" data-anchor-id="qwen3.5-4b-the-capable-one">4. Qwen3.5 4B — the capable one</h2>
+<section id="download-1" class="level3">
+<h3 class="anchored" data-anchor-id="download-1">Download</h3>
+<p>The MTP head is embedded in the model file here, so there’s only one file to fetch. Note the repo name carries the <code>MTP</code> marker; the filenames don’t.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hf</span> download unsloth/Qwen3.5-4B-MTP-GGUF <span class="dt">\</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">--local-dir</span> ~/models/Qwen3.5-4B-MTP-GGUF <span class="dt">\</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--include</span> <span class="st">"*UD-Q4_K_XL*"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Verify the prediction heads are actually present before spending time on it — a standard GGUF will load fine and silently ignore <code>--spec-type</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install <span class="at">--break-system-packages</span> gguf</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-c</span> <span class="st">"</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="st">from gguf import GGUFReader; import os</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="st">r = GGUFReader(os.path.expanduser('~/models/Qwen3.5-4B-MTP-GGUF/Qwen3.5-4B-UD-Q4_K_XL.gguf'))</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="st">print([f.contents() for f in r.fields.values() if 'nextn' in f.name] or 'NO MTP HEADS')"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You want <code>qwen35.nextn_predict_layers = 1</code>.</p>
+<p><img src="./images/png/ver-mtp.png" class="img-fluid"></p>
+</section>
+<section id="run-it-1" class="level3">
+<h3 class="anchored" data-anchor-id="run-it-1">Run it</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="va">Q</span><span class="op">=</span>~/models/Qwen3.5-4B-MTP-GGUF</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="ex">~/llama.cpp/build/bin/llama-server</span> <span class="dt">\</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--model</span> <span class="va">$Q</span>/Qwen3.5-4B-UD-Q4_K_XL.gguf <span class="dt">\</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--spec-type</span> draft-mtp <span class="at">--spec-draft-n-max</span> 3 <span class="at">--spec-draft-n-min</span> 0 <span class="dt">\</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--threads</span> 4 <span class="at">--ctx-size</span> 8192 <span class="at">--parallel</span> 1 <span class="dt">\</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--flash-attn</span> on <span class="at">--kv-unified</span> <span class="dt">\</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--temp</span> 0.6 <span class="at">--top-p</span> 0.95 <span class="at">--top-k</span> 20 <span class="at">--min-p</span> 0 <span class="dt">\</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--reasoning</span> off <span class="at">--reasoning-budget</span> 0 <span class="dt">\</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--jinja</span> <span class="at">--host</span> 0.0.0.0 <span class="at">--port</span> 8081 <span class="dt">\</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">--alias</span> Qwen3.5-4B-n3-t4</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>No <code>--model-draft</code> — the head is in the file.</p>
+<p><code>--min-p 0</code> explicitly. The server injects 0.05 otherwise, which changes acceptance and makes your runs non-comparable with anyone else’s.</p>
+<p><code>--threads 4</code> and <code>--spec-draft-n-max 3</code>. Both differ from Gemma’s answer, and both differ from the published guidance. More on that in section 5.</p>
+<p>Two flags that fail on <code>llama-cli</code>: <code>--kv-unified</code> and <code>--parallel</code> are server-only in this build.</p>
+</section>
+<section id="results-1" class="level3">
+<h3 class="anchored" data-anchor-id="results-1">Results</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>n_max</th>
+<th>batch</th>
+<th>tok/s</th>
+<th>mean accepted</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0 (no MTP)</td>
+<td>1</td>
+<td>3.12</td>
+<td>1.00</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>2</td>
+<td>3.09</td>
+<td>1.78</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>3</td>
+<td><strong>2.87</strong></td>
+<td>2.41</td>
+</tr>
+<tr class="even">
+<td><strong>3</strong></td>
+<td><strong>4</strong></td>
+<td><strong>4.83</strong></td>
+<td><strong>2.92</strong></td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>8</td>
+<td>2.26</td>
+<td>3.17</td>
+</tr>
+</tbody>
+</table>
+<p>Look at n=2. It drafts more than n=1 and accepts a higher fraction, and it’s <em>slower</em>. That isn’t an acceptance effect — it’s the verify pass, whose cost is not monotonic in batch width. Section 5 explains it.</p>
+<p><strong>Unsloth recommends n-max 2 for dense models. On Qwen3.5 4B, that is the worst available setting</strong>, 31% slower than n=3.</p>
+</section>
+<section id="the-architecture-is-not-a-plain-transformer" class="level3">
+<h3 class="anchored" data-anchor-id="the-architecture-is-not-a-plain-transformer">The architecture is not a plain transformer</h3>
+<p>Worth knowing, because it explains the odd behavior:</p>
+<pre><code>qwen35.block_count             = 33      (32 layers + 1 nextn head)
+qwen35.full_attention_interval = 4
+qwen35.ssm.conv_kernel         = 4
+llama_kv_cache:         256.00 MiB (8192 cells,  8 layers)
+llama_memory_recurrent: 150.75 MiB (   1 cells, 32 layers)</code></pre>
+<p>Eight of 32 layers do full attention. The other 24 are Gated DeltaNet with recurrent state — constant size regardless of context length, which is why the KV cache is only 256 MiB at 8k where a dense 4B would need several times more.</p>
+<p>Practical consequences: context is cheap, and a partial batch is expensive. Both show up in section 5.</p>
+</section>
+<section id="context-depth" class="level3">
+<h3 class="anchored" data-anchor-id="context-depth">Context depth</h3>
+<p>Verify cost against prompt depth, batch 4:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>depth</th>
+<th>0</th>
+<th>512</th>
+<th>2048</th>
+<th>4096</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ms per pass</td>
+<td>356</td>
+<td>366</td>
+<td>462</td>
+<td>614</td>
+</tr>
+</tbody>
+</table>
+<p>Flat to 512, then about 69 µs per token of depth. A sensor-triggered agent with a 200-token prompt never leaves the flat region. It matters if you accumulate conversation history.</p>
+<p>That decay is attention arithmetic, not KV cache traffic — at 32 KiB per token across 8 layers, depth 2048 is only 67 MB of reads, worth about 7 ms. And with only 8 of 32 layers contributing, a dense 4B would decay roughly four times faster.</p>
+</section>
+<section id="not-yet-supported-with-mtp" class="level3">
+<h3 class="anchored" data-anchor-id="not-yet-supported-with-mtp">Not yet supported with MTP</h3>
+<p><code>--mmproj</code> and <code>--parallel &gt; 1</code>. A vision workload needs a second server instance without <code>--spec-type</code>, running at 3.12 tok/s.</p>
+<hr>
+</section>
+</section>
+<section id="three-rules-that-came-out-of-both-models" class="level2">
+<h2 class="anchored" data-anchor-id="three-rules-that-came-out-of-both-models">5. Three rules that came out of both models</h2>
+<section id="rule-1-tune-the-verify-batch-not-the-draft-depth" class="level3">
+<h3 class="anchored" data-anchor-id="rule-1-tune-the-verify-batch-not-the-draft-depth">Rule 1 — tune the verify batch, not the draft depth</h3>
+<p>Draft depth <code>n</code> creates a verify batch of <code>n+1</code>. The cost of that batch is what sets throughput, and it is not a smooth function of width.</p>
+<p><code>llama-bench</code> measures it directly (set <code>MODEL</code> to the path of the GGUF you are testing). It can’t run speculative decoding — there’s an open feature request — but it can time a forward pass at any batch width, which is exactly what the verify pass is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/llama.cpp/build/bin/llama-bench</span> <span class="at">-m</span> <span class="va">$MODEL</span> <span class="dt">\</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-t</span> 3 <span class="at">-fa</span> on <span class="at">-p</span> 1,2,3,4,5,6,7,8 <span class="at">-n</span> 0 <span class="at">-r</span> 20 <span class="at">--delay</span> 5 <span class="at">-o</span> md</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Convert throughput to per-pass latency with <code>t(N) = N / pp_N</code>:</p>
+<p><img src="./images/svg/fig3-cost-curve-blocks.svg" class="img-fluid"></p>
+<p>Both models step at multiples of 4. Inside a block the cost is nearly flat — on Gemma at three threads, a second token in the pass is <em>free</em> (114.2 ms against 114.4). Cross a block boundary and you pay a step of 70 ms.</p>
+<p>Since the period-4 structure appears in a dense model and a hybrid one alike, it belongs to the CPU matrix kernel — llamafile or KleidiAI, both active in this build — not to either architecture.</p>
+<p>What is Qwen-specific is the penalty on leftovers. Gemma’s remainder tokens cost almost nothing extra; Qwen’s cost 1.8× an aligned token, and at two threads that makes batch 4 <em>cheaper in absolute time</em> than batch 3. That’s the recurrent layers: an incomplete chunk can’t use the chunked scan and falls back to walking tokens one at a time.</p>
+<blockquote class="blockquote">
+<p><strong>Pick <code>n</code> so that <code>n+1</code> lands on a multiple of 4.</strong> That means n=3, or n=2 which is one draft cheaper and usually within noise. Not the acceptance-decay reasoning that governs GPU deployments.</p>
+</blockquote>
+</section>
+<section id="rule-2-measure-threads-at-the-batch-width-youll-deploy-at" class="level3">
+<h3 class="anchored" data-anchor-id="rule-2-measure-threads-at-the-batch-width-youll-deploy-at">Rule 2 — measure threads at the batch width you’ll deploy at</h3>
+<p><img src="./images/svg/fig2-memory-wall.svg" class="img-fluid"></p>
+<p>A batch-1 pass reads all the weights and does relatively little arithmetic — about 3 FLOP per byte moved. The memory bus saturates at two cores and extra threads only contend for it. A batch-4 verify pass reads the <em>same</em> weights and does four times the arithmetic, around 12 FLOP per byte. Now there’s work for more cores.</p>
+<p><img src="./images/svg/fig4-thread-regimes.svg" class="img-fluid"></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>plain decode</th>
+<th>with MTP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gemma 4 E2B</td>
+<td>2 threads (9.03 vs 8.73)</td>
+<td>3 threads (+11%)</td>
+</tr>
+<tr class="even">
+<td>Qwen3.5 4B</td>
+<td>2 threads</td>
+<td>4 threads (+16%)</td>
+</tr>
+</tbody>
+</table>
+<p>Where the optimum lands depends on how much of the pass is arithmetic. Gemma’s batch-4 pass is about a third compute; Qwen’s is nearly half, so Qwen keeps gaining out to four threads while Gemma stops at three.</p>
+<blockquote class="blockquote">
+<p>A thread sweep run without MTP answers a question about batch 1. If you then deploy at batch 4, you have optimized the wrong thing.</p>
+</blockquote>
+</section>
+<section id="rule-3-the-interface-is-not-a-benchmark" class="level3">
+<h3 class="anchored" data-anchor-id="rule-3-the-interface-is-not-a-benchmark">Rule 3 — the interface is not a benchmark</h3>
+<p>Three surfaces report throughput and they disagree.</p>
+<p>The <strong>WebUI</strong> carries conversation history and template scaffolding. Every follow-up turn resends accumulated context, which lengthens the prompt and suppresses acceptance. Testing MTP this way can show no benefit at all when the API shows 1.45×.</p>
+<p>The <strong><code>llama-cli</code> TUI</strong> in recent builds prints a tok/s badge and <em>no</em> <code>eval time</code> line. Its badge declined monotonically within a session in my runs — 4.8 down to 3.0 at two threads. It’s also the default surface most readers will land on.</p>
+<p>The <strong>server’s <code>eval time</code></strong>, or the <code>timings</code> object from a <code>/completion</code> call, is the number to trust.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://localhost:8080/completion <span class="at">-H</span> <span class="st">'Content-Type: application/json'</span> <span class="dt">\</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">'{"prompt":"Explain photosynthesis in 300 words.","n_predict":256,"cache_prompt":false}'</span> <span class="dt">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import json,sys; print(json.load(sys.stdin)['timings']['predicted_per_second'])"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>And run it three times. <strong>Speculative throughput is far noisier than plain decode</strong> — baseline standard deviation was 0.6%, MTP 5.5%, nine times wider. That’s inherent: MTP’s cost per token divides by an acceptance rate that depends on what text happens to get generated.</p>
+<p>There’s a trick that removes the noise entirely. Divide by the accepted length and you get cycle time, which is a property of the machine rather than the text:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Gemma n=3, t=3</th>
+<th>tok/s</th>
+<th>mean len</th>
+<th>cycle</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>seed 43</td>
+<td>13.94</td>
+<td>2.20</td>
+<td>157.8 ms</td>
+</tr>
+<tr class="even">
+<td>seed 44</td>
+<td>11.94</td>
+<td>1.88</td>
+<td>157.5 ms</td>
+</tr>
+<tr class="odd">
+<td>seed 45</td>
+<td>12.81</td>
+<td>2.04</td>
+<td>159.2 ms</td>
+</tr>
+</tbody>
+</table>
+<p>Throughput spans 17%. Cycle time spans 1%. When comparing configurations, compare cycle times.</p>
+<p><img src="./images/svg/fig5-cycle-anatomy.svg" class="img-fluid"></p>
+<hr>
+</section>
+</section>
+<section id="choosing-between-them" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-between-them">6. Choosing between them</h2>
+<p>Qwen3.5 4B is 2.7× slower and scores more than twice as high on the index. The index isn’t linear, and I wouldn’t read 20-against-9 as “twice as good,” but the gap is real: it’s the difference between a model that fills a fixed schema and one that decides which tool to call. Note that with MTP, Qwen is only for text.</p>
+<p>The part that surprised me is how little the speed difference matters once the workload stops being interactive. Nobody watches either of these stream an essay. What you care about is time to complete a tool call — 40 tokens of JSON — and there it’s 3.1 seconds against 8.3. Both are fine for an agent that wakes on a sensor reading a few times an hour. Both are hopeless for chat.</p>
+<p>So the calculus flips depending on who’s waiting:</p>
+<p><strong>Use Gemma 4 E2B</strong> when the task is narrow and the loop is tight. Classify this reading. Is there standing water in this frame. Emit this schema. Also when you need vision, since MTP and <code>--mmproj</code> work together here and don’t on Qwen.</p>
+<p><strong>Use Qwen3.5 4B</strong> when the model has to choose among tools, reason over a retrieved paragraph, or produce output whose shape isn’t fixed in advance. Also when context is long, because the hybrid architecture makes context unusually cheap.</p>
+<p>A project can use both, and that isn’t hedging. In a dengue-risk monitor, for example, the vision pass (is there standing water in this tire?) is a classification; the triage decision is a judgment.</p>
+<section id="a-measured-ceiling" class="level3">
+<h3 class="anchored" data-anchor-id="a-measured-ceiling">A measured ceiling</h3>
+<p>Qwen reads 2.98 GB of weights per token at 3.12 tok/s — <strong>9.3 GB/s achieved</strong>, against 17.1 GB/s theoretical for the Pi 5’s 32-bit LPDDR4X-4267. About 54% efficiency, which is ordinary for real workloads and a better teaching number than a spec sheet.</p>
+<p>Gemma gives the same figure by contradiction. Its file is 2.61 GB, and it decodes at 9.03 tok/s, which would require 23.5 GB/s — above the theoretical ceiling, so it cannot be happening. E2B demonstrably does not read all its weights per token. At 9.3 GB/s it touches about 1.07 GB, roughly 41% of the file. That’s MatFormer nesting and per-layer embeddings doing real work, proven from outside the model rather than taken from the card.</p>
+<hr>
+</section>
+</section>
+<section id="how-this-was-measured" class="level2">
+<h2 class="anchored" data-anchor-id="how-this-was-measured">7. How this was measured</h2>
+<p>Every command ran on my own Pi. I pasted raw terminal output into a working session with Claude, which read the logs, proposed the next test, wrote the harness scripts, and drafted prose. The judgment stayed mine; so did the hardware and the final call on every claim.</p>
+<p>The corrections are in the text rather than edited out, because a tutorial that shows only the tidy path teaches less than one that shows a wrong guess meeting a measurement:</p>
+<ul>
+<li>The first advice I got was that CPU threads scale near-linearly to core count. At batch 1 they don’t, and my own sweep contradicted it. Then the <em>opposite</em> advice — two threads, always — turned out to be wrong for the batch-4 verify pass. The rule that survived is neither, and it took both models to find it.</li>
+<li>A clean kernel-alignment mechanism was proposed from one noisy sweep, then had to be retracted and split into two separate effects once the second model was measured.</li>
+<li>A falsifiable prediction about draft depths 4 through 7 was made and immediately falsified by data I’d already collected.</li>
+</ul>
+<p>Three separate times, a benchmark produced comparable-looking numbers from a non-comparable configuration: a hardcoded thread count inside a function, omitted sampling flags that silently changed acceptance, and a path typo that loaded nothing. <strong>Pin every parameter you intend to compare across, including the ones you assume are defaults.</strong></p>
+<hr>
+</section>
+<section id="what-to-take-away" class="level2">
+<h2 class="anchored" data-anchor-id="what-to-take-away">8. What to take away</h2>
+<p><strong>MTP works on a Pi, at one narrow setting.</strong> About 1.45× on Gemma (n=2, three threads) and 1.55× on Qwen (n=3, four threads). Depths of 4 and beyond are slower than not using MTP at all.</p>
+<p><strong>Tune the verify batch, not the draft depth.</strong> <code>n+1</code> should land on a multiple of 4. This is a property of the CPU matrix kernel and it holds across both architectures.</p>
+<p><strong>Thread count follows batch width.</strong> Two threads for plain decode, three or four with MTP. Measure at the width you deploy at.</p>
+<p><strong>Everything is the memory wall — until it isn’t.</strong> 9.3 GB/s achieved against 17.1 theoretical, and the reason MTP helps at all is that it decouples tokens-committed from weight-reads. But the moment you batch four tokens into a pass, the bottleneck moves and the tuning advice inverts. That inversion is the single most useful thing in this chapter.</p>
+<p><strong>Trust the API, repeat three times, compare cycle times.</strong> Chat interfaces measure themselves along with the model.</p>
+<p><strong>These aren’t chat models, and that’s fine.</strong> At 5 to 13 tok/s nobody wants to watch an essay stream out. A sensor-triggered agent that emits forty tokens of JSON in three to eight seconds, offline, on a board costing less than a textbook — that’s a real deployment, and it’s what this hardware is for. Benchmark the tool-call path, not the essay.</p>
+<hr>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<p><strong>Models</strong></p>
+<ul>
+<li><a href="https://huggingface.co/unsloth/gemma-4-E2B-it-qat-GGUF">Gemma 4 E2B QAT GGUF (Unsloth)</a> — base model, MTP head, and mmproj</li>
+<li><a href="https://huggingface.co/unsloth/Qwen3.5-4B-MTP-GGUF">Qwen3.5 4B MTP GGUF (Unsloth)</a> — MTP-enabled weights; the plain repo won’t work</li>
+<li><a href="https://unsloth.ai/docs/models/mtp">Unsloth MTP documentation</a> — memory tables and per-model notes</li>
+</ul>
+<p><strong>Tools</strong></p>
+<ul>
+<li><a href="https://github.com/ggml-org/llama.cpp">llama.cpp</a> — build 10073 or newer for these architectures</li>
+<li><a href="https://github.com/ggml-org/llama.cpp/blob/master/docs/speculative.md">llama.cpp speculative decoding docs</a> — <code>--spec-type</code> and the draft flags</li>
+</ul>
+<p><strong>Background</strong></p>
+<ul>
+<li>Leviathan et al., <a href="https://arxiv.org/abs/2211.17192"><em>Fast Inference from Transformers via Speculative Decoding</em></a> (2023) — the method MTP builds on</li>
+<li><a href="https://artificialanalysis.ai/leaderboards/models">Artificial Analysis leaderboard</a> — the AAII scores in section 1</li>
+</ul>
+<hr>
+</section>
+<section id="appendix-a-reproducing-the-headline-numbers" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-a-reproducing-the-headline-numbers">Appendix A: reproducing the headline numbers</h2>
+<p>Both models, baseline and MTP, through the same harness. Interleave the conditions so heat can’t align with configuration.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="va">G</span><span class="op">=</span>~/models/gemma-4-E2B-qat-it-GGUF</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="va">MODEL</span><span class="op">=</span><span class="va">$G</span>/gemma-4-E2B-it-qat-UD-Q4_K_XL.gguf</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="va">P</span><span class="op">=</span><span class="st">'{"prompt":"Explain photosynthesis in 300 words.","n_predict":256,"cache_prompt":false}'</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">run ()</span> <span class="kw">{</span>   <span class="co"># $1 = label   $2 = extra server args   $3 = threads</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">~/llama.cpp/build/bin/llama-server</span> <span class="at">--model</span> <span class="va">$MODEL</span> <span class="va">$2</span> <span class="dt">\</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">-t</span> <span class="va">$3</span> <span class="at">-c</span> 8192 <span class="at">-np</span> 1 <span class="at">-fa</span> on <span class="at">--n-gpu-layers</span> 0 <span class="dt">\</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">--host</span> 127.0.0.1 <span class="at">--port</span> 8081 <span class="at">-lv</span> 4 <span class="op">&gt;</span> /tmp/r_<span class="va">$1</span>.log <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">&amp;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">until</span> <span class="ex">curl</span> <span class="at">-sf</span> http://127.0.0.1:8081/health <span class="op">&gt;</span>/dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span><span class="kw">;</span> <span class="cf">do</span> <span class="fu">sleep</span> 1<span class="kw">;</span> <span class="cf">done</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%-12s "</span> <span class="st">"</span><span class="va">$1</span><span class="st">"</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:8081/completion <span class="at">-H</span> <span class="st">'Content-Type: application/json'</span> <span class="at">-d</span> <span class="st">"</span><span class="va">$P</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-c</span> <span class="st">"import json,sys; print(round(json.load(sys.stdin)['timings']['predicted_per_second'],3))"</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">grep</span> <span class="at">-oE</span> <span class="st">"mean len = +[0-9.]+"</span> /tmp/r_<span class="va">$1</span>.log <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-1</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="ex">pkill</span> <span class="at">-f</span> llama-server<span class="kw">;</span> <span class="fu">sleep</span> 15</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> 1 2 3<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="ex">run</span> <span class="st">"base</span><span class="va">$i</span><span class="st">"</span> <span class="st">"--spec-type none"</span> 2</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="ex">run</span> <span class="st">"mtp</span><span class="va">$i</span><span class="st">"</span>  <span class="st">"--spec-type draft-mtp --spec-draft-n-max 2 --spec-draft-n-min 0 --model-draft </span><span class="va">$G</span><span class="st">/mtp-gemma-4-E2B-it.gguf"</span> 3</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Check <code>vcgencmd get_throttled</code> afterward. Anything but <code>0x0</code> invalidates the run.</p>
+</section>
+<section id="appendix-b-whats-still-open" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-b-whats-still-open">Appendix B: what’s still open</h2>
+<p><strong>The depth-sweep variance.</strong> The same binary and configuration produced ±0.04 in one llama-bench run and ±1.58 in another, on a board that started at 48.8 °C. Not thermal, and unexplained.</p>
+<p><strong>Whether the block boundary moves at four threads on Gemma.</strong> Measured at two and three; both put it at 4.</p>
+<p><strong>Cross-harness baselines.</strong> A <code>/v1/chat/completions</code> call and a raw <code>/completion</code> call gave baselines about 5% apart, probably chat-template overhead. Pick one and derive every number in it.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/llama_cpp/llama_cpp.html" class="pagination-link" aria-label="From Ollama to llama.cpp">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">From Ollama to llama.cpp</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
