@@ -107,10 +107,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<meta name="mermaid-theme" content="neutral">
-<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="../../styles.css">
@@ -567,21 +563,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The runtime, OS, and your application.</li>
 </ol>
 <p>How a fixed RAM budget gets divided, using the smallest target as the example:</p>
-<div class="cell" data-fig-width="6" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart LR
-    subgraph RAM["UNO Q, 4 GB RAM"]
-        direction LR
-        OS["OS + services&lt;br&gt;~1–1.5 GB"] --- W["model weights&lt;br&gt;0.8B @ Q8 ≈ 1 GB"] --- KV["KV cache + buffers&lt;br&gt;grows with context"] --- APP["headroom for&lt;br&gt;your application"]
-    end
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
+<!-- Diagram source: images/svg/ram-budget.mmd (mermaid). Regenerate the SVG from it if the diagram changes. -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/svg/ram-budget.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
 </div>
 <p>A worked example for the Arduino UNO Q (4 GB): Debian plus desktop services eat 1–1.5 GB. A Qwen3.5 2B at UD-Q4_K_XL needs ~1.3 GB for weights plus a few hundred MB of cache and buffers at modest context. Total under 2 GB for inference — tight but workable. A standard 3B at Q4 needs 2+ GB for weights alone, and now you’re one browser tab away from the OOM (Out-Of-Memory) killer. This is why the model tables later in this tutorial look the way they do.</p>
 <blockquote class="blockquote">
@@ -600,32 +586,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-three-tools" class="level2">
 <h2 class="anchored" data-anchor-id="the-three-tools">3. The three tools</h2>
 <p>All three tools in this tutorial run the same GGUF models and, underneath, share the same inference engine. They differ in packaging:</p>
-<div class="cell" data-fig-width="6" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart TB
-    APP["your application&lt;br&gt;(Python / Node / curl — OpenAI-compatible client)"]
-    subgraph PKG["packaging layer"]
-        OL["Ollama&lt;br&gt;registry + REST API :11434"]
-        LMS["LM Studio&lt;br&gt;GUI + server :1234"]
-        LSV["llama-server&lt;br&gt;plain HTTP :8080"]
-    end
-    ENG["llama.cpp engine (GGML)"]
-    GGUF[("GGUF file&lt;br&gt;weights + tokenizer + chat template")]
-    APP --&gt; OL
-    APP --&gt; LMS
-    APP --&gt; LSV
-    OL --&gt; ENG
-    LMS --&gt; ENG
-    LSV --&gt; ENG
-    ENG --&gt; GGUF
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
+<!-- Diagram source: images/svg/tools-stack.mmd (mermaid). Regenerate the SVG from it if the diagram changes. -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/svg/tools-stack.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
 </div>
 <section id="llama.cpp-the-engine" class="level3">
 <h3 class="anchored" data-anchor-id="llama.cpp-the-engine">llama.cpp — the engine</h3>
@@ -997,27 +962,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./build/bin/llama-server</span> <span class="at">-m</span> qwen3.5-0.8b-q8_0.gguf <span class="dt">\</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">-t</span> 4 <span class="at">-c</span> 1024 <span class="at">--host</span> 127.0.0.1 <span class="at">--port</span> 8080</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Now the Python side of an App Lab sketch can send local data to <code>http://127.0.0.1:8080/v1/chat/completions</code> — same OpenAI-style API as everywhere else in this tutorial — and forward the result to the STM32 side. A concrete example loop: the MCU streams temperature and vibration readings; a Python script accumulates them; every 10 minutes it asks the model for a one-line plain-English status; the MCU scrolls that line on a display. Deterministic control stays on the microcontroller; the model is an occasional reasoning layer, which is exactly how Arduino’s own guidance frames it.</p>
-<div class="cell" data-fig-width="5.5" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart TB
-    subgraph MCU["STM32U585 (real-time)"]
-        SEN["sensors&lt;br&gt;temp, vibration, ..."] --&gt; SK["Arduino sketch"]
-        SK --&gt; ACT["display / actuators"]
-    end
-    subgraph MPU["QRB2210 (Linux)"]
-        PY["Python app&lt;br&gt;accumulates readings"] --&gt;|"POST /v1/chat/completions"| LS["llama-server :8080&lt;br&gt;Qwen3.5 0.8B Q8"]
-        LS --&gt;|"one-line status"| PY
-    end
-    SK -- "readings (bridge)" --&gt; PY
-    PY -- "summary text" --&gt; SK
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
+<!-- Diagram source: images/svg/unoq-dual-brain.mmd (mermaid). Regenerate the SVG from it if the diagram changes. -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/svg/unoq-dual-brain.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%"></p>
+</figure>
 </div>
 <p>If you’d rather work in Go, the <code>yzma</code> wrapper (<a href="https://projecthub.arduino.cc/marc-edgeimpulse/running-local-llms-and-vlms-on-the-arduino-uno-q-with-yzma-74e288">by Ron Evans</a>) rides on llama.cpp and has a documented UNO Q workflow using SmolLM2-135M — including vision models, via LLaVA-style VLMs.</p>
 <p>For complete UNO Q projects, see the companion book <a href="https://mjrovai.github.io/genai-uno-q/">Generative AI at the Edge</a>, which builds on this setup.</p>
@@ -1149,25 +1098,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Build your app against the OpenAI-compatible endpoint so you can swap runtimes and hardware later without touching application code.</li>
 </ol>
 <p>The same checklist as a decision flow:</p>
-<div class="cell" data-fig-width="6" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart TD
-    START{"Where will it run?"} --&gt;|PC| PCQ{"Exploring models,&lt;br&gt;or building an app?"}
-    PCQ --&gt;|exploring| LMS["LM Studio"]
-    PCQ --&gt;|building| OLPC["Ollama"]
-    START --&gt;|"Raspberry Pi 5&lt;br&gt;(8/16 GB)"| PI["Ollama first;&lt;br&gt;llama.cpp for the last 10%"]
-    START --&gt;|"UNO Q (4 GB)"| UQ["llama.cpp&lt;br&gt;(or Ollama + partition workaround)"]
-    LMS &amp; OLPC --&gt; MPC["model: 4–12B Q4 tier&lt;br&gt;(Gemma4 E4B/12B QAT, Qwen3.5 4B/9B, Ornith 9B)"]
-    PI --&gt; MPI["model: 0.8–3B tier&lt;br&gt;(Qwen3.5 0.8B Q8, LFM2.5-1.2B Q5, Gemma4 E2B QAT)"]
-    UQ --&gt; MUQ["model: ≤2B, short context&lt;br&gt;(Qwen3.5 0.8B Q8 default, 2B UD ceiling)"]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
+<!-- Diagram source: images/svg/choosing-flow.mmd (mermaid). Regenerate the SVG from it if the diagram changes. -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./images/svg/choosing-flow.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%"></p>
+</figure>
 </div>
 <p>The pattern behind all three targets is the same one driving edge AI generally: the model comes to the data, not the other way around. Once a $59 board with an ARM core can turn sensor logs into sentences offline, “do I really need the cloud for this?” becomes a question worth asking about every language task in your project.</p>
 </section>
