@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>YOLOInfer: Mobile YOLO Inference – Edge AI Engineering</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../raspi/rnn-verne/rnn-verne.html" rel="next">
+<link href="../../raspi/hw_acceleration/hw_acceleration.html" rel="prev">
+<link href="../../images/unifei-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-daec65ff3ba034f51daec66ecad3ce27.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Edge AI Engineering</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/Mjrovai/EdgeML_Made_Ease_ebook/releases/latest/download/Edge-AI-Engineering.pdf"> <i class="bi bi-file-earmark-pdf" role="img">
+</i> 
+<span class="menu-text">Download PDF</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools tools-wide">
+    <a href="https://github.com/Mjrovai/EdgeML-with-Raspberry-Pi" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../raspi/yoloinfer/yoloinfer.html">YOLOInfer: Mobile YOLO Inference</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgments</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_book.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About this Book</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../Classification_of_AI_Applications.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Classification of AI Applications</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Fixed Function AI (Reactive)</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/setup/setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/image_classification_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/image_classification/custom_image_classification_project.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Image Classification Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/object_detection_fundamentals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Object Detection: Fundamentals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/custom_object_detection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Custom Object Detection Project</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/object_detection/cv_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Computer Vision Applications with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/counting_objects_yolo/counting_objects_yolo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Counting Objects with YOLO</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/executorch/executorch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Image Classification with EXECUTORCH</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Beyond CPU - Hardware Acceleration for Edge AI</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/yoloinfer/yoloinfer.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">YOLOInfer: Mobile YOLO Inference</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Generative AI (Proactive)</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/rnn-verne/rnn-verne.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Text Generation with RNNs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/kd_intro/kd_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Knowledge Distillation in Practice</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/local_inference/local_inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLMs at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Small Language Models (SLM)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llm/slm_opt_tech.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SLM: Basic Optimization Techniques</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/vlm/vlm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Vision-Language Models at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/audio_pipeline/audio_pipeline.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Audio and Vision AI Pipeline</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/physical_comp/RPi_Physical_Computing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Physical Computing with Raspberry Pi</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/iot/slm_iot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Experimenting with SLMs for IoT Control</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/advancing_adgeai/adv_edgeai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Advancing EdgeAI: Beyond Basic SLMs</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/litert-lm/litert-lm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">LiteRT-LM: Production-Ready LLM Inference at the Edge</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/llama_cpp/llama_cpp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">From Ollama to llama.cpp</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../raspi/mtp/mtp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Multi-Token Prediction on the Raspberry Pi 5</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Weekly Labs</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weekly_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Edge AI Engineering - Weekly Labs</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">References &amp; Author</span></span>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about_the_author.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">About the author</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-idea" id="toc-the-idea" class="nav-link active" data-scroll-target="#the-idea">The Idea</a></li>
+  <li><a href="#part-1-mobile-app-development-your-options" id="toc-part-1-mobile-app-development-your-options" class="nav-link" data-scroll-target="#part-1-mobile-app-development-your-options">Part 1: Mobile App Development — Your Options</a>
+  <ul>
+  <li><a href="#native-apps-swift-kotlin" id="toc-native-apps-swift-kotlin" class="nav-link" data-scroll-target="#native-apps-swift-kotlin">Native Apps (Swift / Kotlin)</a></li>
+  <li><a href="#cross-platform-react-native-flutter" id="toc-cross-platform-react-native-flutter" class="nav-link" data-scroll-target="#cross-platform-react-native-flutter">Cross-Platform (React Native / Flutter)</a></li>
+  <li><a href="#progressive-web-apps-pwa" id="toc-progressive-web-apps-pwa" class="nav-link" data-scroll-target="#progressive-web-apps-pwa">Progressive Web Apps (PWA)</a></li>
+  </ul></li>
+  <li><a href="#part-2-the-pwa-approach-advantages-and-limitations" id="toc-part-2-the-pwa-approach-advantages-and-limitations" class="nav-link" data-scroll-target="#part-2-the-pwa-approach-advantages-and-limitations">Part 2: The PWA Approach — Advantages and Limitations</a>
+  <ul>
+  <li><a href="#what-makes-a-pwa" id="toc-what-makes-a-pwa" class="nav-link" data-scroll-target="#what-makes-a-pwa">What Makes a PWA</a></li>
+  <li><a href="#advantages-for-ml-demos" id="toc-advantages-for-ml-demos" class="nav-link" data-scroll-target="#advantages-for-ml-demos">Advantages for ML Demos</a></li>
+  <li><a href="#known-limitations" id="toc-known-limitations" class="nav-link" data-scroll-target="#known-limitations">Known Limitations</a></li>
+  </ul></li>
+  <li><a href="#part-3-the-yoloinfer-project" id="toc-part-3-the-yoloinfer-project" class="nav-link" data-scroll-target="#part-3-the-yoloinfer-project">Part 3: The YOLOInfer Project</a>
+  <ul>
+  <li><a href="#tech-stack" id="toc-tech-stack" class="nav-link" data-scroll-target="#tech-stack">Tech Stack</a></li>
+  <li><a href="#project-structure" id="toc-project-structure" class="nav-link" data-scroll-target="#project-structure">Project Structure</a></li>
+  </ul></li>
+  <li><a href="#part-4-the-inference-pipeline" id="toc-part-4-the-inference-pipeline" class="nav-link" data-scroll-target="#part-4-the-inference-pipeline">Part 4: The Inference Pipeline</a>
+  <ul>
+  <li><a href="#what-yolov8n-does" id="toc-what-yolov8n-does" class="nav-link" data-scroll-target="#what-yolov8n-does">What YOLOv8n Does</a></li>
+  <li><a href="#input-preprocessing" id="toc-input-preprocessing" class="nav-link" data-scroll-target="#input-preprocessing">Input Preprocessing</a></li>
+  <li><a href="#running-inference" id="toc-running-inference" class="nav-link" data-scroll-target="#running-inference">Running Inference</a></li>
+  <li><a href="#postprocessing-detection" id="toc-postprocessing-detection" class="nav-link" data-scroll-target="#postprocessing-detection">Postprocessing: Detection</a></li>
+  <li><a href="#non-maximum-suppression-nms" id="toc-non-maximum-suppression-nms" class="nav-link" data-scroll-target="#non-maximum-suppression-nms">Non-Maximum Suppression (NMS)</a></li>
+  <li><a href="#coordinate-back-transformation" id="toc-coordinate-back-transformation" class="nav-link" data-scroll-target="#coordinate-back-transformation">Coordinate Back-Transformation</a></li>
+  <li><a href="#pose-estimation" id="toc-pose-estimation" class="nav-link" data-scroll-target="#pose-estimation">Pose Estimation</a></li>
+  <li><a href="#segmentation" id="toc-segmentation" class="nav-link" data-scroll-target="#segmentation">Segmentation</a></li>
+  </ul></li>
+  <li><a href="#part-5-auto-detecting-the-model-type" id="toc-part-5-auto-detecting-the-model-type" class="nav-link" data-scroll-target="#part-5-auto-detecting-the-model-type">Part 5: Auto-Detecting the Model Type</a></li>
+  <li><a href="#part-6-the-camera-loop" id="toc-part-6-the-camera-loop" class="nav-link" data-scroll-target="#part-6-the-camera-loop">Part 6: The Camera Loop</a></li>
+  <li><a href="#part-7-deployment" id="toc-part-7-deployment" class="nav-link" data-scroll-target="#part-7-deployment">Part 7: Deployment</a>
+  <ul>
+  <li><a href="#netlify.toml" id="toc-netlify.toml" class="nav-link" data-scroll-target="#netlify.toml"><code>netlify.toml</code></a></li>
+  <li><a href="#deploy-command" id="toc-deploy-command" class="nav-link" data-scroll-target="#deploy-command">Deploy Command</a></li>
+  <li><a href="#vite-configuration" id="toc-vite-configuration" class="nav-link" data-scroll-target="#vite-configuration">Vite Configuration</a></li>
+  </ul></li>
+  <li><a href="#part-8-testing-on-mobile" id="toc-part-8-testing-on-mobile" class="nav-link" data-scroll-target="#part-8-testing-on-mobile">Part 8: Testing on Mobile</a></li>
+  <li><a href="#part-9-real-world-performance" id="toc-part-9-real-world-performance" class="nav-link" data-scroll-target="#part-9-real-world-performance">Part 9: Real-World Performance</a></li>
+  <li><a href="#part-10-using-custom-models" id="toc-part-10-using-custom-models" class="nav-link" data-scroll-target="#part-10-using-custom-models">Part 10: Using Custom Models</a></li>
+  <li><a href="#recap" id="toc-recap" class="nav-link" data-scroll-target="#recap">Recap</a></li>
+  <li><a href="#going-further" id="toc-going-further" class="nav-link" data-scroll-target="#going-further">Going Further</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">YOLOInfer: Mobile YOLO Inference</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>Running YOLO on Your Phone — No App Store Required</strong></p>
+<p><img src="./images/png/front.png" class="img-fluid"></p>
+<p><em>Building a Real-Time Inference PWA with ONNX Runtime Web</em></p>
+<blockquote class="blockquote">
+<p><strong>What you’ll learn:</strong> How to deploy a YOLOv8 model directly in the browser, why Progressive Web Apps are a compelling choice for mobile ML demos, and how the YOLOInfer project is wired together from camera input to detection overlay.</p>
+<p>This chapter closes the fixed-function part of the book. We trained and ran YOLO models on the Raspberry Pi in <a href="../../raspi/object_detection/cv_yolo.html">Computer Vision Applications with YOLO</a> and on a custom dataset in <a href="../../raspi/object_detection/custom_object_detection.html">Custom Object Detection Project</a>; here we take the same models to a phone, with no app store and no server.</p>
+</blockquote>
+<hr>
+<section id="the-idea" class="level2">
+<h2 class="anchored" data-anchor-id="the-idea">The Idea</h2>
+<p>You trained a YOLO model. It works well on your laptop or on an edge device like the Raspberry Pi. Now you want to show it running on a phone — at a conference, in a classroom, on a farm, in a factory. What are your options?</p>
+<p>The obvious answer is “build an app.” But that means navigating the App Store review process, managing separate iOS and Android codebases (at least), or learning a cross-platform framework. For a research demo or educational project, that overhead is often the bottleneck that kills the project.</p>
+<p>There is another way: <strong>ship it as a web app that runs entirely in the browser.</strong> The model runs on-device via <a href="https://en.wikipedia.org/wiki/WebAssembly">WebAssembly</a>. The camera is accessed through the browser’s <code>getUserMedia</code> API. No server, no app review, no install — just a URL.</p>
+<p>That’s what <strong><em>YOLOInfer</em></strong> does. It runs YOLOv8n Detection, Pose Estimation, and Segmentation models in real time, directly in a mobile browser, packaged as a Progressive Web App (PWA) that can be installed to the home screen.</p>
+<blockquote class="blockquote">
+<p>This tutorial explains why this approach works, where it falls short, and exactly how the project is built.</p>
+</blockquote>
+<hr>
+</section>
+<section id="part-1-mobile-app-development-your-options" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-mobile-app-development-your-options">Part 1: Mobile App Development — Your Options</h2>
+<p>When you want to put an ML model on a phone, you have three main paths.</p>
+<section id="native-apps-swift-kotlin" class="level3">
+<h3 class="anchored" data-anchor-id="native-apps-swift-kotlin">Native Apps (Swift / Kotlin)</h3>
+<p>Native apps give you the best performance and full hardware access. On iOS, you can use Core ML; on Android, you can use TensorFlow Lite or ONNX Runtime Mobile. The result feels like a first-class product.</p>
+<p>The cost: you write the same app twice (or hire people who can), you wait for App Store review (days to weeks), and every update goes through that same process. For a research prototype, this is rarely the right trade-off.</p>
+</section>
+<section id="cross-platform-react-native-flutter" class="level3">
+<h3 class="anchored" data-anchor-id="cross-platform-react-native-flutter">Cross-Platform (React Native / Flutter)</h3>
+<p>Frameworks like React Native and Flutter let you write one codebase and ship to both platforms. Performance is good — near-native in most cases. ML integration is possible through native modules.</p>
+<p>You still need App Store distribution, which means review delays and platform policies. You also add framework overhead and complexity. Better than native for team projects, but still heavyweight for demos.</p>
+</section>
+<section id="progressive-web-apps-pwa" class="level3">
+<h3 class="anchored" data-anchor-id="progressive-web-apps-pwa">Progressive Web Apps (PWA)</h3>
+<p><img src="./images/png/block.png" class="img-fluid"></p>
+<p>A <a href="https://en.wikipedia.org/wiki/Progressive_web_app">PWA</a> is a web app with three extras: a <code>manifest.json</code> (makes it installable), a <strong>Service Worker</strong> (enables offline and caching), and <strong>HTTPS</strong> (required for camera access). Users can add it to their home screen from the browser — no App Store involved.</p>
+<p>For ML inference, the browser now has a path to real performance: <strong>WebAssembly (WASM)</strong>. ONNX Runtime Web compiles the inference engine to WASM and runs models at speeds that, for small models like YOLOv8n, are fast enough for real-time camera use.</p>
+<p>The trade-offs are real. But for research demos, educational tools, and rapid prototypes, the PWA approach is hard to beat.</p>
+<hr>
+</section>
+</section>
+<section id="part-2-the-pwa-approach-advantages-and-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-the-pwa-approach-advantages-and-limitations">Part 2: The PWA Approach — Advantages and Limitations</h2>
+<section id="what-makes-a-pwa" class="level3">
+<h3 class="anchored" data-anchor-id="what-makes-a-pwa">What Makes a PWA</h3>
+<p>Three files do most of the work:</p>
+<p><strong><code>manifest.json</code></strong> — Tells the browser how to present the app when installed:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"YOLOInfer"</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"short_name"</span><span class="fu">:</span> <span class="st">"YOLOInfer"</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"display"</span><span class="fu">:</span> <span class="st">"fullscreen"</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"orientation"</span><span class="fu">:</span> <span class="st">"any"</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"background_color"</span><span class="fu">:</span> <span class="st">"#060d18"</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"theme_color"</span><span class="fu">:</span> <span class="st">"#060d18"</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"icons"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"src"</span><span class="fu">:</span> <span class="st">"/icons/icon-192.png"</span><span class="fu">,</span> <span class="dt">"sizes"</span><span class="fu">:</span> <span class="st">"192x192"</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">"src"</span><span class="fu">:</span> <span class="st">"/icons/icon-512.png"</span><span class="fu">,</span> <span class="dt">"sizes"</span><span class="fu">:</span> <span class="st">"512x512"</span> <span class="fu">}</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong><code>sw.js</code></strong> — The Service Worker intercepts network requests and serves from cache. For an ML app, this matters a lot: ONNX models are 12–15 MB each, and you don’t want to re-download them on every visit:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Cache-first for models and WASM — these never change</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> CACHE_FIRST <span class="op">=</span> [<span class="st">'/models/'</span><span class="op">,</span> <span class="st">'.wasm'</span>]<span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>self<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">'fetch'</span><span class="op">,</span> <span class="bu">event</span> <span class="kw">=&gt;</span> {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> url <span class="op">=</span> <span class="kw">new</span> <span class="fu">URL</span>(<span class="bu">event</span><span class="op">.</span><span class="at">request</span><span class="op">.</span><span class="at">url</span>)<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> isCacheFirst <span class="op">=</span> CACHE_FIRST<span class="op">.</span><span class="fu">some</span>(p <span class="kw">=&gt;</span> url<span class="op">.</span><span class="at">pathname</span><span class="op">.</span><span class="fu">includes</span>(p))<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (isCacheFirst) {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">event</span><span class="op">.</span><span class="fu">respondWith</span>(</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      caches<span class="op">.</span><span class="fu">match</span>(<span class="bu">event</span><span class="op">.</span><span class="at">request</span>)<span class="op">.</span><span class="fu">then</span>(cached <span class="kw">=&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        cached <span class="op">||</span> <span class="fu">fetch</span>(<span class="bu">event</span><span class="op">.</span><span class="at">request</span>)<span class="op">.</span><span class="fu">then</span>(resp <span class="kw">=&gt;</span> {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>          <span class="kw">const</span> clone <span class="op">=</span> resp<span class="op">.</span><span class="fu">clone</span>()<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>          caches<span class="op">.</span><span class="fu">open</span>(<span class="st">'yoloinfer-v1'</span>)<span class="op">.</span><span class="fu">then</span>(c <span class="kw">=&gt;</span> c<span class="op">.</span><span class="fu">put</span>(<span class="bu">event</span><span class="op">.</span><span class="at">request</span><span class="op">,</span> clone))<span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>          <span class="cf">return</span> resp<span class="op">;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    )<span class="op">;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>HTTPS</strong> — Required for camera access (<code>getUserMedia</code>). Netlify provides this automatically.</p>
+</section>
+<section id="advantages-for-ml-demos" class="level3">
+<h3 class="anchored" data-anchor-id="advantages-for-ml-demos">Advantages for ML Demos</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Advantage</th>
+<th>What it means in practice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Zero install friction</td>
+<td>Share a URL. Done.</td>
+</tr>
+<tr class="even">
+<td>Instant updates</td>
+<td>Deploy to Netlify; everyone gets the new version on their next visit.</td>
+</tr>
+<tr class="odd">
+<td>Works on iOS and Android</td>
+<td>One codebase, all devices.</td>
+</tr>
+<tr class="even">
+<td>No App Store review</td>
+<td>Ship at research speed, not App Store speed.</td>
+</tr>
+<tr class="odd">
+<td>On-device inference</td>
+<td>Model runs locally — no server cost, no latency, no privacy concern.</td>
+</tr>
+<tr class="even">
+<td>Models cached after first load</td>
+<td>12 MB model loads once, then runs offline.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="known-limitations" class="level3">
+<h3 class="anchored" data-anchor-id="known-limitations">Known Limitations</h3>
+<p><strong>iOS camera requires HTTPS and a real domain.</strong> <code>getUserMedia</code> is blocked on <code>http://</code> and on <code>localhost</code> in some iOS versions. Use a tool like Vite’s <code>basicSsl</code> plugin during development, and HTTPS in production.</p>
+<p><strong>iOS file picker shows a 3-option action sheet.</strong> When a user taps “Model” to load a custom <code>.onnx</code> file, iOS shows a sheet with “Photo Library / Camera / Files.” This is an Apple system decision — the web cannot suppress it. The user must tap “Files” to reach the ONNX file. On desktop Chrome and Edge, the app uses the <code>showOpenFilePicker</code> API for a direct, filtered file dialog.</p>
+<p><strong>WASM is single-threaded by default.</strong> ONNX Runtime Web supports WASM SIMD for better performance, but multi-threading requires specific HTTP headers (<code>Cross-Origin-Opener-Policy</code>, <code>Cross-Origin-Embedder-Policy</code>) that break some hosting setups.</p>
+<blockquote class="blockquote">
+<p>YOLOInfer runs single-threaded and gets ~25–30 FPS on a modern iPhone with YOLOv8n (192×192).</p>
+</blockquote>
+<p><strong>No background execution.</strong> A PWA cannot run inference in the background. The screen must be on and the browser tab active.</p>
+<p><strong>Service Worker caching during development is a trap.</strong> The service worker caches aggressively. During development, use hard refresh (<code>Cmd+Shift+R</code>) or an incognito window. On mobile: incognito or “hold the reload gesture.”</p>
+<hr>
+</section>
+</section>
+<section id="part-3-the-yoloinfer-project" class="level2">
+<h2 class="anchored" data-anchor-id="part-3-the-yoloinfer-project">Part 3: The YOLOInfer Project</h2>
+<p><img src="./images/png/screens.png" class="img-fluid"></p>
+<section id="tech-stack" class="level3">
+<h3 class="anchored" data-anchor-id="tech-stack">Tech Stack</h3>
+<pre><code>Vanilla JS + Vite     — no framework, minimal bundle
+ONNX Runtime Web      — WASM inference engine
+Vite basicSsl plugin  — HTTPS for dev camera access
+Netlify               — hosting + automatic HTTPS</code></pre>
+<p>No React, no Vue, no Angular. The project is deliberately minimal — the inference pipeline and the camera loop are the interesting parts. A framework would add complexity without adding capability.</p>
+</section>
+<section id="project-structure" class="level3">
+<h3 class="anchored" data-anchor-id="project-structure">Project Structure</h3>
+<pre><code>YOLOInfer/
+├── src/
+│   ├── main.js          ← UI state machine, camera, canvas, render loop
+│   ├── inference.js     ← model loading, preprocessing, NMS, postprocessing
+│   └── style.css        ← dark "lab instrument" theme
+├── public/
+│   ├── sw.js            ← service worker (cache-first for models/wasm)
+│   ├── manifest.json    ← PWA manifest
+│   ├── models/          ← .onnx model files (served as static assets)
+│   │   ├── yolov8n.onnx
+│   │   ├── yolov8n-pose.onnx
+│   │   ├── yolov8n-seg.onnx
+│   │   └── box_vs_wheel_192.onnx # Custom model - Can be upload later
+│   └── icons/           ← PWA icons
+├── index.html
+├── vite.config.js
+└── netlify.toml</code></pre>
+<hr>
+</section>
+</section>
+<section id="part-4-the-inference-pipeline" class="level2">
+<h2 class="anchored" data-anchor-id="part-4-the-inference-pipeline">Part 4: The Inference Pipeline</h2>
+<p>This is the core of the project. Understanding it requires understanding what YOLO actually outputs and how to convert it into bounding boxes on the screen.</p>
+<section id="what-yolov8n-does" class="level3">
+<h3 class="anchored" data-anchor-id="what-yolov8n-does">What YOLOv8n Does</h3>
+<p>YOLO (You Only Look Once) is a family of object detection models. The “n” in YOLOv8n stands for “nano” — the smallest, fastest variant, designed for embedded and mobile deployment.</p>
+<p>A single forward pass through YOLOv8n on a 192×192 input image produces a tensor containing candidate bounding boxes for every object it might have seen. Your job is to filter those candidates into actual detections.</p>
+<p>YOLOInfer supports three model types:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 45%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>What it detects</th>
+<th>Output shape</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Detection</td>
+<td>Bounding boxes + class</td>
+<td><code>[1, 4+C, 756]</code></td>
+</tr>
+<tr class="even">
+<td>Pose Estimation</td>
+<td>Bounding boxes + 17 keypoints</td>
+<td><code>[1, 56, 756]</code></td>
+</tr>
+<tr class="odd">
+<td>Segmentation</td>
+<td>Bounding boxes + pixel masks</td>
+<td><code>[1, 116, 756]</code> + <code>[1, 32, 48, 48]</code></td>
+</tr>
+</tbody>
+</table>
+<p>In all cases, the <code>756</code> dimension means 756 candidate boxes. Most are filtered out; a real scene typically yields 1–20 final detections.</p>
+</section>
+<section id="input-preprocessing" class="level3">
+<h3 class="anchored" data-anchor-id="input-preprocessing">Input Preprocessing</h3>
+<p>Before inference, the camera frame (or uploaded image) must be resized to <code>192×192</code> and converted to a normalized float tensor.</p>
+<blockquote class="blockquote">
+<p>A 192×192 image size was chosen because it runs smoothly on mobile devices and small edge devices, such as the Arduino UNO Q, Raspberry Pi Zero, XIAO Vision Camera, and XIAO ESP32S3 Sense.</p>
+</blockquote>
+<p>YOLOInfer uses two preprocessing modes depending on the model:</p>
+<p><strong>Letterbox</strong> — Scale the frame to fit within 192×192 while preserving aspect ratio. Pad the short axis with black. Used for all standard Ultralytics exports (pose, segmentation, standard detection):</p>
+<pre><code>Camera frame: 1280×720 (landscape)
+Scale to fit 192×192: scale = 192/720 ≈ 0.267
+Scaled size: 341×192 → too wide
+Scale by width: scale = 192/1280 = 0.15
+Scaled size: 192×108
+PadY = (192-108)/2 = 42px top and bottom</code></pre>
+<p><strong>Crop</strong> — Take the largest centered square from the source, then scale to 192×192. Used for custom models trained with a centered-crop pipeline:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// inference.js — letterbox preprocessing</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">preprocess</span>(source) {</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> srcW <span class="op">=</span> source<span class="op">.</span><span class="at">videoWidth</span> <span class="op">||</span> source<span class="op">.</span><span class="at">naturalWidth</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> srcH <span class="op">=</span> source<span class="op">.</span><span class="at">videoHeight</span> <span class="op">||</span> source<span class="op">.</span><span class="at">naturalHeight</span><span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> scale <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>(<span class="dv">192</span> <span class="op">/</span> srcW<span class="op">,</span> <span class="dv">192</span> <span class="op">/</span> srcH)<span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> dW <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span>(srcW <span class="op">*</span> scale)<span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> dH <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span>(srcH <span class="op">*</span> scale)<span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> padX <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span>((<span class="dv">192</span> <span class="op">-</span> dW) <span class="op">/</span> <span class="dv">2</span>)<span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> padY <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span>((<span class="dv">192</span> <span class="op">-</span> dH) <span class="op">/</span> <span class="dv">2</span>)<span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Draw to offscreen canvas, then read pixel data</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  offscreen<span class="op">.</span><span class="at">width</span> <span class="op">=</span> <span class="dv">192</span><span class="op">;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  offscreen<span class="op">.</span><span class="at">height</span> <span class="op">=</span> <span class="dv">192</span><span class="op">;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  offCtx<span class="op">.</span><span class="at">fillStyle</span> <span class="op">=</span> <span class="st">'#000'</span><span class="op">;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  offCtx<span class="op">.</span><span class="fu">fillRect</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">192</span><span class="op">,</span> <span class="dv">192</span>)<span class="op">;</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  offCtx<span class="op">.</span><span class="fu">drawImage</span>(source<span class="op">,</span> padX<span class="op">,</span> padY<span class="op">,</span> dW<span class="op">,</span> dH)<span class="op">;</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> pixels <span class="op">=</span> offCtx<span class="op">.</span><span class="fu">getImageData</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">192</span><span class="op">,</span> <span class="dv">192</span>)<span class="op">.</span><span class="at">data</span><span class="op">;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> input <span class="op">=</span> <span class="kw">new</span> <span class="bu">Float32Array</span>(<span class="dv">3</span> <span class="op">*</span> <span class="dv">192</span> <span class="op">*</span> <span class="dv">192</span>)<span class="op">;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">192</span> <span class="op">*</span> <span class="dv">192</span><span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    input[i]               <span class="op">=</span> pixels[i <span class="op">*</span> <span class="dv">4</span>]     <span class="op">/</span> <span class="dv">255</span><span class="op">;</span> <span class="co">// R</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    input[i <span class="op">+</span> <span class="dv">192</span><span class="op">*</span><span class="dv">192</span>]     <span class="op">=</span> pixels[i <span class="op">*</span> <span class="dv">4</span> <span class="op">+</span> <span class="dv">1</span>] <span class="op">/</span> <span class="dv">255</span><span class="op">;</span> <span class="co">// G</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    input[i <span class="op">+</span> <span class="dv">192</span><span class="op">*</span><span class="dv">192</span><span class="op">*</span><span class="dv">2</span>]   <span class="op">=</span> pixels[i <span class="op">*</span> <span class="dv">4</span> <span class="op">+</span> <span class="dv">2</span>] <span class="op">/</span> <span class="dv">255</span><span class="op">;</span> <span class="co">// B</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Store state for coordinate back-transformation</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  lastPreprocessState <span class="op">=</span> { srcW<span class="op">,</span> srcH<span class="op">,</span> scale<span class="op">,</span> padX<span class="op">,</span> padY }<span class="op">;</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="kw">new</span> ort<span class="op">.</span><span class="fu">Tensor</span>(<span class="st">'float32'</span><span class="op">,</span> input<span class="op">,</span> [<span class="dv">1</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="dv">192</span><span class="op">,</span> <span class="dv">192</span>])<span class="op">;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="running-inference" class="level3">
+<h3 class="anchored" data-anchor-id="running-inference">Running Inference</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// main.js</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">async</span> <span class="kw">function</span> <span class="fu">doInference</span>(source) {</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> input <span class="op">=</span> inf<span class="op">.</span><span class="fu">preprocess</span>(source)<span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> feeds <span class="op">=</span> { [session<span class="op">.</span><span class="at">inputNames</span>[<span class="dv">0</span>]]<span class="op">:</span> input }<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> out <span class="op">=</span> <span class="cf">await</span> session<span class="op">.</span><span class="fu">run</span>(feeds)<span class="op">;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ...</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>session.run()</code> is the ONNX Runtime call. It takes an object mapping input names to tensors and returns output tensors. The model’s input is always <code>[1, 3, 192, 192]</code> (batch=1, RGB, 192×192).</p>
+</section>
+<section id="postprocessing-detection" class="level3">
+<h3 class="anchored" data-anchor-id="postprocessing-detection">Postprocessing: Detection</h3>
+<p>The output tensor for detection has shape <code>[1, channels, 756]</code>:</p>
+<ul>
+<li>Channels 0–3: <code>cx, cy, w, h</code> (bounding box center + size)</li>
+<li>Channels 4+: one confidence score per class</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// inference.js</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">postprocessDetection</span>(output<span class="op">,</span> numBoxes<span class="op">,</span> confThresh<span class="op">,</span> iouThresh<span class="op">,</span> coordScale) {</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> data <span class="op">=</span> output<span class="op">.</span><span class="at">data</span><span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> channels <span class="op">=</span> output<span class="op">.</span><span class="at">dims</span>[<span class="dv">1</span>]<span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> numClasses <span class="op">=</span> channels <span class="op">-</span> <span class="dv">4</span><span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> boxes <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> b <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> b <span class="op">&lt;</span> numBoxes<span class="op">;</span> b<span class="op">++</span>) {</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Find the highest-scoring class for this box</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> maxConf <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> classId <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> c <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> c <span class="op">&lt;</span> numClasses<span class="op">;</span> c<span class="op">++</span>) {</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> conf <span class="op">=</span> data[(<span class="dv">4</span> <span class="op">+</span> c) <span class="op">*</span> numBoxes <span class="op">+</span> b]<span class="op">;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (conf <span class="op">&gt;</span> maxConf) { maxConf <span class="op">=</span> conf<span class="op">;</span> classId <span class="op">=</span> c<span class="op">;</span> }</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (maxConf <span class="op">&lt;</span> confThresh) <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Extract box coordinates (coordScale = 192 for normalized, 1 for pixel)</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> cx <span class="op">=</span> data[<span class="dv">0</span> <span class="op">*</span> numBoxes <span class="op">+</span> b] <span class="op">*</span> coordScale<span class="op">;</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> cy <span class="op">=</span> data[<span class="dv">1</span> <span class="op">*</span> numBoxes <span class="op">+</span> b] <span class="op">*</span> coordScale<span class="op">;</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> w  <span class="op">=</span> data[<span class="dv">2</span> <span class="op">*</span> numBoxes <span class="op">+</span> b] <span class="op">*</span> coordScale<span class="op">;</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> h  <span class="op">=</span> data[<span class="dv">3</span> <span class="op">*</span> numBoxes <span class="op">+</span> b] <span class="op">*</span> coordScale<span class="op">;</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    boxes<span class="op">.</span><span class="fu">push</span>({ <span class="dt">x1</span><span class="op">:</span> cx<span class="op">-</span>w<span class="op">/</span><span class="dv">2</span><span class="op">,</span> <span class="dt">y1</span><span class="op">:</span> cy<span class="op">-</span>h<span class="op">/</span><span class="dv">2</span><span class="op">,</span> <span class="dt">x2</span><span class="op">:</span> cx<span class="op">+</span>w<span class="op">/</span><span class="dv">2</span><span class="op">,</span> <span class="dt">y2</span><span class="op">:</span> cy<span class="op">+</span>h<span class="op">/</span><span class="dv">2</span><span class="op">,</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>                 <span class="dt">conf</span><span class="op">:</span> maxConf<span class="op">,</span> classId<span class="op">,</span> <span class="dt">type</span><span class="op">:</span> <span class="st">'bbox'</span> })<span class="op">;</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">nms</span>(boxes<span class="op">,</span> iouThresh)<span class="op">;</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="non-maximum-suppression-nms" class="level3">
+<h3 class="anchored" data-anchor-id="non-maximum-suppression-nms">Non-Maximum Suppression (NMS)</h3>
+<p>The raw output contains hundreds of overlapping candidate boxes for the same object. NMS keeps only the best one per object:</p>
+<ol type="1">
+<li>Sort all boxes by confidence (highest first)</li>
+<li>For each remaining box, remove any lower-confidence box that overlaps it by more than the IoU threshold</li>
+<li>The IoU (Intersection over Union) threshold controls how aggressively duplicates are merged — lower = stricter</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">nms</span>(boxes<span class="op">,</span> iouThresh) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  boxes<span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> b<span class="op">.</span><span class="at">conf</span> <span class="op">-</span> a<span class="op">.</span><span class="at">conf</span>)<span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> keep <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> suppressed <span class="op">=</span> <span class="kw">new</span> <span class="bu">Set</span>()<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> boxes<span class="op">.</span><span class="at">length</span><span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (suppressed<span class="op">.</span><span class="fu">has</span>(i)) <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    keep<span class="op">.</span><span class="fu">push</span>(boxes[i])<span class="op">;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> j <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span> j <span class="op">&lt;</span> boxes<span class="op">.</span><span class="at">length</span><span class="op">;</span> j<span class="op">++</span>) {</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">iou</span>(boxes[i]<span class="op">,</span> boxes[j]) <span class="op">&gt;</span> iouThresh) suppressed<span class="op">.</span><span class="fu">add</span>(j)<span class="op">;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> keep<span class="op">;</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="coordinate-back-transformation" class="level3">
+<h3 class="anchored" data-anchor-id="coordinate-back-transformation">Coordinate Back-Transformation</h3>
+<p>Model output coordinates are in the 192×192 preprocessed input space. To draw on the canvas, they need to be mapped back through the preprocessing (undo letterbox or crop) and then through the <code>object-fit: contain</code> display transform.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">// main.js</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">toCanvasCoords</span>(x<span class="op">,</span> y) {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> state <span class="op">=</span> inf<span class="op">.</span><span class="fu">getLastPreprocessState</span>()<span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> { srcW<span class="op">,</span> srcH } <span class="op">=</span> state<span class="op">;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> canvasW <span class="op">=</span> overlay<span class="op">.</span><span class="at">width</span><span class="op">;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> canvasH <span class="op">=</span> overlay<span class="op">.</span><span class="at">height</span><span class="op">;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Step 1: model space → source image space (undo letterbox)</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> srcX<span class="op">,</span> srcY<span class="op">;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (state<span class="op">.</span><span class="at">scale</span> <span class="op">!==</span> <span class="kw">undefined</span>) {</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Letterbox: subtract padding, divide by scale</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    srcX <span class="op">=</span> (x <span class="op">-</span> state<span class="op">.</span><span class="at">padX</span>) <span class="op">/</span> state<span class="op">.</span><span class="at">scale</span><span class="op">;</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    srcY <span class="op">=</span> (y <span class="op">-</span> state<span class="op">.</span><span class="at">padY</span>) <span class="op">/</span> state<span class="op">.</span><span class="at">scale</span><span class="op">;</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Crop: reverse the center-square crop</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    srcX <span class="op">=</span> state<span class="op">.</span><span class="at">sx</span> <span class="op">+</span> x <span class="op">*</span> (state<span class="op">.</span><span class="at">sw</span> <span class="op">/</span> <span class="dv">192</span>)<span class="op">;</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    srcY <span class="op">=</span> state<span class="op">.</span><span class="at">sy</span> <span class="op">+</span> y <span class="op">*</span> (state<span class="op">.</span><span class="at">sh</span> <span class="op">/</span> <span class="dv">192</span>)<span class="op">;</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Step 2: source image space → canvas (object-fit: contain)</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> srcAspect <span class="op">=</span> srcW <span class="op">/</span> srcH<span class="op">;</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> canvasAspect <span class="op">=</span> canvasW <span class="op">/</span> canvasH<span class="op">;</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> dW<span class="op">,</span> dH<span class="op">,</span> oX<span class="op">,</span> oY<span class="op">;</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (srcAspect <span class="op">&gt;</span> canvasAspect) {</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    dW <span class="op">=</span> canvasW<span class="op">;</span> dH <span class="op">=</span> canvasW <span class="op">/</span> srcAspect<span class="op">;</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    dH <span class="op">=</span> canvasH<span class="op">;</span> dW <span class="op">=</span> canvasH <span class="op">*</span> srcAspect<span class="op">;</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  oX <span class="op">=</span> (canvasW <span class="op">-</span> dW) <span class="op">/</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  oY <span class="op">=</span> (canvasH <span class="op">-</span> dH) <span class="op">/</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> { <span class="dt">x</span><span class="op">:</span> oX <span class="op">+</span> srcX <span class="op">*</span> (dW <span class="op">/</span> srcW)<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> oY <span class="op">+</span> srcY <span class="op">*</span> (dH <span class="op">/</span> srcH) }<span class="op">;</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="pose-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="pose-estimation">Pose Estimation</h3>
+<p><img src="./images/png/pose-est.png" class="img-fluid"></p>
+<p>Pose estimation adds 17 keypoints (COCO skeleton) to each detected person. The output shape is <code>[1, 56, 756]</code>:</p>
+<ul>
+<li>Channels 0–3: bounding box</li>
+<li>Channel 4: person confidence</li>
+<li>Channels 5–55: 17 × (x, y, visibility) keypoints</li>
+</ul>
+<p>The skeleton connections:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> kptPairs <span class="op">=</span> [</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">0</span><span class="op">,</span><span class="dv">1</span>]<span class="op">,</span>[<span class="dv">0</span><span class="op">,</span><span class="dv">2</span>]<span class="op">,</span>[<span class="dv">1</span><span class="op">,</span><span class="dv">3</span>]<span class="op">,</span>[<span class="dv">2</span><span class="op">,</span><span class="dv">4</span>]<span class="op">,</span>         <span class="co">// face</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">5</span><span class="op">,</span><span class="dv">6</span>]<span class="op">,</span>                            <span class="co">// shoulders</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">5</span><span class="op">,</span><span class="dv">7</span>]<span class="op">,</span>[<span class="dv">6</span><span class="op">,</span><span class="dv">8</span>]<span class="op">,</span>[<span class="dv">7</span><span class="op">,</span><span class="dv">9</span>]<span class="op">,</span>[<span class="dv">8</span><span class="op">,</span><span class="dv">10</span>]<span class="op">,</span>        <span class="co">// arms</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">5</span><span class="op">,</span><span class="dv">11</span>]<span class="op">,</span>[<span class="dv">6</span><span class="op">,</span><span class="dv">12</span>]<span class="op">,</span>[<span class="dv">11</span><span class="op">,</span><span class="dv">12</span>]<span class="op">,</span>           <span class="co">// torso</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">11</span><span class="op">,</span><span class="dv">13</span>]<span class="op">,</span>[<span class="dv">12</span><span class="op">,</span><span class="dv">14</span>]<span class="op">,</span>[<span class="dv">13</span><span class="op">,</span><span class="dv">15</span>]<span class="op">,</span>[<span class="dv">14</span><span class="op">,</span><span class="dv">16</span>]<span class="op">,</span> <span class="co">// legs</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Keypoints with visibility confidence below 0.2 are skipped.</p>
+</section>
+<section id="segmentation" class="level3">
+<h3 class="anchored" data-anchor-id="segmentation">Segmentation</h3>
+<p><img src="./images/png/seg.png" class="img-fluid"></p>
+<p>Segmentation is the most complex output. Two tensors are produced:</p>
+<ul>
+<li><code>output0 [1, 116, 756]</code> — bounding box + 80 class scores + 32 mask coefficients per detection</li>
+<li><code>output1 [1, 32, 48, 48]</code> — 32 prototype masks (the mask “basis”) at 48×48 resolution</li>
+</ul>
+<p>For each detected object, the final mask is computed as:</p>
+<pre><code>mask = sigmoid(coefficients · prototypes)</code></pre>
+<p>That’s a dot product of the 32 coefficients against the 32×48×48 prototypes, then sigmoid to get a 0–1 probability per pixel:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">// For each detection, compute its 48×48 mask</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> mask <span class="op">=</span> <span class="kw">new</span> <span class="bu">Float32Array</span>(<span class="dv">48</span> <span class="op">*</span> <span class="dv">48</span>)<span class="op">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">let</span> px <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> px <span class="op">&lt;</span> <span class="dv">48</span> <span class="op">*</span> <span class="dv">48</span><span class="op">;</span> px<span class="op">++</span>) {</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> val <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> k <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> k <span class="op">&lt;</span> <span class="dv">32</span><span class="op">;</span> k<span class="op">++</span>) {</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    val <span class="op">+=</span> maskCoeffs[k] <span class="op">*</span> protos[k <span class="op">*</span> <span class="dv">48</span> <span class="op">*</span> <span class="dv">48</span> <span class="op">+</span> px]<span class="op">;</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  mask[px] <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">exp</span>(<span class="op">-</span>val))<span class="op">;</span> <span class="co">// sigmoid</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Pixels outside the detection bounding box are zeroed before sigmoid — otherwise <code>sigmoid(0) = 0.5 &gt; 0.5 threshold</code> causes background bleed.</p>
+<hr>
+</section>
+</section>
+<section id="part-5-auto-detecting-the-model-type" class="level2">
+<h2 class="anchored" data-anchor-id="part-5-auto-detecting-the-model-type">Part 5: Auto-Detecting the Model Type</h2>
+<p>When a model file is loaded (whether a built-in or an uploaded custom model), the app doesn’t rely on the user’s dropdown selection to determine its type. Instead, it runs a <strong>dummy inference</strong> and inspects the output shape:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// inference.js</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">detectOutputConventions</span>() {</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> dummy <span class="op">=</span> <span class="kw">new</span> ort<span class="op">.</span><span class="fu">Tensor</span>(<span class="st">'float32'</span><span class="op">,</span> <span class="kw">new</span> <span class="bu">Float32Array</span>(<span class="dv">3</span><span class="op">*</span><span class="dv">192</span><span class="op">*</span><span class="dv">192</span>)<span class="op">,</span> [<span class="dv">1</span><span class="op">,</span><span class="dv">3</span><span class="op">,</span><span class="dv">192</span><span class="op">,</span><span class="dv">192</span>])<span class="op">;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> out <span class="op">=</span> <span class="cf">await</span> session<span class="op">.</span><span class="fu">run</span>({ [session<span class="op">.</span><span class="at">inputNames</span>[<span class="dv">0</span>]]<span class="op">:</span> dummy })<span class="op">;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> output <span class="op">=</span> out[session<span class="op">.</span><span class="at">outputNames</span>[<span class="dv">0</span>]]<span class="op">;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> channels <span class="op">=</span> output<span class="op">.</span><span class="at">dims</span>[<span class="dv">1</span>]<span class="op">;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Two outputs → segmentation</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (session<span class="op">.</span><span class="at">outputNames</span><span class="op">.</span><span class="at">length</span> <span class="op">&gt;</span> <span class="dv">1</span>) {</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> { <span class="dt">type</span><span class="op">:</span> <span class="st">'segmentation'</span><span class="op">,</span> <span class="dt">normalizedCoords</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span> <span class="dt">numClasses</span><span class="op">:</span> channels <span class="op">-</span> <span class="dv">4</span> <span class="op">-</span> <span class="dv">32</span> }<span class="op">;</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Pose: channels = 4 (bbox) + 1 (conf) + 17*3 (keypoints) = 56</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">//   → impliedPoseClasses = 56 - 4 - 51 = 1 (between 1 and 5)</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> impliedPoseClasses <span class="op">=</span> channels <span class="op">-</span> <span class="dv">4</span> <span class="op">-</span> <span class="dv">51</span><span class="op">;</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (impliedPoseClasses <span class="op">&gt;=</span> <span class="dv">1</span> <span class="op">&amp;&amp;</span> impliedPoseClasses <span class="op">&lt;=</span> <span class="dv">5</span>) {</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> { <span class="dt">type</span><span class="op">:</span> <span class="st">'pose'</span><span class="op">,</span> <span class="dt">normalizedCoords</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span> <span class="dt">numClasses</span><span class="op">:</span> impliedPoseClasses }<span class="op">;</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Detection: inspect actual output values to determine coordinate convention</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> vals <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>(output<span class="op">.</span><span class="at">data</span><span class="op">.</span><span class="fu">slice</span>(<span class="dv">0</span><span class="op">,</span> channels))<span class="op">;</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> normalizedCoords <span class="op">=</span> vals<span class="op">.</span><span class="fu">some</span>(v <span class="kw">=&gt;</span> v <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> v <span class="op">&lt;</span> <span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> { <span class="dt">type</span><span class="op">:</span> <span class="st">'detection'</span><span class="op">,</span> normalizedCoords<span class="op">,</span> <span class="dt">numClasses</span><span class="op">:</span> channels <span class="op">-</span> <span class="dv">4</span> }<span class="op">;</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is called after every model load and automatically configures preprocessing mode, class names, and coordinate scaling.</p>
+<hr>
+</section>
+<section id="part-6-the-camera-loop" class="level2">
+<h2 class="anchored" data-anchor-id="part-6-the-camera-loop">Part 6: The Camera Loop</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">// main.js — the real-time inference loop</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">async</span> <span class="kw">function</span> <span class="fu">runFrame</span>() {</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>cameraRunning) <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (inferenceRunning) {</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Previous frame still processing — skip this tick</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    rafId <span class="op">=</span> <span class="fu">requestAnimationFrame</span>(runFrame)<span class="op">;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  inferenceRunning <span class="op">=</span> <span class="kw">true</span><span class="op">;</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> t0 <span class="op">=</span> <span class="bu">performance</span><span class="op">.</span><span class="fu">now</span>()<span class="op">;</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> results <span class="op">=</span> <span class="cf">await</span> <span class="fu">doInference</span>(video)<span class="op">;</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drawResults</span>(results)<span class="op">;</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Smooth FPS with exponential moving average</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (lastInfStart <span class="op">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> dt <span class="op">=</span> t0 <span class="op">-</span> lastInfStart<span class="op">;</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    fpsSmooth <span class="op">=</span> fpsSmooth <span class="op">*</span> <span class="fl">0.85</span> <span class="op">+</span> (<span class="dv">1000</span> <span class="op">/</span> dt) <span class="op">*</span> <span class="fl">0.15</span><span class="op">;</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    fpsBadge<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span>(fpsSmooth) <span class="op">+</span> <span class="st">' FPS'</span><span class="op">;</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  lastInfStart <span class="op">=</span> t0<span class="op">;</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  inferenceRunning <span class="op">=</span> <span class="kw">false</span><span class="op">;</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (cameraRunning) rafId <span class="op">=</span> <span class="fu">requestAnimationFrame</span>(runFrame)<span class="op">;</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Key design decisions:</p>
+<ul>
+<li><strong><code>requestAnimationFrame</code></strong> ties the loop to the display refresh rate (60fps cap) and pauses automatically when the tab is hidden.</li>
+<li><strong><code>inferenceRunning</code> guard</strong> prevents frame overlap — if inference takes longer than one frame (likely on slow devices), the loop skips rather than queuing.</li>
+<li><strong>Async/await</strong> on <code>session.run()</code> — ONNX Runtime Web’s inference is async (it can yield to the event loop during long computations, keeping the UI responsive).</li>
+</ul>
+<p>The canvas overlay sits directly on top of the video element, both positioned <code>inset: 0</code> inside the viewport container. Detection annotations are drawn on the canvas while the video plays underneath.</p>
+<hr>
+</section>
+<section id="part-7-deployment" class="level2">
+<h2 class="anchored" data-anchor-id="part-7-deployment">Part 7: Deployment</h2>
+<p>Deploying to <a href="https://www.netlify.com/">Netlify</a> takes three steps after creating an account and linking your project.</p>
+<section id="netlify.toml" class="level3">
+<h3 class="anchored" data-anchor-id="netlify.toml"><code>netlify.toml</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[build]</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">command</span> <span class="op">=</span> <span class="st">"npm run build"</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">publish</span> <span class="op">=</span> <span class="st">"dist"</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Long-lived cache for model files (immutable by filename)</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="kw">[[headers]]</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">for</span> <span class="op">=</span> <span class="st">"/models/*"</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">[headers.values]</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Cache-Control</span> <span class="op">=</span> <span class="st">"public, max-age=31536000, immutable"</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Security headers</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="kw">[[headers]]</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">for</span> <span class="op">=</span> <span class="st">"/*"</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">[headers.values]</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">X-Content-Type-Options</span> <span class="op">=</span> <span class="st">"nosniff"</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">X-Frame-Options</span> <span class="op">=</span> <span class="st">"DENY"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>Cache-Control: immutable</code> header on models tells the browser (and CDN) to never revalidate — the file will never change at that path. This means after the first visit, models load from the browser cache (near-instant).</p>
+</section>
+<section id="deploy-command" class="level3">
+<h3 class="anchored" data-anchor-id="deploy-command">Deploy Command</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run build            <span class="co"># builds to dist/</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">netlify</span> deploy <span class="at">--prod</span> <span class="at">--dir</span><span class="op">=</span>dist</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Netlify automatically provisions HTTPS, which is required for camera access on mobile browsers.</p>
+</section>
+<section id="vite-configuration" class="level3">
+<h3 class="anchored" data-anchor-id="vite-configuration">Vite Configuration</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">// vite.config.js</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> <span class="fu">defineConfig</span>({</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">plugins</span><span class="op">:</span> [<span class="fu">ortWasmPlugin</span>()<span class="op">,</span> <span class="op">...</span>(isDev <span class="op">?</span> [<span class="fu">basicSsl</span>()] <span class="op">:</span> [])]<span class="op">,</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">optimizeDeps</span><span class="op">:</span> {</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">exclude</span><span class="op">:</span> [<span class="st">'onnxruntime-web'</span>]<span class="op">,</span> <span class="co">// must not be pre-bundled — breaks WASM init</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">build</span><span class="op">:</span> { <span class="dt">target</span><span class="op">:</span> <span class="st">'es2020'</span> }<span class="op">,</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">server</span><span class="op">:</span> { <span class="dt">host</span><span class="op">:</span> <span class="kw">true</span> }<span class="op">,</span>  <span class="co">// LAN access for mobile testing</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>ortWasmPlugin</code> is a custom Vite plugin that serves <code>.wasm</code> files from <code>node_modules</code> during development. In production, WASM is loaded from the jsDelivr CDN (specified in <code>inference.js</code>).</p>
+<hr>
+</section>
+</section>
+<section id="part-8-testing-on-mobile" class="level2">
+<h2 class="anchored" data-anchor-id="part-8-testing-on-mobile">Part 8: Testing on Mobile</h2>
+<p>During development, Vite exposes the server on your local network (because of <code>server.host: true</code>). The terminal shows something like:</p>
+<pre><code>➜  Network: https://192.168.1.42:5173</code></pre>
+<p>Open that URL on your phone (accept the self-signed certificate warning). Camera access requires HTTPS — even on LAN — which is why <code>basicSsl()</code> is included as a dev-only plugin.</p>
+<blockquote class="blockquote">
+<p><strong>Hard refresh on mobile:</strong> If the service worker is caching old code, open the app in incognito mode, or hold the pull-to-refresh gesture to force reload.</p>
+</blockquote>
+<hr>
+</section>
+<section id="part-9-real-world-performance" class="level2">
+<h2 class="anchored" data-anchor-id="part-9-real-world-performance">Part 9: Real-World Performance</h2>
+<p>Tested on an iPhone 13 running iOS 17:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Resolution</th>
+<th>FPS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>YOLOv8n Detection</td>
+<td>192×192</td>
+<td>~28 FPS</td>
+</tr>
+<tr class="even">
+<td>YOLOv8n Pose</td>
+<td>192×192</td>
+<td>~25 FPS</td>
+</tr>
+<tr class="odd">
+<td>YOLOv8n Segmentation</td>
+<td>192×192</td>
+<td>~18 FPS</td>
+</tr>
+</tbody>
+</table>
+<p>Segmentation is slower due to the mask computation (a 48×48 matrix multiply for each detection).</p>
+<p>The 192×192 input resolution is a deliberate choice for mobile — larger inputs (the default 640×640) would drop performance to single-digit FPS on a phone.</p>
+<hr>
+</section>
+<section id="part-10-using-custom-models" class="level2">
+<h2 class="anchored" data-anchor-id="part-10-using-custom-models">Part 10: Using Custom Models</h2>
+<p>For example, let’s use the <a href="../../raspi/object_detection/custom_object_detection.html">Custom Object Detection Project</a>, in which an industrial facility must sort and count <strong>wheels</strong> and special <strong>boxes</strong>.</p>
+<p><img src="./images/png/custon_proj_goal.png" class="img-fluid"></p>
+<p>YOLOInfer accepts any YOLOv8 ONNX model exported with input shape <code>[1, 3, 192, 192]</code>. To export from Ultralytics:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">'best.pt'</span>)           <span class="co"># any official or custom-trained model</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>model.export(<span class="bu">format</span><span class="op">=</span><span class="st">'onnx'</span>, imgsz<span class="op">=</span><span class="dv">192</span>, simplify<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Once exported, tap the <strong>Model</strong> button in the app:</p>
+<ul>
+<li><strong>Desktop:</strong> A file dialog opens, filtered to <code>.onnx</code> files</li>
+<li><strong>iOS:</strong> Tap “Files” from the action sheet, then navigate to your <code>.onnx</code> file</li>
+</ul>
+<p>The app auto-detects the model type, class count, and coordinate convention after loading.</p>
+<p><img src="./images/png/box_wheel_det.png" class="img-fluid"></p>
+<hr>
+</section>
+<section id="recap" class="level2">
+<h2 class="anchored" data-anchor-id="recap">Recap</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Concern</th>
+<th>Solution in YOLOInfer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ML runtime in browser</td>
+<td>ONNX Runtime Web (WASM backend)</td>
+</tr>
+<tr class="even">
+<td>Camera access</td>
+<td><code>getUserMedia</code> API</td>
+</tr>
+<tr class="odd">
+<td>HTTPS requirement</td>
+<td>Vite <code>basicSsl</code> (dev) / Netlify (prod)</td>
+</tr>
+<tr class="even">
+<td>Model caching</td>
+<td>Service Worker cache-first strategy</td>
+</tr>
+<tr class="odd">
+<td>App install</td>
+<td>PWA manifest + “Add to Home Screen”</td>
+</tr>
+<tr class="even">
+<td>Custom model support</td>
+<td><code>showOpenFilePicker</code> (desktop) / file input (mobile)</td>
+</tr>
+<tr class="odd">
+<td>Multi-model support</td>
+<td>Auto-detection via dummy inference</td>
+</tr>
+<tr class="even">
+<td>Coordinate alignment</td>
+<td>Two-stage back-transform (preprocess → canvas)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="going-further" class="level2">
+<h2 class="anchored" data-anchor-id="going-further">Going Further</h2>
+<ul>
+<li><strong>Train a custom model</strong> — any YOLOv8 model exported to ONNX at 192×192 works. Replace the built-in models or upload via the Model button.</li>
+<li><strong>Larger models on desktop</strong> — YOLOv8s or YOLOv8m at 320×320 are viable on a MacBook, even in the browser.</li>
+<li><strong>Add model management</strong> — index multiple uploaded models in IndexedDB and let users switch between them without re-uploading.</li>
+<li><strong>Batch inference on images</strong> — the same pipeline works on static images; extend the upload flow to process a folder.</li>
+<li><strong>Edge deployment without internet</strong> — once the service worker has cached everything, YOLOInfer runs completely offline.</li>
+</ul>
+<hr>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<ul>
+<li>Full source code: <a href="https://github.com/Mjrovai/yoloinferApp/tree/main/Code">github.com/Mjrovai/yoloinferApp</a></li>
+<li>The running app: <a href="https://yoloinfer.netlify.app">yoloinfer.netlify.app</a></li>
+</ul>
+<hr>
+<p><em>Built with Vanilla JS, Vite, ONNX Runtime Web, and Netlify. No framework. No server.</em></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../raspi/hw_acceleration/hw_acceleration.html" class="pagination-link" aria-label="Beyond CPU - Hardware Acceleration for Edge AI">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Beyond CPU - Hardware Acceleration for Edge AI</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../raspi/rnn-verne/rnn-verne.html" class="pagination-link" aria-label="Text Generation with RNNs">
+        <span class="nav-page-text">Text Generation with RNNs</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Written and edited by Prof.&nbsp;Marcelo Rovai (UNIFEI University)</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
